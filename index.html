@@ -531,17 +531,13 @@ async function mobilePiP(){
   showFloatPlayer();
 }
 function closePanelOrAll(){
-  if(window.innerWidth<768){
-    // X button on mobile: close everything
-    document.getElementById('playerPanel').classList.remove('open');
-    document.body.classList.remove('playing');
-    document.body.style.overflow='';
-    hideFloatPlayer();
-    if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
-    document.body.classList.remove('has-song');
-  } else {
-    closeModal();
-  }
+  // X button: close everything on all screen sizes
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.classList.remove('playing');
+  document.body.style.overflow='';
+  hideFloatPlayer();
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
+  document.body.classList.remove('has-song');
 }
 function goHome(){
   document.getElementById('playerPanel').classList.remove('open');
