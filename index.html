@@ -132,6 +132,15 @@ body.playing .content{max-width:none;margin:0;}
 #float-video-slot #yt-player,#float-video-slot iframe{width:100%!important;height:100%!important;}
 body.float-playing .mini-bar{display:none!important;}
 
+/* Mobile mini player (YouTube style) */
+@media(max-width:767px){
+  .float-player{width:100%!important;left:0!important;right:0!important;bottom:0!important;border-radius:16px 16px 0 0;flex-direction:row;resize:none;height:76px;}
+  .float-header{background:transparent!important;padding:10px 12px;cursor:pointer;flex:1;min-width:0;}
+  #float-video-slot{width:135px!important;min-width:135px;height:76px!important;aspect-ratio:unset!important;flex-shrink:0;order:1;}
+  body.float-playing{padding-bottom:84px!important;}
+  body.float-playing .queue-bar{bottom:84px;}
+}
+
 /* MINI BAR */
 .mini-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#1e1e1e;border-top:1px solid #333;border-radius:16px 16px 0 0;padding:3px 16px 10px;z-index:200;align-items:center;gap:12px;cursor:pointer;box-shadow:0 -4px 24px rgba(0,0,0,.5);}
 body.has-song:not(.playing) .mini-bar{display:flex;}
@@ -378,11 +387,11 @@ function openFullPlayer(){
   document.body.style.overflow='hidden';
 }
 function closePanelOrAll(){
-  // Close btn inside panel: on mobile collapses to mini bar, on desktop closes entirely
   if(window.innerWidth<768){
     document.getElementById('playerPanel').classList.remove('open');
-    document.body.classList.remove('playing'); // mini-bar can now show
+    document.body.classList.remove('playing');
     document.body.style.overflow='';
+    if(currentSong){showFloatPlayer();return;}
   } else {
     closeModal();
   }
@@ -494,6 +503,7 @@ function initFloatDrag(){
   });
   document.addEventListener('mouseup',()=>{_fpDragging=false;});
   hdr.addEventListener('touchstart',e=>{
+    if(window.innerWidth<768)return;
     const t=e.touches[0];_fpDragging=true;
     const r=fp.getBoundingClientRect();
     _fpOX=t.clientX-r.left;_fpOY=t.clientY-r.top;
@@ -508,6 +518,31 @@ function initFloatDrag(){
   document.addEventListener('touchend',()=>{_fpDragging=false;});
 }
 document.addEventListener('DOMContentLoaded',initFloatDrag);
+// Mobile player gestures (YouTube-style)
+function initMobileGestures(){
+  // Swipe down on full player → minimize to mini player
+  let pSY=0,pSX=0;
+  const panel=document.getElementById('playerPanel');
+  panel.addEventListener('touchstart',e=>{pSY=e.touches[0].clientY;pSX=e.touches[0].clientX;},{passive:true});
+  panel.addEventListener('touchend',e=>{
+    if(window.innerWidth>=768)return;
+    const dy=e.changedTouches[0].clientY-pSY;
+    const dx=Math.abs(e.changedTouches[0].clientX-pSX);
+    if(dy>80&&dx<120&&panel.classList.contains('open'))closePanelOrAll();
+  },{passive:true});
+  // Mobile mini player: tap → expand, swipe down → dismiss
+  let fpSY=0,fpMoved=false;
+  const fp=document.getElementById('floatPlayer');
+  fp.addEventListener('touchstart',e=>{fpSY=e.touches[0].clientY;fpMoved=false;},{passive:true});
+  fp.addEventListener('touchmove',()=>{fpMoved=true;},{passive:true});
+  fp.addEventListener('touchend',e=>{
+    if(window.innerWidth>=768)return;
+    const dy=e.changedTouches[0].clientY-fpSY;
+    if(dy>50)closeFloat();
+    else if(!fpMoved&&!e.target.closest('.float-ctrl-btn'))expandFloat();
+  },{passive:true});
+}
+document.addEventListener('DOMContentLoaded',initMobileGestures);
 // PiP when leaving page
 document.addEventListener('visibilitychange',()=>{
   if(document.visibilityState==='hidden'&&currentSong){
@@ -577,39 +612,8 @@ function render(term){
     h+=`<span class="artist-name-text">${hl(a,q)}</span>`;
     h+=`<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
     h+=`</div><div class="songs-wrap"><table class="songs-table">`;
-    g[a].forEach((r,i)=>{
-      const inQ=queue.includes(r.v);
-      h+=`<tr>
-        <td class="td-num">${i+1}</td>
-        <td onclick="playVid('${r.v}')" style="cursor:pointer">${hl(r.s,q)}</td>
-        <td class="td-actions">
-          <div class="song-actions">
-            <button class="btn-play" onclick="event.stopPropagation();playVid('${r.v}')" title="נגן">
-              <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
-            </button>
-            <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();toggleAddSong('${r.v}')">${inQ?'✓':'+'}</button>
-            <a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>
-          </div>
-        </td>
-      </tr>`;
-    });
-    h+='</table></div></div>';
-  }
-  document.getElementById('content').innerHTML=h;
-  updateToggleBtn();
-  loadImages();
-}
-function clearSearch(){const i=document.getElementById('q');i.value='';document.getElementById('clr').classList.remove('visible');render('');}
-
-// ── SEARCH HISTORY ──
-const HIST_KEY='karaoke_hist';
-function getSearchHistory(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]');}catch(e){return[];}}
-function saveSearchHistory(term){if(!term.trim())return;let h=getSearchHistory().filter(t=>t!==term);h.unshift(term);h=h.slice(0,8);try{localStorage.setItem(HIST_KEY,JSON.stringify(h));}catch(e){}}
-function clearSearchHistory(){try{localStorage.removeItem(HIST_KEY);}catch(e){}hideSearchHistory();}
-function showSearchHistory(){
-  const h=getSearchHistory();
-  const dd=document.getElementById('ytHistory');
-  iins('playing'))modalNav(-1);
+    g
+ins('playing'))modalNav(-1);
 });
 </script>
 </body></html>
