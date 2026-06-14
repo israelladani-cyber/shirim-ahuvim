@@ -132,7 +132,7 @@ body.theater .panel-theater-btn{color:#1DB954;}
 
 /* ── FLOAT PLAYER (PiP) ── */
 /* flex column: video on top, drag-bar below — no overlay blocking the iframe */
-.float-player{position:fixed;left:0;top:0;width:220px;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.9);z-index:9999;display:none;background:#111;touch-action:none;user-select:none;}
+.float-player{position:fixed;left:0;top:0;width:340px;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.9);z-index:9999;display:none;background:#111;touch-action:none;user-select:none;}
 .float-player.visible{display:flex;flex-direction:column;}
 /* Float mode mini-PIP: panel stays in DOM, CSS positions it as a fixed mini window */
 @media(min-width:768px){
@@ -143,22 +143,27 @@ body.theater .panel-theater-btn{color:#1DB954;}
   body.float-playing #float-video-slot{display:none!important;}
 }
 .float-player.pip-snap{transition:left .2s cubic-bezier(.25,.46,.45,.94),top .2s cubic-bezier(.25,.46,.45,.94);}
+@media(min-width:768px){body.float-playing .player-panel.pip-snap{transition:left .2s cubic-bezier(.25,.46,.45,.94),top .2s cubic-bezier(.25,.46,.45,.94)!important;}}
 /* video slot — explicit height, no overlay blocking it */
 #float-video-slot{width:100%;height:124px;position:relative;overflow:hidden;background:#000;flex-shrink:0;}
 #float-video-slot #yt-player{width:100%!important;height:100%!important;}
 #float-video-slot #yt-player iframe{width:100%!important;height:100%!important;display:block!important;}
 /* bottom bar — this is the drag handle; video above is fully interactive */
-.float-bar{display:flex;align-items:center;background:#1a1a1a;padding:4px 5px 4px 8px;gap:2px;cursor:grab;touch-action:none;flex-shrink:0;border-top:1px solid #2a2a2a;}
+.float-bar{display:flex;align-items:center;background:#1a1a1a;padding:6px 8px 6px 12px;gap:4px;cursor:grab;touch-action:none;flex-shrink:0;border-top:1px solid #2a2a2a;}
 .float-bar.grabbing{cursor:grabbing;}
-.float-bar-song{flex:1;font-size:10px;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;min-width:0;pointer-events:none;line-height:1.3;}
-.fbar-btn{background:none;border:none;color:#888;cursor:pointer;font-size:12px;width:26px;height:26px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;flex-shrink:0;}
+.float-bar-song{flex:1;font-size:13px;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;min-width:0;pointer-events:none;line-height:1.3;}
+.fbar-btn{background:none;border:none;color:#888;cursor:pointer;font-size:15px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;flex-shrink:0;}
 .fbar-btn:hover,.fbar-btn:active{color:#fff;background:rgba(255,255,255,.15);}
-#pipPlayBtn{font-size:15px;color:#ddd;}
+#pipPlayBtn{font-size:20px;color:#ddd;}
 body.float-playing .mini-bar{display:none!important;}
 @media(max-width:767px){
   .float-player{width:185px;}
   #float-video-slot{height:104px;}
   body.float-playing{padding-bottom:16px;}
+  .float-bar{padding:4px 5px 4px 8px;gap:2px;}
+  .float-bar-song{font-size:10px;}
+  .fbar-btn{width:26px;height:26px;font-size:12px;}
+  #pipPlayBtn{font-size:15px;}
 }
 
 /* MINI BAR */
@@ -654,15 +659,20 @@ function showFloatPlayer(){
   // Play/pause button state
   const pb=document.getElementById('pipPlayBtn');
   if(pb&&ytPlayer&&playerReady)pb.textContent=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?'⏸':'▶';
-  // Position float control bar just below the CSS mini-pip (which sits at bottom:96px height:125px)
-  const pw=window.innerWidth<768?185:220;
+  document.body.classList.add('float-playing');
+  const pw=window.innerWidth<768?185:340;
+  // On desktop: reset any drag overrides so CSS default position kicks in
+  if(window.innerWidth>=768){
+    const panel=document.getElementById('playerPanel');
+    if(panel){panel.style.removeProperty('left');panel.style.removeProperty('top');panel.style.removeProperty('right');panel.style.removeProperty('bottom');}
+  }
+  // Position control bar just below the CSS mini-pip (panel bottom edge sits at bottom:96px)
   fp.style.left=(window.innerWidth-pw-12)+'px';
   fp.style.top=(window.innerHeight-96)+'px';
   fp._pipPositioned=true;
   fp.style.right='auto';
-  fp.style.display=''; // clear any inline display:none
+  fp.style.display='';
   fp.classList.add('visible');
-  document.body.classList.add('float-playing');
   // No DOM move — iframe stays in panel-video-slot; CSS makes panel the mini-pip
 }
 
@@ -699,13 +709,32 @@ function _snapToCorner(fp){
   const vw=window.innerWidth,vh=window.innerHeight;
   const r=fp.getBoundingClientRect();
   const m=12, bm=window.innerWidth<768?76:80;
-  const goLeft=r.left+r.width/2<vw/2;
-  const goTop=r.top+r.height/2<vh/2;
+  const isDesk=window.innerWidth>=768&&document.body.classList.contains('float-playing');
+  const panel=isDesk?document.getElementById('playerPanel'):null;
+  const ph=panel?panel.offsetHeight:192;
+  // Use combined bounding box (panel+bar) to decide corner on desktop
+  const refTop=isDesk&&panel?panel.getBoundingClientRect().top:r.top;
+  const refH=isDesk?ph+r.height:r.height;
+  const goLeft=(isDesk&&panel?panel.getBoundingClientRect().left:r.left)+r.width/2<vw/2;
+  const goTop=refTop+refH/2<vh/2;
   fp.classList.add('pip-snap');
-  fp.style.left=(goLeft?m:vw-r.width-m)+'px';
-  fp.style.top=(goTop?m:vh-r.height-bm)+'px';
-  fp.style.right='auto'; fp.style.bottom='auto';
-  setTimeout(()=>fp.classList.remove('pip-snap'),280);
+  if(isDesk&&panel){
+    const nx=goLeft?m:vw-340-m;
+    const ny=goTop?m:vh-ph-r.height-bm;
+    panel.classList.add('pip-snap');
+    panel.style.setProperty('left',nx+'px','important');
+    panel.style.setProperty('top',ny+'px','important');
+    panel.style.setProperty('right','auto','important');
+    panel.style.setProperty('bottom','auto','important');
+    fp.style.left=nx+'px';
+    fp.style.top=(ny+ph)+'px';
+    setTimeout(()=>{fp.classList.remove('pip-snap');panel.classList.remove('pip-snap');},280);
+  }else{
+    fp.style.left=(goLeft?m:vw-r.width-m)+'px';
+    fp.style.top=(goTop?m:vh-r.height-bm)+'px';
+    fp.style.right='auto'; fp.style.bottom='auto';
+    setTimeout(()=>fp.classList.remove('pip-snap'),280);
+  }
 }
 
 function initPiP(){
@@ -713,15 +742,34 @@ function initPiP(){
   const bar=document.getElementById('floatBar');
   if(!fp||!bar)return;
 
+  function _isDesk(){return window.innerWidth>=768&&document.body.classList.contains('float-playing');}
+  function _getPanel(){return document.getElementById('playerPanel');}
+  // Move the CSS mini-pip panel to an explicit left/top position (overrides CSS right/bottom)
+  function _setPanelPos(x,y){
+    const panel=_getPanel();
+    if(!panel)return;
+    panel.style.setProperty('left',x+'px','important');
+    panel.style.setProperty('top',y+'px','important');
+    panel.style.setProperty('right','auto','important');
+    panel.style.setProperty('bottom','auto','important');
+  }
+  // Get the top-left of the combined unit (panel top-left on desktop, fp top-left on mobile)
+  function _getAnchorRect(){
+    if(_isDesk()){const panel=_getPanel();if(panel)return panel.getBoundingClientRect();}
+    return fp.getBoundingClientRect();
+  }
+
   // ── TOUCH drag via bottom bar ──
   bar.addEventListener('touchstart',e=>{
-    // Don't start drag if tap is on a button
     if(e.target.closest('.fbar-btn'))return;
     _pipDrag=true;_pipMoved=false;
-    const t=e.touches[0],r=fp.getBoundingClientRect();
+    const t=e.touches[0];
     _pipSX=t.clientX;_pipSY=t.clientY;
-    _pipOX=t.clientX-r.left;_pipOY=t.clientY-r.top;
-    fp.style.left=r.left+'px';fp.style.top=r.top+'px';
+    const ar=_getAnchorRect();
+    _pipOX=t.clientX-ar.left;_pipOY=t.clientY-ar.top;
+    // Lock current fp position before dragging
+    const fr=fp.getBoundingClientRect();
+    fp.style.left=fr.left+'px';fp.style.top=fr.top+'px';
     fp.style.right='auto';
     fp.classList.remove('pip-snap');
     bar.classList.add('grabbing');
@@ -732,8 +780,14 @@ function initPiP(){
     e.preventDefault();
     const t=e.touches[0];
     if(Math.abs(t.clientX-_pipSX)>5||Math.abs(t.clientY-_pipSY)>5)_pipMoved=true;
-    fp.style.left=(t.clientX-_pipOX)+'px';
-    fp.style.top=(t.clientY-_pipOY)+'px';
+    const x=t.clientX-_pipOX, y=t.clientY-_pipOY;
+    if(_isDesk()){
+      _setPanelPos(x,y);
+      const ph=(_getPanel()||{offsetHeight:192}).offsetHeight;
+      fp.style.left=x+'px';fp.style.top=(y+ph)+'px';
+    }else{
+      fp.style.left=x+'px';fp.style.top=y+'px';
+    }
   },{passive:false});
 
   document.addEventListener('touchend',()=>{
@@ -750,10 +804,11 @@ function initPiP(){
   bar.addEventListener('mousedown',e=>{
     if(e.target.closest('.fbar-btn'))return;
     _pipDrag=true;_pipMoved=false;
-    const r=fp.getBoundingClientRect();
     _pipSX=e.clientX;_pipSY=e.clientY;
-    _pipOX=e.clientX-r.left;_pipOY=e.clientY-r.top;
-    fp.style.left=r.left+'px';fp.style.top=r.top+'px';
+    const ar=_getAnchorRect();
+    _pipOX=e.clientX-ar.left;_pipOY=e.clientY-ar.top;
+    const fr=fp.getBoundingClientRect();
+    fp.style.left=fr.left+'px';fp.style.top=fr.top+'px';
     fp.style.right='auto';
     fp.classList.remove('pip-snap');
     bar.classList.add('grabbing');
@@ -762,8 +817,14 @@ function initPiP(){
   document.addEventListener('mousemove',e=>{
     if(!_pipDrag)return;
     if(Math.abs(e.clientX-_pipSX)>4)_pipMoved=true;
-    fp.style.left=(e.clientX-_pipOX)+'px';
-    fp.style.top=(e.clientY-_pipOY)+'px';
+    const x=e.clientX-_pipOX, y=e.clientY-_pipOY;
+    if(_isDesk()){
+      _setPanelPos(x,y);
+      const ph=(_getPanel()||{offsetHeight:192}).offsetHeight;
+      fp.style.left=x+'px';fp.style.top=(y+ph)+'px';
+    }else{
+      fp.style.left=x+'px';fp.style.top=y+'px';
+    }
   });
   document.addEventListener('mouseup',()=>{
     if(!_pipDrag)return;
