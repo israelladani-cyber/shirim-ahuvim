@@ -945,18 +945,6 @@ document.getElementById('q').addEventListener('input',e=>{
   if(v.length>0)hideSearchHistory();else showSearchHistory();
 });
 document.addEventListener('keydown',e=>{
-  if(e.key==='E
-setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()===YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
-
-loadSession();
-render('');document.getElementById('q').focus();
-document.getElementById('q').addEventListener('input',e=>{
-  const v=e.target.value;
-  render(v);
-  document.getElementById('clr').classList.toggle('visible',v.length>0);
-  if(v.length>0)hideSearchHistory();else showSearchHistory();
-});
-document.addEventListener('keydown',e=>{
   if(e.key==='Escape')closeModal();
   if(e.key==='ArrowLeft'&&document.body.classList.contains('playing'))modalNav(-1);
   if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(1);
