@@ -612,8 +612,128 @@ function render(term){
     h+=`<span class="artist-name-text">${hl(a,q)}</span>`;
     h+=`<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
     h+=`</div><div class="songs-wrap"><table class="songs-table">`;
-    g
-ins('playing'))modalNav(-1);
+    g[a].forEach((r,i)=>{
+      const inQ=queue.includes(r.v);
+      h+=`<tr>
+        <td class="td-num">${i+1}</td>
+        <td onclick="playVid('${r.v}')" style="cursor:pointer">${hl(r.s,q)}</td>
+        <td class="td-actions">
+          <div class="song-actions">
+            <button class="btn-play" onclick="event.stopPropagation();playVid('${r.v}')" title="נגן">
+              <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
+            </button>
+            <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();toggleAddSong('${r.v}')">${inQ?'✓':'+'}</button>
+            <a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>
+          </div>
+        </td>
+      </tr>`;
+    });
+    h+='</table></div></div>';
+  }
+  document.getElementById('content').innerHTML=h;
+  updateToggleBtn();
+  loadImages();
+}
+function clearSearch(){const i=document.getElementById('q');i.value='';document.getElementById('clr').classList.remove('visible');render('');}
+
+// ── SEARCH HISTORY ──
+const HIST_KEY='karaoke_hist';
+function getSearchHistory(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]');}catch(e){return[];}}
+function saveSearchHistory(term){if(!term.trim())return;let h=getSearchHistory().filter(t=>t!==term);h.unshift(term);h=h.slice(0,8);try{localStorage.setItem(HIST_KEY,JSON.stringify(h));}catch(e){}}
+function clearSearchHistory(){try{localStorage.removeItem(HIST_KEY);}catch(e){}hideSearchHistory();}
+function showSearchHistory(){
+  const h=getSearchHistory();
+  const dd=document.getElementById('ytHistory');
+  if(!h.length){dd.classList.remove('open');return;}
+  dd.innerHTML=h.map(t=>`<div class="yt-hist-item" onmousedown="pickHistory('${t.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 6 12 12 16 14"/></svg>${t}</div>`).join('')
+    +'<div class="yt-hist-clear" onmousedown="clearSearchHistory()">מחק היסטוריה</div>';
+  dd.classList.add('open');
+}
+function hideSearchHistory(){document.getElementById('ytHistory').classList.remove('open');}
+function pickHistory(term){const i=document.getElementById('q');i.value=term;render(term);document.getElementById('clr').classList.toggle('visible',!!term);hideSearchHistory();}
+
+// ── QUEUE PANEL ──
+function openQueuePanel(){
+  renderQueuePanel();
+  document.getElementById('queuePanel').classList.add('open');
+  document.getElementById('queueOverlay').classList.add('open');
+}
+function closeQueuePanel(){
+  document.getElementById('queuePanel').classList.remove('open');
+  document.getElementById('queueOverlay').classList.remove('open');
+}
+function renderQueuePanel(){
+  const list=document.getElementById('queuePanelList');
+  document.getElementById('queuePanelCount').textContent=queue.length;
+  if(!queue.length){list.innerHTML='<div style="text-align:center;padding:40px;color:#535353">הפלייליסט ריק</div>';return;}
+  list.innerHTML=queue.map((s,i)=>`
+    <div class="queue-item" onclick="playVid('${s.v}');closeQueuePanel()">
+      <span class="qi-num">${i+1}</span>
+      <div class="qi-thumb" style="background-image:url('https://i.ytimg.com/vi/${s.v}/mqdefault.jpg')"></div>
+      <div class="qi-info">
+        <div class="qi-name">${esc(s.s)}</div>
+        <div class="qi-artist">${esc(s.a)}</div>
+      </div>
+      <button class="qi-rm" onclick="event.stopPropagation();removeFromQueue('${s.v}');renderQueuePanel();" title="הסר">&#x2715;</button>
+    </div>`).join('');
+}
+
+// ── SESSION PERSISTENCE ──
+function saveSession(song){
+  try{
+    const pos=(ytPlayer&&playerReady)?Math.floor(ytPlayer.getCurrentTime()||0):0;
+    localStorage.setItem('karaokeSession',JSON.stringify({v:song.v,s:song.s,a:song.a,t:Date.now(),pos}));
+  }catch(e){}
+}
+function loadSession(){
+  try{
+    const d=JSON.parse(localStorage.getItem('karaokeSession')||'null');
+    if(!d||!d.v)return;
+    const song=ALL.find(s=>s.v===d.v);
+    if(!song)return;
+    document.getElementById('miniSong').textContent=song.s;
+    document.getElementById('miniArtist').textContent=song.a;
+    document.getElementById('miniThumb').style.backgroundImage=`url('https://i.ytimg.com/vi/${song.v}/mqdefault.jpg')`;
+    currentSong=song;
+    document.body.classList.add('has-song');
+    document.getElementById('miniPlayBtn').textContent='▶';
+  }catch(e){}
+}
+
+// ── RESUME FROM MINI BAR ──
+function resumeOrOpen(){
+  if(!currentSong)return;
+  const needsLoad=!ytPlayer||!playerReady||ytPlayer.getPlayerState()===-1;
+  if(needsLoad){
+    try{
+      const d=JSON.parse(localStorage.getItem('karaokeSession')||'null');
+      const pos=(d&&d.v===currentSong.v)?(d.pos||0):0;
+      const songList=ALL.filter(s=>s.a===currentSong.a);
+      const idx=Math.max(0,songList.findIndex(s=>s.v===currentSong.v));
+      openModal(currentSong,songList,idx,pos);
+    }catch(e){
+      const songList=ALL.filter(s=>s.a===currentSong.a);
+      openModal(currentSong,songList,Math.max(0,songList.findIndex(s=>s.v===currentSong.v)),0);
+    }
+    if(window.innerWidth<768)openFullPlayer();
+  }else{
+    window.innerWidth>=768?document.body.classList.add('playing'):openFullPlayer();
+  }
+}
+setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()===YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
+
+loadSession();
+render('');document.getElementById('q').focus();
+document.getElementById('q').addEventListener('input',e=>{
+  const v=e.target.value;
+  render(v);
+  document.getElementById('clr').classList.toggle('visible',v.length>0);
+  if(v.length>0)hideSearchHistory();else showSearchHistory();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeModal();
+  if(e.key==='ArrowLeft'&&document.body.classList.contains('playing'))modalNav(1);
+  if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(-1);
 });
 </script>
 </body></html>
