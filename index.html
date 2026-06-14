@@ -382,6 +382,11 @@ function updateQueueBar(){
   const bar=document.getElementById('queueBar');
   bar.className='queue-bar'+(queue.length>0?' visible':'');
   document.getElementById('queueBarText').textContent=`${queue.length} ${queue.length===1?'שיר':'שירים'} בפלייליסט`;
+  // Update panel count
+  const cnt=document.getElementById('queuePanelCount');
+  if(cnt)cnt.textContent=queue.length;
+  // Re-render panel list if it's open
+  if(document.getElementById('queuePanel')?.classList.contains('open'))openQueuePanel();
 }
 function refreshAddBtns(){
   document.querySelectorAll('.btn-add[data-vid]').forEach(b=>{
@@ -970,14 +975,14 @@ function openQueuePanel(){
         <span class="queue-num">${i+1}</span>
         <span class="queue-song-name">${s.s}</span>
         <span class="queue-artist-name">${s.a||''}</span>
-        <button class="queue-remove-btn" onclick="event.stopPropagation();removeFromQueue('${s.v}')">✕</button>
+        <button class="qi-rm" onclick="event.stopPropagation();removeFromQueue('${s.v}')" title="הסר">✕</button>
       </div>`).join('');
     }
   }
   panel.classList.add('open');
 }
 function closeQueuePanel(){const panel=document.getElementById('queuePanel');if(panel)panel.classList.remove('open');}
-function removeFromQueue(vid){queue=queue.filter(s=>s.v!==vid);updateQueueBar();if(document.getElementById('queuePanel')?.classList.contains('open'))openQueuePanel();}
+function removeFromQueue(vid){queue=queue.filter(s=>s.v!==vid);updateQueueBar();refreshAddBtns();}
 
 // ── SESSION ──
 const SESSION_KEY='karaoke_session';
