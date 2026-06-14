@@ -416,6 +416,11 @@ function openModal(song,songList,idx,startSeconds){
   document.getElementById('miniSong').textContent=song.s;
   document.getElementById('miniArtist').textContent=song.a;
   document.getElementById('miniThumb').style.backgroundImage=`url('https://i.ytimg.com/vi/${song.v}/mqdefault.jpg')`;
+  // Open panel FIRST so iframe is visible before seeking/playing
+  document.body.classList.add('playing');
+  document.body.classList.add('has-song');
+  if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');document.body.style.overflow='hidden';}
+  requestAnimationFrame(setTopH);
   const start=startSeconds||0;
   function _loadOrSeek(vid,sec){
     let curVid=null;try{curVid=ytPlayer.getVideoData()?.video_id;}catch(e){}
@@ -428,10 +433,6 @@ function openModal(song,songList,idx,startSeconds){
   }
   if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);
   else setTimeout(()=>{if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);},500);
-  document.body.classList.add('playing');
-  document.body.classList.add('has-song');
-  if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');document.body.style.overflow='hidden';}
-  requestAnimationFrame(setTopH);
   document.getElementById('miniPlayBtn').textContent='⏸';
   updateModalNav();
   updateModalAddBtn();
@@ -520,8 +521,11 @@ function closePanelOrAll(){
 function goHome(){
   document.getElementById('playerPanel').classList.remove('open');
   document.body.classList.remove('playing');
+  document.body.classList.remove('has-song');
   document.body.style.overflow='';
   if(document.body.classList.contains('float-playing'))hideFloatPlayer();
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
+  collapseAll();
   window.scrollTo({top:0,behavior:'smooth'});
   requestAnimationFrame(setTopH);
 }
@@ -897,7 +901,7 @@ function loadSession(){
     const d=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
     if(!d)return;
     currentSong={v:d.v,s:d.s,a:d.a};
-    document.body.classList.add('has-song');
+    // Don't set has-song on page load — home state is always clean (no mini bar)
     const mini=document.getElementById('miniSong');
     const miniA=document.getElementById('miniArtist');
     if(mini)mini.textContent=d.s;
@@ -930,6 +934,18 @@ function resumeOrOpen(){
   }
   if(window.innerWidth<768)document.getElementById('playerPanel').classList.add('open');
 }
+setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()===YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
+
+loadSession();
+render('');document.getElementById('q').focus();
+document.getElementById('q').addEventListener('input',e=>{
+  const v=e.target.value;
+  render(v);
+  document.getElementById('clr').classList.toggle('visible',v.length>0);
+  if(v.length>0)hideSearchHistory();else showSearchHistory();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='E
 setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()===YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
 
 loadSession();
