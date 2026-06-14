@@ -123,21 +123,28 @@ body.playing .content{max-width:none;margin:0;}
   .toolbar-btn .btn-label{display:none;}
 }
 
-/* FLOAT PLAYER */
-.float-player{position:fixed;bottom:80px;right:16px;width:280px;background:#181818;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.75);z-index:500;display:none;flex-direction:column;overflow:hidden;resize:both;}
-.float-player.visible{display:flex;}
-.float-header{display:flex;align-items:center;justify-content:space-between;padding:7px 10px;background:#242424;cursor:grab;gap:8px;user-select:none;}
-.float-header:active{cursor:grabbing;}
-.float-header-info{font-size:11px;color:#ddd;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex:1;direction:rtl;}
-.float-ctrl-btn{background:none;border:none;color:#aaa;cursor:pointer;font-size:14px;padding:2px 5px;border-radius:4px;line-height:1;}
-.float-ctrl-btn:hover{color:#fff;background:#444;}
-#float-video-slot{width:100%;aspect-ratio:16/9;background:#000;}
-#float-video-slot #yt-player,#float-video-slot iframe{width:100%!important;height:100%!important;}
+/* ── FLOAT PLAYER (PiP) ── */
+.float-player{position:fixed;right:12px;bottom:80px;width:220px;border-radius:14px;background:#000;box-shadow:0 12px 40px rgba(0,0,0,.85);z-index:9999;display:none;overflow:hidden;touch-action:none;user-select:none;}
+.float-player.visible{display:block;}
+.float-player.pip-snap{transition:left .22s cubic-bezier(.25,.46,.45,.94),top .22s cubic-bezier(.25,.46,.45,.94);}
+#float-video-slot{width:100%;aspect-ratio:16/9;display:block;background:#000;}
+#float-video-slot #yt-player,#float-video-slot iframe{width:100%!important;height:100%!important;display:block!important;}
+/* transparent drag layer — above iframe, captures touch/mouse */
+.pip-drag-layer{position:absolute;inset:0;z-index:2;cursor:grab;}
+.pip-drag-layer.grabbing{cursor:grabbing;}
+/* controls overlay — appears on tap */
+.pip-controls{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:space-between;opacity:0;pointer-events:none;transition:opacity .18s;}
+.float-player.pip-show .pip-controls{opacity:1;pointer-events:all;}
+.float-player.pip-show .pip-drag-layer{pointer-events:none;}
+.pip-top{display:flex;align-items:flex-start;justify-content:space-between;padding:7px 7px 24px;background:linear-gradient(to bottom,rgba(0,0,0,.82),transparent);}
+.pip-bottom{display:flex;align-items:flex-end;justify-content:space-between;padding:24px 7px 7px;background:linear-gradient(to top,rgba(0,0,0,.82),transparent);}
+.pip-song{font-size:10px;color:#eee;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;line-height:1.4;}
+.pip-btn{background:none;border:none;color:#fff;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:15px;flex-shrink:0;transition:background .13s;}
+.pip-btn:hover{background:rgba(255,255,255,.22);}
+.pip-play-btn{font-size:20px;}
 body.float-playing .mini-bar{display:none!important;}
-
-/* Mobile float player (bubble/PiP style) */
 @media(max-width:767px){
-  .float-player{width:220px;right:12px;bottom:80px;touch-action:none;}
+  .float-player{width:185px;}
   body.float-playing{padding-bottom:16px;}
 }
 
@@ -260,14 +267,20 @@ mark{background:rgba(29,185,84,.2);color:#1DB954;border-radius:3px;padding:0 2px
   <button class="mini-ctrl" title="סגור" onclick="event.stopPropagation();closeModal();clearSession()">&#x2715;</button>
 </div>
 
-<!-- FLOAT PLAYER (desktop) -->
+<!-- FLOAT PLAYER (PiP) -->
 <div class="float-player" id="floatPlayer">
-  <div class="float-header" id="floatHeader">
-    <div class="float-header-info" id="floatSong">—</div>
-    <button class="float-ctrl-btn" onclick="expandFloat()" title="פתח נגן מלא">⛶</button>
-    <button class="float-ctrl-btn" onclick="closeFloat()" title="סגור">✕</button>
-  </div>
   <div id="float-video-slot"></div>
+  <div class="pip-drag-layer" id="pipDragLayer"></div>
+  <div class="pip-controls" id="pipControls">
+    <div class="pip-top">
+      <div class="pip-song" id="floatSong">—</div>
+      <button class="pip-btn" onclick="closeFloat()" title="סגור">✕</button>
+    </div>
+    <div class="pip-bottom">
+      <button class="pip-btn pip-play-btn" id="pipPlayBtn" onclick="pipPlayPause()" title="נגן/עצור">⏸</button>
+      <button class="pip-btn" onclick="expandFloat()" title="פתח נגן">⛶</button>
+    </div>
+  </div>
 </div>
 
 <!-- QUEUE BAR -->
@@ -470,66 +483,161 @@ function playQueue(){
 const IMG_CACHE={};
 function applyPhoto(el,url){el.style.backgroundImage=`url('${url}')`;el.style.backgroundSize='cover';el.style.backgroundPosition='center top';el.textContent='';el.classList.add('has-photo');}
 function toggleArtist(h){const b=h.closest('.artist-block');b.dataset.open=b.dataset.open==='false'?'true':'false';updateToggleBtn();}
-// ── FLOAT PLAYER ──
-let _fpDragging=false,_fpOX=0,_fpOY=0;
+// ── FLOAT PLAYER / PiP ──
+let _pipDrag=false,_pipOX=0,_pipOY=0,_pipSX=0,_pipSY=0,_pipMoved=false,_pipCtrlTimer=null;
+
 function showFloatPlayer(){
   const fp=document.getElementById('floatPlayer');
   const slot=document.getElementById('float-video-slot');
   const ytEl=document.getElementById('yt-player');
   if(!fp||!ytEl)return;
   if(ytEl.parentNode!==slot)slot.appendChild(ytEl);
+  // Song label
   if(currentSong)document.getElementById('floatSong').textContent=currentSong.s+(currentSong.a?' – '+currentSong.a:'');
+  // Play/pause button state
+  const pb=document.getElementById('pipPlayBtn');
+  if(pb&&ytPlayer&&playerReady)pb.textContent=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?'⏸':'▶';
+  // Default position if not set yet
+  if(!fp._pipPositioned){
+    fp.style.right='12px'; fp.style.bottom='80px';
+    fp.style.left=''; fp.style.top='';
+    fp._pipPositioned=true;
+  }
   fp.classList.add('visible');
-  fp.style.display='flex';
+  fp.style.display='block';
   document.body.classList.add('float-playing');
+  // Auto-show controls briefly on first appear
+  _showPipCtrl();
 }
+
 function hideFloatPlayer(){
   const fp=document.getElementById('floatPlayer');
   const panelSlot=document.getElementById('panel-video-slot');
   const ytEl=document.getElementById('yt-player');
   if(ytEl&&panelSlot&&ytEl.parentNode!==panelSlot)panelSlot.appendChild(ytEl);
-  if(fp){fp.classList.remove('visible');fp.style.display='none';}
+  if(fp){fp.classList.remove('visible','pip-show');fp.style.display='none';}
   document.body.classList.remove('float-playing');
+  clearTimeout(_pipCtrlTimer);
 }
-function closeFloat(){hideFloatPlayer();if(ytPlayer&&playerReady)ytPlayer.stopVideo();document.body.classList.remove('has-song');}
+
+function closeFloat(){
+  hideFloatPlayer();
+  if(ytPlayer&&playerReady)ytPlayer.stopVideo();
+  document.body.classList.remove('has-song');
+}
+
 function expandFloat(){
   hideFloatPlayer();
   if(window.innerWidth>=768){document.body.classList.add('playing');}
   else{document.getElementById('playerPanel').classList.add('open');document.body.classList.add('playing');document.body.style.overflow='hidden';}
   requestAnimationFrame(setTopH);
 }
-function initFloatDrag(){
+
+function pipPlayPause(){
+  if(!ytPlayer||!playerReady)return;
+  const playing=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING;
+  playing?ytPlayer.pauseVideo():ytPlayer.playVideo();
+  const pb=document.getElementById('pipPlayBtn');
+  if(pb)pb.textContent=playing?'▶':'⏸';
+  _showPipCtrl(); // reset auto-hide timer
+}
+
+function _showPipCtrl(){
   const fp=document.getElementById('floatPlayer');
-  const hdr=document.getElementById('floatHeader');
-  if(!fp||!hdr)return;
-  hdr.addEventListener('mousedown',e=>{
-    _fpDragging=true;
+  if(!fp)return;
+  fp.classList.add('pip-show');
+  clearTimeout(_pipCtrlTimer);
+  _pipCtrlTimer=setTimeout(()=>fp.classList.remove('pip-show'),2500);
+}
+
+function _snapToCorner(fp){
+  const vw=window.innerWidth,vh=window.innerHeight;
+  const r=fp.getBoundingClientRect();
+  const m=12, bm=window.innerWidth<768?76:80;
+  const goLeft=r.left+r.width/2<vw/2;
+  const goTop=r.top+r.height/2<vh/2;
+  fp.classList.add('pip-snap');
+  fp.style.left=(goLeft?m:vw-r.width-m)+'px';
+  fp.style.top=(goTop?m:vh-r.height-bm)+'px';
+  fp.style.right=''; fp.style.bottom='';
+  setTimeout(()=>fp.classList.remove('pip-snap'),280);
+}
+
+function initPiP(){
+  const fp=document.getElementById('floatPlayer');
+  const dl=document.getElementById('pipDragLayer');
+  if(!fp||!dl)return;
+
+  // ── TOUCH drag ──
+  dl.addEventListener('touchstart',e=>{
+    _pipDrag=true; _pipMoved=false;
+    const t=e.touches[0];
     const r=fp.getBoundingClientRect();
-    _fpOX=e.clientX-r.left;_fpOY=e.clientY-r.top;
-    fp.style.right='auto';fp.style.bottom='auto';
+    _pipSX=t.clientX; _pipSY=t.clientY;
+    _pipOX=t.clientX-r.left; _pipOY=t.clientY-r.top;
+    // Convert right/bottom to left/top for smooth dragging
+    fp.style.left=r.left+'px'; fp.style.top=r.top+'px';
+    fp.style.right=''; fp.style.bottom='';
+    fp.classList.remove('pip-snap');
+    dl.classList.add('grabbing');
+  },{passive:true});
+
+  document.addEventListener('touchmove',e=>{
+    if(!_pipDrag)return;
+    e.preventDefault();
+    const t=e.touches[0];
+    if(Math.abs(t.clientX-_pipSX)>6||Math.abs(t.clientY-_pipSY)>6)_pipMoved=true;
+    fp.style.left=(t.clientX-_pipOX)+'px';
+    fp.style.top=(t.clientY-_pipOY)+'px';
+  },{passive:false});
+
+  document.addEventListener('touchend',e=>{
+    if(!_pipDrag)return;
+    _pipDrag=false;
+    dl.classList.remove('grabbing');
+    if(!_pipMoved){
+      // tap → toggle controls
+      const fp2=document.getElementById('floatPlayer');
+      fp2.classList.contains('pip-show')?fp2.classList.remove('pip-show'):_showPipCtrl();
+      return;
+    }
+    // Check swipe off-screen to dismiss
+    const r=fp.getBoundingClientRect();
+    if(r.right<-30||r.left>window.innerWidth+30){closeFloat();return;}
+    _snapToCorner(fp);
+  },{passive:true});
+
+  // ── MOUSE drag (desktop) ──
+  dl.addEventListener('mousedown',e=>{
+    _pipDrag=true; _pipMoved=false;
+    const r=fp.getBoundingClientRect();
+    _pipSX=e.clientX; _pipSY=e.clientY;
+    _pipOX=e.clientX-r.left; _pipOY=e.clientY-r.top;
+    fp.style.left=r.left+'px'; fp.style.top=r.top+'px';
+    fp.style.right=''; fp.style.bottom='';
+    fp.classList.remove('pip-snap');
+    dl.classList.add('grabbing');
     e.preventDefault();
   });
   document.addEventListener('mousemove',e=>{
-    if(!_fpDragging)return;
-    fp.style.left=(e.clientX-_fpOX)+'px';
-    fp.style.top=(e.clientY-_fpOY)+'px';
+    if(!_pipDrag)return;
+    if(Math.abs(e.clientX-_pipSX)>4||Math.abs(e.clientY-_pipSY)>4)_pipMoved=true;
+    fp.style.left=(e.clientX-_pipOX)+'px';
+    fp.style.top=(e.clientY-_pipOY)+'px';
   });
-  document.addEventListener('mouseup',()=>{_fpDragging=false;});
-  hdr.addEventListener('touchstart',e=>{
-    const t=e.touches[0];_fpDragging=true;
-    const r=fp.getBoundingClientRect();
-    _fpOX=t.clientX-r.left;_fpOY=t.clientY-r.top;
-    fp.style.right='auto';fp.style.bottom='auto';
-  },{passive:true});
-  document.addEventListener('touchmove',e=>{
-    if(!_fpDragging)return;
-    const t=e.touches[0];
-    fp.style.left=(t.clientX-_fpOX)+'px';
-    fp.style.top=(t.clientY-_fpOY)+'px';
-  },{passive:true});
-  document.addEventListener('touchend',()=>{_fpDragging=false;});
+  document.addEventListener('mouseup',()=>{
+    if(!_pipDrag)return;
+    _pipDrag=false;
+    dl.classList.remove('grabbing');
+    if(!_pipMoved){
+      const fp2=document.getElementById('floatPlayer');
+      fp2.classList.contains('pip-show')?fp2.classList.remove('pip-show'):_showPipCtrl();
+      return;
+    }
+    _snapToCorner(fp);
+  });
 }
-document.addEventListener('DOMContentLoaded',initFloatDrag);
+document.addEventListener('DOMContentLoaded',initPiP);
 // Mobile player gestures (YouTube-style)
 function initMobileGestures(){
   // Swipe down on full player → minimize to mini player
@@ -647,80 +755,62 @@ function showSearchHistory(){
   const h=getSearchHistory();
   const dd=document.getElementById('ytHistory');
   if(!h.length){dd.classList.remove('open');return;}
-  dd.innerHTML=h.map(t=>`<div class="yt-hist-item" onmousedown="pickHistory('${t.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 6 12 12 16 14"/></svg>${t}</div>`).join('')
-    +'<div class="yt-hist-clear" onmousedown="clearSearchHistory()">מחק היסטוריה</div>';
+  dd.innerHTML=h.map(t=>`<div class="yt-hist-item" onmousedown="pickHistory('${t.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${t}</div>`).join('')+'<div class="yt-hist-clear" onmousedown="clearSearchHistory()">נקה היסטוריה</div>';
   dd.classList.add('open');
 }
 function hideSearchHistory(){document.getElementById('ytHistory').classList.remove('open');}
-function pickHistory(term){const i=document.getElementById('q');i.value=term;render(term);document.getElementById('clr').classList.toggle('visible',!!term);hideSearchHistory();}
+function pickHistory(term){const i=document.getElementById('q');i.value=term;render(term);document.getElementById('clr').classList.add('visible');hideSearchHistory();saveSearchHistory(term);}
 
 // ── QUEUE PANEL ──
 function openQueuePanel(){
-  renderQueuePanel();
-  document.getElementById('queuePanel').classList.add('open');
-  document.getElementById('queueOverlay').classList.add('open');
+  const panel=document.getElementById('queuePanel');
+  if(!panel)return;
+  // Render queue
+  const list=document.getElementById('queueList');
+  if(list){
+    if(!queue.length){list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">הפלייליסט ריק</div>';
+    }else{
+      list.innerHTML=queue.map((s,i)=>`<div class="queue-item${currentSong&&currentSong.v===s.v?' active':''}" onclick="openModal(queue[${i}],queue,${i})">
+        <span class="queue-num">${i+1}</span>
+        <span class="queue-song-name">${s.s}</span>
+        <span class="queue-artist-name">${s.a||''}</span>
+        <button class="queue-remove-btn" onclick="event.stopPropagation();removeFromQueue('${s.v}')">✕</button>
+      </div>`).join('');
+    }
+  }
+  panel.classList.add('open');
 }
-function closeQueuePanel(){
-  document.getElementById('queuePanel').classList.remove('open');
-  document.getElementById('queueOverlay').classList.remove('open');
-}
-function renderQueuePanel(){
-  const list=document.getElementById('queuePanelList');
-  document.getElementById('queuePanelCount').textContent=queue.length;
-  if(!queue.length){list.innerHTML='<div style="text-align:center;padding:40px;color:#535353">הפלייליסט ריק</div>';return;}
-  list.innerHTML=queue.map((s,i)=>`
-    <div class="queue-item" onclick="playVid('${s.v}');closeQueuePanel()">
-      <span class="qi-num">${i+1}</span>
-      <div class="qi-thumb" style="background-image:url('https://i.ytimg.com/vi/${s.v}/mqdefault.jpg')"></div>
-      <div class="qi-info">
-        <div class="qi-name">${esc(s.s)}</div>
-        <div class="qi-artist">${esc(s.a)}</div>
-      </div>
-      <button class="qi-rm" onclick="event.stopPropagation();removeFromQueue('${s.v}');renderQueuePanel();" title="הסר">&#x2715;</button>
-    </div>`).join('');
-}
+function closeQueuePanel(){const panel=document.getElementById('queuePanel');if(panel)panel.classList.remove('open');}
+function removeFromQueue(vid){queue=queue.filter(s=>s.v!==vid);updateQueueBar();if(document.getElementById('queuePanel')?.classList.contains('open'))openQueuePanel();}
 
-// ── SESSION PERSISTENCE ──
-function saveSession(song){
-  try{
-    const pos=(ytPlayer&&playerReady)?Math.floor(ytPlayer.getCurrentTime()||0):0;
-    localStorage.setItem('karaokeSession',JSON.stringify({v:song.v,s:song.s,a:song.a,t:Date.now(),pos}));
-  }catch(e){}
-}
+// ── SESSION ──
+const SESSION_KEY='karaoke_session';
+function saveSession(song){try{localStorage.setItem(SESSION_KEY,JSON.stringify({v:song.v,s:song.s,a:song.a,list:songList.map(s=>s.v),idx:songList.findIndex(s=>s.v===song.v)}));}catch(e){}}
 function loadSession(){
   try{
-    const d=JSON.parse(localStorage.getItem('karaokeSession')||'null');
-    if(!d||!d.v)return;
-    const song=ALL.find(s=>s.v===d.v);
-    if(!song)return;
-    document.getElementById('miniSong').textContent=song.s;
-    document.getElementById('miniArtist').textContent=song.a;
-    document.getElementById('miniThumb').style.backgroundImage=`url('https://i.ytimg.com/vi/${song.v}/mqdefault.jpg')`;
-    currentSong=song;
+    const d=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!d)return;
+    currentSong={v:d.v,s:d.s,a:d.a};
     document.body.classList.add('has-song');
-    document.getElementById('miniPlayBtn').textContent='▶';
+    const mini=document.getElementById('miniSong');
+    const miniA=document.getElementById('miniArtist');
+    if(mini)mini.textContent=d.s;
+    if(miniA)miniA.textContent=d.a||'';
+    const thumb=document.getElementById('miniThumb');
+    if(thumb)thumb.style.backgroundImage=`url(https://img.youtube.com/vi/${d.v}/default.jpg)`;
   }catch(e){}
 }
-
-// ── RESUME FROM MINI BAR ──
 function resumeOrOpen(){
   if(!currentSong)return;
-  const needsLoad=!ytPlayer||!playerReady||ytPlayer.getPlayerState()===-1;
-  if(needsLoad){
-    try{
-      const d=JSON.parse(localStorage.getItem('karaokeSession')||'null');
-      const pos=(d&&d.v===currentSong.v)?(d.pos||0):0;
-      const songList=ALL.filter(s=>s.a===currentSong.a);
-      const idx=Math.max(0,songList.findIndex(s=>s.v===currentSong.v));
-      openModal(currentSong,songList,idx,pos);
-    }catch(e){
-      const songList=ALL.filter(s=>s.a===currentSong.a);
-      openModal(currentSong,songList,Math.max(0,songList.findIndex(s=>s.v===currentSong.v)),0);
-    }
-    if(window.innerWidth<768)openFullPlayer();
+  const saved=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+  if(saved&&saved.list){
+    songList=songs.filter(s=>saved.list.includes(s.v));
+    const idx=Math.max(0,saved.list.indexOf(currentSong.v));
+    openModal(currentSong,songList,idx,0);
   }else{
-    window.innerWidth>=768?document.body.classList.add('playing'):openFullPlayer();
+    openModal(currentSong,[currentSong],0,0);
   }
+  if(window.innerWidth<768)openFullPlayer();
 }
 setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()===YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
 
