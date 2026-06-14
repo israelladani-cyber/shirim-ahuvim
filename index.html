@@ -83,6 +83,9 @@ body.playing .content{max-width:none;margin:0;}
 .panel-artist-name{font-size:12px;color:#B3B3B3;margin-top:2px;}
 .panel-close{background:none;border:none;color:#888;cursor:pointer;font-size:22px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
 .panel-close:hover{background:#333;color:#fff;}
+.panel-pip-btn{display:none;background:none;border:none;color:#1DB954;cursor:pointer;width:36px;height:36px;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;flex-shrink:0;}
+.panel-pip-btn:hover{background:#1a3a22;}
+@media(max-width:767px){.panel-pip-btn{display:flex;}}
 .panel-video{position:relative;flex:1;min-height:0;background:#000;}
 .panel-video iframe{position:absolute;inset:0;width:100%;height:100%;}
 .panel-footer{display:flex;align-items:center;gap:8px;padding:12px 18px;background:#222;border-top:1px solid #333;flex-shrink:0;}
@@ -219,6 +222,9 @@ mark{background:rgba(29,185,84,.2);color:#1DB954;border-radius:3px;padding:0 2px
         <div class="panel-song-name" id="panelSong">—</div>
         <div class="panel-artist-name" id="panelArtist">—</div>
       </div>
+      <button class="panel-pip-btn" onclick="mobilePiP()" title="מצב PiP">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><rect x="12" y="11" width="9" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
+      </button>
       <button class="panel-close" onclick="closePanelOrAll()">&#x2715;</button>
     </div>
     <div class="panel-video" id="panel-video-slot">
@@ -383,12 +389,22 @@ function openFullPlayer(){
   document.body.classList.add('playing');
   document.body.style.overflow='hidden';
 }
+function mobilePiP(){
+  // Minimize to floating bubble (PiP)
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.classList.remove('playing');
+  document.body.style.overflow='';
+  if(currentSong)showFloatPlayer();
+}
 function closePanelOrAll(){
   if(window.innerWidth<768){
+    // X button on mobile: close everything
     document.getElementById('playerPanel').classList.remove('open');
     document.body.classList.remove('playing');
     document.body.style.overflow='';
-    if(currentSong){showFloatPlayer();return;}
+    hideFloatPlayer();
+    if(ytPlayer&&playerReady)ytPlayer.stopVideo();
+    document.body.classList.remove('has-song');
   } else {
     closeModal();
   }
@@ -524,7 +540,7 @@ function initMobileGestures(){
     if(window.innerWidth>=768)return;
     const dy=e.changedTouches[0].clientY-pSY;
     const dx=Math.abs(e.changedTouches[0].clientX-pSX);
-    if(dy>80&&dx<120&&panel.classList.contains('open'))closePanelOrAll();
+    if(dy>80&&dx<120&&panel.classList.contains('open'))mobilePiP();
   },{passive:true});
   // Float player expand/close handled by ⛶ and ✕ buttons
 }
@@ -718,8 +734,9 @@ document.getElementById('q').addEventListener('input',e=>{
 });
 document.addEventListener('keydown',e=>{
   if(e.key==='Escape')closeModal();
-  if(e.key==='ArrowLeft'&&document.body.classList.contains('playing'))modalNav(1);
-  if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(-1);
+  if(e.key==='ArrowLeft'&&document.body.classList.contains('playing'))modalNav(-1);
+  if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(1);
 });
 </script>
-</body></html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+</body>
+</html>
