@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>קריוקי מזרחית</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}h
+*{box-sizing:border-box;margin:0;padding:0;}hh
 body{font-family:Arial,sans-serif;background:#121212;color:#fff;direction:rtl;min-height:100vh;padding-bottom:80px;}
 
 /* TOP BAR */
@@ -413,6 +413,7 @@ function openModal(song,songList,idx,startSeconds){
     if(song.v===currentSong?.v&&document.body.classList.contains('float-playing')&&ytPlayer&&playerReady){
           const st=ytPlayer.getPlayerState();
           if(st===YT.PlayerState.PLAYING||st===YT.PlayerState.BUFFERING||st===YT.PlayerState.PAUSED){
+      const curTime=(ytPlayer.getCurrentTime&&ytPlayer.getCurrentTime())||0;
                   hideFloatPlayer();
                   document.getElementById('panelSong').textContent=song.s;
                   document.getElementById('panelArtist').textContent=song.a;
@@ -422,6 +423,7 @@ function openModal(song,songList,idx,startSeconds){
                   requestAnimationFrame(setTopH);
                   updateModalNav();
                   updateModalAddBtn();
+                  ytPlayer.loadVideoById({videoId:song.v,startSeconds:curTime});
                   return;
           }
     }
