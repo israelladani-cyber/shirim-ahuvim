@@ -111,6 +111,11 @@ body.playing .content{max-width:none;margin:0;}
   .player-panel.open{display:flex;}
   body.playing{padding-bottom:70px;}body.has-song{padding-bottom:57px;}
   body.playing .queue-bar{bottom:90px;}
+
+  /* Mobile top bar layout */
+  .top-row{flex-direction:column;align-items:stretch;gap:6px;min-height:unset;padding:8px 0 6px;}
+  .brand{position:static;transform:none;display:flex;justify-content:center;}
+  .search-section{width:100%;max-width:100%;flex-wrap:wrap;gap:8px;}
 }
 
 /* MINI BAR */
@@ -174,9 +179,13 @@ mark{background:rgba(29,185,84,.2);color:#1DB954;border-radius:3px;padding:0 2px
         <button class="yt-clear" id="clr" onclick="clearSearch()">&#x2715;</button>
         <div class="yt-history" id="ytHistory"></div>
       </div>
-      <button class="toolbar-btn all-closed" id="toggleAll" onclick="toggleAll()">
-        <span class="bc"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-        <span id="taLabel">פתח הכל</span>
+      <button class="toolbar-btn" id="btnExpandAll" onclick="expandAll()">
+        <span class="bc" style="transform:rotate(0deg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        פתח הכל
+      </button>
+      <button class="toolbar-btn" id="btnCollapseAll" onclick="collapseAll()">
+        <span class="bc" style="transform:rotate(-90deg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        סגור הכל
       </button>
     </div>
   </div>
@@ -330,6 +339,7 @@ function openModal(song,songList,idx,startSeconds){
   else setTimeout(()=>{if(ytPlayer&&playerReady)ytPlayer.loadVideoById({videoId:song.v,startSeconds:start});},500);
   document.body.classList.add('playing');
   document.body.classList.add('has-song');
+  if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');document.body.style.overflow='hidden';}
   requestAnimationFrame(setTopH);
   document.getElementById('miniPlayBtn').textContent='⏸';
   updateModalNav();
@@ -412,8 +422,9 @@ function playQueue(){
 const IMG_CACHE={};
 function applyPhoto(el,url){el.style.backgroundImage=`url('${url}')`;el.style.backgroundSize='cover';el.style.backgroundPosition='center top';el.textContent='';el.classList.add('has-photo');}
 function toggleArtist(h){const b=h.closest('.artist-block');b.dataset.open=b.dataset.open==='false'?'true':'false';updateToggleBtn();}
-function toggleAll(){const bs=document.querySelectorAll('.artist-block');const any=[...bs].some(b=>b.dataset.open==='true');bs.forEach(b=>b.dataset.open=any?'false':'true');updateToggleBtn();}
-function updateToggleBtn(){const bs=document.querySelectorAll('.artist-block');if(!bs.length)return;const any=[...bs].some(b=>b.dataset.open==='true');document.getElementById('toggleAll').className='toolbar-btn '+(any?'all-open':'all-closed');document.getElementById('taLabel').textContent=any?'סגור הכל':'פתח הכל';}
+function expandAll(){document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true');}
+function collapseAll(){document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false');}
+function updateToggleBtn(){}
 function hl(t,q){if(!q)return esc(t);return esc(t).replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
 
 async function fetchArtistImg(name){
@@ -584,12 +595,8 @@ function resumeOrOpen(){
 // שמירת מיקום כל 5 שניות בזמן ניגון
 setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()===YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
 
-// ── PICTURE-IN-PICTURE (mobile) ──
-document.addEventListener('visibilitychange',()=>{
-  if(document.visibilityState==='hidden'&&currentSong&&playerReady&&ytPlayer){
-    const iframe=document.querySelector('#yt-player iframe');
-    if(iframe&&iframe.requestPictureInPicture){iframe.requestPictureInPicture().catch(()=>{});}
-  }
+// ── PICTURE-IN-PICTURE (mobile)   const iframe=document.querySelector('#yt-player iframe');
+  if(iframe&&iframe.requestPictureInPicture){iframe.requestPictureInPicture().catch(()=>{});}
 });
 
 loadSession();
