@@ -85,9 +85,7 @@ body.playing .content{max-width:none;margin:0;}
 .panel-close:hover{background:#333;color:#fff;}
 .panel-minimize-btn{background:none;border:none;color:#888;cursor:pointer;font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;line-height:1;}
 .panel-minimize-btn:hover{background:#333;color:#fff;}
-.panel-pip-btn{display:none;background:none;border:none;color:#1DB954;cursor:pointer;width:30px;height:30px;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;flex-shrink:0;}
-.panel-pip-btn:hover{background:#1a3a22;}
-@media(max-width:767px){.panel-pip-btn{display:flex;}}
+.panel-pip-btn{display:none!important;}
 .panel-float-btn,.panel-theater-btn{display:none;background:none;border:none;color:#888;cursor:pointer;width:30px;height:30px;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
 .panel-float-btn:hover,.panel-theater-btn:hover{background:#333;color:#fff;}
 body.theater .panel-theater-btn{color:#1DB954;}
@@ -252,10 +250,7 @@ mark{background:rgba(29,185,84,.2);color:#1DB954;border-radius:3px;padding:0 2px
       <button class="panel-float-btn" onclick="minimizeToFloat()" title="מזער לחלון צף">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><rect x="13" y="13" width="8" height="5" rx="1" fill="currentColor" stroke="none"/></svg>
       </button>
-      <!-- Document PiP (mobile only) -->
-      <button class="panel-pip-btn" onclick="mobilePiP()" title="מצב PiP">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><rect x="12" y="11" width="9" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
-      </button>
+
       <button class="panel-minimize-btn" onclick="minimizeToMiniBar()" title="מזער לסרגל">&#x2014;</button>
       <button class="panel-close" onclick="closePanelOrAll()">&#x2715;</button>
     </div>
@@ -979,4 +974,4 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft'&&document.body.classList.contains('playing'))modalNav(-1);
   if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(1);
 });
-</script></body></html>
+</script></body></html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        
