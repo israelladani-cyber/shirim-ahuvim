@@ -933,4 +933,50 @@ function loadSession(){
     currentSong={v:d.v,s:d.s,a:d.a};
     // Don't set has-song on page load — home state is always clean (no mini bar)
     const mini=document.getElementById('miniSong');
-    const miniA=document.getElementByI
+    const miniA=document.getElementById('miniArtist');
+    if(mini)mini.textContent=d.s;
+    if(miniA)miniA.textContent=d.a||'';
+    const thumb=document.getElementById('miniThumb');
+    if(thumb)thumb.style.backgroundImage=`url(https://img.youtube.com/vi/${d.v}/default.jpg)`;
+  }catch(e){}
+}
+function resumeOrOpen(){
+  if(!currentSong)return;
+  // If player already has a live video, just reopen the panel — don't touch the player
+  if(ytPlayer&&playerReady){
+    const st=ytPlayer.getPlayerState();
+    if(st!==YT.PlayerState.UNSTARTED){
+      document.getElementById('playerPanel').classList.add('open');
+      document.body.classList.add('playing');
+      document.body.style.overflow='hidden';
+      requestAnimationFrame(setTopH);
+      return;
+    }
+  }
+  // Page was reloaded — restore from session
+  const saved=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+  if(saved&&saved.list){
+    const songList2=ALL.filter(s=>saved.list.includes(s.v));
+    const idx=Math.max(0,saved.list.indexOf(currentSong.v));
+    openModal(currentSong,songList2,idx,0);
+  }else{
+    openModal(currentSong,[currentSong],0,0);
+  }
+  if(window.innerWidth<768)document.getElementById('playerPanel').classList.add('open');
+}
+setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()==YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
+
+loadSession();
+render('');document.getElementById('q').focus();
+document.getElementById('q').addEventListener('input',e=>{
+  const v=e.target.value;
+  render(v);
+  document.getElementById('clr').classList.toggle('visible',v.length>0);
+  if(v.length>0)hideSearchHistory();else showSearchHistory();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape')closeModal();
+  if(e.key==='ArrowLeft'&&document.body.classList.contains('playing'))modalNav(-1);
+  if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(1);
+});
+</script></body></html>
