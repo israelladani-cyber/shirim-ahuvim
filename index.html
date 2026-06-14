@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>קריוקי מזרחית</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}
+*{box-sizing:border-box;margin:0;padding:0;}h
 body{font-family:Arial,sans-serif;background:#121212;color:#fff;direction:rtl;min-height:100vh;padding-bottom:80px;}
 
 /* TOP BAR */
@@ -409,6 +409,22 @@ function setupMediaSession(song){
 function openModal(song,songList,idx,startSeconds){
   // Close Document PiP first so player iframe is back in main doc
   if(_pipWin){try{_pipWin.close();}catch(e){}_pipWin=null;}
+    // If the same song is already playing/buffering in the float player, just restore panel
+    if(song.v===currentSong?.v&&document.body.classList.contains('float-playing')&&ytPlayer&&playerReady){
+          const st=ytPlayer.getPlayerState();
+          if(st===YT.PlayerState.PLAYING||st===YT.PlayerState.BUFFERING||st===YT.PlayerState.PAUSED){
+                  hideFloatPlayer();
+                  document.getElementById('panelSong').textContent=song.s;
+                  document.getElementById('panelArtist').textContent=song.a;
+                  document.body.classList.add('playing');
+                  document.body.classList.add('has-song');
+                  if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');document.body.style.overflow='hidden';}
+                  requestAnimationFrame(setTopH);
+                  updateModalNav();
+                  updateModalAddBtn();
+                  return;
+          }
+    }
   hideFloatPlayer();
   currentSong=song;currentSongList=songList;currentSongIdx=idx;
   document.getElementById('panelSong').textContent=song.s;
@@ -425,7 +441,7 @@ function openModal(song,songList,idx,startSeconds){
   function _loadOrSeek(vid,sec){
     let curVid=null;try{curVid=ytPlayer.getVideoData()?.video_id;}catch(e){}
     const st=ytPlayer.getPlayerState();
-    if(curVid===vid&&st!==YT.PlayerState.UNSTARTED){
+    if(curVid===vid&&st===YT.PlayerState.PAUSED){
       ytPlayer.seekTo(sec,true);ytPlayer.playVideo();
     }else{
       ytPlayer.loadVideoById({videoId:vid,startSeconds:sec});
@@ -915,7 +931,7 @@ function resumeOrOpen(){
   // If player already has a live video, just reopen the panel — don't touch the player
   if(ytPlayer&&playerReady){
     const st=ytPlayer.getPlayerState();
-    if(st!==YT.PlayerState.UNSTARTED){
+    if(st===YT.PlayerState.PAUSED){
       document.getElementById('playerPanel').classList.add('open');
       document.body.classList.add('playing');
       document.body.style.overflow='hidden';
