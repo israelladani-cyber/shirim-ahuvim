@@ -595,7 +595,9 @@ function resumeOrOpen(){
 // שמירת מיקום כל 5 שניות בזמן ניגון
 setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()===YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
 
-// ── PICTURE-IN-PICTURE (mobile)   const iframe=document.querySelector('#yt-player iframe');
+// ── PICTURE-IN-PICTURE (mobile) ──
+document.addEventListener('visibilitychange',()=>{
+  const iframe=document.querySelector('#yt-player iframe');
   if(iframe&&iframe.requestPictureInPicture){iframe.requestPictureInPicture().catch(()=>{});}
 });
 
