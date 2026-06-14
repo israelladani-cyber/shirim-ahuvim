@@ -417,8 +417,17 @@ function openModal(song,songList,idx,startSeconds){
   document.getElementById('miniArtist').textContent=song.a;
   document.getElementById('miniThumb').style.backgroundImage=`url('https://i.ytimg.com/vi/${song.v}/mqdefault.jpg')`;
   const start=startSeconds||0;
-  if(ytPlayer&&playerReady)ytPlayer.loadVideoById({videoId:song.v,startSeconds:start});
-  else setTimeout(()=>{if(ytPlayer&&playerReady)ytPlayer.loadVideoById({videoId:song.v,startSeconds:start});},500);
+  function _loadOrSeek(vid,sec){
+    let curVid=null;try{curVid=ytPlayer.getVideoData()?.video_id;}catch(e){}
+    const st=ytPlayer.getPlayerState();
+    if(curVid===vid&&st!==YT.PlayerState.UNSTARTED){
+      ytPlayer.seekTo(sec,true);ytPlayer.playVideo();
+    }else{
+      ytPlayer.loadVideoById({videoId:vid,startSeconds:sec});
+    }
+  }
+  if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);
+  else setTimeout(()=>{if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);},500);
   document.body.classList.add('playing');
   document.body.classList.add('has-song');
   if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');document.body.style.overflow='hidden';}
@@ -502,7 +511,7 @@ function closePanelOrAll(){
     document.body.classList.remove('playing');
     document.body.style.overflow='';
     hideFloatPlayer();
-    if(ytPlayer&&playerReady)ytPlayer.stopVideo();
+    if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
     document.body.classList.remove('has-song');
   } else {
     closeModal();
@@ -520,7 +529,7 @@ function closeModal(){
   document.body.style.overflow='';
   requestAnimationFrame(setTopH);
   if(window.innerWidth>=768&&currentSong){showFloatPlayer();return;}
-  if(ytPlayer&&playerReady)ytPlayer.stopVideo();
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
   // keep has-song so mini bar stays (like Spotify)
 }
 function clearSession(){
@@ -629,7 +638,7 @@ function hideFloatPlayer(){
 
 function closeFloat(){
   hideFloatPlayer();
-  if(ytPlayer&&playerReady)ytPlayer.stopVideo();
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
   document.body.classList.remove('has-song');
 }
 
@@ -891,6 +900,18 @@ function loadSession(){
 }
 function resumeOrOpen(){
   if(!currentSong)return;
+  // If player already has a live video, just reopen the panel — don't touch the player
+  if(ytPlayer&&playerReady){
+    const st=ytPlayer.getPlayerState();
+    if(st!==YT.PlayerState.UNSTARTED){
+      document.getElementById('playerPanel').classList.add('open');
+      document.body.classList.add('playing');
+      document.body.style.overflow='hidden';
+      requestAnimationFrame(setTopH);
+      return;
+    }
+  }
+  // Page was reloaded — restore from session
   const saved=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
   if(saved&&saved.list){
     const songList2=ALL.filter(s=>saved.list.includes(s.v));
