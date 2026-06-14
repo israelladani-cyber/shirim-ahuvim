@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>קריוקי מזרחית</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0;}hh
+*{box-sizing:border-box;margin:0;padding:0;}
 body{font-family:Arial,sans-serif;background:#121212;color:#fff;direction:rtl;min-height:100vh;padding-bottom:80px;}
 
 /* TOP BAR */
@@ -129,6 +129,14 @@ body.playing .content{max-width:none;margin:0;}
 /* flex column: video on top, drag-bar below — no overlay blocking the iframe */
 .float-player{position:fixed;left:0;top:0;width:220px;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.9);z-index:9999;display:none;background:#111;touch-action:none;user-select:none;}
 .float-player.visible{display:flex;flex-direction:column;}
+/* Float mode mini-PIP: panel stays in DOM, CSS positions it as a fixed mini window */
+@media(min-width:768px){
+  body.float-playing .player-panel{display:flex!important;position:fixed!important;right:12px!important;bottom:96px;left:auto!important;width:220px;height:125px;z-index:9998;border-radius:14px 14px 0 0;box-shadow:0 10px 36px rgba(0,0,0,.9);overflow:hidden;flex-direction:column;}
+  body.float-playing .panel-header{display:none!important;}
+  body.float-playing .panel-footer{display:none!important;}
+  body.float-playing .panel-video{flex:1!important;min-height:0!important;}
+  body.float-playing #float-video-slot{display:none!important;}
+}
 .float-player.pip-snap{transition:left .2s cubic-bezier(.25,.46,.45,.94),top .2s cubic-bezier(.25,.46,.45,.94);}
 /* video slot — explicit height, no overlay blocking it */
 #float-video-slot{width:100%;height:124px;position:relative;overflow:hidden;background:#000;flex-shrink:0;}
@@ -409,24 +417,22 @@ function setupMediaSession(song){
 function openModal(song,songList,idx,startSeconds){
   // Close Document PiP first so player iframe is back in main doc
   if(_pipWin){try{_pipWin.close();}catch(e){}_pipWin=null;}
-    // If the same song is already playing/buffering in the float player, just restore panel
-    if(song.v===currentSong?.v&&document.body.classList.contains('float-playing')&&ytPlayer&&playerReady){
-          const st=ytPlayer.getPlayerState();
-          if(st===YT.PlayerState.PLAYING||st===YT.PlayerState.BUFFERING||st===YT.PlayerState.PAUSED){
-      const curTime=(ytPlayer.getCurrentTime&&ytPlayer.getCurrentTime())||0;
-                  hideFloatPlayer();
-                  document.getElementById('panelSong').textContent=song.s;
-                  document.getElementById('panelArtist').textContent=song.a;
-                  document.body.classList.add('playing');
-                  document.body.classList.add('has-song');
-                  if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');document.body.style.overflow='hidden';}
-                  requestAnimationFrame(setTopH);
-                  updateModalNav();
-                  updateModalAddBtn();
-                  ytPlayer.loadVideoById({videoId:song.v,startSeconds:curTime});
-                  return;
-          }
-    }
+  // If the same song is already playing/buffering in the float player, just restore panel — don't restart
+  if(song.v===currentSong?.v&&document.body.classList.contains('float-playing')&&ytPlayer&&playerReady){
+    hideFloatPlayer();
+    document.getElementById('panelSong').textContent=song.s;
+    document.getElementById('panelArtist').textContent=song.a;
+    document.body.classList.add('playing');
+    document.body.classList.add('has-song');
+    if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');document.body.style.overflow='hidden';}
+    requestAnimationFrame(setTopH);
+    updateModalNav();
+    updateModalAddBtn();
+    // No DOM move happened — iframe never left panel-slot — just ensure video is playing
+    const st=ytPlayer.getPlayerState();
+    if(st!==YT.PlayerState.PLAYING&&st!==YT.PlayerState.BUFFERING)ytPlayer.playVideo();
+    return;
+  }
   hideFloatPlayer();
   currentSong=song;currentSongList=songList;currentSongIdx=idx;
   document.getElementById('panelSong').textContent=song.s;
@@ -443,6 +449,7 @@ function openModal(song,songList,idx,startSeconds){
   function _loadOrSeek(vid,sec){
     let curVid=null;try{curVid=ytPlayer.getVideoData()?.video_id;}catch(e){}
     const st=ytPlayer.getPlayerState();
+    // Only seek+play when video is genuinely paused — all other states use loadVideoById for reliability
     if(curVid===vid&&st===YT.PlayerState.PAUSED){
       ytPlayer.seekTo(sec,true);ytPlayer.playVideo();
     }else{
@@ -620,50 +627,29 @@ let _pipDrag=false,_pipOX=0,_pipOY=0,_pipSX=0,_pipSY=0,_pipMoved=false;
 
 function showFloatPlayer(){
   const fp=document.getElementById('floatPlayer');
-  const slot=document.getElementById('float-video-slot');
-  const ytEl=document.getElementById('yt-player');
-  if(!fp||!ytEl)return;
-  if(ytEl.parentNode!==slot)slot.appendChild(ytEl);
-  // Save original iframe style, then force fill the slot
-  const ifr=ytEl.querySelector('iframe');
-  if(ifr){
-    if(ifr._savedStyle===undefined)ifr._savedStyle=ifr.style.cssText;
-    ifr.style.width='100%';
-    ifr.style.height='100%';
-    ifr.style.display='block';
-  }
+  if(!fp||!currentSong)return;
   // Song label
-  if(currentSong)document.getElementById('floatSong').textContent=currentSong.s+(currentSong.a?' – '+currentSong.a:'');
+  document.getElementById('floatSong').textContent=currentSong.s+(currentSong.a?' – '+currentSong.a:'');
   // Play/pause button state
   const pb=document.getElementById('pipPlayBtn');
   if(pb&&ytPlayer&&playerReady)pb.textContent=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?'⏸':'▶';
-  // Set initial position (left only — avoids RTL right-takes-precedence bug)
-  if(!fp._pipPositioned){
-    const pw=window.innerWidth<768?185:220;
-    fp.style.left=(window.innerWidth-pw-12)+'px';
-    fp.style.top=(window.innerHeight-180)+'px';
-    fp._pipPositioned=true;
-  }
+  // Position float control bar just below the CSS mini-pip (which sits at bottom:96px height:125px)
+  const pw=window.innerWidth<768?185:220;
+  fp.style.left=(window.innerWidth-pw-12)+'px';
+  fp.style.top=(window.innerHeight-96)+'px';
+  fp._pipPositioned=true;
   fp.style.right='auto';
+  fp.style.display=''; // clear any inline display:none
   fp.classList.add('visible');
   document.body.classList.add('float-playing');
+  // No DOM move — iframe stays in panel-video-slot; CSS makes panel the mini-pip
 }
 
 function hideFloatPlayer(){
   const fp=document.getElementById('floatPlayer');
-  const panelSlot=document.getElementById('panel-video-slot');
-  const ytEl=document.getElementById('yt-player');
-  if(ytEl&&panelSlot&&ytEl.parentNode!==panelSlot){
-    const ifr=ytEl.querySelector('iframe');
-    if(ifr){
-      // Restore saved style; fall back to YouTube's default (width/height 100%)
-      ifr.style.cssText = (ifr._savedStyle !== undefined) ? ifr._savedStyle : 'width:100%;height:100%;';
-      delete ifr._savedStyle;
-    }
-    panelSlot.appendChild(ytEl);
-  }
-  if(fp){fp.classList.remove('visible');fp.style.display='none';}
+  if(fp)fp.classList.remove('visible');
   document.body.classList.remove('float-playing');
+  // No DOM move — iframe always stays in panel-video-slot
 }
 
 function closeFloat(){
@@ -933,7 +919,7 @@ function resumeOrOpen(){
   // If player already has a live video, just reopen the panel — don't touch the player
   if(ytPlayer&&playerReady){
     const st=ytPlayer.getPlayerState();
-    if(st===YT.PlayerState.PAUSED){
+    if(st!==YT.PlayerState.UNSTARTED){
       document.getElementById('playerPanel').classList.add('open');
       document.body.classList.add('playing');
       document.body.style.overflow='hidden';
@@ -967,6 +953,4 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowLeft'&&document.body.classList.contains('playing'))modalNav(-1);
   if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(1);
 });
-</script>
-</body>
-</html>
+</script></body></html>
