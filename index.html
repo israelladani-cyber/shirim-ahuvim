@@ -88,6 +88,10 @@ body.playing .content{max-width:none;margin:0;}
 .panel-pip-btn{display:none;background:none;border:none;color:#1DB954;cursor:pointer;width:30px;height:30px;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;flex-shrink:0;}
 .panel-pip-btn:hover{background:#1a3a22;}
 @media(max-width:767px){.panel-pip-btn{display:flex;}}
+.panel-float-btn,.panel-theater-btn{display:none;background:none;border:none;color:#888;cursor:pointer;width:30px;height:30px;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
+.panel-float-btn:hover,.panel-theater-btn:hover{background:#333;color:#fff;}
+body.theater .panel-theater-btn{color:#1DB954;}
+@media(min-width:768px){.panel-float-btn,.panel-theater-btn{display:flex;}}
 .panel-video{position:relative;flex:1;min-height:0;background:#000;}
 .panel-video iframe{position:absolute;inset:0;width:100%;height:100%;}
 .panel-footer{display:flex;align-items:center;gap:8px;padding:12px 18px;background:#222;border-top:1px solid #333;flex-shrink:0;}
@@ -108,6 +112,9 @@ body.playing .content{max-width:none;margin:0;}
   body.playing .brand img{width:200px !important;height:55px !important;}
   body.playing .top{padding:8px 24px;}
   body.playing .top-row{min-height:60px;}
+  /* Theater mode: player takes full width */
+  body.playing.theater .player-panel{flex:0 0 100%!important;}
+  body.playing.theater .list-panel{display:none!important;}
 }
 
 /* MOBILE: overlay + mini bar */
@@ -237,6 +244,15 @@ mark{background:rgba(29,185,84,.2);color:#1DB954;border-radius:3px;padding:0 2px
         <div class="panel-song-name" id="panelSong">—</div>
         <div class="panel-artist-name" id="panelArtist">—</div>
       </div>
+      <!-- Theater mode (desktop) -->
+      <button class="panel-theater-btn" id="theaterBtn" onclick="toggleTheater()" title="מצב קולנוע">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/></svg>
+      </button>
+      <!-- Float mini-pip (desktop) -->
+      <button class="panel-float-btn" onclick="minimizeToFloat()" title="מזער לחלון צף">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><rect x="13" y="13" width="8" height="5" rx="1" fill="currentColor" stroke="none"/></svg>
+      </button>
+      <!-- Document PiP (mobile only) -->
       <button class="panel-pip-btn" onclick="mobilePiP()" title="מצב PiP">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><rect x="12" y="11" width="9" height="6" rx="1" fill="currentColor" stroke="none"/></svg>
       </button>
@@ -534,10 +550,23 @@ function closePanelOrAll(){
   // X button: close everything on all screen sizes
   document.getElementById('playerPanel').classList.remove('open');
   document.body.classList.remove('playing');
+  document.body.classList.remove('theater');
   document.body.style.overflow='';
   hideFloatPlayer();
   if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
   document.body.classList.remove('has-song');
+}
+function minimizeToFloat(){
+  if(window.innerWidth<768){mobilePiP();return;}
+  document.body.classList.remove('playing');
+  document.body.classList.remove('theater');
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.style.overflow='';
+  showFloatPlayer();
+}
+function toggleTheater(){
+  document.body.classList.toggle('theater');
+  requestAnimationFrame(setTopH);
 }
 function goHome(){
   document.getElementById('playerPanel').classList.remove('open');
@@ -553,6 +582,7 @@ function goHome(){
 function minimizeToMiniBar(){
   document.getElementById('playerPanel').classList.remove('open');
   document.body.classList.remove('playing');
+  document.body.classList.remove('theater');
   document.body.style.overflow='';
   // has-song stays → mini bar shows with current song still playing
 }
@@ -903,50 +933,4 @@ function loadSession(){
     currentSong={v:d.v,s:d.s,a:d.a};
     // Don't set has-song on page load — home state is always clean (no mini bar)
     const mini=document.getElementById('miniSong');
-    const miniA=document.getElementById('miniArtist');
-    if(mini)mini.textContent=d.s;
-    if(miniA)miniA.textContent=d.a||'';
-    const thumb=document.getElementById('miniThumb');
-    if(thumb)thumb.style.backgroundImage=`url(https://img.youtube.com/vi/${d.v}/default.jpg)`;
-  }catch(e){}
-}
-function resumeOrOpen(){
-  if(!currentSong)return;
-  // If player already has a live video, just reopen the panel — don't touch the player
-  if(ytPlayer&&playerReady){
-    const st=ytPlayer.getPlayerState();
-    if(st!==YT.PlayerState.UNSTARTED){
-      document.getElementById('playerPanel').classList.add('open');
-      document.body.classList.add('playing');
-      document.body.style.overflow='hidden';
-      requestAnimationFrame(setTopH);
-      return;
-    }
-  }
-  // Page was reloaded — restore from session
-  const saved=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
-  if(saved&&saved.list){
-    const songList2=ALL.filter(s=>saved.list.includes(s.v));
-    const idx=Math.max(0,saved.list.indexOf(currentSong.v));
-    openModal(currentSong,songList2,idx,0);
-  }else{
-    openModal(currentSong,[currentSong],0,0);
-  }
-  if(window.innerWidth<768)document.getElementById('playerPanel').classList.add('open');
-}
-setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()===YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
-
-loadSession();
-render('');document.getElementById('q').focus();
-document.getElementById('q').addEventListener('input',e=>{
-  const v=e.target.value;
-  render(v);
-  document.getElementById('clr').classList.toggle('visible',v.length>0);
-  if(v.length>0)hideSearchHistory();else showSearchHistory();
-});
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape')closeModal();
-  if(e.key==='ArrowLeft'&&document.body.classList.contains('playing'))modalNav(-1);
-  if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(1);
-});
-</script></body></html>
+    const miniA=document.getElementByI
