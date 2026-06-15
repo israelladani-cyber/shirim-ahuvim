@@ -220,34 +220,60 @@ body.admin .admin-lock{color:#1DB954;}
 .adm-err{color:#ff5a5a;font-size:13px;margin-bottom:10px;min-height:18px;}
 .adm-row{display:flex;gap:8px;margin-top:4px;}
 .adm-btn{flex:1;background:#1DB954;border:none;color:#000;border-radius:8px;padding:10px 0;font-size:14px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
-.adm-btn.sec{background:#2a2a2a;color:#B3B3B3;flex:.6;border:1px solid #444;}
+.adm-btn.sec{background:#2a2a2a;color:#B3B3B3;flex:1;border:1px solid #444;}
 .adm-btn.sec:hover{background:#333;color:#fff;}
 .adm-note{font-size:12px;color:#888;line-height:1.7;margin-bottom:14px;}
 .adm-note b{color:#ccc;}
-/* Toolbar */
-.adm-toolbar{position:fixed;bottom:0;left:0;right:0;background:#0f1923;border-top:2px solid #4a9eff;padding:10px 16px;z-index:600;display:none;direction:rtl;gap:8px;flex-wrap:wrap;align-items:center;}
+/* ── ADMIN TOOLBAR ── */
+.adm-toolbar{position:fixed;bottom:0;left:0;right:0;background:rgba(18,18,18,.97);backdrop-filter:blur(20px);border-top:2px solid #fff;padding:10px 16px;z-index:600;display:none;direction:rtl;gap:8px;flex-direction:row;flex-wrap:nowrap;align-items:center;overflow-x:auto;}
 body.admin .adm-toolbar{display:flex;}
-.atb-label{font-size:12px;font-weight:700;color:#4a9eff;flex-shrink:0;}
-.atb-inp{background:#162030;border:1px solid #2a3a5a;color:#fff;border-radius:7px;padding:7px 10px;font-size:13px;font-family:Arial,sans-serif;direction:rtl;}
-.atb-inp:focus{outline:none;border-color:#4a9eff;}
-.atb-inp.art,.atb-inp.sng{width:130px;}
-.atb-inp.url{flex:1;min-width:100px;}
-.atb-add{background:#1DB954;border:none;color:#000;border-radius:7px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;white-space:nowrap;}
-.atb-sync{background:#4a9eff;border:none;color:#000;border-radius:7px;padding:7px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;white-space:nowrap;}
-.atb-sync:disabled{opacity:.6;cursor:default;}
-.atb-exit{background:transparent;border:1px solid #2a3a4a;color:#B3B3B3;border-radius:7px;padding:7px 12px;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;}
-.atb-exit:hover{background:#1e2a3a;color:#fff;}
+.atb-add-row,.atb-actions-row{display:contents;}
+/* Inputs match site search bar */
+.atb-inp{background:#fff;border:1px solid #ddd;color:#121212;border-radius:24px;height:36px;padding:0 14px;font-size:14px;font-family:Arial,sans-serif;direction:rtl;min-width:0;flex-shrink:0;}
+.atb-inp:focus{outline:none;box-shadow:0 0 0 2px #1DB954;border-color:transparent;}
+.atb-inp[id="atbArtist"],.atb-inp[id="atbSong"]{width:130px;}
+.atb-inp[id="atbUrl"]{flex:1;min-width:120px;max-width:860px;flex-shrink:1;}
+/* Buttons match site toolbar-btn style */
+.atb-btn{display:flex;align-items:center;gap:6px;background:#282828;border:none;color:#B3B3B3;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;}
+.atb-btn:hover{background:#333;color:#fff;}
+.atb-btn:disabled{opacity:.5;cursor:default;}
+.atb-btn.green{background:#1DB954;color:#000;font-weight:700;}
+.atb-btn.green:hover{background:#18a34a;}
+.atb-btn.warn{background:#282828;color:#B3B3B3;}
+body.admin.del-mode .atb-btn.warn{background:#ff5a5a;color:#fff;}
 .atb-stat{font-size:12px;flex-shrink:0;}
 .atb-stat.ok{color:#1DB954;}.atb-stat.err{color:#ff5a5a;}
 /* Delete button per song row */
 .btn-del{width:28px;height:28px;border-radius:50%;background:none;border:1.5px solid transparent;color:#535353;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;line-height:1;transition:all .15s;}
 body.admin.del-mode .btn-del{display:flex;}
-.atb-del{background:#3a1a1a;border:1px solid #5a2a2a;color:#B3B3B3;border-radius:7px;padding:7px 12px;font-size:13px;cursor:pointer;font-family:Arial,sans-serif;white-space:nowrap;}
-.atb-del:hover{background:#5a1a1a;color:#fff;}
-body.admin.del-mode .atb-del{background:#ff5a5a;border-color:#ff5a5a;color:#fff;}
 .btn-del:hover{background:#ff5a5a;border-color:#ff5a5a;color:#fff;}
 body.admin{padding-bottom:72px;}
-@media(max-width:767px){body.admin{padding-bottom:152px;}.atb-inp.art,.atb-inp.sng{width:110px;}}
+@media(max-width:767px){body.admin{padding-bottom:72px;}.atb-inp[id="atbArtist"],.atb-inp[id="atbSong"]{width:90px;}}
+/* Drag handles */
+.drag-handle{cursor:grab;color:#555;font-size:15px;padding:2px 6px;user-select:none;display:none;line-height:1;flex-shrink:0;transition:color .15s;}
+body.admin .drag-handle{display:inline-flex;align-items:center;}
+.drag-handle:hover{color:#aaa;}
+.drag-handle:active{cursor:grabbing;}
+.drag-handle-song{cursor:grab;font-size:13px;width:20px;height:20px;border-radius:3px;background:none;border:none;padding:0;display:none;align-items:center;justify-content:center;color:#555;flex-shrink:0;transition:color .15s;}
+body.admin .drag-handle-song{display:flex;}
+.drag-handle-song:hover{color:#aaa;}
+.drag-handle-song:active{cursor:grabbing;}
+/* Drag-over visual feedback */
+.artist-block.drag-over>.artist-header{background:#1a2e1a;outline:2px dashed #1DB954;outline-offset:-2px;}
+.songs-table tr.drag-over td{background:rgba(29,185,84,.08);}
+/* Admin: artist-level controls */
+.admin-artist-btns{display:none;gap:4px;align-items:center;flex-shrink:0;}
+body.admin .admin-artist-btns{display:flex;}
+.btn-artist-ctrl{background:none;border:none;cursor:pointer;border-radius:5px;padding:2px 5px;font-size:13px;color:#555;transition:all .15s;line-height:1;white-space:nowrap;display:flex;align-items:center;}
+.btn-artist-ctrl:hover{background:#333;color:#fff;}
+.btn-del-folder{display:none!important;}
+body.admin.del-mode .btn-del-folder{display:flex!important;color:#ff5a5a;}
+body.admin.del-mode .btn-del-folder:hover{background:#ff5a5a;color:#fff;}
+/* Admin: song-level controls (rename only - reorder via drag) */
+.btn-song-ctrl{width:22px;height:22px;border-radius:4px;background:none;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:12px;color:#666;transition:all .15s;flex-shrink:0;}
+.btn-song-ctrl:hover{background:#333;color:#fff;}
+body.admin .btn-song-ctrl{display:flex;}
+body.admin .td-actions{width:auto;}
 
 </style>
 </head>
@@ -962,19 +988,35 @@ function render(term){
   if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
   for(const a of ord){
     const vid=g[a][0].v;
-    h+=`<div class="artist-block" data-open="${q?'true':'false'}">`;
+    h+=`<div class="artist-block" data-open="${q?'true':'false'}" data-vid="${vid}"
+         ondragover="_dndArtistOver(event,'${vid}')" ondrop="_dndArtistDrop(event,'${vid}')" ondragleave="_dndLeave(event)">`;
     h+=`<div class="artist-header" onclick="toggleArtist(this)">`;
     h+=`<div class="artist-avatar" data-artist="${esc(a)}" data-vid="${vid}">${esc(a.slice(0,2))}</div>`;
     h+=`<span class="artist-name-text">${hl(a,q)}</span>`;
     h+=`<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+    h+=`<div class="admin-artist-btns">`;
+    h+=`<span class="drag-handle" draggable="true"
+          ondragstart="event.stopPropagation();_dndArtistStart(event,'${vid}')"
+          ondragend="_dndEnd(event)"
+          onclick="event.stopPropagation()"
+          title="גרור לשינוי סדר">⠿</span>`;
+    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה">✏️</button>`;
+    h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="מחק תיקייה">🗑</button>`;
+    h+=`</div>`;
     h+=`</div><div class="songs-wrap"><table class="songs-table">`;
     g[a].forEach((r,i)=>{
       const inQ=isInQueue(r.v);
-      h+=`<tr>
-        <td class="td-num">${i+1}</td>
+      h+=`<tr data-vid="${r.v}"
+           ondragover="_dndSongOver(event,'${r.v}')" ondrop="_dndSongDrop(event,'${r.v}')" ondragleave="_dndLeave(event)">
         <td onclick="playVid('${r.v}')" style="cursor:pointer">${hl(r.s,q)}</td>
         <td class="td-actions">
           <div class="song-actions">
+            <button class="drag-handle-song" draggable="true"
+              ondragstart="_dndSongStart(event,'${r.v}')"
+              ondragend="_dndEnd(event)"
+              onclick="event.stopPropagation()"
+              title="גרור לשינוי סדר">⠿</button>
+            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v}')" title="שנה שם שיר">✏️</button>
             <button class="btn-play" onclick="event.stopPropagation();playVid('${r.v}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
@@ -1116,8 +1158,131 @@ function exitAdmin(){
   _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
   render(document.getElementById('q').value||'');
 }
+// ── DRAG & DROP ──
+let _dndType=null,_dndVid=null;
+function _dndArtistStart(e,vid){
+  _dndType='artist';_dndVid=vid;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',vid);
+  setTimeout(()=>{const el=document.querySelector(`.artist-block[data-vid="${vid}"]`);if(el)el.style.opacity='.4';},0);
+}
+function _dndSongStart(e,vid){
+  _dndType='song';_dndVid=vid;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',vid);
+  setTimeout(()=>{const el=document.querySelector(`tr[data-vid="${vid}"]`);if(el)el.style.opacity='.4';},0);
+}
+function _dndArtistOver(e,targetVid){
+  if(_dndType!=='artist'||_dndVid===targetVid)return;
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('.artist-block').forEach(b=>b.classList.remove('drag-over'));
+  const el=document.querySelector(`.artist-block[data-vid="${targetVid}"]`);
+  if(el)el.classList.add('drag-over');
+}
+function _dndSongOver(e,targetVid){
+  if(_dndType!=='song'||_dndVid===targetVid)return;
+  const src=ALL.find(s=>s.v===_dndVid),tgt=ALL.find(s=>s.v===targetVid);
+  if(!src||!tgt||src.a!==tgt.a)return;
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('tr[data-vid]').forEach(r=>r.classList.remove('drag-over'));
+  const el=document.querySelector(`tr[data-vid="${targetVid}"]`);
+  if(el)el.classList.add('drag-over');
+}
+function _dndLeave(e){
+  if(!e.currentTarget.contains(e.relatedTarget)){
+    e.currentTarget.classList.remove('drag-over');
+  }
+}
+function _dndArtistDrop(e,targetVid){
+  if(_dndType!=='artist'||_dndVid===targetVid)return;
+  e.preventDefault();
+  const srcName=_artistOf(_dndVid),tgtName=_artistOf(targetVid);
+  if(!srcName||!tgtName)return;
+  const ord=_artistOrder();
+  const groups={};ord.forEach(a=>{groups[a]=ALL.filter(s=>s.a===a);});
+  const si=ord.indexOf(srcName),ti=ord.indexOf(tgtName);
+  ord.splice(si,1);ord.splice(si<ti?ti:ti,0,srcName);
+  _rebuildFromGroups(ord,groups);
+  _markDirty();_dndCleanup();render(document.getElementById('q').value||'');
+}
+function _dndSongDrop(e,targetVid){
+  if(_dndType!=='song'||_dndVid===targetVid)return;
+  const src=ALL.find(s=>s.v===_dndVid),tgt=ALL.find(s=>s.v===targetVid);
+  if(!src||!tgt||src.a!==tgt.a)return;
+  e.preventDefault();
+  const si=ALL.indexOf(src),ti=ALL.indexOf(tgt);
+  ALL.splice(si,1);ALL.splice(si<ti?ti:ti,0,src);
+  _markDirty();_dndCleanup();render(document.getElementById('q').value||'');
+}
+function _dndEnd(e){_dndCleanup();}
+function _dndCleanup(){
+  document.querySelectorAll('.artist-block,.artist-block[data-vid]').forEach(el=>{el.classList.remove('drag-over');el.style.opacity='';});
+  document.querySelectorAll('tr[data-vid]').forEach(el=>{el.classList.remove('drag-over');el.style.opacity='';});
+  _dndType=null;_dndVid=null;
+}
 function toggleDelMode(){
   document.body.classList.toggle('del-mode');
+}
+// ── ARTIST MANAGEMENT ──
+function _artistOf(vid){const s=ALL.find(x=>x.v===vid);return s?s.a:null;}
+function _artistOrder(){const seen=new Set(),ord=[];ALL.forEach(s=>{if(!seen.has(s.a)){seen.add(s.a);ord.push(s.a);}});return ord;}
+function _rebuildFromGroups(ord,groups){ALL.length=0;ord.forEach(a=>groups[a].forEach(s=>ALL.push(s)));}
+
+function adminRenameArtist(vid){
+  const old=_artistOf(vid);if(!old)return;
+  const neu=prompt('שם חדש לתיקייה:',old);
+  if(!neu||neu===old)return;
+  const exists=_artistOrder().includes(neu)&&neu!==old;
+  if(exists&&!confirm(`תיקייה "${neu}" כבר קיימת. למזג את השירים?`))return;
+  ALL.forEach(s=>{if(s.a===old)s.a=neu;});
+  _markDirty();_atbStat('✏️ תיקייה שונה שם','ok');render(document.getElementById('q').value||'');
+}
+function adminDeleteArtist(vid){
+  const name=_artistOf(vid);if(!name)return;
+  const cnt=ALL.filter(s=>s.a===name).length;
+  if(!confirm(`למחוק את התיקייה "${name}" עם ${cnt} שירים?`))return;
+  for(let i=ALL.length-1;i>=0;i--){if(ALL[i].a===name){if(isInQueue(ALL[i].v))removeFromQueue(ALL[i].v);ALL.splice(i,1);}}
+  _markDirty();_atbStat('🗑 תיקייה נמחקה','ok');render(document.getElementById('q').value||'');
+}
+function adminMoveArtistUp(vid){
+  const name=_artistOf(vid);if(!name)return;
+  const ord=_artistOrder();const idx=ord.indexOf(name);if(idx<=0)return;
+  const groups={};ord.forEach(a=>{groups[a]=ALL.filter(s=>s.a===a);});
+  [ord[idx-1],ord[idx]]=[ord[idx],ord[idx-1]];
+  _rebuildFromGroups(ord,groups);
+  _markDirty();render(document.getElementById('q').value||'');
+}
+function adminMoveArtistDown(vid){
+  const name=_artistOf(vid);if(!name)return;
+  const ord=_artistOrder();const idx=ord.indexOf(name);if(idx>=ord.length-1)return;
+  const groups={};ord.forEach(a=>{groups[a]=ALL.filter(s=>s.a===a);});
+  [ord[idx],ord[idx+1]]=[ord[idx+1],ord[idx]];
+  _rebuildFromGroups(ord,groups);
+  _markDirty();render(document.getElementById('q').value||'');
+}
+// ── SONG MANAGEMENT ──
+function adminRenameSong(vid){
+  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const neu=prompt('שם חדש לשיר:',song.s);
+  if(!neu||neu===song.s)return;
+  song.s=neu;
+  _markDirty();_atbStat('✏️ שיר שונה שם','ok');render(document.getElementById('q').value||'');
+}
+function adminMoveSongUp(vid){
+  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const sib=ALL.filter(s=>s.a===song.a);
+  const i=sib.findIndex(s=>s.v===vid);if(i<=0)return;
+  const ai=ALL.indexOf(song),bi=ALL.indexOf(sib[i-1]);
+  [ALL[ai],ALL[bi]]=[ALL[bi],ALL[ai]];
+  _markDirty();render(document.getElementById('q').value||'');
+}
+function adminMoveSongDown(vid){
+  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const sib=ALL.filter(s=>s.a===song.a);
+  const i=sib.findIndex(s=>s.v===vid);if(i>=sib.length-1)return;
+  const ai=ALL.indexOf(song),bi=ALL.indexOf(sib[i+1]);
+  [ALL[ai],ALL[bi]]=[ALL[bi],ALL[ai]];
+  _markDirty();render(document.getElementById('q').value||'');
 }
 function saveAdmToken(){
   const t=document.getElementById('admTokenInp').value.trim();
@@ -1148,8 +1313,10 @@ function adminAddSong(){
   if(!m){_atbStat('קישור יוטיוב לא תקין','err');return;}
   const vid=m[1];
   if(ALL.some(s=>s.v===vid)){_atbStat('שיר זה כבר קיים ברשימה','err');return;}
-  ALL.push({a:artist,s:song,v:vid});
-  ALL.sort((a,b)=>a.a.localeCompare(b.a,'he')||(a.s.localeCompare(b.s,'he')));
+  // Insert after last song of this artist (or at end if new artist)
+  const lastIdx=ALL.reduce((li,s,i)=>s.a===artist?i:li,-1);
+  if(lastIdx>=0)ALL.splice(lastIdx+1,0,{a:artist,s:song,v:vid});
+  else ALL.push({a:artist,s:song,v:vid});
   document.getElementById('atbArtist').value='';
   document.getElementById('atbSong').value='';
   document.getElementById('atbUrl').value='';
@@ -1179,7 +1346,7 @@ async function adminSyncGitHub(){
     const d=await r.json();
     const raw=decodeURIComponent(escape(atob(d.content.replace(/\n/g,''))));
     const newAll='const ALL='+JSON.stringify(ALL)+';';
-    const newHtml=raw.replace(/const ALL=\[.*?\];/,newAll);
+    const newHtml=raw.replace(/const ALL=\[[\s\S]*?\];/,newAll);
     if(newHtml===raw)throw new Error('לא ניתן לאתר את מערך השירים בקובץ');
     const enc=btoa(unescape(encodeURIComponent(newHtml)));
     const put=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html',{
@@ -1198,8 +1365,9 @@ async function adminSyncGitHub(){
     btn.textContent='⟳ שמור ב-GitHub';
   }finally{btn.disabled=false;}
 }
+</script>
 
-</script><!-- ── ADMIN OVERLAYS ── -->
+<!-- ── ADMIN OVERLAYS ── -->
 <div class="adm-overlay" id="admLoginOv">
   <div class="adm-box">
     <div class="adm-title">🔐 כניסת מנהל</div>
@@ -1216,33 +1384,32 @@ async function adminSyncGitHub(){
 <div class="adm-overlay" id="admTokenOv">
   <div class="adm-box">
     <div class="adm-title">🔑 GitHub Token</div>
-    <div class="adm-note">
-      כדי לשמור שינויים ישירות ב-GitHub:<br>
-      1. כנס ל-<b>github.com → Settings → Developer settings</b><br>
-      2. <b>Personal access tokens → Tokens (classic)</b><br>
-      3. <b>Generate new token</b> — סמן ✓ <b>repo</b><br>
-      4. העתק את ה-Token והדבק כאן (נשמר בדפדפן בלבד):
-    </div>
-    <input class="adm-inp" type="password" id="admTokenInp" placeholder="ghp_...">
-    <div class="adm-err" id="admTokenErr"></div>
+    <p style="font-size:13px;color:#ccc;margin:0 0 10px">הכנס Personal Access Token עם הרשאות repo</p>
+    <input class="adm-inp" type="password" id="admTokenInp" placeholder="ghp_..." maxlength="200"
+      onkeydown="if(event.key==='Enter')saveAdmToken()">
     <div class="adm-row">
-      <button class="adm-btn" onclick="saveAdmToken()">שמור Token</button>
       <button class="adm-btn sec" onclick="document.getElementById('admTokenOv').classList.remove('open')">ביטול</button>
+      <button class="adm-btn" onclick="saveAdmToken()">שמור</button>
     </div>
   </div>
 </div>
 
 <!-- ── ADMIN TOOLBAR ── -->
 <div class="adm-toolbar" id="admToolbar">
-  <span class="atb-label">⚙ מנהל</span>
-  <input class="atb-inp art" id="atbArtist" placeholder="שם אמן" list="atbArtistList">
-  <datalist id="atbArtistList"></datalist>
-  <input class="atb-inp sng" id="atbSong" placeholder="שם שיר">
-  <input class="atb-inp url" id="atbUrl" placeholder="קישור יוטיוב">
-  <button class="atb-add" onclick="adminAddSong()">+ הוסף שיר</button>
-  <span class="atb-stat" id="atbStat"></span>
-  <button class="atb-del" id="atbDelBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
-  <button class="atb-sync" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
-  <button class="atb-exit" onclick="exitAdmin()">✕ יציאה</button>
+  <div class="atb-add-row">
+    <input class="atb-inp" id="atbArtist" placeholder="שם אמן / תיקייה" list="artistList" autocomplete="off">
+    <datalist id="artistList"></datalist>
+    <input class="atb-inp" id="atbSong" placeholder="שם שיר">
+    <input class="atb-inp" id="atbUrl" placeholder="קישור YouTube">
+    <button class="atb-btn green" onclick="adminAddSong()">+ הוסף שיר</button>
+  </div>
+  <div class="atb-actions-row">
+    <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
+    <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
+    <span class="atb-stat" id="atbStat"></span>
+    <button class="atb-btn" style="margin-right:auto" onclick="exitAdmin()">✕ יציאה</button>
+  </div>
 </div>
-</body></html>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+
+</body>
+</html>
