@@ -33,7 +33,7 @@ body{font-family:Arial,sans-serif;background:#F9F9F9;color:#0F0F0F;direction:rtl
 .yt-hist-clear:hover{background:#f5f5f5;color:#e00;}
 .stats{color:#0F0F0F;font-size:12px;}.stats b{color:#FF0000;}
 .toolbar-btn{display:flex;align-items:center;gap:6px;background:#F2F2F2;border:none;color:#0F0F0F;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;}
-.toolbar-btn:hover{background:#0F0F0F;color:#0F0F0F;}
+.toolbar-btn:hover{background:rgba(0,0,0,.07);color:#0F0F0F;}
 .toolbar-btn .bc{transition:transform .25s;display:flex;align-items:center;}
 .all-closed .bc{transform:rotate(-90deg);}
 
@@ -1037,7 +1037,7 @@ function render(term){
           ondragstart="event.stopPropagation();_dndArtistStart(event,'${vid}')"
           ondragend="_dndEnd(event)"
           onclick="event.stopPropagation()"
-          title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>`;
+          title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>`;
     h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה">✏️</button>`;
     h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="מחק תיקייה">🗑</button>`;
     h+=`</div>`;
@@ -1053,7 +1053,7 @@ function render(term){
               ondragstart="_dndSongStart(event,'${r.v}')"
               ondragend="_dndEnd(event)"
               onclick="event.stopPropagation()"
-              title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
+              title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
             <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v}')" title="שנה שם שיר">✏️</button>
             <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v}',this)" title="העבר לתיקייה אחרת">📂</button>
             <button class="btn-play" onclick="event.stopPropagation();playVid('${r.v}')" title="נגן">
