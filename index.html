@@ -423,6 +423,52 @@ body.admin .folder-select{display:block;}
   <div id="queuePanelList"></div>
 </div>
 
+<!-- ADMIN LOGIN OVERLAY -->
+<div class="adm-overlay" id="admLoginOv">
+  <div class="adm-box">
+    <div class="adm-title">🔐 כניסת מנהל</div>
+    <input class="adm-inp" id="admPin" type="password" placeholder="קוד כניסה" onkeydown="if(event.key==='Enter')doAdmLogin()">
+    <div class="adm-err" id="admPinErr"></div>
+    <div class="adm-row">
+      <button class="adm-btn" onclick="doAdmLogin()">כניסה</button>
+      <button class="adm-btn sec" onclick="document.getElementById('admLoginOv').classList.remove('open')">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- GITHUB TOKEN OVERLAY -->
+<div class="adm-overlay" id="admTokenOv">
+  <div class="adm-box">
+    <div class="adm-title">🔑 GitHub Token</div>
+    <div class="adm-note">הזן GitHub Personal Access Token עם הרשאות <b>repo</b> כדי לשמור שינויים.</div>
+    <input class="adm-inp" id="admTokenInp" type="password" placeholder="ghp_..." onkeydown="if(event.key==='Enter')saveAdmToken()">
+    <div class="adm-err" id="admTokenErr"></div>
+    <div class="adm-row">
+      <button class="adm-btn" onclick="saveAdmToken()">שמור Token</button>
+      <button class="adm-btn sec" onclick="document.getElementById('admTokenOv').classList.remove('open')">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN TOOLBAR -->
+<div class="adm-toolbar">
+  <div class="atb-add-row">
+    <select class="adm-inp atb-inp atb-artist-sel" id="atbArtist">
+      <option value="">-- בחר אמן / תיקייה --</option>
+      <option value="__new__">＋ תיקייה חדשה</option>
+    </select>
+    <input class="adm-inp atb-inp" id="atbSong" placeholder="שם שיר" type="text">
+    <input class="adm-inp atb-inp" id="atbUrl" placeholder="קישור יוטיוב" type="text">
+    <button class="atb-btn green" onclick="adminAddSong()">＋ הוסף</button>
+  </div>
+  <div class="atb-actions-row">
+    <button class="atb-btn warn" onclick="toggleDelMode()">🗑 מחיקה</button>
+    <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">שמור ל-GitHub</button>
+    <span class="atb-stat" id="atbStat"></span>
+    <button class="atb-btn sec" onclick="exitAdmin()">יציאה</button>
+  </div>
+</div>
+
 <script>
 let _folderPickerEl=null,_pickerArtists=[];
 // YouTube IFrame API
