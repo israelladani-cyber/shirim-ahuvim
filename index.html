@@ -248,6 +248,19 @@ body.admin.del-mode .atb-del{background:#ff5a5a;border-color:#ff5a5a;color:#fff;
 .btn-del:hover{background:#ff5a5a;border-color:#ff5a5a;color:#fff;}
 body.admin{padding-bottom:72px;}
 @media(max-width:767px){body.admin{padding-bottom:152px;}.atb-inp.art,.atb-inp.sng{width:110px;}}
+/* Admin: artist-level controls */
+.admin-artist-btns{display:none;gap:2px;align-items:center;flex-shrink:0;}
+body.admin .admin-artist-btns{display:flex;}
+.btn-artist-ctrl{background:none;border:none;cursor:pointer;border-radius:5px;padding:2px 5px;font-size:13px;color:#555;transition:all .15s;line-height:1;white-space:nowrap;display:flex;align-items:center;}
+.btn-artist-ctrl:hover{background:#333;color:#fff;}
+.btn-del-folder{display:none!important;}
+body.admin.del-mode .btn-del-folder{display:flex!important;color:#ff5a5a;}
+body.admin.del-mode .btn-del-folder:hover{background:#ff5a5a;color:#fff;}
+/* Admin: song-level controls (reorder + rename) */
+.btn-song-ctrl{width:22px;height:22px;border-radius:4px;background:none;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:12px;color:#666;transition:all .15s;flex-shrink:0;}
+.btn-song-ctrl:hover{background:#333;color:#fff;}
+body.admin .btn-song-ctrl{display:flex;}
+body.admin .td-actions{width:auto;}
 
 </style>
 </head>
@@ -967,14 +980,22 @@ function render(term){
     h+=`<div class="artist-avatar" data-artist="${esc(a)}" data-vid="${vid}">${esc(a.slice(0,2))}</div>`;
     h+=`<span class="artist-name-text">${hl(a,q)}</span>`;
     h+=`<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+    h+=`<div class="admin-artist-btns">`;
+    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminMoveArtistUp('${vid}')" title="העלה תיקייה">↑</button>`;
+    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminMoveArtistDown('${vid}')" title="הורד תיקייה">↓</button>`;
+    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה">✏️</button>`;
+    h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="מחק תיקייה">🗑</button>`;
+    h+=`</div>`;
     h+=`</div><div class="songs-wrap"><table class="songs-table">`;
     g[a].forEach((r,i)=>{
       const inQ=isInQueue(r.v);
       h+=`<tr>
-        <td class="td-num">${i+1}</td>
         <td onclick="playVid('${r.v}')" style="cursor:pointer">${hl(r.s,q)}</td>
         <td class="td-actions">
           <div class="song-actions">
+            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminMoveSongUp('${r.v}')" title="הזז למעלה">↑</button>
+            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminMoveSongDown('${r.v}')" title="הזז למטה">↓</button>
+            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v}')" title="שנה שם שיר">✏️</button>
             <button class="btn-play" onclick="event.stopPropagation();playVid('${r.v}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
@@ -1119,6 +1140,67 @@ function exitAdmin(){
 function toggleDelMode(){
   document.body.classList.toggle('del-mode');
 }
+// ── ARTIST MANAGEMENT ──
+function _artistOf(vid){const s=ALL.find(x=>x.v===vid);return s?s.a:null;}
+function _artistOrder(){const seen=new Set(),ord=[];ALL.forEach(s=>{if(!seen.has(s.a)){seen.add(s.a);ord.push(s.a);}});return ord;}
+function _rebuildFromGroups(ord,groups){ALL.length=0;ord.forEach(a=>groups[a].forEach(s=>ALL.push(s)));}
+
+function adminRenameArtist(vid){
+  const old=_artistOf(vid);if(!old)return;
+  const neu=prompt('שם חדש לתיקייה:',old);
+  if(!neu||neu===old)return;
+  const exists=_artistOrder().includes(neu)&&neu!==old;
+  if(exists&&!confirm(`תיקייה "${neu}" כבר קיימת. למזג את השירים?`))return;
+  ALL.forEach(s=>{if(s.a===old)s.a=neu;});
+  _markDirty();_atbStat('✏️ תיקייה שונה שם','ok');render(document.getElementById('q').value||'');
+}
+function adminDeleteArtist(vid){
+  const name=_artistOf(vid);if(!name)return;
+  const cnt=ALL.filter(s=>s.a===name).length;
+  if(!confirm(`למחוק את התיקייה "${name}" עם ${cnt} שירים?`))return;
+  for(let i=ALL.length-1;i>=0;i--){if(ALL[i].a===name){if(isInQueue(ALL[i].v))removeFromQueue(ALL[i].v);ALL.splice(i,1);}}
+  _markDirty();_atbStat('🗑 תיקייה נמחקה','ok');render(document.getElementById('q').value||'');
+}
+function adminMoveArtistUp(vid){
+  const name=_artistOf(vid);if(!name)return;
+  const ord=_artistOrder();const idx=ord.indexOf(name);if(idx<=0)return;
+  const groups={};ord.forEach(a=>{groups[a]=ALL.filter(s=>s.a===a);});
+  [ord[idx-1],ord[idx]]=[ord[idx],ord[idx-1]];
+  _rebuildFromGroups(ord,groups);
+  _markDirty();render(document.getElementById('q').value||'');
+}
+function adminMoveArtistDown(vid){
+  const name=_artistOf(vid);if(!name)return;
+  const ord=_artistOrder();const idx=ord.indexOf(name);if(idx>=ord.length-1)return;
+  const groups={};ord.forEach(a=>{groups[a]=ALL.filter(s=>s.a===a);});
+  [ord[idx],ord[idx+1]]=[ord[idx+1],ord[idx]];
+  _rebuildFromGroups(ord,groups);
+  _markDirty();render(document.getElementById('q').value||'');
+}
+// ── SONG MANAGEMENT ──
+function adminRenameSong(vid){
+  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const neu=prompt('שם חדש לשיר:',song.s);
+  if(!neu||neu===song.s)return;
+  song.s=neu;
+  _markDirty();_atbStat('✏️ שיר שונה שם','ok');render(document.getElementById('q').value||'');
+}
+function adminMoveSongUp(vid){
+  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const sib=ALL.filter(s=>s.a===song.a);
+  const i=sib.findIndex(s=>s.v===vid);if(i<=0)return;
+  const ai=ALL.indexOf(song),bi=ALL.indexOf(sib[i-1]);
+  [ALL[ai],ALL[bi]]=[ALL[bi],ALL[ai]];
+  _markDirty();render(document.getElementById('q').value||'');
+}
+function adminMoveSongDown(vid){
+  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const sib=ALL.filter(s=>s.a===song.a);
+  const i=sib.findIndex(s=>s.v===vid);if(i>=sib.length-1)return;
+  const ai=ALL.indexOf(song),bi=ALL.indexOf(sib[i+1]);
+  [ALL[ai],ALL[bi]]=[ALL[bi],ALL[ai]];
+  _markDirty();render(document.getElementById('q').value||'');
+}
 function saveAdmToken(){
   const t=document.getElementById('admTokenInp').value.trim();
   if(!t){document.getElementById('admTokenErr').textContent='הזן Token';return;}
@@ -1145,104 +1227,4 @@ function adminAddSong(){
   const url=document.getElementById('atbUrl').value.trim();
   if(!artist||!song){_atbStat('חסר שם אמן או שם שיר','err');return;}
   const m=url.match(/[?&]v=([A-Za-z0-9_-]+)/);
-  if(!m){_atbStat('קישור יוטיוב לא תקין','err');return;}
-  const vid=m[1];
-  if(ALL.some(s=>s.v===vid)){_atbStat('שיר זה כבר קיים ברשימה','err');return;}
-  ALL.push({a:artist,s:song,v:vid});
-  ALL.sort((a,b)=>a.a.localeCompare(b.a,'he')||(a.s.localeCompare(b.s,'he')));
-  document.getElementById('atbArtist').value='';
-  document.getElementById('atbSong').value='';
-  document.getElementById('atbUrl').value='';
-  document.getElementById('atbArtist').focus();
-  _fillArtistList();render(document.getElementById('q').value||'');
-  _markDirty();_atbStat('✓ שיר נוסף','ok');
-}
-function _markDirty(){
-  _admDirty=true;
-  const b=document.getElementById('atbSyncBtn');
-  if(b){b.style.outline='2px solid #f0a500';b.title='יש שינויים שלא נשמרו';}
-}
-function _atbStat(msg,cls){
-  clearTimeout(_atbT);const el=document.getElementById('atbStat');if(!el)return;
-  el.textContent=msg;el.className='atb-stat'+(cls?' '+cls:'');
-  _atbT=setTimeout(()=>{el.textContent='';el.className='atb-stat';},4500);
-}
-async function adminSyncGitHub(){
-  const token=localStorage.getItem('gh_token');
-  if(!token){document.getElementById('admTokenOv').classList.add('open');return;}
-  const btn=document.getElementById('atbSyncBtn');
-  btn.textContent='מסנכרן...';btn.disabled=true;
-  try{
-    const r=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html',
-      {headers:{'Authorization':'Bearer '+token,'Accept':'application/vnd.github.v3+json'}});
-    if(!r.ok)throw new Error('GitHub API שגיאה: '+r.status);
-    const d=await r.json();
-    const raw=decodeURIComponent(escape(atob(d.content.replace(/\n/g,''))));
-    const newAll='const ALL='+JSON.stringify(ALL)+';';
-    const newHtml=raw.replace(/const ALL=\[[\s\S]*?\];/,newAll);
-    if(newHtml===raw)throw new Error('לא ניתן לאתר את מערך השירים בקובץ');
-    const enc=btoa(unescape(encodeURIComponent(newHtml)));
-    const put=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html',{
-      method:'PUT',
-      headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},
-      body:JSON.stringify({message:'עדכון שירים דרך פאנל ניהול',content:enc,sha:d.sha})
-    });
-    if(!put.ok){const e=await put.json();throw new Error(e.message||'שגיאה '+put.status);}
-    _admDirty=false;
-    btn.style.outline='none';btn.title='';
-    btn.textContent='✓ נשמר!';
-    setTimeout(()=>btn.textContent='⟳ שמור ב-GitHub',3000);
-    _atbStat('✓ עודכן ב-GitHub בהצלחה','ok');
-  }catch(e){
-    _atbStat('שגיאה: '+e.message,'err');
-    btn.textContent='⟳ שמור ב-GitHub';
-  }finally{btn.disabled=false;}
-}
-
-</script><!-- ── ADMIN OVERLAYS ── -->
-<div class="adm-overlay" id="admLoginOv">
-  <div class="adm-box">
-    <div class="adm-title">🔐 כניסת מנהל</div>
-    <input class="adm-inp" type="password" id="admPin" placeholder="קוד PIN" maxlength="30"
-      onkeydown="if(event.key==='Enter')doAdmLogin()">
-    <div class="adm-err" id="admPinErr"></div>
-    <div class="adm-row">
-      <button class="adm-btn" onclick="doAdmLogin()">כניסה</button>
-      <button class="adm-btn sec" onclick="document.getElementById('admLoginOv').classList.remove('open')">ביטול</button>
-    </div>
-  </div>
-</div>
-
-<div class="adm-overlay" id="admTokenOv">
-  <div class="adm-box">
-    <div class="adm-title">🔑 GitHub Token</div>
-    <div class="adm-note">
-      כדי לשמור שינויים ישירות ב-GitHub:<br>
-      1. כנס ל-<b>github.com → Settings → Developer settings</b><br>
-      2. <b>Personal access tokens → Tokens (classic)</b><br>
-      3. <b>Generate new token</b> — סמן ✓ <b>repo</b><br>
-      4. העתק את ה-Token והדבק כאן (נשמר בדפדפן בלבד):
-    </div>
-    <input class="adm-inp" type="password" id="admTokenInp" placeholder="ghp_...">
-    <div class="adm-err" id="admTokenErr"></div>
-    <div class="adm-row">
-      <button class="adm-btn" onclick="saveAdmToken()">שמור Token</button>
-      <button class="adm-btn sec" onclick="document.getElementById('admTokenOv').classList.remove('open')">ביטול</button>
-    </div>
-  </div>
-</div>
-
-<!-- ── ADMIN TOOLBAR ── -->
-<div class="adm-toolbar" id="admToolbar">
-  <span class="atb-label">⚙ מנהל</span>
-  <input class="atb-inp art" id="atbArtist" placeholder="שם אמן" list="atbArtistList">
-  <datalist id="atbArtistList"></datalist>
-  <input class="atb-inp sng" id="atbSong" placeholder="שם שיר">
-  <input class="atb-inp url" id="atbUrl" placeholder="קישור יוטיוב">
-  <button class="atb-add" onclick="adminAddSong()">+ הוסף שיר</button>
-  <span class="atb-stat" id="atbStat"></span>
-  <button class="atb-del" id="atbDelBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
-  <button class="atb-sync" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
-  <button class="atb-exit" onclick="exitAdmin()">✕ יציאה</button>
-</div>
-</body></html>                    
+  if(!m){_atbStat('קישור יוטיוב לא תקין','
