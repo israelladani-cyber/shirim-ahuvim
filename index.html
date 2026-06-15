@@ -1206,7 +1206,7 @@ function exitAdmin(){
   render(document.getElementById('q').value||'');
 }
 // ── DRAG & DROP ──
-let _dndType=null,_dndVid=null,_dndQueueVid=null,_dndScrollRaf=null;
+let _dndType=null,_dndVid=null,_dndQueueVid=null,_dndScrollDir=0,_dndScrollIv=null;
 function _dndArtistStart(e,vid){
   _dndType='artist';_dndVid=vid;
   e.dataTransfer.effectAllowed='move';
@@ -1272,7 +1272,7 @@ function _dndCleanup(){
   document.querySelectorAll('tr[data-vid]').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
   document.querySelectorAll('.queue-item[data-vid]').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
   _dndType=null;_dndVid=null;_dndQueueVid=null;
-  if(_dndScrollRaf){cancelAnimationFrame(_dndScrollRaf);_dndScrollRaf=null;}
+  clearInterval(_dndScrollIv);_dndScrollIv=null;_dndScrollDir=0;
 }
 function toggleDelMode(){
   document.body.classList.toggle('del-mode');
@@ -1552,15 +1552,14 @@ async function adminSyncGitHub(){
 <input type="file" id="artistPhotoInput" accept="image/*" style="display:none">
 <script>
 document.addEventListener('dragover',function(e){
-  if(!_dndType)return;
-  if(_dndScrollRaf){cancelAnimationFrame(_dndScrollRaf);_dndScrollRaf=null;}
-  const zone=120,spd=30;
-  let speed=0;
-  if(e.clientY<zone)speed=-spd;
-  else if(e.clientY>window.innerHeight-zone)speed=spd;
-  if(!speed)return;
-  const step=()=>{window.scrollBy(0,speed);_dndScrollRaf=requestAnimationFrame(step);};
-  _dndScrollRaf=requestAnimationFrame(step);
+  if(!_dndType){clearInterval(_dndScrollIv);_dndScrollIv=null;_dndScrollDir=0;return;}
+  const zone=130;
+  const dir=e.clientY<zone?-1:e.clientY>window.innerHeight-zone?1:0;
+  if(dir===_dndScrollDir)return;
+  _dndScrollDir=dir;
+  clearInterval(_dndScrollIv);_dndScrollIv=null;
+  if(!dir)return;
+  _dndScrollIv=setInterval(()=>window.scrollBy(0,dir*32),14);
 });
 document.getElementById('artistPhotoInput').addEventListener('change',function(){
   if(!this.files[0]||!_curPhotoArtist)return;
