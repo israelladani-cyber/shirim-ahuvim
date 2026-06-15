@@ -58,6 +58,8 @@ body{font-family:Arial,sans-serif;background:#121212;color:#fff;direction:rtl;mi
 .songs-table tr:hover td{color:#fff;}
 .td-num{width:28px;text-align:center;color:#535353;font-size:14px;}
 .td-actions{width:112px;text-align:left;}
+.song-artist-sub{font-size:11px;color:#535353;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.songs-table tr:hover .song-artist-sub{color:#888;}
 .song-actions{display:flex;align-items:center;gap:5px;justify-content:flex-start;}
 
 /* ACTION BUTTONS */
@@ -1028,7 +1030,7 @@ function render(term){
       const inQ=isInQueue(r.v);
       h+=`<tr data-vid="${r.v}"
            ondragover="_dndSongOver(event,'${r.v}')" ondrop="_dndSongDrop(event,'${r.v}')" ondragleave="_dndLeave(event)">
-        <td onclick="playVid('${r.v}')" style="cursor:pointer">${hl(r.s,q)}</td>
+        <td onclick="playVid('${r.v}')" style="cursor:pointer"><div>${hl(r.s,q)}</div><div class="song-artist-sub">${hl(r.a,q)}</div></td>
         <td class="td-actions">
           <div class="song-actions">
             <button class="drag-handle-song" draggable="true"
