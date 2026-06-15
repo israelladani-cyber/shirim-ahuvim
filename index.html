@@ -1445,10 +1445,11 @@ function adminAddSong(){
   if(lastIdx>=0){
     ALL.splice(lastIdx+1,0,{a:artist,s:song,v:vid});
   }else{
-    const sorted=[...new Set(ALL.map(s=>s.a)),artist].sort((a,b)=>a.localeCompare(b,'he'));
-    const nextArtist=sorted[sorted.indexOf(artist)+1];
-    if(nextArtist){const ins=ALL.findIndex(s=>s.a===nextArtist);ALL.splice(ins,0,{a:artist,s:song,v:vid});}
-    else ALL.push({a:artist,s:song,v:vid});
+    ALL.push({a:artist,s:song,v:vid});
+    const grp={};const ord2=[];
+    ALL.forEach(s=>{if(!grp[s.a]){grp[s.a]=[];ord2.push(s.a);}grp[s.a].push(s);});
+    ord2.sort((a,b)=>a.localeCompare(b,'he'));
+    ALL.length=0;ord2.forEach(a=>grp[a].forEach(s=>ALL.push(s)));
   }
   document.getElementById("atbSong").value="";
   document.getElementById("atbUrl").value="";
