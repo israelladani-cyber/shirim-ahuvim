@@ -1406,7 +1406,6 @@ function _fillArtistList(){
     artists.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('')+
     '<option value="__new__">＋ תיקייה חדשה</option>';
   if(cur&&cur!=='__new__')sel.value=cur;
-}">`).join("");
 }
 function adminDeleteSong(vid){
   const song=ALL.find(s=>s.v===vid);if(!song)return;
