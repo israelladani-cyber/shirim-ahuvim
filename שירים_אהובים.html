@@ -258,9 +258,17 @@ body.admin .drag-handle{display:inline-flex;align-items:center;}
 body.admin .drag-handle-song{display:flex;}
 .drag-handle-song:hover{color:#aaa;}
 .drag-handle-song:active{cursor:grabbing;}
-/* Drag-over visual feedback */
-.artist-block.drag-over>.artist-header{background:#1a2e1a;outline:2px dashed #1DB954;outline-offset:-2px;}
-.songs-table tr.drag-over td{background:rgba(29,185,84,.08);}
+/* Drag-over visual feedback - YouTube style line indicator */
+.artist-block.drag-over-above>.artist-header{box-shadow:inset 0 2px 0 #1DB954;}
+.artist-block.drag-over-below>.artist-header{box-shadow:inset 0 -2px 0 #1DB954;}
+.songs-table tr.drag-over-above td{box-shadow:inset 0 2px 0 #1DB954;}
+.songs-table tr.drag-over-below td{box-shadow:inset 0 -2px 0 #1DB954;}
+/* Queue DnD */
+.queue-item.drag-over-above{box-shadow:inset 0 2px 0 #1DB954;}
+.queue-item.drag-over-below{box-shadow:inset 0 -2px 0 #1DB954;}
+.qi-drag{cursor:grab;color:#555;font-size:15px;padding:0 4px;flex-shrink:0;user-select:none;display:flex;align-items:center;transition:color .15s;}
+.qi-drag:hover{color:#aaa;}
+.qi-drag:active{cursor:grabbing;}
 /* Admin: artist-level controls */
 .admin-artist-btns{display:none;gap:4px;align-items:center;flex-shrink:0;}
 body.admin .admin-artist-btns{display:flex;}
@@ -987,6 +995,7 @@ async function loadImages(){
 }
 
 function render(term){
+  closeeFolderPicker();
   const q=(term||'').trim().toLowerCase();
   const g={};const ord=[];
   ALL.forEach(r=>{
@@ -1066,15 +1075,26 @@ function pickHistory(term){const i=document.getElementById('q');i.value=term;ren
 function openQueuePanel(){
   const panel=document.getElementById('queuePanel');
   if(!panel)return;
-  // Render queue
   const list=document.getElementById('queuePanelList');
   if(list){
-    if(!queue.length){list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">הפלייליסט ריק</div>';
+    if(!queue.length){
+      list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">הפלייליסט ריק</div>';
     }else{
-      list.innerHTML=queue.map((s,i)=>`<div class="queue-item${currentSong&&currentSong.v===s.v?' active':''}" onclick="openModal(queue[${i}],queue,${i})">
-        <span class="queue-num">${i+1}</span>
-        <span class="queue-song-name">${s.s}</span>
-        <span class="queue-artist-name">${s.a||''}</span>
+      list.innerHTML=queue.map((s,i)=>`<div class="queue-item${currentSong&&currentSong.v===s.v?' active':''}"
+          draggable="true" data-vid="${s.v}"
+          ondragstart="_dndQueueStart(event,'${s.v}')"
+          ondragover="event.preventDefault();_dndQueueOver(event,'${s.v}')"
+          ondrop="_dndQueueDrop(event,'${s.v}')"
+          ondragleave="_dndLeave(event)"
+          ondragend="_dndEnd(event)"
+          onclick="openModal(queue.find(x=>x.v==='${s.v}'),queue,queue.findIndex(x=>x.v==='${s.v}'))">
+        <span class="qi-drag" onclick="event.stopPropagation()">⠿</span>
+        <span class="qi-num">${i+1}</span>
+        <div class="qi-thumb" style="background-image:url('https://i.ytimg.com/vi/${s.v}/mqdefault.jpg')"></div>
+        <div class="qi-info">
+          <div class="qi-name">${esc(s.s)}</div>
+          <div class="qi-artist">${esc(s.a||'')}</div>
+        </div>
         <button class="qi-rm" onclick="event.stopPropagation();removeFromQueue('${s.v}')" title="הסר">✕</button>
       </div>`).join('');
     }
@@ -1082,7 +1102,6 @@ function openQueuePanel(){
   panel.classList.add('open');
 }
 function closeQueuePanel(){const panel=document.getElementById('queuePanel');if(panel)panel.classList.remove('open');}
-function removeFromQueue(vid){queue=queue.filter(s=>s.v!==vid);updateQueueBar();refreshAddBtns();}
 
 // ── SESSION ──
 const SESSION_KEY='karaoke_session';
@@ -1171,7 +1190,7 @@ function exitAdmin(){
   render(document.getElementById('q').value||'');
 }
 // ── DRAG & DROP ──
-let _dndType=null,_dndVid=null;
+let _dndType=null,_dndVid=null,_dndQueueVid=null;
 function _dndArtistStart(e,vid){
   _dndType='artist';_dndVid=vid;
   e.dataTransfer.effectAllowed='move';
@@ -1187,22 +1206,22 @@ function _dndSongStart(e,vid){
 function _dndArtistOver(e,targetVid){
   if(_dndType!=='artist'||_dndVid===targetVid)return;
   e.preventDefault();e.dataTransfer.dropEffect='move';
-  document.querySelectorAll('.artist-block').forEach(b=>b.classList.remove('drag-over'));
+  document.querySelectorAll('.artist-block').forEach(b=>b.classList.remove('drag-over-above','drag-over-below'));
   const el=document.querySelector(`.artist-block[data-vid="${targetVid}"]`);
-  if(el)el.classList.add('drag-over');
+  if(el){const r=el.getBoundingClientRect();el.classList.add(e.clientY<r.top+r.height/2?'drag-over-above':'drag-over-below');}
 }
 function _dndSongOver(e,targetVid){
   if(_dndType!=='song'||_dndVid===targetVid)return;
   const src=ALL.find(s=>s.v===_dndVid),tgt=ALL.find(s=>s.v===targetVid);
   if(!src||!tgt||src.a!==tgt.a)return;
   e.preventDefault();e.dataTransfer.dropEffect='move';
-  document.querySelectorAll('tr[data-vid]').forEach(r=>r.classList.remove('drag-over'));
+  document.querySelectorAll('tr[data-vid]').forEach(r=>r.classList.remove('drag-over-above','drag-over-below'));
   const el=document.querySelector(`tr[data-vid="${targetVid}"]`);
-  if(el)el.classList.add('drag-over');
+  if(el){const r=el.getBoundingClientRect();el.classList.add(e.clientY<r.top+r.height/2?'drag-over-above':'drag-over-below');}
 }
 function _dndLeave(e){
   if(!e.currentTarget.contains(e.relatedTarget)){
-    e.currentTarget.classList.remove('drag-over');
+    e.currentTarget.classList.remove('drag-over','drag-over-above','drag-over-below');
   }
 }
 function _dndArtistDrop(e,targetVid){
@@ -1210,10 +1229,12 @@ function _dndArtistDrop(e,targetVid){
   e.preventDefault();
   const srcName=_artistOf(_dndVid),tgtName=_artistOf(targetVid);
   if(!srcName||!tgtName)return;
+  const tgtEl=document.querySelector(`.artist-block[data-vid="${targetVid}"]`);
+  const after=tgtEl&&tgtEl.classList.contains('drag-over-below');
   const ord=_artistOrder();
   const groups={};ord.forEach(a=>{groups[a]=ALL.filter(s=>s.a===a);});
-  const si=ord.indexOf(srcName),ti=ord.indexOf(tgtName);
-  ord.splice(si,1);ord.splice(si<ti?ti:ti,0,srcName);
+  const si=ord.indexOf(srcName);ord.splice(si,1);
+  const ti=ord.indexOf(tgtName);ord.splice(after?ti+1:ti,0,srcName);
   _rebuildFromGroups(ord,groups);
   _markDirty();_dndCleanup();render(document.getElementById('q').value||'');
 }
@@ -1222,18 +1243,48 @@ function _dndSongDrop(e,targetVid){
   const src=ALL.find(s=>s.v===_dndVid),tgt=ALL.find(s=>s.v===targetVid);
   if(!src||!tgt||src.a!==tgt.a)return;
   e.preventDefault();
-  const si=ALL.indexOf(src),ti=ALL.indexOf(tgt);
-  ALL.splice(si,1);ALL.splice(si<ti?ti:ti,0,src);
+  const tgtEl=document.querySelector(`tr[data-vid="${targetVid}"]`);
+  const after=tgtEl&&tgtEl.classList.contains('drag-over-below');
+  const si=ALL.indexOf(src);ALL.splice(si,1);
+  const ti=ALL.indexOf(tgt);ALL.splice(after?ti+1:ti,0,src);
   _markDirty();_dndCleanup();render(document.getElementById('q').value||'');
 }
 function _dndEnd(e){_dndCleanup();}
 function _dndCleanup(){
-  document.querySelectorAll('.artist-block,.artist-block[data-vid]').forEach(el=>{el.classList.remove('drag-over');el.style.opacity='';});
-  document.querySelectorAll('tr[data-vid]').forEach(el=>{el.classList.remove('drag-over');el.style.opacity='';});
-  _dndType=null;_dndVid=null;
+  const cls=['drag-over','drag-over-above','drag-over-below'];
+  document.querySelectorAll('.artist-block').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
+  document.querySelectorAll('tr[data-vid]').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
+  document.querySelectorAll('.queue-item[data-vid]').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
+  _dndType=null;_dndVid=null;_dndQueueVid=null;
 }
 function toggleDelMode(){
   document.body.classList.toggle('del-mode');
+}
+// ── QUEUE DnD ──
+function _dndQueueStart(e,vid){
+  _dndType='queue';_dndQueueVid=vid;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',vid);
+  setTimeout(()=>{const el=document.querySelector(`.queue-item[data-vid="${vid}"]`);if(el)el.style.opacity='.4';},0);
+}
+function _dndQueueOver(e,targetVid){
+  if(_dndType!=='queue'||_dndQueueVid===targetVid)return;
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('.queue-item').forEach(el=>el.classList.remove('drag-over-above','drag-over-below'));
+  const el=document.querySelector(`.queue-item[data-vid="${targetVid}"]`);
+  if(el){const r=el.getBoundingClientRect();el.classList.add(e.clientY<r.top+r.height/2?'drag-over-above':'drag-over-below');}
+}
+function _dndQueueDrop(e,targetVid){
+  if(_dndType!=='queue'||_dndQueueVid===targetVid)return;
+  e.preventDefault();
+  const tgtEl=document.querySelector(`.queue-item[data-vid="${targetVid}"]`);
+  const after=tgtEl&&tgtEl.classList.contains('drag-over-below');
+  const si=queue.findIndex(s=>s.v===_dndQueueVid);
+  if(si<0)return;
+  const[song]=queue.splice(si,1);
+  const ti=queue.findIndex(s=>s.v===targetVid);
+  queue.splice(after?ti+1:ti,0,song);
+  _dndCleanup();updateQueueBar();openQueuePanel();
 }
 // ── ARTIST MANAGEMENT ──
 function _artistOf(vid){const s=ALL.find(x=>x.v===vid);return s?s.a:null;}
@@ -1273,23 +1324,24 @@ function adminMoveArtistDown(vid){
   _markDirty();render(document.getElementById('q').value||'');
 }
 // ── MOVE SONG TO FOLDER ──
-let _folderPickerEl=null;
+let _folderPickerEl=null,_pickerArtists=[];
 function adminMoveSongToFolder(vid,btn){
+  if(!_admMode)return;
   closeeFolderPicker();
   const song=ALL.find(s=>s.v===vid);if(!song)return;
-  const artists=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,'he'));
+  _pickerArtists=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,'he'));
   const picker=document.createElement('div');
   picker.className='folder-picker';
   picker.onclick=e=>e.stopPropagation();
   picker.innerHTML=`<div class="folder-picker-title">העבר לתיקייה</div>`+
-    artists.map(a=>`<div class="folder-picker-item${a===song.a?' current':''}"
-      ${a!==song.a?`onclick="applyMoveSongToFolder('${vid}',this.dataset.artist);closeeFolderPicker()" data-artist="${esc(a).replace(/"/g,'&quot;')}"`:''}>
+    _pickerArtists.map((a,idx)=>`<div class="folder-picker-item${a===song.a?' current':''}"
+      ${a!==song.a?`onclick="applyMoveSongToFolder('${vid}',_pickerArtists[${idx}]);closeeFolderPicker()"`:''}>
       ${esc(a)}${a===song.a?' ✓':''}</div>`).join('')+
     `<div class="folder-picker-new" onclick="adminMoveSongNewFolder('${vid}');closeeFolderPicker()">＋ תיקייה חדשה</div>`;
   document.body.appendChild(picker);
   _folderPickerEl=picker;
   const rect=btn.getBoundingClientRect();
-  const pickerH=Math.min(290,artists.length*34+70);
+  const pickerH=Math.min(290,_pickerArtists.length*34+70);
   const top=rect.bottom+pickerH>window.innerHeight?rect.top-pickerH:rect.bottom+4;
   picker.style.top=Math.max(4,top)+'px';
   picker.style.right=Math.max(8,window.innerWidth-rect.right-10)+'px';
