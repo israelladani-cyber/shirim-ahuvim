@@ -1559,7 +1559,7 @@ document.addEventListener('dragover',function(e){
   _dndScrollDir=dir;
   clearInterval(_dndScrollIv);_dndScrollIv=null;
   if(!dir)return;
-  _dndScrollIv=setInterval(()=>window.scrollBy(0,dir*32),14);
+  _dndScrollIv=setInterval(()=>window.scrollBy(0,dir*18),16);
 });
 document.getElementById('artistPhotoInput').addEventListener('change',function(){
   if(!this.files[0]||!_curPhotoArtist)return;
