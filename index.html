@@ -41,8 +41,11 @@ body{font-family:Arial,sans-serif;background:#121212;color:#fff;direction:rtl;mi
 .artist-block:hover{background:#1c1c1c;}
 .artist-header{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#282828;cursor:pointer;user-select:none;}
 .artist-header:hover{background:#303030;}
-.artist-avatar{width:60px;height:60px;background:linear-gradient(135deg,#1DB954,#0d7a38);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#000;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center top;}
+.artist-avatar{width:60px;height:60px;background:linear-gradient(135deg,#1DB954,#0d7a38);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#000;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center top;position:relative;}
 .artist-avatar.has-photo{box-shadow:0 2px 8px rgba(0,0,0,.5);}
+body.admin .artist-avatar{cursor:pointer;}
+body.admin .artist-avatar::after{content:'📷';position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);font-size:22px;border-radius:50%;}
+body.admin .artist-avatar:hover::after{display:flex;}
 .artist-name-text{font-size:17px;font-weight:700;flex:1;}
 .chevron{color:#B3B3B3;transition:transform .25s;display:flex;align-items:center;}
 .artist-block[data-open="false"] .chevron{transform:rotate(-90deg);}
@@ -746,6 +749,13 @@ function playQueue(){
 // ── ARTISTS / RENDER ──
 const IMG_CACHE={};
 function applyPhoto(el,url){el.style.backgroundImage=`url('${url}')`;el.style.backgroundSize='cover';el.style.backgroundPosition='center top';el.textContent='';el.classList.add('has-photo');}
+let _curPhotoArtist=null;
+function adminClickAvatar(name,ev){
+  if(!_admMode)return;
+  ev.stopPropagation();
+  _curPhotoArtist=name;
+  const inp=document.getElementById('artistPhotoInput');inp.value='';inp.click();
+}
 function toggleArtist(h){const b=h.closest('.artist-block');b.dataset.open=b.dataset.open==='false'?'true':'false';updateToggleBtn();}
 // ── FLOAT PLAYER / PiP ──
 let _pipDrag=false,_pipOX=0,_pipOY=0,_pipSX=0,_pipSY=0,_pipMoved=false;
@@ -987,6 +997,8 @@ async function loadImages(){
   const promises=[];
   for(const el of avatars){
     const name=el.dataset.artist;
+    const customPhoto=localStorage.getItem('artist_photo_'+name);
+    if(customPhoto){applyPhoto(el,customPhoto);IMG_CACHE[name]=customPhoto;continue;}
     if(IMG_CACHE[name]&&IMG_CACHE[name]!=='none'){applyPhoto(el,IMG_CACHE[name]);continue;}
     if(IMG_CACHE[name]==='none')continue;
     promises.push((async()=>{
@@ -1015,7 +1027,7 @@ function render(term){
     h+=`<div class="artist-block" data-open="${q?'true':'false'}" data-vid="${vid}"
          ondragover="_dndArtistOver(event,'${vid}')" ondrop="_dndArtistDrop(event,'${vid}')" ondragleave="_dndLeave(event)">`;
     h+=`<div class="artist-header" onclick="toggleArtist(this)">`;
-    h+=`<div class="artist-avatar" data-artist="${esc(a)}" data-vid="${vid}">${esc(a.slice(0,2))}</div>`;
+    h+=`<div class="artist-avatar" data-artist="${esc(a)}" data-vid="${vid}" onclick="adminClickAvatar('${esc(a)}',event)">${esc(a.slice(0,2))}</div>`;
     h+=`<span class="artist-name-text">${hl(a,q)}</span>`;
     h+=`<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
     h+=`<div class="admin-artist-btns">`;
@@ -1529,5 +1541,21 @@ async function adminSyncGitHub(){
   </div>
 </div>
 
+<input type="file" id="artistPhotoInput" accept="image/*" style="display:none">
+<script>
+document.getElementById('artistPhotoInput').addEventListener('change',function(){
+  if(!this.files[0]||!_curPhotoArtist)return;
+  const artist=_curPhotoArtist;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const dataUrl=e.target.result;
+    localStorage.setItem('artist_photo_'+artist,dataUrl);
+    IMG_CACHE[artist]=dataUrl;
+    document.querySelectorAll(`.artist-avatar[data-artist="${CSS.escape(artist)}"]`).forEach(el=>applyPhoto(el,dataUrl));
+  };
+  reader.readAsDataURL(this.files[0]);
+  this.value='';_curPhotoArtist=null;
+});
+</script>
 </body>
 </html>
