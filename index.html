@@ -1219,20 +1219,9 @@ function _dndSongStart(e,vid){
   e.dataTransfer.setData('text/plain',vid);
   setTimeout(()=>{const el=document.querySelector(`tr[data-vid="${vid}"]`);if(el)el.style.opacity='.4';},0);
 }
-function _dndAutoScroll(clientY){
-  if(_dndScrollRaf)cancelAnimationFrame(_dndScrollRaf);
-  const zone=90,maxSpeed=18;
-  let speed=0;
-  if(clientY<zone)speed=-maxSpeed*(1-(clientY/zone));
-  else if(clientY>window.innerHeight-zone)speed=maxSpeed*(1-((window.innerHeight-clientY)/zone));
-  if(!speed){_dndScrollRaf=null;return;}
-  const step=()=>{window.scrollBy(0,speed);_dndScrollRaf=requestAnimationFrame(step);};
-  _dndScrollRaf=requestAnimationFrame(step);
-}
 function _dndArtistOver(e,targetVid){
   if(_dndType!=='artist'||_dndVid===targetVid)return;
   e.preventDefault();e.dataTransfer.dropEffect='move';
-  _dndAutoScroll(e.clientY);
   document.querySelectorAll('.artist-block').forEach(b=>b.classList.remove('drag-over-above','drag-over-below'));
   const el=document.querySelector(`.artist-block[data-vid="${targetVid}"]`);
   if(el){const r=el.getBoundingClientRect();el.classList.add(e.clientY<r.top+r.height/2?'drag-over-above':'drag-over-below');}
@@ -1562,6 +1551,17 @@ async function adminSyncGitHub(){
 
 <input type="file" id="artistPhotoInput" accept="image/*" style="display:none">
 <script>
+document.addEventListener('dragover',function(e){
+  if(!_dndType)return;
+  if(_dndScrollRaf){cancelAnimationFrame(_dndScrollRaf);_dndScrollRaf=null;}
+  const zone=100,maxSpeed=22;
+  let speed=0;
+  if(e.clientY<zone)speed=-maxSpeed*(1-e.clientY/zone);
+  else if(e.clientY>window.innerHeight-zone)speed=maxSpeed*(1-(window.innerHeight-e.clientY)/zone);
+  if(!speed)return;
+  const step=()=>{window.scrollBy(0,speed);_dndScrollRaf=requestAnimationFrame(step);};
+  _dndScrollRaf=requestAnimationFrame(step);
+});
 document.getElementById('artistPhotoInput').addEventListener('change',function(){
   if(!this.files[0]||!_curPhotoArtist)return;
   const artist=_curPhotoArtist;
