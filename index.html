@@ -234,7 +234,6 @@ body.admin .adm-toolbar{display:flex;}
 .atb-inp{background:#fff;border:1px solid #ddd;color:#121212;border-radius:24px;height:36px;padding:0 14px;font-size:14px;font-family:Arial,sans-serif;direction:rtl;min-width:0;flex-shrink:0;}
 .atb-inp:focus{outline:none;box-shadow:0 0 0 2px #1DB954;border-color:transparent;}
 .atb-inp[id="atbArtist"],.atb-inp[id="atbSong"]{width:130px;}
-select.atb-artist-sel{cursor:pointer;padding-left:4px;}
 .atb-inp[id="atbUrl"]{flex:1;min-width:120px;max-width:860px;flex-shrink:1;}
 /* Buttons match site toolbar-btn style */
 .atb-btn{display:flex;align-items:center;gap:6px;background:#282828;border:none;color:#B3B3B3;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;}
@@ -1399,13 +1398,9 @@ function saveAdmToken(){
   _atbStat("✓ Token נשמר","ok");
 }
 function _fillArtistList(){
-  const sel=document.getElementById("atbArtist");if(!sel||sel.tagName!=='SELECT')return;
-  const cur=sel.value;
+  const dl=document.getElementById("atbArtistList");if(!dl)return;
   const artists=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,"he"));
-  sel.innerHTML='<option value="">-- בחר אמן / תיקייה --</option>'+
-    artists.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('')+
-    '<option value="__new__">＋ תיקייה חדשה</option>';
-  if(cur&&cur!=='__new__')sel.value=cur;
+  dl.innerHTML=artists.map(a=>`<option value="${esc(a)}">`).join("");
 }
 function adminDeleteSong(vid){
   const song=ALL.find(s=>s.v===vid);if(!song)return;
@@ -1416,12 +1411,7 @@ function adminDeleteSong(vid){
   _markDirty();_atbStat("🗑 שיר נמחק","ok");
 }
 function adminAddSong(){
-  let artist=document.getElementById("atbArtist").value.trim();
-  if(artist==='__new__'){
-    const n=prompt('שם האמן / תיקייה החדשה:','');
-    if(!n||!n.trim()){return;}
-    artist=n.trim();
-  }
+  const artist=document.getElementById("atbArtist").value.trim();
   const song=document.getElementById("atbSong").value.trim();
   const url=document.getElementById("atbUrl").value.trim();
   if(!artist||!song){_atbStat("חסר שם אמן או שם שיר","err");return;}
@@ -1432,12 +1422,11 @@ function adminAddSong(){
   const lastIdx=ALL.reduce((li,s,i)=>s.a===artist?i:li,-1);
   if(lastIdx>=0)ALL.splice(lastIdx+1,0,{a:artist,s:song,v:vid});
   else ALL.push({a:artist,s:song,v:vid});
+  document.getElementById("atbArtist").value="";
   document.getElementById("atbSong").value="";
   document.getElementById("atbUrl").value="";
-  _fillArtistList();
-  document.getElementById("atbArtist").value=artist;
-  document.getElementById("atbSong").focus();
-  render(document.getElementById("q").value||"");
+  document.getElementById("atbArtist").focus();
+  _fillArtistList();render(document.getElementById("q").value||"");
   _markDirty();_atbStat("✓ שיר נוסף","ok");
 }
 function _markDirty(){
@@ -1513,10 +1502,8 @@ async function adminSyncGitHub(){
 <!-- ── ADMIN TOOLBAR ── -->
 <div class="adm-toolbar" id="admToolbar">
   <div class="atb-add-row">
-    <select class="atb-inp atb-artist-sel" id="atbArtist">
-      <option value="">-- בחר אמן / תיקייה --</option>
-      <option value="__new__">＋ תיקייה חדשה</option>
-    </select>
+    <input class="atb-inp" id="atbArtist" placeholder="שם אמן / תיקייה" list="artistList" autocomplete="off">
+    <datalist id="artistList"></datalist>
     <input class="atb-inp" id="atbSong" placeholder="שם שיר">
     <input class="atb-inp" id="atbUrl" placeholder="קישור YouTube">
     <button class="atb-btn green" onclick="adminAddSong()">+ הוסף שיר</button>
