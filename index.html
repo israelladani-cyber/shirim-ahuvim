@@ -1206,7 +1206,7 @@ function exitAdmin(){
   render(document.getElementById('q').value||'');
 }
 // ── DRAG & DROP ──
-let _dndType=null,_dndVid=null,_dndQueueVid=null;
+let _dndType=null,_dndVid=null,_dndQueueVid=null,_dndScrollRaf=null;
 function _dndArtistStart(e,vid){
   _dndType='artist';_dndVid=vid;
   e.dataTransfer.effectAllowed='move';
@@ -1219,9 +1219,20 @@ function _dndSongStart(e,vid){
   e.dataTransfer.setData('text/plain',vid);
   setTimeout(()=>{const el=document.querySelector(`tr[data-vid="${vid}"]`);if(el)el.style.opacity='.4';},0);
 }
+function _dndAutoScroll(clientY){
+  if(_dndScrollRaf)cancelAnimationFrame(_dndScrollRaf);
+  const zone=90,maxSpeed=18;
+  let speed=0;
+  if(clientY<zone)speed=-maxSpeed*(1-(clientY/zone));
+  else if(clientY>window.innerHeight-zone)speed=maxSpeed*(1-((window.innerHeight-clientY)/zone));
+  if(!speed){_dndScrollRaf=null;return;}
+  const step=()=>{window.scrollBy(0,speed);_dndScrollRaf=requestAnimationFrame(step);};
+  _dndScrollRaf=requestAnimationFrame(step);
+}
 function _dndArtistOver(e,targetVid){
   if(_dndType!=='artist'||_dndVid===targetVid)return;
   e.preventDefault();e.dataTransfer.dropEffect='move';
+  _dndAutoScroll(e.clientY);
   document.querySelectorAll('.artist-block').forEach(b=>b.classList.remove('drag-over-above','drag-over-below'));
   const el=document.querySelector(`.artist-block[data-vid="${targetVid}"]`);
   if(el){const r=el.getBoundingClientRect();el.classList.add(e.clientY<r.top+r.height/2?'drag-over-above':'drag-over-below');}
@@ -1272,6 +1283,7 @@ function _dndCleanup(){
   document.querySelectorAll('tr[data-vid]').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
   document.querySelectorAll('.queue-item[data-vid]').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
   _dndType=null;_dndVid=null;_dndQueueVid=null;
+  if(_dndScrollRaf){cancelAnimationFrame(_dndScrollRaf);_dndScrollRaf=null;}
 }
 function toggleDelMode(){
   document.body.classList.toggle('del-mode');
@@ -1448,7 +1460,7 @@ function adminAddSong(){
     ALL.push({a:artist,s:song,v:vid});
     const grp={};const ord2=[];
     ALL.forEach(s=>{if(!grp[s.a]){grp[s.a]=[];ord2.push(s.a);}grp[s.a].push(s);});
-    ord2.sort((a,b)=>a.localeCompare(b,'he'));
+    ord2.sort((a,b)=>a<b?-1:a>b?1:0);
     ALL.length=0;ord2.forEach(a=>grp[a].forEach(s=>ALL.push(s)));
   }
   document.getElementById("atbSong").value="";
