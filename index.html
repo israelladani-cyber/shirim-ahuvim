@@ -1385,4 +1385,136 @@ function adminMoveSongUp(vid){
 function adminMoveSongDown(vid){
   const song=ALL.find(s=>s.v===vid);if(!song)return;
   const sib=ALL.filter(s=>s.a===song.a);
-  const i=sib.findIndex(s=>s.v===vid);if(i>=sib.length-1)re
+  const i=sib.findIndex(s=>s.v===vid);if(i>=sib.length-1)return;
+  const ai=ALL.indexOf(song),bi=ALL.indexOf(sib[i+1]);
+  [ALL[ai],ALL[bi]]=[ALL[bi],ALL[ai]];
+  _markDirty();render(document.getElementById("q").value||"");
+}
+function saveAdmToken(){
+  const t=document.getElementById("admTokenInp").value.trim();
+  if(!t){document.getElementById("admTokenErr").textContent="הזן Token";return;}
+  localStorage.setItem("gh_token",t);
+  document.getElementById("admTokenOv").classList.remove("open");
+  _atbStat("✓ Token נשמר","ok");
+}
+function _fillArtistList(){
+  const dl=document.getElementById("atbArtistList");if(!dl)return;
+  const artists=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,"he"));
+  dl.innerHTML=artists.map(a=>`<option value="${esc(a)}">`).join("");
+}
+function adminDeleteSong(vid){
+  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  if(!confirm('למחוק "'+song.s+'" של '+song.a+'?'))return;
+  ALL.splice(ALL.findIndex(s=>s.v===vid),1);
+  if(isInQueue(vid))removeFromQueue(vid);
+  render(document.getElementById("q").value||"");
+  _markDirty();_atbStat("🗑 שיר נמחק","ok");
+}
+function adminAddSong(){
+  const artist=document.getElementById("atbArtist").value.trim();
+  const song=document.getElementById("atbSong").value.trim();
+  const url=document.getElementById("atbUrl").value.trim();
+  if(!artist||!song){_atbStat("חסר שם אמן או שם שיר","err");return;}
+  const m=url.match(/[?&]v=([A-Za-z0-9_-]+)/);
+  if(!m){_atbStat("קישור יוטיוב לא תקין","err");return;}
+  const vid=m[1];
+  if(ALL.some(s=>s.v===vid)){_atbStat("שיר זה כבר קיים ברשימה","err");return;}
+  const lastIdx=ALL.reduce((li,s,i)=>s.a===artist?i:li,-1);
+  if(lastIdx>=0)ALL.splice(lastIdx+1,0,{a:artist,s:song,v:vid});
+  else ALL.push({a:artist,s:song,v:vid});
+  document.getElementById("atbArtist").value="";
+  document.getElementById("atbSong").value="";
+  document.getElementById("atbUrl").value="";
+  document.getElementById("atbArtist").focus();
+  _fillArtistList();render(document.getElementById("q").value||"");
+  _markDirty();_atbStat("✓ שיר נוסף","ok");
+}
+function _markDirty(){
+  _admDirty=true;
+  const b=document.getElementById("atbSyncBtn");
+  if(b){b.style.outline="2px solid #f0a500";b.title="יש שינויים שלא נשמרו";}
+}
+function _atbStat(msg,cls){
+  clearTimeout(_atbT);const el=document.getElementById("atbStat");if(!el)return;
+  el.textContent=msg;el.className="atb-stat"+(cls?" "+cls:"");
+  _atbT=setTimeout(()=>{el.textContent="";el.className="atb-stat";},4500);
+}
+async function adminSyncGitHub(){
+  const token=localStorage.getItem("gh_token");
+  if(!token){document.getElementById("admTokenOv").classList.add("open");return;}
+  const btn=document.getElementById("atbSyncBtn");
+  btn.textContent="מסנכרן...";btn.disabled=true;
+  try{
+    const r=await fetch("https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html",
+      {headers:{"Authorization":"Bearer "+token,"Accept":"application/vnd.github.v3+json"}});
+    if(!r.ok)throw new Error("GitHub API שגיאה: "+r.status);
+    const d=await r.json();
+    const raw=decodeURIComponent(escape(atob(d.content.replace(/\n/g,""))));
+    const newAll="const ALL="+JSON.stringify(ALL)+";";
+    const newHtml=raw.replace(/const ALL=\[[\s\S]*?\];/,newAll);
+    if(newHtml===raw)throw new Error("לא ניתן לאתר את מערך השירים בקובץ");
+    const enc=btoa(unescape(encodeURIComponent(newHtml)));
+    const put=await fetch("https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html",{
+      method:"PUT",
+      headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+      body:JSON.stringify({message:"עדכון שירים דרך פאנל ניהול",content:enc,sha:d.sha})
+    });
+    if(!put.ok){const e=await put.json();throw new Error(e.message||"שגיאה "+put.status);}
+    _admDirty=false;
+    btn.style.outline="none";btn.title="";
+    btn.textContent="✓ נשמר!";
+    setTimeout(()=>btn.textContent="⟳ שמור ב-GitHub",3000);
+    _atbStat("✓ עודכן ב-GitHub בהצלחה","ok");
+  }catch(e){
+    _atbStat("שגיאה: "+e.message,"err");
+    btn.textContent="⟳ שמור ב-GitHub";
+  }finally{btn.disabled=false;}
+}
+</script>
+
+<!-- ── ADMIN OVERLAYS ── -->
+<div class="adm-overlay" id="admLoginOv">
+  <div class="adm-box">
+    <div class="adm-title">🔐 כניסת מנהל</div>
+    <input class="adm-inp" type="password" id="admPin" placeholder="קוד PIN" maxlength="30"
+      onkeydown="if(event.key==='Enter')doAdmLogin()">
+    <div class="adm-err" id="admPinErr"></div>
+    <div class="adm-row">
+      <button class="adm-btn" onclick="doAdmLogin()">כניסה</button>
+      <button class="adm-btn sec" onclick="document.getElementById('admLoginOv').classList.remove('open')">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<div class="adm-overlay" id="admTokenOv">
+  <div class="adm-box">
+    <div class="adm-title">🔑 GitHub Token</div>
+    <p style="font-size:13px;color:#ccc;margin:0 0 10px">הכנס Personal Access Token עם הרשאות repo</p>
+    <input class="adm-inp" type="password" id="admTokenInp" placeholder="ghp_..." maxlength="200"
+      onkeydown="if(event.key==='Enter')saveAdmToken()">
+    <div class="adm-row">
+      <button class="adm-btn sec" onclick="document.getElementById('admTokenOv').classList.remove('open')">ביטול</button>
+      <button class="adm-btn" onclick="saveAdmToken()">שמור</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADMIN TOOLBAR ── -->
+<div class="adm-toolbar" id="admToolbar">
+  <div class="atb-add-row">
+    <input class="atb-inp" id="atbArtist" placeholder="שם אמן / תיקייה" list="artistList" autocomplete="off">
+    <datalist id="artistList"></datalist>
+    <input class="atb-inp" id="atbSong" placeholder="שם שיר">
+    <input class="atb-inp" id="atbUrl" placeholder="קישור YouTube">
+    <button class="atb-btn green" onclick="adminAddSong()">+ הוסף שיר</button>
+  </div>
+  <div class="atb-actions-row">
+    <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
+    <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
+    <span class="atb-stat" id="atbStat"></span>
+    <button class="atb-btn" style="margin-right:auto" onclick="exitAdmin()">✕ יציאה</button>
+  </div>
+</div>
+
+</body>
+</html>
