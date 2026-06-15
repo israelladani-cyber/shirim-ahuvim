@@ -1554,10 +1554,10 @@ async function adminSyncGitHub(){
 document.addEventListener('dragover',function(e){
   if(!_dndType)return;
   if(_dndScrollRaf){cancelAnimationFrame(_dndScrollRaf);_dndScrollRaf=null;}
-  const zone=100,maxSpeed=22;
+  const zone=120,spd=30;
   let speed=0;
-  if(e.clientY<zone)speed=-maxSpeed*(1-e.clientY/zone);
-  else if(e.clientY>window.innerHeight-zone)speed=maxSpeed*(1-(window.innerHeight-e.clientY)/zone);
+  if(e.clientY<zone)speed=-spd;
+  else if(e.clientY>window.innerHeight-zone)speed=spd;
   if(!speed)return;
   const step=()=>{window.scrollBy(0,speed);_dndScrollRaf=requestAnimationFrame(step);};
   _dndScrollRaf=requestAnimationFrame(step);
