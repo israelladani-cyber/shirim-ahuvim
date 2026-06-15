@@ -5,20 +5,19 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>קריוקי מזרחית</title>
 <link rel="icon" type="image/svg+xml" href="logo%209.svg">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23121212'/%3E%3Crect x='12' y='3' width='8' height='14' rx='4' fill='%231DB954'/%3E%3Cpath d='M8 15 Q8 24 16 24 Q24 24 24 15' fill='none' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='16' y1='24' x2='16' y2='28' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='11' y1='28' x2='21' y2='28' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
 *{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:Arial,sans-serif;background:#121212;color:#fff;direction:rtl;min-height:100vh;padding-bottom:80px;}
+body{font-family:Arial,sans-serif;background:#F9F9F9;color:#0F0F0F;direction:rtl;min-height:100vh;padding-bottom:80px;}
 
 /* TOP BAR */
-.top{background:rgba(18,18,18,.97);backdrop-filter:blur(20px);border-bottom:1px solid #282828;padding:0 24px;position:sticky;top:0;z-index:10;}
+.top{background:rgba(255,255,255,1);backdrop-filter:blur(20px);border-bottom:1px solid #E5E5E5;padding:0 24px;position:sticky;top:0;z-index:10;}
 .top-row{min-height:80px;display:flex;align-items:center;justify-content:center;}
 .brand{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;align-items:center;cursor:pointer;}
 
 /* SEARCH SECTION */
 .search-section{width:860px;max-width:calc(100% - 24px);display:flex;align-items:center;gap:12px;flex-shrink:0;}
 .yt-search{position:relative;flex:1;display:flex;align-items:center;direction:ltr;background:#fff;border-radius:24px;border:1px solid #ddd;height:38px;padding:0 12px;gap:8px;transition:box-shadow .2s;}
-.yt-search:focus-within{box-shadow:0 0 0 2px #1DB954;border-color:transparent;}
+.yt-search:focus-within{box-shadow:0 0 0 2px #FF0000;border-color:transparent;}
 .yt-search-icon{display:flex;align-items:center;color:#555;flex-shrink:0;cursor:pointer;}
 .yt-search input{flex:1;border:none;outline:none;font-size:16px;color:#121212;background:transparent;direction:rtl;font-family:Arial,sans-serif;min-width:0;}
 .yt-search input::placeholder{color:#aaa;}
@@ -28,51 +27,51 @@ body{font-family:Arial,sans-serif;background:#121212;color:#fff;direction:rtl;mi
 .yt-history.open{display:block;}
 .yt-hist-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:#222;font-size:14px;font-family:Arial,sans-serif;direction:rtl;}
 .yt-hist-item:hover{background:#f5f5f5;}
-.yt-hist-item svg{flex-shrink:0;color:#888;}
-.yt-hist-clear{text-align:center;padding:8px;font-size:12px;color:#888;cursor:pointer;border-top:1px solid #eee;}
+.yt-hist-item svg{flex-shrink:0;color:#606060;}
+.yt-hist-clear{text-align:center;padding:8px;font-size:12px;color:#606060;cursor:pointer;border-top:1px solid #eee;}
 .yt-hist-clear:hover{background:#f5f5f5;color:#e00;}
-.stats{color:#B3B3B3;font-size:12px;}.stats b{color:#1DB954;}
-.toolbar-btn{display:flex;align-items:center;gap:6px;background:#282828;border:none;color:#B3B3B3;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;}
-.toolbar-btn:hover{background:#333;color:#fff;}
+.stats{color:#606060;font-size:12px;}.stats b{color:#FF0000;}
+.toolbar-btn{display:flex;align-items:center;gap:6px;background:#F2F2F2;border:none;color:#606060;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;}
+.toolbar-btn:hover{background:#E5E5E5;color:#0F0F0F;}
 .toolbar-btn .bc{transition:transform .25s;display:flex;align-items:center;}
 .all-closed .bc{transform:rotate(-90deg);}
 
 /* CONTENT */
 .content{padding:20px 16px;max-width:860px;margin:0 auto;}
-.artist-block{margin-bottom:14px;background:#181818;border-radius:12px;overflow:hidden;}
-.artist-block:hover{background:#1c1c1c;}
-.artist-header{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#282828;cursor:pointer;user-select:none;}
-.artist-header:hover{background:#303030;}
-.artist-avatar{width:60px;height:60px;background:linear-gradient(135deg,#1DB954,#0d7a38);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#000;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center top;position:relative;}
+.artist-block{margin-bottom:14px;background:#FFFFFF;border-radius:12px;overflow:hidden;border:1px solid #E5E5E5;}
+.artist-block:hover{background:#F2F2F2;}
+.artist-header{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#F2F2F2;cursor:pointer;user-select:none;}
+.artist-header:hover{background:#E5E5E5;}
+.artist-avatar{width:60px;height:60px;background:linear-gradient(135deg,#FF0000,#CC0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#fff;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center top;position:relative;}
 .artist-avatar.has-photo{box-shadow:0 2px 8px rgba(0,0,0,.5);}
 body.admin .artist-avatar{cursor:pointer;}
 body.admin .artist-avatar::after{content:'📷';position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);font-size:22px;border-radius:50%;}
 body.admin .artist-avatar:hover::after{display:flex;}
 .artist-name-text{font-size:17px;font-weight:700;flex:1;}
-.chevron{color:#B3B3B3;transition:transform .25s;display:flex;align-items:center;}
+.chevron{color:#606060;transition:transform .25s;display:flex;align-items:center;}
 .artist-block[data-open="false"] .chevron{transform:rotate(-90deg);}
-.songs-wrap{overflow:hidden;}
+.songs-wrap{overflow:hidden;background:#FAFAFA;}
 .artist-block[data-open="false"] .songs-wrap{display:none;}
 
 /* SONGS TABLE */
 .songs-table{width:100%;border-collapse:collapse;}
-.songs-table tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
+.songs-table tr{border-bottom:1px solid rgba(0,0,0,.1);transition:background .1s;}
 .songs-table tr:last-child{border-bottom:none;}
-.songs-table tr:hover{background:rgba(255,255,255,.05);}
-.songs-table td{padding:10px 14px;font-size:15px;color:#B3B3B3;vertical-align:middle;}
-.songs-table tr:hover td{color:#fff;}
-.td-num{width:28px;text-align:center;color:#535353;font-size:14px;}
+.songs-table tr:hover{background:rgba(0,0,0,.07);}
+.songs-table td{padding:10px 14px;font-size:15px;color:#0F0F0F;vertical-align:middle;}
+.songs-table tr:hover td{color:#0F0F0F;}
+.td-num{width:28px;text-align:center;color:#909090;font-size:14px;}
 .td-actions{width:112px;text-align:left;}
-.song-artist-sub{font-size:11px;color:#535353;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.songs-table tr:hover .song-artist-sub{color:#888;}
+.song-artist-sub{font-size:11px;color:#909090;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.songs-table tr:hover .song-artist-sub{color:#606060;}
 .song-actions{display:flex;align-items:center;gap:5px;justify-content:flex-start;}
 
 /* ACTION BUTTONS */
-.btn-play{width:30px;height:30px;border-radius:50%;background:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .15s;padding-right:1px;}
-.btn-play:hover{transform:scale(1.1);background:#e8e8e8;}
-.btn-play svg{width:12px;height:14px;}
-.btn-add{width:28px;height:28px;border-radius:50%;background:none;border:1.5px solid #444;color:#B3B3B3;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;line-height:1;transition:all .15s;}
-.btn-add:hover,.btn-add.in-queue{background:#1DB954;border-color:#1DB954;color:#000;}
+.btn-play{width:30px;height:30px;border-radius:50%;background:#0F0F0F;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .15s;padding-right:1px;}
+.btn-play:hover{transform:scale(1.1);background:#272727;}
+.btn-play svg{width:12px;height:14px;fill:#fff;}
+.btn-add{width:28px;height:28px;border-radius:50%;background:none;border:1.5px solid #CCCCCC;color:#606060;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;line-height:1;transition:all .15s;}
+.btn-add:hover,.btn-add.in-queue{background:#FF0000;border-color:#FF0000;color:#fff;}
 .btn-yt{width:28px;height:20px;background:#FF0000;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .15s,opacity .15s;opacity:.85;flex-shrink:0;}
 .btn-yt:hover{opacity:1;transform:scale(1.08);}
 
@@ -83,31 +82,31 @@ body.admin .artist-avatar:hover::after{display:flex;}
 body.playing .content{max-width:none;margin:0;}
 
 /* PLAYER PANEL */
-.player-panel{flex:0 0 75%;display:none;flex-direction:column;background:#181818;border-right:1px solid #282828;}
-.panel-header{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#222;border-bottom:1px solid #333;flex-shrink:0;}
+.player-panel{flex:0 0 75%;display:none;flex-direction:column;background:#F9F9F9;border-right:1px solid #E5E5E5;}
+.panel-header{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#FFFFFF;border-bottom:1px solid #E5E5E5;flex-shrink:0;}
 .panel-song-info{flex:1;min-width:0;}
 .panel-song-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.panel-artist-name{font-size:11px;color:#B3B3B3;margin-top:1px;}
-.panel-close{background:none;border:none;color:#888;cursor:pointer;font-size:20px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
+.panel-artist-name{font-size:11px;color:#606060;margin-top:1px;}
+.panel-close{background:none;border:none;color:#606060;cursor:pointer;font-size:20px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
 .panel-close:hover{background:#333;color:#fff;}
-.panel-minimize-btn{background:none;border:none;color:#888;cursor:pointer;font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;line-height:1;}
+.panel-minimize-btn{background:none;border:none;color:#606060;cursor:pointer;font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;line-height:1;}
 .panel-minimize-btn:hover{background:#333;color:#fff;}
 .panel-pip-btn{display:none!important;}
-.panel-float-btn,.panel-theater-btn{display:none;background:none;border:none;color:#888;cursor:pointer;width:30px;height:30px;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
+.panel-float-btn,.panel-theater-btn{display:none;background:none;border:none;color:#606060;cursor:pointer;width:30px;height:30px;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
 .panel-float-btn:hover,.panel-theater-btn:hover{background:#333;color:#fff;}
-body.theater .panel-theater-btn{color:#1DB954;}
+body.theater .panel-theater-btn{color:#FF0000;}
 @media(min-width:768px){.panel-float-btn,.panel-theater-btn{display:flex;}}
 .panel-video{position:relative;flex:1;min-height:0;background:#000;}
 .panel-video iframe{position:absolute;inset:0;width:100%;height:100%;}
-.panel-footer{display:flex;align-items:center;gap:8px;padding:12px 18px;background:#222;border-top:1px solid #333;flex-shrink:0;}
-.modal-nav-btn{background:#282828;border:none;color:#B3B3B3;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;gap:5px;}
-.modal-nav-btn:hover{background:#383838;color:#fff;}
+.panel-footer{display:flex;align-items:center;gap:8px;padding:12px 18px;background:#FFFFFF;border-top:1px solid #E5E5E5;flex-shrink:0;}
+.modal-nav-btn{background:#F2F2F2;border:none;color:#606060;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;gap:5px;}
+.modal-nav-btn:hover{background:#E5E5E5;color:#0F0F0F;}
 .modal-nav-btn:disabled{opacity:.35;cursor:default;}
-.modal-queue-info{flex:1;text-align:center;font-size:12px;color:#B3B3B3;}
-.modal-queue-info b{color:#1DB954;}
-.modal-add-btn{background:#1DB954;border:none;color:#000;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;transition:opacity .15s;}
+.modal-queue-info{flex:1;text-align:center;font-size:12px;color:#606060;}
+.modal-queue-info b{color:#FF0000;}
+.modal-add-btn{background:#FF0000;border:none;color:#fff;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;transition:opacity .15s;}
 .modal-add-btn:hover{opacity:.85;}
-.modal-add-btn.in-queue{background:#535353;color:#B3B3B3;}
+.modal-add-btn.in-queue{background:#717171;color:#606060;}
 
 /* DESKTOP PLAYING: compact top bar + side-by-side */
 @media(min-width:768px){
@@ -122,7 +121,7 @@ body.theater .panel-theater-btn{color:#1DB954;}
 
 /* MOBILE: overlay + mini bar */
 @media(max-width:767px){
-  .player-panel{position:fixed;inset:0;z-index:300;flex-direction:column;background:#181818;}
+  .player-panel{position:fixed;inset:0;z-index:300;flex-direction:column;background:#FFFFFF;}
   .player-panel.open{display:flex;}
   body.playing{padding-bottom:70px;}body.has-song{padding-bottom:57px;}
   body.playing .queue-bar{bottom:90px;}
@@ -138,7 +137,7 @@ body.theater .panel-theater-btn{color:#1DB954;}
 
 /* ── FLOAT PLAYER (PiP) ── */
 /* flex column: video on top, drag-bar below — no overlay blocking the iframe */
-.float-player{position:fixed;left:0;top:0;width:340px;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.9);z-index:9999;display:none;background:#111;touch-action:none;user-select:none;}
+.float-player{position:fixed;left:0;top:0;width:340px;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.9);z-index:9999;display:none;background:#FFFFFF;touch-action:none;user-select:none;}
 .float-player.visible{display:flex;flex-direction:column;}
 /* Float mode mini-PIP: panel stays in DOM, CSS positions it as a fixed mini window */
 @media(min-width:768px){
@@ -155,12 +154,12 @@ body.theater .panel-theater-btn{color:#1DB954;}
 #float-video-slot #yt-player{width:100%!important;height:100%!important;}
 #float-video-slot #yt-player iframe{width:100%!important;height:100%!important;display:block!important;}
 /* bottom bar — this is the drag handle; video above is fully interactive */
-.float-bar{display:flex;align-items:center;background:#1a1a1a;padding:6px 8px 6px 12px;gap:4px;cursor:grab;touch-action:none;flex-shrink:0;border-top:1px solid #2a2a2a;}
+.float-bar{display:flex;align-items:center;background:#F2F2F2;padding:6px 8px 6px 12px;gap:4px;cursor:grab;touch-action:none;flex-shrink:0;border-top:1px solid #E5E5E5;}
 .float-bar.grabbing{cursor:grabbing;}
-.float-bar-song{flex:1;font-size:13px;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;min-width:0;pointer-events:none;line-height:1.3;}
-.fbar-btn{background:none;border:none;color:#888;cursor:pointer;font-size:15px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;flex-shrink:0;}
-.fbar-btn:hover,.fbar-btn:active{color:#fff;background:rgba(255,255,255,.15);}
-#pipPlayBtn{font-size:20px;color:#ddd;}
+.float-bar-song{flex:1;font-size:13px;color:#606060;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;min-width:0;pointer-events:none;line-height:1.3;}
+.fbar-btn{background:none;border:none;color:#606060;cursor:pointer;font-size:15px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;flex-shrink:0;}
+.fbar-btn:hover,.fbar-btn:active{color:#0F0F0F;background:rgba(0,0,0,.1);}
+#pipPlayBtn{font-size:20px;color:#606060;}
 body.float-playing .mini-bar{display:none!important;}
 @media(max-width:767px){
   .float-player{width:185px;}
@@ -173,84 +172,84 @@ body.float-playing .mini-bar{display:none!important;}
 }
 
 /* MINI BAR */
-.mini-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#1e1e1e;border-top:1px solid #333;border-radius:16px 16px 0 0;padding:3px 16px 10px;z-index:200;align-items:center;gap:12px;cursor:pointer;box-shadow:0 -4px 24px rgba(0,0,0,.5);}
+.mini-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#FFFFFF;border-top:1px solid #E5E5E5;border-radius:16px 16px 0 0;padding:3px 16px 10px;z-index:200;align-items:center;gap:12px;cursor:pointer;box-shadow:0 -4px 24px rgba(0,0,0,.5);}
 body.has-song:not(.playing) .mini-bar{display:flex;}
-.mini-thumb{width:44px;height:44px;border-radius:8px;background:#333;flex-shrink:0;background-size:cover;background-position:center;}
+.mini-thumb{width:44px;height:44px;border-radius:8px;background:#E5E5E5;flex-shrink:0;background-size:cover;background-position:center;}
 .mini-info{flex:1;min-width:0;}
 .mini-song{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.mini-artist{font-size:11px;color:#B3B3B3;margin-top:2px;}
-.mini-ctrl{background:none;border:none;color:#fff;cursor:pointer;font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;transition:background .15s;}
-.mini-ctrl:hover{background:rgba(255,255,255,.1);}
+.mini-artist{font-size:11px;color:#606060;margin-top:2px;}
+.mini-ctrl{background:none;border:none;color:#0F0F0F;cursor:pointer;font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;transition:background .15s;}
+.mini-ctrl:hover{background:rgba(0,0,0,.07);}
 
 /* QUEUE BAR */
-.queue-bar{position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:200;background:#1DB954;border-radius:500px;padding:7px 16px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:opacity .3s;opacity:0;pointer-events:none;white-space:nowrap;}
+.queue-bar{position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:200;background:#FF0000;border-radius:500px;padding:7px 16px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:opacity .3s;opacity:0;pointer-events:none;white-space:nowrap;}
 .queue-bar.visible{opacity:1;pointer-events:auto;}
-.queue-bar-text{font-size:13px;font-weight:700;color:#000;}
-.queue-play-btn{background:#000;color:#1DB954;border:none;border-radius:500px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
-.queue-clear-btn{background:none;border:none;color:rgba(0,0,0,.6);cursor:pointer;font-size:18px;line-height:1;padding:0 0 0 4px;}
+.queue-bar-text{font-size:13px;font-weight:700;color:#fff;}
+.queue-play-btn{background:#fff;color:#FF0000;border:none;border-radius:500px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
+.queue-clear-btn{background:none;border:none;color:rgba(255,255,255,.7);cursor:pointer;font-size:18px;line-height:1;padding:0 0 0 4px;}
 
-mark{background:rgba(29,185,84,.2);color:#1DB954;border-radius:3px;padding:0 2px;font-weight:700;}
-.no-results{text-align:center;padding:60px 20px;color:#B3B3B3;font-size:15px;}
+mark{background:rgba(255,0,0,.18);color:#FF0000;border-radius:3px;padding:0 2px;font-weight:700;}
+.no-results{text-align:center;padding:60px 20px;color:#606060;font-size:15px;}
 
 /* QUEUE PANEL */
-.queue-panel{position:fixed;bottom:0;left:0;right:0;max-height:65vh;overflow-y:auto;background:#1a1a1a;border-top:2px solid #1DB954;border-radius:20px 20px 0 0;z-index:600;transform:translateY(110%);transition:transform .35s cubic-bezier(.4,0,.2,1);}
+.queue-panel{position:fixed;bottom:0;left:0;right:0;max-height:65vh;overflow-y:auto;background:#FFFFFF;border-top:2px solid #FF0000;border-radius:20px 20px 0 0;z-index:600;transform:translateY(110%);transition:transform .35s cubic-bezier(.4,0,.2,1);}
 .queue-panel.open{transform:translateY(0);}
-.queue-panel-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid #333;position:sticky;top:0;background:#1a1a1a;z-index:1;}
-.queue-panel-title{font-size:15px;font-weight:700;color:#fff;}
+.queue-panel-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid #E5E5E5;position:sticky;top:0;background:#FFFFFF;z-index:1;}
+.queue-panel-title{font-size:15px;font-weight:700;color:#0F0F0F;}
 .queue-panel-actions{display:flex;gap:8px;align-items:center;}
-.q-play-btn{background:#1DB954;border:none;color:#000;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
-.q-clear-btn{background:#333;border:none;color:#B3B3B3;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:Arial,sans-serif;}
-.q-close-btn{background:none;border:none;color:#888;cursor:pointer;font-size:22px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
-.q-close-btn:hover{background:#333;color:#fff;}
-.queue-item{display:flex;align-items:center;padding:10px 20px;gap:12px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;cursor:pointer;}
-.queue-item:hover{background:rgba(255,255,255,.05);}
-.qi-num{color:#535353;font-size:12px;min-width:20px;text-align:center;flex-shrink:0;}
-.qi-thumb{width:42px;height:42px;border-radius:6px;background:#333;flex-shrink:0;background-size:cover;background-position:center;}
+.q-play-btn{background:#FF0000;border:none;color:#fff;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
+.q-clear-btn{background:#E5E5E5;border:none;color:#606060;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:Arial,sans-serif;}
+.q-close-btn{background:none;border:none;color:#606060;cursor:pointer;font-size:22px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.q-close-btn:hover{background:#E5E5E5;color:#0F0F0F;}
+.queue-item{display:flex;align-items:center;padding:10px 20px;gap:12px;border-bottom:1px solid rgba(0,0,0,.05);transition:background .1s;cursor:pointer;}
+.queue-item:hover{background:rgba(0,0,0,.05);}
+.qi-num{color:#909090;font-size:12px;min-width:20px;text-align:center;flex-shrink:0;}
+.qi-thumb{width:42px;height:42px;border-radius:6px;background:#E5E5E5;flex-shrink:0;background-size:cover;background-position:center;}
 .qi-info{flex:1;min-width:0;}
-.qi-name{font-size:13px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.qi-artist{font-size:11px;color:#B3B3B3;margin-top:2px;}
-.qi-rm{background:none;border:none;color:#535353;cursor:pointer;font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .15s;flex-shrink:0;}
-.qi-rm:hover{background:#333;color:#e04;}
+.qi-name{font-size:13px;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.qi-artist{font-size:11px;color:#606060;margin-top:2px;}
+.qi-rm{background:none;border:none;color:#909090;cursor:pointer;font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .15s;flex-shrink:0;}
+.qi-rm:hover{background:#E5E5E5;color:#FF0000;}
 .queue-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:599;display:none;}
 .queue-overlay.open{display:block;}
 
 /* ── ADMIN MODE ── */
 .admin-lock{background:none;border:none;color:#444;cursor:pointer;font-size:17px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .15s;flex-shrink:0;padding:0;}
-.admin-lock:hover{background:#282828;color:#B3B3B3;}
-body.admin .admin-lock{color:#1DB954;}
+.admin-lock:hover{background:#F2F2F2;color:#606060;}
+body.admin .admin-lock{color:#FF0000;}
 .adm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:2000;display:none;align-items:center;justify-content:center;}
 .adm-overlay.open{display:flex;}
-.adm-box{background:#1e1e1e;border:1px solid #333;border-radius:16px;padding:28px;width:360px;max-width:92vw;direction:rtl;box-shadow:0 24px 64px rgba(0,0,0,.9);}
-.adm-title{font-size:17px;font-weight:700;margin-bottom:18px;color:#fff;}
-.adm-inp{width:100%;background:#2a2a2a;border:1px solid #444;color:#fff;border-radius:8px;padding:10px 14px;font-size:15px;font-family:Arial,sans-serif;box-sizing:border-box;margin-bottom:10px;direction:rtl;}
-.adm-inp:focus{outline:none;border-color:#1DB954;}
+.adm-box{background:#FFFFFF;border:1px solid #E5E5E5;border-radius:16px;padding:28px;width:360px;max-width:92vw;direction:rtl;box-shadow:0 24px 64px rgba(0,0,0,.9);}
+.adm-title{font-size:17px;font-weight:700;margin-bottom:18px;color:#0F0F0F;}
+.adm-inp{width:100%;background:#F2F2F2;border:1px solid #E5E5E5;color:#0F0F0F;border-radius:8px;padding:10px 14px;font-size:15px;font-family:Arial,sans-serif;box-sizing:border-box;margin-bottom:10px;direction:rtl;}
+.adm-inp:focus{outline:none;border-color:#FF0000;}
 .adm-err{color:#ff5a5a;font-size:13px;margin-bottom:10px;min-height:18px;}
 .adm-row{display:flex;gap:8px;margin-top:4px;}
-.adm-btn{flex:1;background:#1DB954;border:none;color:#000;border-radius:8px;padding:10px 0;font-size:14px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
-.adm-btn.sec{background:#2a2a2a;color:#B3B3B3;flex:1;border:1px solid #444;}
-.adm-btn.sec:hover{background:#333;color:#fff;}
-.adm-note{font-size:12px;color:#888;line-height:1.7;margin-bottom:14px;}
-.adm-note b{color:#ccc;}
+.adm-btn{flex:1;background:#FF0000;border:none;color:#fff;border-radius:8px;padding:10px 0;font-size:14px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
+.adm-btn.sec{background:#F2F2F2;color:#606060;flex:1;border:1px solid #E5E5E5;}
+.adm-btn.sec:hover{background:#E5E5E5;color:#0F0F0F;}
+.adm-note{font-size:12px;color:#606060;line-height:1.7;margin-bottom:14px;}
+.adm-note b{color:#333;}
 /* ── ADMIN TOOLBAR ── */
-.adm-toolbar{position:fixed;bottom:0;left:0;right:0;background:rgba(18,18,18,.97);backdrop-filter:blur(20px);border-top:2px solid #fff;padding:10px 16px;z-index:600;display:none;direction:rtl;gap:8px;flex-direction:row;flex-wrap:nowrap;align-items:center;overflow-x:auto;}
+.adm-toolbar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,1);backdrop-filter:blur(20px);border-top:2px solid #FF0000;padding:10px 16px;z-index:600;display:none;direction:rtl;gap:8px;flex-direction:row;flex-wrap:nowrap;align-items:center;overflow-x:auto;}
 body.admin .adm-toolbar{display:flex;}
 .atb-add-row,.atb-actions-row{display:contents;}
 /* Inputs match site search bar */
 .atb-inp{background:#fff;border:1px solid #ddd;color:#121212;border-radius:24px;height:36px;padding:0 14px;font-size:14px;font-family:Arial,sans-serif;direction:rtl;min-width:0;flex-shrink:0;}
-.atb-inp:focus{outline:none;box-shadow:0 0 0 2px #1DB954;border-color:transparent;}
+.atb-inp:focus{outline:none;box-shadow:0 0 0 2px #FF0000;border-color:transparent;}
 .atb-inp[id="atbArtist"],.atb-inp[id="atbSong"]{width:130px;}
 select.atb-artist-sel{cursor:pointer;padding-left:4px;}
 .atb-inp[id="atbUrl"]{flex:1;min-width:120px;max-width:860px;flex-shrink:1;}
 /* Buttons match site toolbar-btn style */
-.atb-btn{display:flex;align-items:center;gap:6px;background:#282828;border:none;color:#B3B3B3;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;}
+.atb-btn{display:flex;align-items:center;gap:6px;background:#F2F2F2;border:none;color:#606060;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;}
 .atb-btn:hover{background:#333;color:#fff;}
 .atb-btn:disabled{opacity:.5;cursor:default;}
-.atb-btn.green{background:#1DB954;color:#000;font-weight:700;}
+.atb-btn.green{background:#FF0000;color:#fff;font-weight:700;}
 .atb-btn.green:hover{background:#18a34a;}
-.atb-btn.warn{background:#282828;color:#B3B3B3;}
+.atb-btn.warn{background:#F2F2F2;color:#606060;}
 body.admin.del-mode .atb-btn.warn{background:#ff5a5a;color:#fff;}
 .atb-stat{font-size:12px;flex-shrink:0;}
-.atb-stat.ok{color:#1DB954;}.atb-stat.err{color:#ff5a5a;}
+.atb-stat.ok{color:#FF0000;}.atb-stat.err{color:#ff5a5a;}
 /* Delete button per song row */
 .btn-del{width:28px;height:28px;border-radius:50%;background:none;border:1.5px solid transparent;color:#535353;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;line-height:1;transition:all .15s;}
 body.admin.del-mode .btn-del{display:flex;}
@@ -267,13 +266,13 @@ body.admin .drag-handle-song{display:flex;}
 .drag-handle-song:hover{color:#aaa;}
 .drag-handle-song:active{cursor:grabbing;}
 /* Drag-over visual feedback - YouTube style line indicator */
-.artist-block.drag-over-above>.artist-header{box-shadow:inset 0 2px 0 #1DB954;}
-.artist-block.drag-over-below>.artist-header{box-shadow:inset 0 -2px 0 #1DB954;}
-.songs-table tr.drag-over-above td{box-shadow:inset 0 2px 0 #1DB954;}
-.songs-table tr.drag-over-below td{box-shadow:inset 0 -2px 0 #1DB954;}
+.artist-block.drag-over-above>.artist-header{box-shadow:inset 0 2px 0 #FF0000;}
+.artist-block.drag-over-below>.artist-header{box-shadow:inset 0 -2px 0 #FF0000;}
+.songs-table tr.drag-over-above td{box-shadow:inset 0 2px 0 #FF0000;}
+.songs-table tr.drag-over-below td{box-shadow:inset 0 -2px 0 #FF0000;}
 /* Queue DnD */
-.queue-item.drag-over-above{box-shadow:inset 0 2px 0 #1DB954;}
-.queue-item.drag-over-below{box-shadow:inset 0 -2px 0 #1DB954;}
+.queue-item.drag-over-above{box-shadow:inset 0 2px 0 #FF0000;}
+.queue-item.drag-over-below{box-shadow:inset 0 -2px 0 #FF0000;}
 .qi-drag{cursor:grab;color:#555;font-size:15px;padding:0 4px;flex-shrink:0;user-select:none;display:flex;align-items:center;transition:color .15s;}
 .qi-drag:hover{color:#aaa;}
 .qi-drag:active{cursor:grabbing;}
@@ -294,13 +293,18 @@ body.admin .td-actions{width:auto;}
 .btn-move-folder{width:22px;height:22px;border-radius:4px;background:none;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:13px;color:#666;transition:all .15s;flex-shrink:0;}
 .btn-move-folder:hover{background:rgba(74,158,255,.15);color:#4a9eff;}
 body.admin .btn-move-folder{display:flex;}
-.folder-picker{position:fixed;background:#1e1e1e;border:1px solid #444;border-radius:12px;padding:6px 0;z-index:3000;min-width:180px;max-height:290px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.85);direction:rtl;}
+.folder-picker{position:fixed;background:#FFFFFF;border:1px solid #444;border-radius:12px;padding:6px 0;z-index:3000;min-width:180px;max-height:290px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.85);direction:rtl;}
 .folder-picker-title{font-size:11px;color:#666;padding:4px 14px 7px;border-bottom:1px solid #333;margin-bottom:3px;font-weight:700;}
-.folder-picker-item{padding:8px 14px;font-size:13px;color:#B3B3B3;cursor:pointer;white-space:nowrap;}
-.folder-picker-item:hover{background:#282828;color:#fff;}
-.folder-picker-item.current{color:#1DB954;pointer-events:none;}
+.folder-picker-item{padding:8px 14px;font-size:13px;color:#606060;cursor:pointer;white-space:nowrap;}
+.folder-picker-item:hover{background:#F2F2F2;color:#0F0F0F;}
+.folder-picker-item.current{color:#FF0000;pointer-events:none;}
 .folder-picker-new{padding:8px 14px;font-size:13px;color:#4a9eff;cursor:pointer;border-top:1px solid #333;margin-top:3px;}
-.folder-picker-new:hover{background:#282828;}
+.folder-picker-new:hover{background:#F2F2F2;}
+/* Inline folder select in song row */
+.folder-select{display:none;height:24px;background:#F2F2F2;border:1px solid #CCCCCC;color:#606060;border-radius:6px;font-size:11px;font-family:Arial,sans-serif;padding:0 4px;direction:rtl;cursor:pointer;max-width:130px;flex-shrink:1;min-width:70px;}
+body.admin .folder-select{display:block;}
+.folder-select:focus{outline:none;border-color:#FF0000;}
+.folder-select option{background:#FFFFFF;color:#fff;}
 
 </style>
 </head>
@@ -423,7 +427,7 @@ body.admin .btn-move-folder{display:flex;}
 let _folderPickerEl=null,_pickerArtists=[];
 // YouTube IFrame API
 var tag=document.createElement('script');tag.src="https://www.youtube.com/iframe_api";document.head.appendChild(tag);
-const ALL=[{"a":"אבי סינואני","s":"מחרוזת לעולם לא נפרד","v":"Ns-KxKmv7Lo"},{"a":"אביעד סהר","s":"מחרוזת \"יום הרווקים\"","v":"C0R6N4gYhgQ"},{"a":"אביעד סהר","s":"מחרוזת \"המתחתנים\"","v":"4MCjF7jCUV8"},{"a":"אביעד סהר","s":"מחרוזת זעבור (החתונות)","v":"gu9cDEH5O08"},{"a":"אביעד סהר","s":"מחרוזת מערבבת שוקולטה","v":"HyewrBXD56I"},{"a":"אביעד סהר","s":"מחרוזת \"משגע את כולן\"","v":"H0Nht_hWaX8"},{"a":"אביעד סהר","s":"מחרוזת \"מי זה אמר לך\"","v":"wv6R8c23t9k"},{"a":"אבישי אשל","s":"מחרוזת תימנית","v":"1N8faBjTg_M"},{"a":"אבנר גדסי","s":"שרונה","v":"L3q4A5gfcFg"},{"a":"אושר כהן","s":"בברגעים שאת הולכת","v":"_OYSFzHyZBw"},{"a":"אייל גולן","s":"מחרוזת ברצלונה","v":"f83zZvgmjYo"},{"a":"אייל גולן","s":"עיר נמל","v":"IfuOLaaA0jo"},{"a":"אייל גולן","s":"דמעות","v":"bgcKHw2Qcn8"},{"a":"אייל גולן","s":"שוב לאהוב","v":"I3xsVXQiBLE"},{"a":"אייל גולן","s":"שבוי לאהבה","v":"Jx7tz0SoFTY"},{"a":"אייל גולן","s":"זה מסוכן","v":"_RWI5Z8_bx0"},{"a":"אייל גולן","s":"כשתגדל","v":"yImq0QVgpVM"},{"a":"אייל גולן","s":"רחוק מכאן","v":"8Rv7PbeChPU"},{"a":"אייל גולן","s":"טוב לך איתו","v":"3jdr8LnBarM"},{"a":"אייל גולן","s":"לאן הגענו","v":"je_DnhPQH4Q"},{"a":"אייל גולן","s":"משחקים של כבוד","v":"vYCIjzpInDY"},{"a":"אייל גולן","s":"בלי להתכוון","v":"H7Xg1JJdL0E"},{"a":"אייל גולן","s":"לא מבינה עברית","v":"1gfR5IMp9xQ"},{"a":"אייל גולן","s":"טעיתי","v":"O36-H5725E0"},{"a":"אייל גולן","s":"דברי איתי","v":"d_ruDSff4fo"},{"a":"אייל גולן","s":"מקום אחר","v":"3mO0NrbHgjs"},{"a":"אייל גולן","s":"אהבה ראשונה","v":"FHXeW0h9Qjo"},{"a":"אייל גולן","s":"תבואי היום","v":"sGDxuERpg_E"},{"a":"אייל גולן","s":"חוזר הביתה","v":"kWRIZVdIrRM"},{"a":"אייל גולן","s":"מבעד לדמעה","v":"Tl2CocQ_yyg"},{"a":"אייל גולן","s":"עושה עם העיניים","v":"XdGSt8_j5MQ"},{"a":"אייל גולן","s":"ביט","v":"WwR_7iPJ7Es"},{"a":"אייל גולן","s":"חיים שלמים","v":"ZiribWW3siY"},{"a":"אייל גולן","s":"קחי לך את היום","v":"rkIZ2YdTD7U"},{"a":"אייל גולן","s":"כמו בספרים ההם","v":"36c4jcw8YE8"},{"a":"אייל גולן","s":"נכון להיום (עם זוהר ארגוב)","v":"7KOjWkCdHTI"},{"a":"אייל גולן","s":"טירוף מתוק","v":"h_wjl-rCCOU"},{"a":"אייל גולן","s":"מחפשים אהבה","v":"Crny_ptxmXQ"},{"a":"אייל גולן","s":"עינייך מספרות","v":"qF1WDa7F7d4"},{"a":"אייל גולן","s":"שומרני אל","v":"B1xwlpYc4gg"},{"a":"אייל גולן","s":"תודה לאל","v":"Pio92gl_Glw"},{"a":"אייל גולן","s":"נתתי לך ת'לב","v":"d-psG4JnsfA"},{"a":"אייל גולן","s":"מתי את חוזרת","v":"JH4p0waLDtk"},{"a":"אלי לוזון","s":"פרי גנך","v":"x-kW0Qh-ZMY"},{"a":"אלי לוזון","s":"מחרוזת בניגון הישן","v":"ZwlNcPIYdWA"},{"a":"אלי לוזון","s":"נערת החלומות","v":"ofQtnH7heJ8"},{"a":"אלי לוזון","s":"איזו מדינה","v":"G6Bwx0PSKyY"},{"a":"אלי לוזון","s":"ילדה","v":"gMmB8Qvby4k"},{"a":"אלעד שער","s":"מחרוזת תימנית נוסטלגית","v":"BwWS9-3QfOg"},{"a":"בני ברדא","s":"מחרוזת יום שישי הגיע","v":"-6IwjnOmaCw"},{"a":"דודו אהרון","s":"אמא יקרה","v":"dNwZW4y73nk"},{"a":"דורון מירן","s":"מח' חפלה","v":"56CWx5CFYeY"},{"a":"דקלון","s":"מח' אהובת לבבי & צעד תימני & הלאה הלאה","v":"4BjSS6Ojo5s"},{"a":"האולטראס","s":"מסיבה בחיפה","v":"5w6_feY2KNU"},{"a":"הפרויקט של רביבו","s":"מחרוזת אינתה עומרי","v":"1puqK1iO0GM"},{"a":"הפרויקט של רביבו","s":"מחרוזת עת דודים כלה","v":"Vb-qYcgXJME"},{"a":"הפרויקט של רביבו","s":"מחרוזת עוד יום יבוא","v":"rOV_omdzY8k"},{"a":"הפרויקט של רביבו","s":"מחרוזת תן לזמן ללכת","v":"-MAnJipJEdc"},{"a":"הפרויקט של רביבו","s":"מחרוזת כמו שיכור","v":"Gpo5xiI2Z5U"},{"a":"הפרויקט של רביבו","s":"מחרוזת אוהב לחיות","v":"RK8tQjuoAww"},{"a":"הפרויקט של רביבו","s":"מחרוזת עד סוף הקיץ","v":"pujMDF06t-s"},{"a":"הפרויקט של רביבו","s":"מחרוזת כך עוברים חיי","v":"e-TF92xwJCQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת עד מתי אלוהי","v":"JaeWeRKbUkw"},{"a":"הפרויקט של רביבו","s":"מחרוזת קסם המזרח","v":"FV4LXx303AM"},{"a":"הפרויקט של רביבו","s":"מחרוזת אני שר","v":"J67uptywkHY"},{"a":"הפרויקט של רביבו","s":"מחרוזת לילה שלי","v":"-oHr9LGCZuI"},{"a":"הפרויקט של רביבו","s":"מחרוזת חנותך","v":"gSopjSOEKoU"},{"a":"הפרויקט של רביבו","s":"מחרוזת מה נותר","v":"Ennydylg8dQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת יותר מוארת","v":"VyNO-0eFy4w"},{"a":"הפרויקט של רביבו","s":"מחרוזת שבויה באהבה","v":"BaMs8tfwFpk"},{"a":"הפרויקט של רביבו","s":"מחרוזת אמא","v":"To5EKVAQFYo"},{"a":"הפרויקט של רביבו","s":"מחרוזת תני לי את הלב","v":"K0lQlEIDQF0"},{"a":"הפרויקט של רביבו","s":"מחרוזת שורשים","v":"EDGzXrahSCM"},{"a":"הפרויקט של רביבו","s":"מחרוזת שושנת פלאים","v":"K0xaDOC_X2Q"},{"a":"הפרויקט של רביבו","s":"מחרוזת חולפות השנים","v":"3YHcde-XLEc"},{"a":"הפרויקט של רביבו","s":"מחרוזת בדד","v":"NBTSA3wLXTw"},{"a":"הפרויקט של רביבו","s":"מחרוזת הפרח בגני","v":"znqnqDWST8M"},{"a":"הפרויקט של רביבו","s":"מחרוזת נכון להיום","v":"aR-YPd8mgy8"},{"a":"הפרויקט של רביבו","s":"מחרוזת חיכיתי שנים","v":"05ryjGanJHQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת אדם שחקן","v":"jUPMSfjY8u0"},{"a":"הפרויקט של רביבו","s":"מחרוזת ליסה","v":"KmWaPwHNmYg"},{"a":"הפרויקט של רביבו","s":"מחרוזת נגילה הללויה","v":"eAkeQo3GajQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת סאלם עליכום","v":"Sg4_BGueaO8"},{"a":"הפרויקט של רביבו","s":"מחרוזת אהבה בסוף הקיץ","v":"y4IWD2LX-7w"},{"a":"הפרויקט של רביבו","s":"מחרוזת עדות","v":"O6AJNdoYd6k"},{"a":"הפרויקט של רביבו","s":"מחרוזת פעמון זהב","v":"XDbLkzmSmh8"},{"a":"הפרויקט של רביבו","s":"מחרוזת מן הקולות","v":"GBCHm2lfA60"},{"a":"הפרויקט של רביבו","s":"מחרוזת נע ונד","v":"RiH2LHqdqzU"},{"a":"הפרויקט של רביבו","s":"מחרוזת יד ביד","v":"W2RBujKry9k"},{"a":"הפרויקט של רביבו","s":"מחרוזת שיר לדרך","v":"lpMIYFHbqQ4"},{"a":"הפרויקט של רביבו","s":"מחרוזת שיר השירים","v":"vrpVitwiCjk"},{"a":"הפרויקט של רביבו","s":"מחרוזת הו שיכור","v":"xhR9P2Uuyz4"},{"a":"הפרויקט של רביבו","s":"מחרוזת בת המלך","v":"e9aI3FQjDZM"},{"a":"הפרויקט של רביבו","s":"מחרוזת רונה","v":"Lcw9JLAO1mM"},{"a":"הפרויקט של רביבו","s":"מחרוזת פני מלאך (עם יואב יצחק)","v":"-MDCmjFGHCc"},{"a":"הפרויקט של רביבו","s":"מחרוזת כבר עברו השנים","v":"z8eLDo2XyqI"},{"a":"הפרויקט של רביבו","s":"אלה","v":"gr3KdRGRD04"},{"a":"הפרויקט של רביבו","s":"מחרוזת להשתטות","v":"-1-saniPYE8"},{"a":"הפרויקט של רביבו","s":"מחרוזת סליחות","v":"orE5pCQV-7Y"},{"a":"הפרויקט של רביבו","s":"מחרוזת חיפשתי שירים","v":"KbIERiLa87c"},{"a":"הפרויקט של רביבו","s":"מחרוזת אמא","v":"y0tlMWu4Hm4"},{"a":"הפרויקט של רביבו","s":"מחרוזת תני חיבוק ילדונת","v":"MgRx-FweMAA"},{"a":"הפרויקט של רביבו","s":"מחרוזת לא חשוב לי לאן","v":"EOACbrQk90k"},{"a":"הפרויקט של רביבו","s":"מחרוזת ילדתי חזרי","v":"eiPHLJ2SHOk"},{"a":"הפרויקט של רביבו","s":"מחרוזת עוד יום עולה","v":"Bc9eJm8QkIc"},{"a":"הפרויקט של רביבו","s":"מחרוזת שבת","v":"MaqYg4eEol8"},{"a":"הפרויקט של רביבו","s":"מחרוזת ג'ינם","v":"tDwiPQCTX90"},{"a":"זוהר ארגוב","s":"מחרוזת קריוקי","v":"adpYu9lVXM0"},{"a":"זוהר ארגוב","s":"להיות אדם","v":"UatW5lF3mz8"},{"a":"זוהר ארגוב","s":"מה לך ילדה","v":"eI-ZF4kIEgk"},{"a":"זוהר ארגוב","s":"כבר עברו השנים","v":"IC60IrzMsmY"},{"a":"זוהר ארגוב","s":"כך עוברים חיי","v":"n3HJtk8wbOQ"},{"a":"זוהר ארגוב","s":"נכון להיום","v":"knpBE4HRESo"},{"a":"זוהר ארגוב","s":"אהבת רעייה רצוני","v":"Ckq0n7d8M3I"},{"a":"זוהר ארגוב","s":"אמא טובה","v":"cRozJR66HZk"},{"a":"זוהר ארגוב","s":"עד מתי אלוהיי","v":"pGSlA3My8GI"},{"a":"זוהר ארגוב","s":"כשאת לידי","v":"a0V-22tb6Uo"},{"a":"זוהר ארגוב","s":"ים של דמעות","v":"go0HEEcUBCY"},{"a":"זוהר ארגוב","s":"אל נבקש","v":"HOma-YRkfGU"},{"a":"זוהר ארגוב","s":"רעייה","v":"tqqw2CxBqb8"},{"a":"זוהר ארגוב","s":"הזוהר לארגוב (חברים שרים)","v":"itzNUuVLhLQ"},{"a":"זוהר ארגוב","s":"שיר השופט (חברים שרים)","v":"tSyl0Jmidg4"},{"a":"זוהר יעיש","s":"מחרוזת שקטים","v":"oNHNZmZaA8g"},{"a":"חיים ישראל","s":"לך אלי תשוקתי","v":"swl39jE8twE"},{"a":"חיים משה","s":"פלייבק התמונות שבאלבום","v":"bcMnQJwFZvE"},{"a":"חיים משה","s":"מה עם הילד","v":"06WS9u9vdmo"},{"a":"חיים משה","s":"באו הצלילים","v":"_8tAv3ftsFU"},{"a":"חיים משה","s":"אמא אמא","v":"V8bxVrIKztU"},{"a":"חיים משה","s":"אהבת חיי","v":"HqZIjFTqKqU"},{"a":"חיים משה","s":"הגיטרה","v":"GY1426jv22c"},{"a":"חיים משה","s":"ילד שלי","v":"afItsCqdToU"},{"a":"חיים משה","s":"על סף דלתך","v":"xd673oYBLAo"},{"a":"חיים משה","s":"מחרוזת חיים משה","v":"m0oZYrnSWzE"},{"a":"יואב יצחק","s":"צלצולי פעמונים","v":"Rysq94khOcs"},{"a":"יואב יצחק","s":"זה הזמן לסלוח","v":"5mfjYA9qpqM"},{"a":"יואב יצחק","s":"אין לי מרגוע והוי לאהבה","v":"X5gRYg-1TgE"},{"a":"יואב יצחק","s":"מיליון סיבות","v":"zYhDV4pF8qg"},{"a":"יואב יצחק","s":"פני מלאך","v":"-KIupnnjswo"},{"a":"יואב יצחק","s":"מחרוזת שירי יואב יצחק","v":"8j3MjOK0i04"},{"a":"ישי לוי","s":"אלוהים נתן לך","v":"3Bj1BcnT2c0"},{"a":"ישי לוי","s":"זירת חיי","v":"z015DfcVnUs"},{"a":"ישי לוי","s":"תלתלים שחורים","v":"fd54y_k7lhw"},{"a":"ישי לוי","s":"אחת ויחידה","v":"kq5--PjdIZw"},{"a":"ישי לוי","s":"איפה את היום","v":"Q6smcuyam3E"},{"a":"ישי לוי","s":"צליל ענבלים","v":"HJzuFvSw6s4"},{"a":"ישי לוי","s":"אנה בחלאם ביק","v":"cj5irI7Ga-I"},{"a":"ישי לוי","s":"מנולייה","v":"nXWv5FXxk6M"},{"a":"ישי לוי","s":"מח\\' מצהלות","v":"SKjqz0LxZ5U"},{"a":"ישי לוי","s":"מחרוזת רחוק רחוק","v":"Ly7oPA3KoEQ"},{"a":"ישי לוי","s":"רק חיוכים","v":"0Tz-7z_Egmg"},{"a":"לי פישמן","s":"אנחנו מאמינים","v":"4FwyMvq73pY"},{"a":"ליאור מיארה","s":"מחרוזת פורטוגל","v":"1NTHxT8Q-B0"},{"a":"ליאור מיארה","s":"מחרוזת הצגה","v":"4Fv6OdSQtaw"},{"a":"ליאור מיארה","s":"מחרוזת תלתלים","v":"rw8VBlPTOiY"},{"a":"ליאור מיארה","s":"מחרוזת רקדי","v":"e43DGSCGxv0"},{"a":"ליאור מיארה","s":"מחרוזת נערה","v":"kHh5vHKTqCc"},{"a":"ליאור מיארה","s":"מחרוזת מהשמיים","v":"JfrBGRvHSzg"},{"a":"ליאור מיארה","s":"מחרוזת שביל האושר","v":"IlViJvjKz5U"},{"a":"ליאור מיארה","s":"מחרוזת מאושרת","v":"uyTwar0O-Xk"},{"a":"ליאור מיארה","s":"מחרוזת בסוף היום","v":"Rpi-3KFOBD8"},{"a":"ליאור מיארה","s":"מחרוזת בסבוסה","v":"TBwYecZ18_c"},{"a":"ליאור מיארה","s":"מחרוזת דמייני","v":"NoulwMeSKR8"},{"a":"לירן טל","s":"מחרוזת חלפו ימיי","v":"7-Qv_TLBJNQ"},{"a":"מרגלית צנעני","s":"נערי שובה אליי","v":"0RwTNKJk-x4"},{"a":"משה פרץ","s":"הטעם הישן","v":"q6UYBs5m9uo"},{"a":"משה פרץ","s":"גם אם העולם יתהפך","v":"YeJEaEjZynE"},{"a":"משה פרץ","s":"ברצלונה","v":"VBy48Go9ScI"},{"a":"משה פרץ","s":"סימני הזמן","v":"V9okgFOUZwE"},{"a":"נסרין","s":"למה לי למה לו","v":"ut18SMAzJh8"},{"a":"סגיב כהן","s":"מחרוזת אסלית בתימנית","v":"Jq8sH8yXg_s"},{"a":"סמיר שוקרי","s":"רונה","v":"t-BhB-xk0W4"},{"a":"עופר לוי","s":"אני ואת","v":"8zjP3kh0rvM"},{"a":"עופר לוי","s":"יום הרווקים","v":"o3x7pTK0WGc"},{"a":"עופר לוי","s":"מאוהב בגשם","v":"4SNVki5CMd0"},{"a":"עידו יצחק","s":"מחרוזת החברות שלך","v":"F4G8tvUlv-I"},{"a":"פאר טסי","s":"אהבה חולה","v":"IMFVvoSCjDY"},{"a":"פאר טסי","s":"ערק","v":"XU6DX6ahK5c"},{"a":"פאר טסי","s":"סלחי לי אמא","v":"Q0QhHgZi5Ss"},{"a":"פאר טסי","s":"היא לא יודעת למה","v":"pME4AuEvCcw"},{"a":"פאר טסי","s":"כתבתי מילים","v":"JXthYmOFXpk"},{"a":"פאר טסי","s":"משקה יקר","v":"Z7W0kDQ0CJA"},{"a":"פאר טסי","s":"דפיקות הלב","v":"jWraDnHjRA0"},{"a":"פאר טסי","s":"38","v":"k_u_ObTq2So"},{"a":"פאר טסי","s":"בואי ניפגש","v":"_Niml1PtHjg"},{"a":"פאר טסי","s":"הי מאמא","v":"j3qWPwy-_PU"},{"a":"פאר טסי","s":"אל תהיי עצובה","v":"9ylJabMFP14"},{"a":"פאר טסי","s":"את עוד תראי","v":"omJ9_Mz6FgI"},{"a":"קוקו מאילת","s":"מחרוזת קלאסיקה","v":"uW_G2pRWoHI"},{"a":"קוקו מאילת","s":"מחרוזת כמה חבל","v":"Z3Y1IyhQsIw"},{"a":"קוקו מאילת","s":"מחרוזת אלופה","v":"oVCVYkdGUMo"},{"a":"ראובן המלאך","s":"מחרוזת קפה בשניים","v":"dUdF-Zsalmg"},{"a":"רובי חן","s":"סמרה","v":"e_-KQSbrKsg"},{"a":"רובי לוי","s":"כינורי","v":"Fe-VtyiAN4o"},{"a":"רוני אחיאל","s":"לחזור לחיים","v":"-NSIJHFyc9o"},{"a":"שי שרעבי","s":"מחרוזת רוקדת בלילות","v":"cxBC29bjxC8"},{"a":"שי שרעבי","s":"מחרוזת זוכרת (עם גלעד צארום)","v":"vqkxSlgynJg"},{"a":"שי שרעבי","s":"מחרוזת עושה לכם שכונה","v":"Aeve4FA3ozU"},{"a":"שי שרעבי","s":"רוקדת בלילות","v":"RZFJpO_hafU"},{"a":"שימי מזרחי","s":"מחרוזת להיות חופשיה","v":"y8bKtiVUdtU"},{"a":"שימי מזרחי","s":"סלחתי לך","v":"5qn6AnUZ7aE"},{"a":"שקד קוממי","s":"מחרוזת ילדונת","v":"BteCJUos2ng"},{"a":"שקד קוממי","s":"מחרוזת ילדה","v":"dL5YMPUliiA"},{"a":"שקד קוממי","s":"מחרוזת סורו ממני","v":"TIWoEXwE4W0"},{"a":"שריף","s":"בבוקר שאחרי","v":"gE__u2gZaOs"},{"a":"שריף","s":"מחרוזת יאללה חתונה","v":"SjAXtHSpQ-Q"},{"a":"שריף","s":"בסבוסה","v":"PTi_GZgCeRw"},{"a":"שריף","s":"למה לא & בת המלך","v":"KvqlFxIJbkI"}];
+const ALL=[{"a":"אבי סינואני","s":"מחרוזת לעולם לא נפרד","v":"Ns-KxKmv7Lo"},{"a":"אביעד סהר","s":"מחרוזת \"יום הרווקים\"","v":"C0R6N4gYhgQ"},{"a":"אביעד סהר","s":"מחרוזת \"המתחתנים\"","v":"4MCjF7jCUV8"},{"a":"אביעד סהר","s":"מחרוזת זעבור (החתונות)","v":"gu9cDEH5O08"},{"a":"אביעד סהר","s":"מחרוזת מערבבת שוקולטה","v":"HyewrBXD56I"},{"a":"אביעד סהר","s":"מחרוזת \"משגע את כולן\"","v":"H0Nht_hWaX8"},{"a":"אביעד סהר","s":"מחרוזת \"מי זה אמר לך\"","v":"wv6R8c23t9k"},{"a":"אבישי אשל","s":"מחרוזת תימנית","v":"1N8faBjTg_M"},{"a":"אבנר גדסי","s":"שרונה","v":"L3q4A5gfcFg"},{"a":"אייל גולן","s":"מחרוזת ברצלונה","v":"f83zZvgmjYo"},{"a":"אייל גולן","s":"עיר נמל","v":"IfuOLaaA0jo"},{"a":"אייל גולן","s":"דמעות","v":"bgcKHw2Qcn8"},{"a":"אייל גולן","s":"שוב לאהוב","v":"I3xsVXQiBLE"},{"a":"אייל גולן","s":"שבוי לאהבה","v":"Jx7tz0SoFTY"},{"a":"אייל גולן","s":"זה מסוכן","v":"_RWI5Z8_bx0"},{"a":"אייל גולן","s":"כשתגדל","v":"yImq0QVgpVM"},{"a":"אייל גולן","s":"רחוק מכאן","v":"8Rv7PbeChPU"},{"a":"אייל גולן","s":"טוב לך איתו","v":"3jdr8LnBarM"},{"a":"אייל גולן","s":"לאן הגענו","v":"je_DnhPQH4Q"},{"a":"אייל גולן","s":"משחקים של כבוד","v":"vYCIjzpInDY"},{"a":"אייל גולן","s":"בלי להתכוון","v":"H7Xg1JJdL0E"},{"a":"אייל גולן","s":"לא מבינה עברית","v":"1gfR5IMp9xQ"},{"a":"אייל גולן","s":"טעיתי","v":"O36-H5725E0"},{"a":"אייל גולן","s":"דברי איתי","v":"d_ruDSff4fo"},{"a":"אייל גולן","s":"מקום אחר","v":"3mO0NrbHgjs"},{"a":"אייל גולן","s":"אהבה ראשונה","v":"FHXeW0h9Qjo"},{"a":"אייל גולן","s":"תבואי היום","v":"sGDxuERpg_E"},{"a":"אייל גולן","s":"חוזר הביתה","v":"kWRIZVdIrRM"},{"a":"אייל גולן","s":"מבעד לדמעה","v":"Tl2CocQ_yyg"},{"a":"אייל גולן","s":"עושה עם העיניים","v":"XdGSt8_j5MQ"},{"a":"אייל גולן","s":"ביט","v":"WwR_7iPJ7Es"},{"a":"אייל גולן","s":"חיים שלמים","v":"ZiribWW3siY"},{"a":"אייל גולן","s":"קחי לך את היום","v":"rkIZ2YdTD7U"},{"a":"אייל גולן","s":"כמו בספרים ההם","v":"36c4jcw8YE8"},{"a":"אייל גולן","s":"נכון להיום (עם זוהר ארגוב)","v":"7KOjWkCdHTI"},{"a":"אייל גולן","s":"טירוף מתוק","v":"h_wjl-rCCOU"},{"a":"אייל גולן","s":"מחפשים אהבה","v":"Crny_ptxmXQ"},{"a":"אייל גולן","s":"עינייך מספרות","v":"qF1WDa7F7d4"},{"a":"אייל גולן","s":"שומרני אל","v":"B1xwlpYc4gg"},{"a":"אייל גולן","s":"תודה לאל","v":"Pio92gl_Glw"},{"a":"אייל גולן","s":"נתתי לך ת'לב","v":"d-psG4JnsfA"},{"a":"אלי לוזון","s":"פרי גנך","v":"x-kW0Qh-ZMY"},{"a":"אלי לוזון","s":"מחרוזת בניגון הישן","v":"ZwlNcPIYdWA"},{"a":"אלי לוזון","s":"נערת החלומות","v":"ofQtnH7heJ8"},{"a":"אלי לוזון","s":"איזו מדינה","v":"G6Bwx0PSKyY"},{"a":"אלי לוזון","s":"ילדה","v":"gMmB8Qvby4k"},{"a":"אלעד שער","s":"מחרוזת תימנית נוסטלגית","v":"BwWS9-3QfOg"},{"a":"בני ברדא","s":"מחרוזת יום שישי הגיע","v":"-6IwjnOmaCw"},{"a":"דודו אהרון","s":"אמא יקרה","v":"dNwZW4y73nk"},{"a":"דורון מירן","s":"מח' חפלה","v":"56CWx5CFYeY"},{"a":"דקלון","s":"מח' אהובת לבבי & צעד תימני & הלאה הלאה","v":"4BjSS6Ojo5s"},{"a":"האולטראס","s":"מסיבה בחיפה","v":"5w6_feY2KNU"},{"a":"הפרויקט של רביבו","s":"מחרוזת אינתה עומרי","v":"1puqK1iO0GM"},{"a":"הפרויקט של רביבו","s":"מחרוזת עת דודים כלה","v":"Vb-qYcgXJME"},{"a":"הפרויקט של רביבו","s":"מחרוזת עוד יום יבוא","v":"rOV_omdzY8k"},{"a":"הפרויקט של רביבו","s":"מחרוזת תן לזמן ללכת","v":"-MAnJipJEdc"},{"a":"הפרויקט של רביבו","s":"מחרוזת כמו שיכור","v":"Gpo5xiI2Z5U"},{"a":"הפרויקט של רביבו","s":"מחרוזת אוהב לחיות","v":"RK8tQjuoAww"},{"a":"הפרויקט של רביבו","s":"מחרוזת עד סוף הקיץ","v":"pujMDF06t-s"},{"a":"הפרויקט של רביבו","s":"מחרוזת כך עוברים חיי","v":"e-TF92xwJCQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת עד מתי אלוהי","v":"JaeWeRKbUkw"},{"a":"הפרויקט של רביבו","s":"מחרוזת קסם המזרח","v":"FV4LXx303AM"},{"a":"הפרויקט של רביבו","s":"מחרוזת אני שר","v":"J67uptywkHY"},{"a":"הפרויקט של רביבו","s":"מחרוזת לילה שלי","v":"-oHr9LGCZuI"},{"a":"הפרויקט של רביבו","s":"מחרוזת חנותך","v":"gSopjSOEKoU"},{"a":"הפרויקט של רביבו","s":"מחרוזת מה נותר","v":"Ennydylg8dQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת יותר מוארת","v":"VyNO-0eFy4w"},{"a":"הפרויקט של רביבו","s":"מחרוזת שבויה באהבה","v":"BaMs8tfwFpk"},{"a":"הפרויקט של רביבו","s":"מחרוזת אמא","v":"To5EKVAQFYo"},{"a":"הפרויקט של רביבו","s":"מחרוזת תני לי את הלב","v":"K0lQlEIDQF0"},{"a":"הפרויקט של רביבו","s":"מחרוזת שורשים","v":"EDGzXrahSCM"},{"a":"הפרויקט של רביבו","s":"מחרוזת שושנת פלאים","v":"K0xaDOC_X2Q"},{"a":"הפרויקט של רביבו","s":"מחרוזת חולפות השנים","v":"3YHcde-XLEc"},{"a":"הפרויקט של רביבו","s":"מחרוזת בדד","v":"NBTSA3wLXTw"},{"a":"הפרויקט של רביבו","s":"מחרוזת הפרח בגני","v":"znqnqDWST8M"},{"a":"הפרויקט של רביבו","s":"מחרוזת נכון להיום","v":"aR-YPd8mgy8"},{"a":"הפרויקט של רביבו","s":"מחרוזת חיכיתי שנים","v":"05ryjGanJHQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת אדם שחקן","v":"jUPMSfjY8u0"},{"a":"הפרויקט של רביבו","s":"מחרוזת ליסה","v":"KmWaPwHNmYg"},{"a":"הפרויקט של רביבו","s":"מחרוזת נגילה הללויה","v":"eAkeQo3GajQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת סאלם עליכום","v":"Sg4_BGueaO8"},{"a":"הפרויקט של רביבו","s":"מחרוזת אהבה בסוף הקיץ","v":"y4IWD2LX-7w"},{"a":"הפרויקט של רביבו","s":"מחרוזת עדות","v":"O6AJNdoYd6k"},{"a":"הפרויקט של רביבו","s":"מחרוזת פעמון זהב","v":"XDbLkzmSmh8"},{"a":"הפרויקט של רביבו","s":"מחרוזת מן הקולות","v":"GBCHm2lfA60"},{"a":"הפרויקט של רביבו","s":"מחרוזת נע ונד","v":"RiH2LHqdqzU"},{"a":"הפרויקט של רביבו","s":"מחרוזת יד ביד","v":"W2RBujKry9k"},{"a":"הפרויקט של רביבו","s":"מחרוזת שיר לדרך","v":"lpMIYFHbqQ4"},{"a":"הפרויקט של רביבו","s":"מחרוזת שיר השירים","v":"vrpVitwiCjk"},{"a":"הפרויקט של רביבו","s":"מחרוזת הו שיכור","v":"xhR9P2Uuyz4"},{"a":"הפרויקט של רביבו","s":"מחרוזת בת המלך","v":"e9aI3FQjDZM"},{"a":"הפרויקט של רביבו","s":"מחרוזת רונה","v":"Lcw9JLAO1mM"},{"a":"הפרויקט של רביבו","s":"מחרוזת פני מלאך (עם יואב יצחק)","v":"-MDCmjFGHCc"},{"a":"הפרויקט של רביבו","s":"מחרוזת כבר עברו השנים","v":"z8eLDo2XyqI"},{"a":"הפרויקט של רביבו","s":"אלה","v":"gr3KdRGRD04"},{"a":"הפרויקט של רביבו","s":"מחרוזת להשתטות","v":"-1-saniPYE8"},{"a":"הפרויקט של רביבו","s":"מחרוזת סליחות","v":"orE5pCQV-7Y"},{"a":"הפרויקט של רביבו","s":"מחרוזת חיפשתי שירים","v":"KbIERiLa87c"},{"a":"הפרויקט של רביבו","s":"מחרוזת אמא","v":"y0tlMWu4Hm4"},{"a":"הפרויקט של רביבו","s":"מחרוזת תני חיבוק ילדונת","v":"MgRx-FweMAA"},{"a":"הפרויקט של רביבו","s":"מחרוזת לא חשוב לי לאן","v":"EOACbrQk90k"},{"a":"הפרויקט של רביבו","s":"מחרוזת ילדתי חזרי","v":"eiPHLJ2SHOk"},{"a":"הפרויקט של רביבו","s":"מחרוזת עוד יום עולה","v":"Bc9eJm8QkIc"},{"a":"הפרויקט של רביבו","s":"מחרוזת שבת","v":"MaqYg4eEol8"},{"a":"הפרויקט של רביבו","s":"מחרוזת ג'ינם","v":"tDwiPQCTX90"},{"a":"זוהר ארגוב","s":"מחרוזת קריוקי","v":"adpYu9lVXM0"},{"a":"זוהר ארגוב","s":"להיות אדם","v":"UatW5lF3mz8"},{"a":"זוהר ארגוב","s":"מה לך ילדה","v":"eI-ZF4kIEgk"},{"a":"זוהר ארגוב","s":"כבר עברו השנים","v":"IC60IrzMsmY"},{"a":"זוהר ארגוב","s":"כך עוברים חיי","v":"n3HJtk8wbOQ"},{"a":"זוהר ארגוב","s":"נכון להיום","v":"knpBE4HRESo"},{"a":"זוהר ארגוב","s":"אהבת רעייה רצוני","v":"Ckq0n7d8M3I"},{"a":"זוהר ארגוב","s":"אמא טובה","v":"cRozJR66HZk"},{"a":"זוהר ארגוב","s":"עד מתי אלוהיי","v":"pGSlA3My8GI"},{"a":"זוהר ארגוב","s":"כשאת לידי","v":"a0V-22tb6Uo"},{"a":"זוהר ארגוב","s":"ים של דמעות","v":"go0HEEcUBCY"},{"a":"זוהר ארגוב","s":"אל נבקש","v":"HOma-YRkfGU"},{"a":"זוהר ארגוב","s":"רעייה","v":"tqqw2CxBqb8"},{"a":"זוהר ארגוב","s":"הזוהר לארגוב (חברים שרים)","v":"itzNUuVLhLQ"},{"a":"זוהר ארגוב","s":"שיר השופט (חברים שרים)","v":"tSyl0Jmidg4"},{"a":"זוהר יעיש","s":"מחרוזת שקטים","v":"oNHNZmZaA8g"},{"a":"חיים משה","s":"פלייבק התמונות שבאלבום","v":"bcMnQJwFZvE"},{"a":"חיים משה","s":"מה עם הילד","v":"06WS9u9vdmo"},{"a":"חיים משה","s":"באו הצלילים","v":"_8tAv3ftsFU"},{"a":"חיים משה","s":"אמא אמא","v":"V8bxVrIKztU"},{"a":"חיים משה","s":"אהבת חיי","v":"HqZIjFTqKqU"},{"a":"חיים משה","s":"הגיטרה","v":"GY1426jv22c"},{"a":"חיים משה","s":"ילד שלי","v":"afItsCqdToU"},{"a":"חיים משה","s":"על סף דלתך","v":"xd673oYBLAo"},{"a":"חיים משה","s":"מחרוזת חיים משה","v":"m0oZYrnSWzE"},{"a":"יואב יצחק","s":"צלצולי פעמונים","v":"Rysq94khOcs"},{"a":"יואב יצחק","s":"זה הזמן לסלוח","v":"5mfjYA9qpqM"},{"a":"יואב יצחק","s":"אין לי מרגוע והוי לאהבה","v":"X5gRYg-1TgE"},{"a":"יואב יצחק","s":"מיליון סיבות","v":"zYhDV4pF8qg"},{"a":"יואב יצחק","s":"פני מלאך","v":"-KIupnnjswo"},{"a":"יואב יצחק","s":"מחרוזת שירי יואב יצחק","v":"8j3MjOK0i04"},{"a":"ישי לוי","s":"אלוהים נתן לך","v":"3Bj1BcnT2c0"},{"a":"ישי לוי","s":"זירת חיי","v":"z015DfcVnUs"},{"a":"ישי לוי","s":"תלתלים שחורים","v":"fd54y_k7lhw"},{"a":"ישי לוי","s":"אחת ויחידה","v":"kq5--PjdIZw"},{"a":"ישי לוי","s":"איפה את היום","v":"Q6smcuyam3E"},{"a":"ישי לוי","s":"צליל ענבלים","v":"HJzuFvSw6s4"},{"a":"ישי לוי","s":"אנה בחלאם ביק","v":"cj5irI7Ga-I"},{"a":"ישי לוי","s":"מנולייה","v":"nXWv5FXxk6M"},{"a":"ישי לוי","s":"מח\\' מצהלות","v":"SKjqz0LxZ5U"},{"a":"לי פישמן","s":"אנחנו מאמינים","v":"4FwyMvq73pY"},{"a":"ליאור מיארה","s":"מחרוזת פורטוגל","v":"1NTHxT8Q-B0"},{"a":"ליאור מיארה","s":"מחרוזת הצגה","v":"4Fv6OdSQtaw"},{"a":"ליאור מיארה","s":"מחרוזת תלתלים","v":"rw8VBlPTOiY"},{"a":"ליאור מיארה","s":"מחרוזת רקדי","v":"e43DGSCGxv0"},{"a":"ליאור מיארה","s":"מחרוזת נערה","v":"kHh5vHKTqCc"},{"a":"ליאור מיארה","s":"מחרוזת מהשמיים","v":"JfrBGRvHSzg"},{"a":"ליאור מיארה","s":"מחרוזת שביל האושר","v":"IlViJvjKz5U"},{"a":"ליאור מיארה","s":"מחרוזת מאושרת","v":"uyTwar0O-Xk"},{"a":"ליאור מיארה","s":"מחרוזת בסוף היום","v":"Rpi-3KFOBD8"},{"a":"ליאור מיארה","s":"מחרוזת בסבוסה","v":"TBwYecZ18_c"},{"a":"ליאור מיארה","s":"מחרוזת דמייני","v":"NoulwMeSKR8"},{"a":"לירן טל","s":"מחרוזת חלפו ימיי","v":"7-Qv_TLBJNQ"},{"a":"מרגלית צנעני","s":"נערי שובה אליי","v":"0RwTNKJk-x4"},{"a":"משה פרץ","s":"הטעם הישן","v":"q6UYBs5m9uo"},{"a":"משה פרץ","s":"גם אם העולם יתהפך","v":"YeJEaEjZynE"},{"a":"משה פרץ","s":"ברצלונה","v":"VBy48Go9ScI"},{"a":"משה פרץ","s":"סימני הזמן","v":"V9okgFOUZwE"},{"a":"נסרין","s":"למה לי למה לו","v":"ut18SMAzJh8"},{"a":"סגיב כהן","s":"מחרוזת אסלית בתימנית","v":"Jq8sH8yXg_s"},{"a":"סמיר שוקרי","s":"רונה","v":"t-BhB-xk0W4"},{"a":"עופר לוי","s":"אני ואת","v":"8zjP3kh0rvM"},{"a":"עופר לוי","s":"יום הרווקים","v":"o3x7pTK0WGc"},{"a":"עופר לוי","s":"מאוהב בגשם","v":"4SNVki5CMd0"},{"a":"עידו יצחק","s":"מחרוזת החברות שלך","v":"F4G8tvUlv-I"},{"a":"פאר טסי","s":"אהבה חולה","v":"IMFVvoSCjDY"},{"a":"פאר טסי","s":"ערק","v":"XU6DX6ahK5c"},{"a":"פאר טסי","s":"סלחי לי אמא","v":"Q0QhHgZi5Ss"},{"a":"פאר טסי","s":"היא לא יודעת למה","v":"pME4AuEvCcw"},{"a":"פאר טסי","s":"כתבתי מילים","v":"JXthYmOFXpk"},{"a":"פאר טסי","s":"משקה יקר","v":"Z7W0kDQ0CJA"},{"a":"פאר טסי","s":"דפיקות הלב","v":"jWraDnHjRA0"},{"a":"פאר טסי","s":"38","v":"k_u_ObTq2So"},{"a":"פאר טסי","s":"בואי ניפגש","v":"_Niml1PtHjg"},{"a":"פאר טסי","s":"הי מאמא","v":"j3qWPwy-_PU"},{"a":"פאר טסי","s":"אל תהיי עצובה","v":"9ylJabMFP14"},{"a":"פאר טסי","s":"את עוד תראי","v":"omJ9_Mz6FgI"},{"a":"קוקו מאילת","s":"מחרוזת קלאסיקה","v":"uW_G2pRWoHI"},{"a":"קוקו מאילת","s":"מחרוזת כמה חבל","v":"Z3Y1IyhQsIw"},{"a":"קוקו מאילת","s":"מחרוזת אלופה","v":"oVCVYkdGUMo"},{"a":"ראובן המלאך","s":"מחרוזת קפה בשניים","v":"dUdF-Zsalmg"},{"a":"רובי חן","s":"סמרה","v":"e_-KQSbrKsg"},{"a":"רובי לוי","s":"כינורי","v":"Fe-VtyiAN4o"},{"a":"רוני אחיאל","s":"לחזור לחיים","v":"-NSIJHFyc9o"},{"a":"שונים","s":"מחרוזת רחוק רחוק","v":"Ly7oPA3KoEQ"},{"a":"שונים","s":"רק חיוכים","v":"0Tz-7z_Egmg"},{"a":"שי שרעבי","s":"מחרוזת רוקדת בלילות","v":"cxBC29bjxC8"},{"a":"שי שרעבי","s":"מחרוזת זוכרת (עם גלעד צארום)","v":"vqkxSlgynJg"},{"a":"שי שרעבי","s":"מחרוזת עושה לכם שכונה","v":"Aeve4FA3ozU"},{"a":"שי שרעבי","s":"רוקדת בלילות","v":"RZFJpO_hafU"},{"a":"שימי מזרחי","s":"מחרוזת להיות חופשיה","v":"y8bKtiVUdtU"},{"a":"שימי מזרחי","s":"סלחתי לך","v":"5qn6AnUZ7aE"},{"a":"שקד קוממי","s":"מחרוזת ילדונת","v":"BteCJUos2ng"},{"a":"שקד קוממי","s":"מחרוזת ילדה","v":"dL5YMPUliiA"},{"a":"שקד קוממי","s":"מחרוזת סורו ממני","v":"TIWoEXwE4W0"},{"a":"שריף","s":"בבוקר שאחרי","v":"gE__u2gZaOs"},{"a":"שריף","s":"מחרוזת יאללה חתונה","v":"SjAXtHSpQ-Q"},{"a":"שריף","s":"בסבוסה","v":"PTi_GZgCeRw"},{"a":"שריף","s":"למה לא & בת המלך","v":"KvqlFxIJbkI"}];
 function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 const CHEV=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
 const PLAY_ICO=`<svg viewBox="0 0 12 14" fill="#121212" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L11 7L1 13V1Z"/></svg>`;
@@ -600,7 +604,7 @@ async function mobilePiP(){
       const st=pipWin.document.createElement('style');
       st.textContent='*{box-sizing:border-box;margin:0;padding:0}body{background:#000;font-family:Arial,sans-serif;overflow:hidden}'+
         '#yt-player,#yt-player iframe{width:320px!important;height:180px!important;display:block!important;}'+
-        '.pb{display:flex;align-items:center;background:#181818;padding:5px 8px;gap:5px;border-top:1px solid #2a2a2a;}'+
+        '.pb{display:flex;align-items:center;background:#F2F2F2;padding:5px 8px;gap:5px;border-top:1px solid #E5E5E5;}'+
         '.pt{flex:1;font-size:11px;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;}'+
         '.pa{background:none;border:none;color:#aaa;font-size:14px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}'+
         '.pa:hover{background:#333;color:#fff;}';
@@ -1022,6 +1026,7 @@ function render(term){
     if(!g[r.a]){g[r.a]=[];ord.push(r.a);}
     g[r.a].push(r);
   });
+  const _allArtistsSorted=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,'he'));
   let h='';
   if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
   for(const a of ord){
@@ -1031,13 +1036,13 @@ function render(term){
     h+=`<div class="artist-header" onclick="toggleArtist(this)">`;
     h+=`<div class="artist-avatar" data-artist="${esc(a)}" data-vid="${vid}" onclick="adminClickAvatar('${esc(a)}',event)">${esc(a.slice(0,2))}</div>`;
     h+=`<span class="artist-name-text">${hl(a,q)}</span>`;
-    h+=`<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+    h+=`<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#606060" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
     h+=`<div class="admin-artist-btns">`;
     h+=`<span class="drag-handle" draggable="true"
           ondragstart="event.stopPropagation();_dndArtistStart(event,'${vid}')"
           ondragend="_dndEnd(event)"
           onclick="event.stopPropagation()"
-          title="גרור לשינוי סדר"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect y="0" width="16" height="3" rx="1.5"/><rect y="7" width="16" height="3" rx="1.5"/></svg><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>`;
+          title="גרור לשינוי סדר"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect y="0" width="16" height="3" rx="1.5"/><rect y="7" width="16" height="3" rx="1.5"/></svg></span>`;
     h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה">✏️</button>`;
     h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="מחק תיקייה">🗑</button>`;
     h+=`</div>`;
@@ -1053,9 +1058,12 @@ function render(term){
               ondragstart="_dndSongStart(event,'${r.v}')"
               ondragend="_dndEnd(event)"
               onclick="event.stopPropagation()"
-              title="גרור לשינוי סדר"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect y="0" width="16" height="3" rx="1.5"/><rect y="7" width="16" height="3" rx="1.5"/></svg><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
+              title="גרור לשינוי סדר"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect y="0" width="16" height="3" rx="1.5"/><rect y="7" width="16" height="3" rx="1.5"/></svg></button>
             <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v}')" title="שנה שם שיר">✏️</button>
-            <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v}',this)" title="העבר לתיקייה אחרת">📂</button>
+            <select class="folder-select" onclick="event.stopPropagation()" onchange="adminFolderSelectChange('${r.v}',this)" title="שנה תיקייה">
+              ${_allArtistsSorted.map(ar=>`<option value="${esc(ar)}"${ar===r.a?' selected':''}>${esc(ar)}</option>`).join('')}
+              <option value="__new__">＋ תיקייה חדשה</option>
+            </select>
             <button class="btn-play" onclick="event.stopPropagation();playVid('${r.v}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
@@ -1106,7 +1114,7 @@ function openQueuePanel(){
           ondragleave="_dndLeave(event)"
           ondragend="_dndEnd(event)"
           onclick="openModal(queue.find(x=>x.v==='${s.v}'),queue,queue.findIndex(x=>x.v==='${s.v}'))">
-        <span class="qi-drag" onclick="event.stopPropagation()">⠿</span>
+        <span class="qi-drag" onclick="event.stopPropagation()"><svg width="16" height="10" viewBox="0 0 16 10" fill="currentColor"><rect y="0" width="16" height="3" rx="1.5"/><rect y="7" width="16" height="3" rx="1.5"/></svg></span>
         <span class="qi-num">${i+1}</span>
         <div class="qi-thumb" style="background-image:url('https://i.ytimg.com/vi/${s.v}/mqdefault.jpg')"></div>
         <div class="qi-info">
@@ -1381,6 +1389,16 @@ function adminMoveSongNewFolder(vid){
   if(!name||!name.trim())return;
   applyMoveSongToFolder(vid,name.trim());
 }
+function adminFolderSelectChange(vid,sel){
+  const val=sel.value;
+  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  if(val==='__new__'){
+    sel.value=song.a; // reset to current before prompting
+    adminMoveSongNewFolder(vid);
+  } else {
+    applyMoveSongToFolder(vid,val);
+  }
+}
 
 // ── SONG MANAGEMENT ──
 function adminRenameSong(vid){
@@ -1417,7 +1435,7 @@ function _fillArtistList(){
   const sel=document.getElementById("atbArtist");if(!sel||sel.tagName!=='SELECT')return;
   const cur=sel.value;
   const artists=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,"he"));
-  sel.innerHTML='<option value="">בחר אמן / תיקייה</option>'+
+  sel.innerHTML='<option value="">-- בחר אמן / תיקייה --</option>'+
     artists.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('')+
     '<option value="__new__">＋ תיקייה חדשה</option>';
   if(cur&&cur!=='__new__')sel.value=cur;
@@ -1449,6 +1467,7 @@ function adminAddSong(){
     ALL.splice(lastIdx+1,0,{a:artist,s:song,v:vid});
   }else{
     ALL.push({a:artist,s:song,v:vid});
+    // Re-sort all artists alphabetically, keeping songs within each artist in order
     const grp={};const ord2=[];
     ALL.forEach(s=>{if(!grp[s.a]){grp[s.a]=[];ord2.push(s.a);}grp[s.a].push(s);});
     ord2.sort((a,b)=>a<b?-1:a>b?1:0);
@@ -1487,13 +1506,13 @@ async function adminSyncGitHub(){
     const updated=raw.replace(/const ALL=\[[\s\S]*?\];/,newAll);
     const enc=btoa(unescape(encodeURIComponent(updated)));
     const up=await fetch("https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html",
-      {method:"PUT",headers:{"Authorization":"Bearer "+TOKEN,"Accept":"application/vnd.github.v3+json","Content-Type":"application/json"},
+      {method:"PUT",headers:{"Authorization":"Bearer "+token,"Accept":"application/vnd.github.v3+json","Content-Type":"application/json"},
        body:JSON.stringify({message:"Update songs list",content:enc,sha:d.sha})});
-    if(!up.ok)throw new Error("שגיאה: "+up.status);
-    _atbStat("✓ נשמר ב-GitHub","ok");
+    if(!up.ok)throw new Error("\u05e9\u05d2\u05d9\u05d0\u05d4: "+up.status);
+    _atbStat("\u2713 \u05e0\u05e9\u05de\u05e8 \u05d1-GitHub","ok");
     _admDirty=false;_markDirty();
-  }catch(e){_atbStat("✗ "+e.message,"err");}
-  finally{btn.textContent="שמור ל-GitHub";btn.disabled=false;}
+  }catch(e){_atbStat("\u2717 "+e.message,"err");}
+  finally{btn.textContent="\u05e9\u05de\u05d5\u05e8 \u05dc-GitHub";btn.disabled=false;}
 }
 </script>
 </body>
