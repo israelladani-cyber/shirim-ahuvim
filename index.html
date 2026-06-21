@@ -678,6 +678,10 @@ function toggleTheater(){
   requestAnimationFrame(setTopH);
 }
 function goHome(){
+  // Close all artist folders and clear search
+  document.querySelectorAll('.artist-block[data-open="true"]').forEach(b=>b.dataset.open='false');
+  const q=document.getElementById('q');if(q&&q.value){q.value='';render('');}
+  document.getElementById('content').scrollTop=0;
   document.getElementById('playerPanel').classList.remove('open');
   document.body.classList.remove('playing');
   document.body.classList.remove('has-song');
