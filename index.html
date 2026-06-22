@@ -1560,6 +1560,9 @@ async function adminSyncGitHub(){
     btn.textContent="✓ נשמר!";
     setTimeout(()=>btn.textContent="⟳ שמור ב-GitHub",3000);
     _atbStat("✓ עודכן ב-GitHub בהצלחה","ok");
+  document.getElementById("atbArtist").value="";
+  document.getElementById("atbSong").value="";
+  document.getElementById("atbUrl").value="";
   }catch(e){
     _atbStat("שגיאה: "+e.message,"err");
     btn.textContent="⟳ שמור ב-GitHub";
