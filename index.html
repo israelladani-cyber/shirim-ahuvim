@@ -361,19 +361,15 @@ body.admin .btn-move-folder{display:flex;}
 .q-act-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
 .q-naka{color:#FF4444;}
 .q-naka:hover{background:rgba(255,68,68,.15);}
+.q-play-circle{background:#E53935;color:#fff;border-radius:50%;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;padding:0!important;font-size:11px;flex-shrink:0;border:none;cursor:pointer;}
+.q-play-circle:hover{background:#B71C1C;}
 </style>
 </head>
 <body>
 
 <div class="top">
   <div class="top-row">
-    <!-- QUEUE BAR -->
-    <div class="queue-bar" id="queueBar" onclick="openQueuePanel()" style="cursor:pointer" title="לחץ לצפייה בפלייליסט">
-      <span class="queue-bar-text" id="queueBarText">0 שירים בפלייליסט</span>
-      <button class="queue-play-btn" onclick="event.stopPropagation();playQueue()">▶ נגן</button>
-      <button class="queue-clear-btn" onclick="event.stopPropagation();clearQueue()">✕</button>
-    </div>
-    <div class="brand" onclick="goHome()" title="חזרה לדף הבית">
+<div class="brand" onclick="goHome()" title="חזרה לדף הבית">
       <img src="logo%208.svg" style="height:75px;width:300px;display:block;" alt="לוגו">
     </div>
     <div class="search-section">
@@ -430,7 +426,7 @@ body.admin .btn-move-folder{display:flex;}
         הקודם
       </button>
       <div class="modal-queue-info" id="modalQueueInfo"></div>
-      <button class="modal-add-btn" id="modalAddBtn" onclick="addSongToQueueOpen(currentSong)">+ הוסף לפלייליסט</button>
+      <button class="modal-add-btn" id="modalAddBtn" onclick="openPlPicker(currentSong)">+ הוסף לפלייליסט</button>
       <button class="modal-nav-btn" id="btnNext" onclick="modalNav(1)">
         הבא
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1133,7 +1129,7 @@ function render(term){
             <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
-            <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();addSongToQueueOpen(ALL.find(s=>(s.v||s.mp4)==='${r.v||r.mp4}'))">${inQ?'✓':'+'}</button>
+            <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();openPlPicker(ALL.find(s=>(s.v||s.mp4)==='${r.v||r.mp4}'))">${inQ?'✓':'+'}</button>
             ${r.mp4?'':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
             <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
           </div>
@@ -1803,7 +1799,7 @@ function renderQueueTabs(){
   });
   h+='<div style="flex:1;min-width:6px"></div>';
   h+='<button class="q-act-btn q-naka" onclick="clearQueuePanel()">נקה<\/button>';
-  h+='<button class="q-act-btn" onclick="(window._activeQueueTab===\'temp\'?playQueue():plPlayFrom(window._activeQueueTab,0));closeQueuePanel()">&#9654;<\/button>';
+  h+='<button class="q-play-circle" onclick="(window._activeQueueTab===\'temp\'?playQueue():plPlayFrom(window._activeQueueTab,0));closeQueuePanel()">&#9654;<\/button>';
   h+='<button class="q-act-btn" onclick="toggleQueueMinimize()">'+(isMin?'&#9650;':'&#9660;')+'<\/button>';
   h+='<button class="q-act-btn" onclick="closeQueuePanel()">&#x2715;<\/button>';
   tabs.innerHTML=h;
