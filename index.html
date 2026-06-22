@@ -392,7 +392,7 @@ body.admin .btn-move-folder{display:flex;}
         <span class="btn-label">סגור הכל</span>
       </button>
       <button class="admin-lock" onclick="openAdminLogin()" title="מצב מנהל">🔐</button>
-      <button class="pl-admin-btn" onclick="openQueuePanel()">🎵 פלייליסטים</button>
+      <button class="pl-admin-btn" onclick="openQueuePanel()">♫ פלייליסטים</button>
     </div>
   </div>
 </div>
@@ -519,7 +519,7 @@ function addToQueue(song){
   refreshAddBtns();
 }
 function removeFromQueue(vid){
-  queue=queue.filter(s=>s.v!==vid);
+  queue=queue.filter(s=>(s.v||s.mp4)!==vid);
   updateQueueBar();
   refreshAddBtns();
 }
@@ -1178,14 +1178,14 @@ function openQueuePanel(){
           ondragleave="_dndLeave(event)"
           ondragend="_dndEnd(event)"
           onclick="openModal(queue.find(x=>x.v==='${s.v}'),queue,queue.findIndex(x=>x.v==='${s.v}'))">
-        <span class="qi-drag" onclick="event.stopPropagation()">⠿</span>
+        <span class="qi-drag" onclick="event.stopPropagation()">☰</span>
         <span class="qi-num">${i+1}</span>
         <div class="qi-thumb" style="background-image:url('https://i.ytimg.com/vi/${s.v}/mqdefault.jpg')"></div>
         <div class="qi-info">
           <div class="qi-name">${esc(s.s)}</div>
           <div class="qi-artist">${esc(s.a||'')}</div>
         </div>
-        <button class="qi-rm" onclick="event.stopPropagation();removeFromQueue('${s.v}')" title="הסר">✕</button>
+        <button class="qi-rm" onclick="event.stopPropagation();removeFromQueue('${s.v||s.mp4}')" title="הסר">✕</button>
       </div>`).join('');
     }
   }
@@ -1711,7 +1711,7 @@ function openPlPicker(song){
   document.getElementById('plPickerOverlay').classList.add('open');
 }
 function closePlPicker(){document.getElementById('plPickerOverlay').classList.remove('open');}
-function plPickQueue(){var song=window._plSong;if(song)toggleAddSong(song.v||song.mp4);closePlPicker();}
+function plPickQueue(){var song=window._plSong;if(song)toggleAddSong(song.v||song.mp4);closePlPicker();var _qEl=document.getElementById('queuePanel');if(_qEl&&_qEl.classList.contains('open'))openQueuePanel();}
 function plPickAdd(plId){
   var song=window._plSong;if(!song)return;
   var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
@@ -1832,7 +1832,7 @@ function switchQueueTab(id,el){
   if(!pl)return;
   if(!pl.songs.length){list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">פלייליסט ריק<\/div>';return;}
   list.innerHTML=pl.songs.map(function(s,i){return '<div class="q-item" style="cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);" onclick="plPlayFrom(\''+pl.id+'\','+i+');closeQueuePanel()">'
-+'<div style="padding:10px 12px;"><div style="font-size:13px;font-weight:600;color:#fff;">'+s.s+'<\/div><div style="font-size:11px;color:#aaa;margin-top:2px;">'+s.a+'<\/div><\/div><\/div>';}).join('');
++'<span class="qi-num">'+(i+1)+'<\/span>'+(s.v?'<div class="qi-thumb" style="background-image:url(https://i.ytimg.com/vi/'+s.v+'/mqdefault.jpg)"><\/div>':'<div class="qi-thumb" style="background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:16px">&#9835;<\/div>')+'<div class="qi-info"><div class="qi-name">'+s.s+'<\/div><div class="qi-artist">'+s.a+'<\/div><\/div><\/div>';}).join('');
 }
 </script></body>
 </html>
