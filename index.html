@@ -1688,7 +1688,7 @@ document.getElementById('artistPhotoInput').addEventListener('change',function()
   this.value='';_curPhotoArtist=null;
 });
 </script>
-<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">הוסף לפלייליסט</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">✏️</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">🗑️</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
+<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">הוסף לפלייליסט</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">שנה שם</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">🗑️</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
 function _plLoad(){try{return JSON.parse(localStorage.getItem('kpl')||'[]');}catch(e){return[];}}
 function _plSave(l){localStorage.setItem('kpl',JSON.stringify(l));}
 function _plId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
@@ -1696,7 +1696,7 @@ window._plSong=null;
 function openPlPicker(song){
   window._plSong=song;
   var pls=_plLoad(),sid=song?(song.v||song.mp4):null,inQ=sid?isInQueue(sid):false;
-  var html='<div class="pl-pick-item'+(inQ?' checked':'')+'" onclick="plPickQueue()"><span class="pl-pick-check">'+(inQ?'\u2713':'')+'<\/span>▶ תור נוכחי<\/div>';
+  var html='<div class="pl-pick-item'+(inQ?' checked':'')+'" onclick="plPickQueue()"><span class="pl-pick-check">'+(inQ?'\u2713':'')+'<\/span>▶ פלייליסט זמני<\/div>';
   if(pls.length)html+='<div class="pl-pick-sep"><\/div>';
   pls.forEach(function(pl){
     var has=sid?pl.songs.some(function(s){return(s.v||s.mp4)===sid;}):false;
@@ -1728,7 +1728,9 @@ function closePlPanel(){document.getElementById('plPanel').classList.remove('ope
 function plBackToList(){document.getElementById('plDetailView').style.display='none';document.getElementById('plListView').style.display='flex';}
 function _plRenderList(){
   var pls=_plLoad(),c=document.getElementById('plList');
-  var html='<div class="pl-new-row" onclick="plCreateNew()"><span style="font-size:22px">+<\/span> פלייליסט חדש<\/div>';
+  var qn=(typeof queue!=='undefined'?queue.length:0);
+  var html='<div class="pl-list-item" onclick="closePlPanel();openQueuePanel()"><div class="pl-list-icon" style="background:linear-gradient(135deg,#FF7043,#E64A19)">\u23F1<\/div><div class="pl-list-info"><div class="pl-list-name">פלייליסט זמני<\/div><div class="pl-list-sub">'+qn+' שירים<\/div><\/div><\/div>';
+  html+='<div class="pl-new-row" onclick="plCreateNew()"><span style="font-size:22px">+<\/span> פלייליסט חדש<\/div>';
   if(!pls.length){html+='<div class="pl-empty">אין פלייליסטים עדיין<br><span style="font-size:13px;color:#444">הוסף שירים דרך כפתור +<\/span><\/div>';}
   else{pls.forEach(function(pl){html+='<div class="pl-list-item" onclick="plOpenDetail(\''+pl.id+'\')">'
     +'<div class="pl-list-icon">\uD83C\uDFB5<\/div>'
