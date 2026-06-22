@@ -1831,8 +1831,24 @@ function switchQueueTab(id,el){
   var pls=_plLoad(),pl=pls.find(function(p){return p.id===id;});
   if(!pl)return;
   if(!pl.songs.length){list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">פלייליסט ריק<\/div>';return;}
-  list.innerHTML=pl.songs.map(function(s,i){return '<div class="q-item" style="cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);" onclick="plPlayFrom(\''+pl.id+'\','+i+');closeQueuePanel()">'
-+'<span class="qi-num">'+(i+1)+'<\/span>'+(s.v?'<div class="qi-thumb" style="background-image:url(https://i.ytimg.com/vi/'+s.v+'/mqdefault.jpg)"><\/div>':'<div class="qi-thumb" style="background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:16px">&#9835;<\/div>')+'<div class="qi-info"><div class="qi-name">'+s.s+'<\/div><div class="qi-artist">'+s.a+'<\/div><\/div><\/div>';}).join('');
+  list.innerHTML=pl.songs.map(function(s,i){
+    var thumb=s.v?'<div class="qi-thumb" style="background-image:url(https://i.ytimg.com/vi/'+s.v+'/mqdefault.jpg)"><\/div>':'<div class="qi-thumb" style="background:#222;display:flex;align-items:center;justify-content:center;font-size:18px;">&#9835;<\/div>';
+    return '<div class="queue-item" onclick="plPlayFrom(\''+pl.id+'\','+i+');closeQueuePanel()">'
+      +'<span class="qi-drag" onclick="event.stopPropagation()">☰<\/span>'
+      +'<span class="qi-num">'+(i+1)+'<\/span>'
+      +thumb
+      +'<div class="qi-info"><div class="qi-name">'+s.s+'<\/div><div class="qi-artist">'+s.a+'<\/div><\/div>'
+      +'<button class="qi-rm" onclick="event.stopPropagation();plRemoveSong(\''+pl.id+'\','+i+')" title="הסר">✕<\/button>'
+      +'<\/div>';
+  }).join('');
+}
+function plRemoveSong(plId,idx){
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});
+  if(!pl)return;
+  pl.songs.splice(idx,1);
+  _plSave(pls);
+  switchQueueTab(plId,null);
+  renderQueueTabs();
 }
 </script></body>
 </html>
