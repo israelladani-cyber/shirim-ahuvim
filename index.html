@@ -1751,7 +1751,7 @@ window._plSong=null;
 function openPlPicker(song){
   window._plSong=song;
   var pls=_plLoad(),sid=song?(song.v||song.mp4):null,inQ=sid?isInQueue(sid):false;
-  var html='<div class="pl-pick-item'+(inQ?' checked':'')+'" onclick="plPickQueue()"><span class="pl-pick-check">'+(inQ?'\u2713':'')+'<\/span>▶ פלייליסט זמני<\/div>';
+  var html='<div class="pl-pick-item'+(inQ?' checked':'')+'" onclick="plPickQueue()"><span class="pl-pick-check">'+(inQ?'\u2713':'')+'<\/span>פלייליסט זמני<\/div>';
   if(pls.length)html+='<div class="pl-pick-sep"><\/div>';
   pls.forEach(function(pl){
     var has=sid?pl.songs.some(function(s){return(s.v||s.mp4)===sid;}):false;
@@ -1926,10 +1926,11 @@ function plPickAdd(plId){
   var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
   var sid=song.v||song.mp4;
   var idx=pl.songs.findIndex(function(s){return(s.v||s.mp4)===sid;});
-  if(idx<0){pl.songs.push(song);_plSave(pls);}
+  if(idx>=0)pl.songs.splice(idx,1);else pl.songs.push(song);
+  _plSave(pls);
   try{if(document.getElementById('plPanel').classList.contains('open'))_plRenderList();}catch(e){}
   var _qmb=document.getElementById('queuePanel');
-  if(_qmb&&_qmb.classList.contains('open')&&window._activeQueueTab===plId)switchQueueTab(plId,null);
+  if(_qmb&&(_qmb.classList.contains('open')||_qmb.classList.contains('minimized'))&&window._activeQueueTab===plId)switchQueueTab(plId,null);
   openPlPicker(song);
 }
 function clearQueuePanel(){
@@ -1938,6 +1939,14 @@ function clearQueuePanel(){
   renderQueueTabs();
   var qp=document.getElementById('queuePanel');
   if(qp&&(qp.classList.contains('open')||qp.classList.contains('minimized')))switchQueueTab('temp',null);
+}
+
+function plPickQueue(){
+  var song=window._plSong;if(!song)return;
+  toggleAddSong(song.v||song.mp4);
+  openPlPicker(song);
+  var _qmb=document.getElementById('queuePanel');
+  if(_qmb&&(_qmb.classList.contains('open')||_qmb.classList.contains('minimized'))&&window._activeQueueTab==='temp')switchQueueTab('temp',null);
 }
 </script></body>
 </html>
