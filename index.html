@@ -309,10 +309,10 @@ body.admin .btn-move-folder{display:flex;}
 .pl-picker-bg{position:absolute;inset:0;}
 #plPicker{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);background:#1e2025;border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:6px 0;min-width:240px;max-height:70vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,.7);direction:rtl;}
 .pl-picker-title{padding:12px 16px 8px;font-size:12px;color:#888;font-weight:700;letter-spacing:.8px;}
-.pl-pick-item{padding:11px 16px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:10px;color:#e0e0e0;transition:background .12s;}
+.pl-pick-item{padding:11px 16px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px;color:#fff;transition:background .12s;}
 .pl-pick-item:hover{background:rgba(255,255,255,.07);}
 .pl-pick-item.checked{color:#00BCD4;}
-.pl-pick-check{width:16px;text-align:center;font-size:13px;}
+.pl-pick-check{width:14px;text-align:center;font-size:12px;color:#00BCD4;flex-shrink:0;}
 .pl-pick-sep{height:1px;background:rgba(255,255,255,.08);margin:4px 8px;}
 .pl-pick-new{padding:11px 16px;cursor:pointer;font-size:14px;color:#00BCD4;font-weight:600;display:flex;align-items:center;gap:10px;}
 .pl-pick-new:hover{background:rgba(0,188,212,.1);}
@@ -347,6 +347,9 @@ body.admin .btn-move-folder{display:flex;}
 .pl-song-del:hover{color:#f55;}
 .pl-top-btn{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:#ccc;border-radius:20px;padding:5px 13px;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
 .pl-top-btn:hover{background:rgba(255,255,255,.16);color:#fff;}
+
+.pl-admin-btn{background:#D32F2F;border:none;color:#fff;border-radius:20px;padding:5px 13px;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.pl-admin-btn:hover{background:#B71C1C;}
 </style>
 </head>
 <body>
@@ -359,7 +362,6 @@ body.admin .btn-move-folder{display:flex;}
       <button class="queue-play-btn" onclick="event.stopPropagation();playQueue()">▶ נגן</button>
       <button class="queue-clear-btn" onclick="event.stopPropagation();clearQueue()">✕</button>
     </div>
-    <button class="pl-top-btn" onclick="openPlPanel()">🎵 פלייליסטים</button>
     <div class="brand" onclick="goHome()" title="חזרה לדף הבית">
       <img src="logo%208.svg" style="height:75px;width:300px;display:block;" alt="לוגו">
     </div>
@@ -383,6 +385,7 @@ body.admin .btn-move-folder{display:flex;}
         <span class="btn-label">סגור הכל</span>
       </button>
       <button class="admin-lock" onclick="openAdminLogin()" title="מצב מנהל">🔐</button>
+      <button class="pl-admin-btn" onclick="openPlPanel()">🎵 פלייליסטים</button>
     </div>
   </div>
 </div>
