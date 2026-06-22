@@ -1469,7 +1469,7 @@ function adminAddSong(){
   if(!artist||!song){_atbStat("חסר שם אמן או שם שיר","err");return;}
   let entry;
   if(url.match(/\.mp4/i)||url.includes('.r2.dev')){
-    if(ALL.some(s=>s.mp4===url)){_atbStat('[H][H][H][H] [H][H][H] [H][H][H][H][H] [H][H][H][H][H][H][H]','err');return;}
+    if(ALL.some(s=>s.mp4===url)){_atbStat('שיר זה כבר קיים ברשימה','err');return;}
     entry={a:artist,s:song,mp4:url};
   }else{
   const m=url.match(/[?&]v=([A-Za-z0-9_-]+)/);
