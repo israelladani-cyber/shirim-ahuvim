@@ -363,6 +363,31 @@ body.admin .btn-move-folder{display:flex;}
 .q-naka:hover{background:rgba(255,68,68,.15);}
 .q-play-circle{background:#E53935;color:#fff;border-radius:50%;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;padding:0!important;font-size:11px;flex-shrink:0;border:none;cursor:pointer;}
 .q-play-circle:hover{background:#B71C1C;}
+
+/* q-tab del btn */
+.q-tab{position:relative;display:flex;align-items:center;}
+.q-tab-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;pointer-events:none;}
+.q-tab-del{background:none;border:none;color:rgba(255,255,255,.5);cursor:pointer;font-size:12px;padding:0 3px;line-height:1;border-radius:50%;transition:color .15s;flex-shrink:0;}
+.q-tab-del:hover{color:#fff;background:rgba(255,255,255,.15);}
+/* YouTube picker overlay */
+#plPickerOverlay.open{display:flex!important;align-items:center;justify-content:center;background:rgba(0,0,0,.65);}
+.pl-picker-bg{position:absolute;inset:0;z-index:1;background:transparent;}
+#plPicker{position:relative!important;top:auto!important;left:auto!important;transform:none!important;z-index:2;background:#212121;border-radius:14px;min-width:280px;max-width:380px;width:90%;box-shadow:0 8px 32px rgba(0,0,0,.6);overflow:hidden;}
+.pl-picker-title{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;font-size:14px;font-weight:600;color:#fff;border-bottom:1px solid #333;direction:rtl;}
+.pl-pick-close-btn{background:none;border:none;color:#aaa;font-size:20px;cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0;}
+.pl-pick-close-btn:hover{color:#fff;}
+#plPickerList{max-height:240px;overflow-y:auto;padding:8px 0;}
+.pl-pick-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:#fff;font-size:13px;direction:rtl;}
+.pl-pick-item:hover{background:#2e2e2e;}
+.pl-pick-check{display:inline-flex;width:18px;height:18px;border:2px solid #606060;border-radius:3px;align-items:center;justify-content:center;font-size:12px;color:transparent;flex-shrink:0;}
+.pl-pick-item.checked .pl-pick-check{background:#3ea6ff;border-color:#3ea6ff;color:#fff;}
+.pl-pick-sep{height:1px;background:#333;margin:4px 0;}
+.pl-pick-new{display:flex;align-items:center;gap:8px;padding:12px 16px;color:#3ea6ff;cursor:pointer;font-size:13px;direction:rtl;}
+.pl-pick-new:hover{background:#2e2e2e;}
+.pl-pick-new span{font-size:20px;font-weight:700;line-height:1;}
+/* Save button */
+.modal-save-btn{background:none;border:1px solid #565656;color:#fff;border-radius:18px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:6px;font-family:Arial,sans-serif;transition:background .15s;}
+.modal-save-btn:hover{background:rgba(255,255,255,.1);}
 </style>
 </head>
 <body>
@@ -426,7 +451,7 @@ body.admin .btn-move-folder{display:flex;}
         הקודם
       </button>
       <div class="modal-queue-info" id="modalQueueInfo"></div>
-      <button class="modal-add-btn" id="modalAddBtn" onclick="openPlPicker(currentSong)">+ הוסף לפלייליסט</button>
+      <button class="modal-save-btn" id="modalAddBtn" onclick="openPlPicker(currentSong)"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0"><path d="M22 13h-4v4h-2v-4h-4v-2h4V7h2v4h4v2zm-8-6H2v2h12V7zM2 11h8v2H2v-2zm0 4h8v2H2v-2z"></path></svg>שמור</button>
       <button class="modal-nav-btn" id="btnNext" onclick="modalNav(1)">
         הבא
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1692,7 +1717,7 @@ document.getElementById('artistPhotoInput').addEventListener('change',function()
   this.value='';_curPhotoArtist=null;
 });
 </script>
-<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">הוסף לפלייליסט</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">שנה שם</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">🗑️</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
+<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title"><span>הוסף לפלייליסט</span><button class="pl-pick-close-btn" onclick="closePlPicker()">✕</button></div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">שנה שם</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">🗑️</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
 function _plLoad(){try{return JSON.parse(localStorage.getItem('kpl')||'[]');}catch(e){return[];}}
 function _plSave(l){localStorage.setItem('kpl',JSON.stringify(l));}
 function _plId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
@@ -1719,6 +1744,7 @@ function plPickAdd(plId){
   if(idx>=0)pl.songs.splice(idx,1);else pl.songs.push(song);
   _plSave(pls);closePlPicker();
   if(document.getElementById('plPanel').classList.contains('open'))_plRenderList();
+  var _qmb=document.getElementById('queuePanel');if(_qmb&&_qmb.classList.contains('open')&&window._activeQueueTab===plId)switchQueueTab(plId,null);
 }
 function plNewFromPicker(){
   var name=prompt('שם הפלייליסט:','');if(!name||!name.trim())return;
@@ -1789,13 +1815,23 @@ function plRename(){
   var name=prompt('שם חדש:',pl.name);if(!name||!name.trim())return;
   pl.name=name.trim();_plSave(pls);document.getElementById('plDetailName').textContent=pl.name;_plRenderList();
 }
+function plDelTab(id){
+  if(!confirm('האם למחוק את הפלייליסט?'))return;
+  var pls=_plLoad(),i=pls.findIndex(function(p){return p.id===id;});
+  if(i<0)return;
+  pls.splice(i,1);
+  _plSave(pls);
+  if(window._activeQueueTab===id)window._activeQueueTab='temp';
+  renderQueueTabs();
+  switchQueueTab(window._activeQueueTab,null);
+}
 function renderQueueTabs(){
   var tabs=document.getElementById('queueTabs');if(!tabs)return;
   var pls=_plLoad(),act=window._activeQueueTab||'temp';
   var isMin=document.getElementById('queuePanel')&&document.getElementById('queuePanel').classList.contains('minimized');
   var h='<div class="q-tab'+(act==='temp'?' active':'')+'" onclick="switchQueueTab(\'temp\',this)">פלייליסט זמני<\/div>';
   pls.forEach(function(pl){
-    h+='<div class="q-tab'+(act===pl.id?' active':'')+'" onclick="switchQueueTab(\''+pl.id+'\',this)">'+pl.name+'<\/div>';
+    h+='<div class="q-tab'+(act===pl.id?' active':'')+'" onclick="switchQueueTab(\''+pl.id+'\',this)"><span class="q-tab-name">'+pl.name+'<\/span><span class="q-tab-del" onclick="event.stopPropagation();plDelTab(\''+pl.id+'\')">&#x2715;<\/span><\/div>';
   });
   h+='<div style="flex:1;min-width:6px"></div>';
   h+='<button class="q-act-btn q-naka" onclick="clearQueuePanel()">נקה<\/button>';
