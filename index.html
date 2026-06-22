@@ -302,6 +302,51 @@ body.admin .btn-move-folder{display:flex;}
 .folder-picker-new{padding:8px 14px;font-size:13px;color:#4a9eff;cursor:pointer;border-top:1px solid #333;margin-top:3px;}
 .folder-picker-new:hover{background:#F2F2F2;}
 
+
+/* PLAYLIST PICKER */
+#plPickerOverlay{position:fixed;inset:0;z-index:3000;display:none;pointer-events:none;}
+#plPickerOverlay.open{display:block;pointer-events:auto;}
+.pl-picker-bg{position:absolute;inset:0;}
+#plPicker{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);background:#1e2025;border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:6px 0;min-width:240px;max-height:70vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,.7);direction:rtl;}
+.pl-picker-title{padding:12px 16px 8px;font-size:12px;color:#888;font-weight:700;letter-spacing:.8px;}
+.pl-pick-item{padding:11px 16px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:10px;color:#e0e0e0;transition:background .12s;}
+.pl-pick-item:hover{background:rgba(255,255,255,.07);}
+.pl-pick-item.checked{color:#00BCD4;}
+.pl-pick-check{width:16px;text-align:center;font-size:13px;}
+.pl-pick-sep{height:1px;background:rgba(255,255,255,.08);margin:4px 8px;}
+.pl-pick-new{padding:11px 16px;cursor:pointer;font-size:14px;color:#00BCD4;font-weight:600;display:flex;align-items:center;gap:10px;}
+.pl-pick-new:hover{background:rgba(0,188,212,.1);}
+/* PLAYLISTS PANEL */
+#plPanel{position:fixed;inset:0;z-index:2000;background:#111;display:none;flex-direction:column;direction:rtl;}
+#plPanel.open{display:flex;}
+.pl-ph{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08);gap:10px;flex-shrink:0;}
+.pl-ph-back{background:none;border:none;color:#aaa;font-size:22px;cursor:pointer;padding:4px 10px;border-radius:8px;line-height:1;}
+.pl-ph-back:hover{background:rgba(255,255,255,.1);color:#fff;}
+.pl-ph-title{font-size:18px;font-weight:700;flex:1;color:#fff;}
+.pl-ph-actions{display:flex;gap:6px;}
+.pl-btn{background:rgba(255,255,255,.1);border:none;color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;white-space:nowrap;}
+.pl-btn:hover{background:rgba(255,255,255,.2);}
+.pl-btn.pri{background:#00BCD4;color:#000;font-weight:700;}
+.pl-body{flex:1;overflow-y:auto;padding:12px 16px;}
+.pl-new-row{display:flex;align-items:center;gap:12px;padding:14px 8px;cursor:pointer;color:#00BCD4;font-size:15px;font-weight:600;border-radius:10px;}
+.pl-new-row:hover{background:rgba(0,188,212,.08);}
+.pl-list-item{display:flex;align-items:center;padding:12px 8px;border-radius:10px;cursor:pointer;gap:12px;transition:background .15s;}
+.pl-list-item:hover{background:rgba(255,255,255,.06);}
+.pl-list-icon{width:46px;height:46px;background:linear-gradient(135deg,#00BCD4,#0097A7);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.pl-list-info{flex:1;min-width:0;}
+.pl-list-name{font-size:15px;font-weight:600;color:#fff;}
+.pl-list-sub{font-size:12px;color:#888;margin-top:2px;}
+.pl-empty{text-align:center;color:#555;padding:60px 20px;font-size:15px;line-height:2;}
+.pl-song-row{display:flex;align-items:center;gap:8px;padding:11px 4px;border-bottom:1px solid rgba(255,255,255,.05);}
+.pl-song-row:last-child{border:none;}
+.pl-song-info{flex:1;cursor:pointer;min-width:0;}
+.pl-song-title{font-size:14px;font-weight:500;color:#e0e0e0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pl-song-sub{font-size:12px;color:#888;margin-top:2px;}
+.pl-song-play{background:none;border:none;color:#00BCD4;font-size:20px;cursor:pointer;padding:4px 8px;flex-shrink:0;}
+.pl-song-del{background:none;border:none;color:#555;font-size:16px;cursor:pointer;padding:4px 8px;flex-shrink:0;}
+.pl-song-del:hover{color:#f55;}
+.pl-top-btn{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:#ccc;border-radius:20px;padding:5px 13px;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.pl-top-btn:hover{background:rgba(255,255,255,.16);color:#fff;}
 </style>
 </head>
 <body>
@@ -314,6 +359,7 @@ body.admin .btn-move-folder{display:flex;}
       <button class="queue-play-btn" onclick="event.stopPropagation();playQueue()">▶ נגן</button>
       <button class="queue-clear-btn" onclick="event.stopPropagation();clearQueue()">✕</button>
     </div>
+    <button class="pl-top-btn" onclick="openPlPanel()">🎵 פלייליסטים</button>
     <div class="brand" onclick="goHome()" title="חזרה לדף הבית">
       <img src="logo%208.svg" style="height:75px;width:300px;display:block;" alt="לוגו">
     </div>
@@ -370,7 +416,7 @@ body.admin .btn-move-folder{display:flex;}
         הקודם
       </button>
       <div class="modal-queue-info" id="modalQueueInfo"></div>
-      <button class="modal-add-btn" id="modalAddBtn" onclick="toggleCurrentInQueue()">+ הוסף לפלייליסט</button>
+      <button class="modal-add-btn" id="modalAddBtn" onclick="openPlPicker(currentSong)">+ הוסף לפלייליסט</button>
       <button class="modal-nav-btn" id="btnNext" onclick="modalNav(1)">
         הבא
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1080,7 +1126,7 @@ function render(term){
             <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
-            <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();toggleAddSong('${r.v}')">${inQ?'✓':'+'}</button>
+            <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();openPlPicker(ALL.find(s=>(s.v||s.mp4)==='${r.v||r.mp4}'))">${inQ?'✓':'+'}</button>
             ${r.mp4?'':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
             <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
           </div>
@@ -1642,5 +1688,100 @@ document.getElementById('artistPhotoInput').addEventListener('change',function()
   this.value='';_curPhotoArtist=null;
 });
 </script>
-</body>
+<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">הוסף לפלייליסט</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">✏️</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">🗑️</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
+function _plLoad(){try{return JSON.parse(localStorage.getItem('kpl')||'[]');}catch(e){return[];}}
+function _plSave(l){localStorage.setItem('kpl',JSON.stringify(l));}
+function _plId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+window._plSong=null;
+function openPlPicker(song){
+  window._plSong=song;
+  var pls=_plLoad(),sid=song?(song.v||song.mp4):null,inQ=sid?isInQueue(sid):false;
+  var html='<div class="pl-pick-item'+(inQ?' checked':'')+'" onclick="plPickQueue()"><span class="pl-pick-check">'+(inQ?'\u2713':'')+'<\/span>▶ תור נוכחי<\/div>';
+  if(pls.length)html+='<div class="pl-pick-sep"><\/div>';
+  pls.forEach(function(pl){
+    var has=sid?pl.songs.some(function(s){return(s.v||s.mp4)===sid;}):false;
+    html+='<div class="pl-pick-item'+(has?' checked':'')+'" onclick="plPickAdd(\''+pl.id+'\')">'
+      +'<span class="pl-pick-check">'+(has?'\u2713':'')+'<\/span>'+pl.name+'<\/div>';
+  });
+  document.getElementById('plPickerList').innerHTML=html;
+  document.getElementById('plPickerOverlay').classList.add('open');
+}
+function closePlPicker(){document.getElementById('plPickerOverlay').classList.remove('open');}
+function plPickQueue(){var song=window._plSong;if(song)toggleAddSong(song.v||song.mp4);closePlPicker();}
+function plPickAdd(plId){
+  var song=window._plSong;if(!song)return;
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
+  var sid=song.v||song.mp4,idx=pl.songs.findIndex(function(s){return(s.v||s.mp4)===sid;});
+  if(idx>=0)pl.songs.splice(idx,1);else pl.songs.push(song);
+  _plSave(pls);closePlPicker();
+  if(document.getElementById('plPanel').classList.contains('open'))_plRenderList();
+}
+function plNewFromPicker(){
+  var name=prompt('שם הפלייליסט:','');if(!name||!name.trim())return;
+  var pls=_plLoad(),song=window._plSong;
+  pls.push({id:_plId(),name:name.trim(),songs:song?[song]:[],created:Date.now()});
+  _plSave(pls);closePlPicker();
+  if(document.getElementById('plPanel').classList.contains('open'))_plRenderList();
+}
+function openPlPanel(){_plRenderList();document.getElementById('plListView').style.display='flex';document.getElementById('plDetailView').style.display='none';document.getElementById('plPanel').classList.add('open');}
+function closePlPanel(){document.getElementById('plPanel').classList.remove('open');}
+function plBackToList(){document.getElementById('plDetailView').style.display='none';document.getElementById('plListView').style.display='flex';}
+function _plRenderList(){
+  var pls=_plLoad(),c=document.getElementById('plList');
+  var html='<div class="pl-new-row" onclick="plCreateNew()"><span style="font-size:22px">+<\/span> פלייליסט חדש<\/div>';
+  if(!pls.length){html+='<div class="pl-empty">אין פלייליסטים עדיין<br><span style="font-size:13px;color:#444">הוסף שירים דרך כפתור +<\/span><\/div>';}
+  else{pls.forEach(function(pl){html+='<div class="pl-list-item" onclick="plOpenDetail(\''+pl.id+'\')">'
+    +'<div class="pl-list-icon">\uD83C\uDFB5<\/div>'
+    +'<div class="pl-list-info"><div class="pl-list-name">'+pl.name+'<\/div>'
+    +'<div class="pl-list-sub">'+pl.songs.length+' שירים<\/div><\/div><\/div>';});}
+  c.innerHTML=html;
+}
+function plCreateNew(){
+  var name=prompt('שם הפלייליסט:','');if(!name||!name.trim())return;
+  var pls=_plLoad();
+  pls.push({id:_plId(),name:name.trim(),songs:[],created:Date.now()});
+  _plSave(pls);_plRenderList();
+}
+function plOpenDetail(plId){
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
+  document.getElementById('plDetailName').textContent=pl.name;
+  document.getElementById('plDetailView').dataset.plId=plId;
+  document.getElementById('plListView').style.display='none';
+  document.getElementById('plDetailView').style.display='flex';
+  _plRenderDetail(pl);
+}
+function _plRenderDetail(pl){
+  var c=document.getElementById('plDetailSongs');
+  if(!pl.songs.length){c.innerHTML='<div class="pl-empty">הפלייליסט ריק<br><span style="font-size:13px;color:#444">הוסף שירים דרך כפתור +<\/span><\/div>';return;}
+  var html='';
+  pl.songs.forEach(function(s,i){
+    html+='<div class="pl-song-row">'
+      +'<button class="pl-song-play" onclick="plPlayFrom(\''+pl.id+'\','+i+')">&#9654;<\/button>'
+      +'<div class="pl-song-info" onclick="plPlayFrom(\''+pl.id+'\','+i+')"><div class="pl-song-title">'+s.s+'<\/div><div class="pl-song-sub">'+s.a+'<\/div><\/div>'
+      +'<button class="pl-song-del" onclick="plRemoveSong(\''+pl.id+'\','+i+')">\u2715<\/button><\/div>';
+  });
+  c.innerHTML=html;
+}
+function plPlayFrom(plId,idx){
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});
+  if(!pl||!pl.songs.length)return;
+  var i=idx||0;openModal(pl.songs[i],pl.songs,i);closePlPanel();
+}
+function plPlayAll(){var plId=document.getElementById('plDetailView').dataset.plId;plPlayFrom(plId,0);}
+function plRemoveSong(plId,idx){
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
+  pl.songs.splice(idx,1);_plSave(pls);_plRenderDetail(pl);
+}
+function plDelete(){
+  var plId=document.getElementById('plDetailView').dataset.plId,pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});
+  if(!pl)return;
+  if(!confirm('למחוק את "'+pl.name+'"?'))return;
+  _plSave(pls.filter(function(p){return p.id!==plId;}));plBackToList();_plRenderList();
+}
+function plRename(){
+  var plId=document.getElementById('plDetailView').dataset.plId,pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
+  var name=prompt('שם חדש:',pl.name);if(!name||!name.trim())return;
+  pl.name=name.trim();_plSave(pls);document.getElementById('plDetailName').textContent=pl.name;_plRenderList();
+}
+</script></body>
 </html>
