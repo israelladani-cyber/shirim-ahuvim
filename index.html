@@ -399,6 +399,21 @@ body.playing.theater .panel-close:hover,body.playing.theater .panel-float-btn:ho
 .panel-header .modal-save-btn{background:none;border:1px solid #ccc;color:#555;border-radius:14px;padding:4px 10px;font-size:12px;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:background .15s;white-space:nowrap;flex-shrink:0;}
 .panel-header .modal-save-btn:hover{background:rgba(0,0,0,.06);color:#111;border-color:#999;}
 .panel-header .modal-save-btn svg{width:13px;height:13px;}
+
+/* ── v3 fixes ── */
+/* picker: white text everywhere */
+.pl-pick-new{color:#fff!important;}
+.pl-pick-item.checked .pl-pick-check{background:#fff!important;border-color:#fff!important;color:#333!important;}
+/* header nav button order: song-info | prev | save | next | sep | theater | float | close */
+.panel-header{display:flex!important;align-items:center;flex-wrap:nowrap;}
+.panel-song-info{order:1!important;flex:1!important;min-width:0!important;}
+.panel-hdr-sep{order:2!important;min-width:12px!important;flex:0 0 12px!important;}
+#btnPrev{order:3!important;}
+#modalAddBtn{order:4!important;}
+#btnNext{order:5!important;}
+#theaterBtn{order:6!important;}
+.panel-float-btn{order:7!important;}
+.panel-close{order:8!important;}
 </style>
 </head>
 <body>
@@ -462,7 +477,7 @@ body.playing.theater .panel-close:hover,body.playing.theater .panel-float-btn:ho
         הבא
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
-    onclick="closePanelOrAll()">&#x2715;</button>
+    <button class="panel-close" onclick="closePanelOrAll()">&#x2715;</button>
     </div>
     <div class="panel-video" id="panel-video-slot">
       <div id="yt-player"></div><video id="mp4Player" style="display:none;width:100%;height:100%;background:#000;" controls></video>
@@ -1903,6 +1918,28 @@ function plRemoveSong(plId,idx){
   _plSave(pls);
   switchQueueTab(plId,null);
   renderQueueTabs();
+}
+
+// ── v3 overrides ──
+function plPickAdd(plId){
+  var song=window._plSong;if(!song)return;
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
+  var sid=song.v||song.mp4;
+  var idx=pl.songs.findIndex(function(s){return(s.v||s.mp4)===sid;});
+  if(idx<0){pl.songs.push(song);_plSave(pls);}
+  try{if(document.getElementById('plPanel').classList.contains('open'))_plRenderList();}catch(e){}
+  var _qmb=document.getElementById('queuePanel');
+  if(_qmb&&_qmb.classList.contains('open')&&window._activeQueueTab===plId)switchQueueTab(plId,null);
+  openPlPicker(song);
+}
+function clearQueuePanel(){
+  queue=[];
+  try{updateQueueBar();}catch(e){}
+  try{refreshAddBtns();}catch(e){}
+  window._activeQueueTab='temp';
+  renderQueueTabs();
+  var qp=document.getElementById('queuePanel');
+  if(qp&&qp.classList.contains('open'))switchQueueTab('temp',null);
 }
 </script></body>
 </html>
