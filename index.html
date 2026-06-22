@@ -662,6 +662,7 @@ function closePanelOrAll(){
   document.body.style.overflow='';
   hideFloatPlayer();
   if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
+  var _mp4cl=document.getElementById('mp4Player');if(_mp4cl){_mp4cl.pause();}
   document.body.classList.remove('has-song');
 }
 function minimizeToFloat(){
@@ -686,7 +687,7 @@ function goHome(){
   document.body.classList.remove('has-song');
   document.body.style.overflow='';
   if(document.body.classList.contains('float-playing'))hideFloatPlayer();
-  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();{var _mp4gh=document.getElementById('mp4Player');if(_mp4gh)_mp4gh.pause();}
   // Clear search and re-render with all artists collapsed
   const inp=document.getElementById('q');
   if(inp)inp.value='';
@@ -1064,24 +1065,24 @@ function render(term){
     h+=`</div><div class="songs-wrap"><table class="songs-table">`;
     g[a].forEach((r,i)=>{
       const inQ=isInQueue(r.v);
-      h+=`<tr data-vid="${r.v}"
-           ondragover="_dndSongOver(event,'${r.v}')" ondrop="_dndSongDrop(event,'${r.v}')" ondragleave="_dndLeave(event)">
+      h+=`<tr data-vid="${r.v||r.mp4}"
+           ondragover="_dndSongOver(event,'${r.v||r.mp4}')" ondrop="_dndSongDrop(event,'${r.v||r.mp4}')" ondragleave="_dndLeave(event)">
         <td onclick="playVid('${r.v||r.mp4}')" style="cursor:pointer"><div>${hl(r.s,q)}</div><div class="song-artist-sub">${hl(r.a,q)}</div></td>
         <td class="td-actions">
           <div class="song-actions">
             <button class="drag-handle-song" draggable="true"
-              ondragstart="_dndSongStart(event,'${r.v}')"
+              ondragstart="_dndSongStart(event,'${r.v||r.mp4}')"
               ondragend="_dndEnd(event)"
               onclick="event.stopPropagation()"
               title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
-            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v}')" title="שנה שם שיר">✏️</button>
-            <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v}',this)" title="העבר לתיקייה אחרת">📂</button>
+            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v||r.mp4}')" title="שנה שם שיר">✏️</button>
+            <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v||r.mp4}',this)" title="העבר לתיקייה אחרת">📂</button>
             <button class="btn-play" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
-            <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();toggleAddSong('${r.v}')">${inQ?'✓':'+'}</button>
-            <a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>
-            <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v}')" title="מחק שיר">🗑</button>
+            <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();toggleAddSong('${r.v}')">${inQ?'✓':'+'}</button>
+            ${r.mp4?'':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
+            <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
           </div>
         </td>
       </tr>`;
@@ -1466,15 +1467,22 @@ function adminAddSong(){
   const song=document.getElementById("atbSong").value.trim();
   const url=document.getElementById("atbUrl").value.trim();
   if(!artist||!song){_atbStat("חסר שם אמן או שם שיר","err");return;}
+  let entry;
+  if(url.match(/\.mp4/i)||url.includes('.r2.dev')){
+    if(ALL.some(s=>s.mp4===url)){_atbStat('[H][H][H][H] [H][H][H] [H][H][H][H][H] [H][H][H][H][H][H][H]','err');return;}
+    entry={a:artist,s:song,mp4:url};
+  }else{
   const m=url.match(/[?&]v=([A-Za-z0-9_-]+)/);
   if(!m){_atbStat("קישור יוטיוב לא תקין","err");return;}
   const vid=m[1];
   if(ALL.some(s=>s.v===vid)){_atbStat("שיר זה כבר קיים ברשימה","err");return;}
+    entry={a:artist,s:song,v:vid};
+  }
   const lastIdx=ALL.reduce((li,s,i)=>s.a===artist?i:li,-1);
   if(lastIdx>=0){
-    ALL.splice(lastIdx+1,0,{a:artist,s:song,v:vid});
+    ALL.splice(lastIdx+1,0,entry);
   }else{
-    ALL.push({a:artist,s:song,v:vid});
+    ALL.push(entry);
     const grp={};const ord2=[];
     ALL.forEach(s=>{if(!grp[s.a]){grp[s.a]=[];ord2.push(s.a);}grp[s.a].push(s);});
     ord2.sort((a,b)=>a<b?-1:a>b?1:0);
