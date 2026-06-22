@@ -495,7 +495,7 @@ function refreshAddBtns(){
   updateModalAddBtn();
 }
 function toggleAddSong(vid){
-  const song=ALL.find(s=>s.v===vid);
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);
   if(!song)return;
   if(isInQueue(vid))removeFromQueue(vid);
   else addToQueue(song);
@@ -507,10 +507,10 @@ window.addEventListener('resize',()=>{setTopH();if(window.innerWidth>=768){docum
 setTopH();
 
 function playVid(vid){
-  const song=ALL.find(s=>s.v===vid);
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);
   if(!song)return;
   const songList=ALL.filter(s=>s.a===song.a);
-  const idx=songList.findIndex(s=>s.v===vid);
+  const idx=songList.findIndex(s=>(s.v||s.mp4)===vid);
   openModal(song,songList,idx);
   setTimeout(()=>{
     const artistEl=document.querySelector('.artist-avatar[data-artist="'+CSS.escape(song.a)+'"]');
@@ -717,6 +717,12 @@ function clearSession(){
   try{localStorage.removeItem('karaokeSession');}catch(e){}
 }
 function miniPlayPause(){
+  var _mp4e=document.getElementById('mp4Player');
+  if(currentSong&&currentSong.mp4&&_mp4e){
+    if(_mp4e.paused){_mp4e.play().catch(()=>{});document.getElementById('miniPlayBtn').textContent='⏸';}
+    else{_mp4e.pause();document.getElementById('miniPlayBtn').textContent='▶';}
+    return;
+  }
   if(!ytPlayer||!playerReady)return;
   const s=ytPlayer.getPlayerState();
   if(s===YT.PlayerState.PLAYING||s===YT.PlayerState.BUFFERING){ytPlayer.pauseVideo();}
@@ -732,8 +738,8 @@ function modalNav(dir){
   document.getElementById('panelArtist').textContent=currentSong.a;
   document.getElementById('miniSong').textContent=currentSong.s;
   document.getElementById('miniArtist').textContent=currentSong.a;
-  document.getElementById('miniThumb').style.backgroundImage=`url('https://i.ytimg.com/vi/${currentSong.v}/mqdefault.jpg')`;
-  if(ytPlayer&&playerReady)ytPlayer.loadVideoById(currentSong.v);
+  document.getElementById('miniThumb').style.backgroundImage=currentSong.mp4?'none':`url('https://i.ytimg.com/vi/${currentSong.v}/mqdefault.jpg')`;
+  if(currentSong.mp4){var _nm=document.getElementById('mp4Player');document.getElementById('yt-player').style.display='none';_nm.style.display='block';_nm.src=currentSong.mp4;_nm.play().catch(()=>{});}else{document.getElementById('yt-player').style.display='';var _nm2=document.getElementById('mp4Player');if(_nm2){_nm2.style.display='none';_nm2.pause();_nm2.src='';}if(ytPlayer&&playerReady)ytPlayer.loadVideoById(currentSong.v);}
   updateModalNav();
   updateModalAddBtn();
   saveSession(currentSong);
@@ -747,13 +753,13 @@ function updateModalNav(){
 function updateModalAddBtn(){
   if(!currentSong)return;
   const btn=document.getElementById('modalAddBtn');
-  const inQ=isInQueue(currentSong.v);
+  const inQ=isInQueue(currentSong.v||currentSong.mp4);
   btn.className='modal-add-btn'+(inQ?' in-queue':'');
   btn.textContent=inQ?'✓ בפלייליסט':'+ הוסף לפלייליסט';
 }
 function toggleCurrentInQueue(){
   if(!currentSong)return;
-  toggleAddSong(currentSong.v);
+  toggleAddSong(currentSong.v||currentSong.mp4);
 }
 function playQueue(){
   if(!queue.length)return;
@@ -1060,7 +1066,7 @@ function render(term){
       const inQ=isInQueue(r.v);
       h+=`<tr data-vid="${r.v}"
            ondragover="_dndSongOver(event,'${r.v}')" ondrop="_dndSongDrop(event,'${r.v}')" ondragleave="_dndLeave(event)">
-        <td onclick="playVid('${r.v}')" style="cursor:pointer"><div>${hl(r.s,q)}</div><div class="song-artist-sub">${hl(r.a,q)}</div></td>
+        <td onclick="playVid('${r.v||r.mp4}')" style="cursor:pointer"><div>${hl(r.s,q)}</div><div class="song-artist-sub">${hl(r.a,q)}</div></td>
         <td class="td-actions">
           <div class="song-actions">
             <button class="drag-handle-song" draggable="true"
@@ -1070,7 +1076,7 @@ function render(term){
               title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
             <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v}')" title="שנה שם שיר">✏️</button>
             <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v}',this)" title="העבר לתיקייה אחרת">📂</button>
-            <button class="btn-play" onclick="event.stopPropagation();playVid('${r.v}')" title="נגן">
+            <button class="btn-play" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
             <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();toggleAddSong('${r.v}')">${inQ?'✓':'+'}</button>
@@ -1366,7 +1372,7 @@ function adminMoveArtistDown(vid){
 function adminMoveSongToFolder(vid,btn){
   if(!_admMode)return;
   closeeFolderPicker();
-  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
   _pickerArtists=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,'he'));
   const picker=document.createElement('div');
   picker.className='folder-picker';
@@ -1390,13 +1396,13 @@ function closeeFolderPicker(){
   document.removeEventListener('click',closeeFolderPicker);
 }
 function applyMoveSongToFolder(vid,newArtist){
-  const song=ALL.find(s=>s.v===vid);if(!song||song.a===newArtist)return;
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song||song.a===newArtist)return;
   song.a=newArtist;
   _markDirty();_atbStat('✓ שיר הועבר ל'+newArtist,'ok');
   render(document.getElementById('q').value||'');
 }
 function adminMoveSongNewFolder(vid){
-  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
   const name=prompt('שם התיקייה החדשה:','');
   if(!name||!name.trim())return;
   applyMoveSongToFolder(vid,name.trim());
@@ -1404,14 +1410,14 @@ function adminMoveSongNewFolder(vid){
 
 // ── SONG MANAGEMENT ──
 function adminRenameSong(vid){
-  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
   const neu=prompt('שם חדש לשיר:',song.s);
   if(!neu||neu===song.s)return;
   song.s=neu;
   _markDirty();_atbStat('✏️ שיר שונה שם','ok');render(document.getElementById('q').value||'');
 }
 function adminMoveSongUp(vid){
-  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
   const sib=ALL.filter(s=>s.a===song.a);
   const i=sib.findIndex(s=>s.v===vid);if(i<=0)return;
   const ai=ALL.indexOf(song),bi=ALL.indexOf(sib[i-1]);
@@ -1419,7 +1425,7 @@ function adminMoveSongUp(vid){
   _markDirty();render(document.getElementById('q').value||'');
 }
 function adminMoveSongDown(vid){
-  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
   const sib=ALL.filter(s=>s.a===song.a);
   const i=sib.findIndex(s=>s.v===vid);if(i>=sib.length-1)return;
   const ai=ALL.indexOf(song),bi=ALL.indexOf(sib[i+1]);
@@ -1443,7 +1449,7 @@ function _fillArtistList(){
   if(cur&&cur!=='__new__')sel.value=cur;
 }
 function adminDeleteSong(vid){
-  const song=ALL.find(s=>s.v===vid);if(!song)return;
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
   if(!confirm('למחוק "'+song.s+'" של '+song.a+'?'))return;
   ALL.splice(ALL.findIndex(s=>s.v===vid),1);
   if(isInQueue(vid))removeFromQueue(vid);
