@@ -1933,13 +1933,11 @@ function plPickAdd(plId){
   openPlPicker(song);
 }
 function clearQueuePanel(){
-  queue=[];
-  try{updateQueueBar();}catch(e){}
-  try{refreshAddBtns();}catch(e){}
+  clearQueue();
   window._activeQueueTab='temp';
   renderQueueTabs();
   var qp=document.getElementById('queuePanel');
-  if(qp&&qp.classList.contains('open'))switchQueueTab('temp',null);
+  if(qp&&(qp.classList.contains('open')||qp.classList.contains('minimized')))switchQueueTab('temp',null);
 }
 </script></body>
 </html>
