@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
@@ -1863,7 +1862,31 @@ function createPlaylist(name){
 }
 
 function showToast(msg){const t=document.getElementById('karaokToast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(t._tmr);t._tmr=setTimeout(()=>t.classList.remove('show'),3000);}
-function plToggleWithToast(plId,plName,song){const wasIn=isInPlaylist(plId,song);toggleSongInPlaylist(plId,song);showToast(wasIn?'הוסר מ\u05f4'+plName+'\u05f4':'נוסף ל\u05f4'+plName+'\u05f4');renderPlPopup();updateModalAddBtn();}
+function handlePlItemClick(el){
+  const plId=el.dataset.plid;
+  const pls=loadPlaylists();
+  const pl=pls.find(p=>p.id===plId);
+  if(!pl||!currentSong)return;
+  const wasIn=isInPlaylist(plId,currentSong);
+  toggleSongInPlaylist(plId,currentSong);
+  showToast(wasIn?'הוסר מ״'+pl.name+'״':'נוסף ל״'+pl.name+'״');
+  renderPlPopup();
+  updateModalAddBtn();
+}
+function renderPlPopup(){
+  const pls=loadPlaylists();
+  const list=document.getElementById('plPopupList');
+  const song=currentSong;
+  const BON='<svg width="18" height="18" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
+  const BOFF='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="2"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
+  if(!pls.length){list.innerHTML='<div style="padding:10px 16px;font-size:12px;color:#888;">אין עדיין פלייליסטים</div>';return;}
+  list.innerHTML=pls.map(pl=>{
+    const inPl=isInPlaylist(pl.id,song);
+    return '<div class="playlist-popup-item" data-plid="'+pl.id+'" onclick="handlePlItemClick(this)">'+
+      (inPl?BON:BOFF)+'<span class="pl-name">'+esc(pl.name)+'</span></div>';
+  }).join('');
+}
+
 function showPlaylistPopup(e){
   if(e)e.stopPropagation();
   if(!currentSong)return;
@@ -1887,19 +1910,7 @@ function closePlaylistPopup(){
   const inp=document.getElementById('newPlInp');if(inp)inp.value='';
   document.removeEventListener('click',closePlPopupOutside);
 }
-function renderPlPopup(){
-  const pls=loadPlaylists();
-  const list=document.getElementById('plPopupList');
-  const song=currentSong;
-  const BMARK_ON='<svg width="18" height="18" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
-  const BMARK_OFF='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="2"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
-  list.innerHTML=pls.map(pl=>{
-    const inPl=isInPlaylist(pl.id,song);
-    return '<div class="playlist-popup-item" onclick="plToggleWithToast(\'' + pl.id + '\',\'' + pl.name.replace(/\'/g,\"\\\'\")+  '\',currentSong);">' +
-      (inPl?BMARK_ON:BMARK_OFF)+'<span class="pl-name">'+esc(pl.name)+'</span></div>';
-  }).join('');
-  if(!pls.length)list.innerHTML='<div style="padding:10px 16px;font-size:12px;color:#888;">אין עדיין פלייליסטים</div>';
-}
+
 function submitNewPlaylist(){
   const inp=document.getElementById('newPlInp');
   const name=inp.value.trim();
