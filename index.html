@@ -42,6 +42,16 @@ body{font-family:Arial,sans-serif;background:#F9F9F9;color:#0F0F0F;direction:rtl
 .artist-block:hover{background:#F2F2F2;}
 .artist-header{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#F2F2F2;cursor:pointer;user-select:none;}
 .artist-header:hover{background:#E5E5E5;}
+.playlist-block{margin-bottom:0;}
+.playlist-row{display:flex;align-items:center;gap:10px;padding:8px 16px;background:#d4f1dc;cursor:pointer;user-select:none;border-bottom:1px solid #a8d5b5;min-height:36px;}
+.playlist-row:hover{background:#bce8cc;}
+.playlist-row-icon{font-size:15px;color:#1a7a3a;flex-shrink:0;}
+.playlist-row-name{font-weight:700;font-size:14px;flex:1;color:#1a5c30;direction:rtl;}
+.playlist-row-count{font-size:12px;color:#4a8a5a;flex-shrink:0;}
+.playlist-row-chevron{font-size:11px;color:#1a7a3a;transition:transform .2s;flex-shrink:0;}
+.playlist-block[data-open="true"] .playlist-row-chevron{transform:rotate(180deg);}
+.playlist-block-songs{display:none;}
+.playlist-block[data-open="true"] .playlist-block-songs{display:block;}
 .artist-avatar{width:60px;height:60px;background:linear-gradient(135deg,#FF0000,#CC0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#000;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center top;position:relative;}
 .artist-avatar.has-photo{box-shadow:0 2px 8px rgba(0,0,0,.5);}
 body.admin .artist-avatar{cursor:pointer;}
@@ -1080,6 +1090,17 @@ function render(term){
     g[r.a].push(r);
   });
   let h='';
+  // Playlist rows at top
+  const _pls=loadPlaylists().filter(p=>p.songs&&p.songs.length>0);
+  if(_pls.length){
+    h+=_pls.map(pl=>{
+      const _cnt=pl.songs.length;
+      const _id=pl.id.replace(/['"]/g,'');
+      const _name=esc(pl.name);
+      const _rows=pl.songs.map(r=>`<tr onclick="playVid('${r.v||r.mp4}')" style="cursor:pointer"><td onclick="playVid('${r.v||r.mp4}')" style="cursor:pointer"><div>${esc(r.s)}</div><div class="song-artist-sub">${esc(r.a)}</div></td></tr>`).join('');
+      return `<div class="playlist-block" data-pl-id="${_id}" data-open="false"><div class="playlist-row" onclick="togglePlaylistBlock('${_id}')"><span class="playlist-row-icon">&#9835;</span><span class="playlist-row-name">${_name}</span><span class="playlist-row-count">${_cnt} ${_cnt===1?'שיר':'שירים'}</span><span class="playlist-row-chevron">&#9660;</span></div><div class="playlist-block-songs"><table class="songs-table">${_rows}</table></div></div>`;
+    }).join('');
+  }
   if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
   for(const a of ord){
     const vid=g[a][0].v;
@@ -1678,6 +1699,11 @@ document.getElementById('artistPhotoInput').addEventListener('change',function()
   reader.readAsDataURL(this.files[0]);
   this.value='';_curPhotoArtist=null;
 });
+function togglePlaylistBlock(id){
+  const block=document.querySelector('[data-pl-id="'+id+'"]');
+  if(!block)return;
+  block.dataset.open=block.dataset.open==='true'?'false':'true';
+}
 </script>
 <div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">הוסף לפלייליסט</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">שנה שם</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">🗑️</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
 function _plLoad(){try{return JSON.parse(localStorage.getItem('kpl')||'[]');}catch(e){return[];}}
