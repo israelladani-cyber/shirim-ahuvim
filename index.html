@@ -1142,7 +1142,7 @@ function render(term){
             <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
-            <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'✓':'+'}</button>`
+            <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'✓':'+'}</button>
             ${r.mp4?'':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
             <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
           </div>
