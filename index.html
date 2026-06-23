@@ -362,6 +362,7 @@ body.admin .btn-move-folder{display:flex;}
 .q-naka:hover{background:rgba(255,68,68,.15);}
 .q-play-circle{background:#E53935;color:#fff;border-radius:50%;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;padding:0!important;font-size:11px;flex-shrink:0;border:none;cursor:pointer;}
 .q-play-circle:hover{background:#B71C1C;}
+.playlist-popup{position:fixed;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.22);padding:8px 0;min-width:240px;z-index:600;display:none;direction:rtl;}.playlist-popup.open{display:block;}.playlist-popup-title{font-size:13px;font-weight:700;color:#0F0F0F;padding:10px 16px 8px;border-bottom:1px solid #eee;text-align:right;}.playlist-popup-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .1s;direction:rtl;}.playlist-popup-item:hover{background:#f5f5f5;}.playlist-popup-item .pl-name{font-size:13px;color:#0F0F0F;flex:1;}.playlist-popup-new{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .1s;border-top:1px solid #eee;direction:rtl;}.playlist-popup-new:hover{background:#f5f5f5;}.playlist-popup-new span{font-size:13px;color:#0F0F0F;}.new-pl-form{padding:8px 16px 12px;display:none;gap:6px;direction:rtl;}.new-pl-form.open{display:flex;}.new-pl-inp{flex:1;border:1px solid #ccc;border-radius:6px;padding:6px 10px;font-size:13px;font-family:Arial,sans-serif;direction:rtl;}.new-pl-ok{background:#0F0F0F;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:13px;flex-shrink:0;}.modal-add-btn.saved{background:#0F0F0F;color:#fff;border-color:#0F0F0F;}
 </style>
 </head>
 <body>
@@ -410,7 +411,7 @@ body.admin .btn-move-folder{display:flex;}
           הקודם
         </button>
         <div class="modal-queue-info" id="modalQueueInfo"></div>
-        <button class="modal-add-btn" id="modalAddBtn" onclick="toggleCurrentInQueue()">+ הוסף לפלייליסט</button>
+        <button class="modal-add-btn" id="modalAddBtn" onclick="showPlaylistPopup(event)">+ הוסף לפלייליסט</button>
         <button class="modal-nav-btn" id="btnNext" onclick="modalNav(1)">
           הבא
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -1832,5 +1833,79 @@ function switchQueueTab(id,el){
   list.innerHTML=pl.songs.map(function(s,i){return '<div class="q-item" style="cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);" onclick="plPlayFrom(\''+pl.id+'\','+i+');closeQueuePanel()">'
 +'<span class="qi-num">'+(i+1)+'<\/span>'+(s.v?'<div class="qi-thumb" style="background-image:url(https://i.ytimg.com/vi/'+s.v+'/mqdefault.jpg)"><\/div>':'<div class="qi-thumb" style="background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:16px">&#9835;<\/div>')+'<div class="qi-info"><div class="qi-name">'+s.s+'<\/div><div class="qi-artist">'+s.a+'<\/div><\/div><\/div>';}).join('');
 }
-</script></body>
+
+// ── NAMED PLAYLISTS ──
+const PL_KEY='karaoke_playlists';
+function loadPlaylists(){try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}}
+function savePlaylists(pls){try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}}
+function getSongKey(s){return s?(s.v||s.mp4||''):''}
+function isInAnyPlaylist(song){if(!song)return false;const k=getSongKey(song);return loadPlaylists().some(pl=>pl.songs.some(s=>getSongKey(s)===k));}
+function isInPlaylist(plId,song){if(!song)return false;const k=getSongKey(song);const pl=loadPlaylists().find(p=>p.id===plId);return pl?pl.songs.some(s=>getSongKey(s)===k):false;}
+function toggleSongInPlaylist(plId,song){
+  if(!song)return;
+  const k=getSongKey(song);
+  const pls=loadPlaylists();
+  const pl=pls.find(p=>p.id===plId);
+  if(!pl)return;
+  const idx=pl.songs.findIndex(s=>getSongKey(s)===k);
+  if(idx>=0)pl.songs.splice(idx,1);
+  else pl.songs.push({v:song.v,s:song.s,a:song.a,mp4:song.mp4||undefined});
+  savePlaylists(pls);
+}
+function createPlaylist(name){
+  if(!name.trim())return null;
+  const pls=loadPlaylists();
+  const id='pl_'+Date.now();
+  pls.push({id,name:name.trim(),songs:[]});
+  savePlaylists(pls);
+  return id;
+}
+function showPlaylistPopup(e){
+  if(e)e.stopPropagation();
+  if(!currentSong)return;
+  const popup=document.getElementById('playlistPopup');
+  const btn=document.getElementById('modalAddBtn');
+  const rect=btn.getBoundingClientRect();
+  popup.style.bottom=(window.innerHeight-rect.top+8)+'px';
+  popup.style.right=(window.innerWidth-rect.right)+'px';
+  renderPlPopup();
+  popup.classList.add('open');
+  setTimeout(()=>document.addEventListener('click',closePlPopupOutside),50);
+}
+function closePlPopupOutside(e){
+  const popup=document.getElementById('playlistPopup');
+  if(!popup.contains(e.target)&&e.target.id!=='modalAddBtn'){closePlaylistPopup();}
+}
+function closePlaylistPopup(){
+  document.getElementById('playlistPopup').classList.remove('open');
+  const f=document.getElementById('newPlForm');if(f)f.classList.remove('open');
+  const inp=document.getElementById('newPlInp');if(inp)inp.value='';
+  document.removeEventListener('click',closePlPopupOutside);
+}
+function renderPlPopup(){
+  const pls=loadPlaylists();
+  const list=document.getElementById('plPopupList');
+  const song=currentSong;
+  const BMARK_ON='<svg width="18" height="18" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
+  const BMARK_OFF='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="2"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
+  list.innerHTML=pls.map(pl=>{
+    const inPl=isInPlaylist(pl.id,song);
+    return '<div class="playlist-popup-item" onclick="toggleSongInPlaylist(\'' + pl.id + '\',currentSong);renderPlPopup();updateModalAddBtn();">' +
+      (inPl?BMARK_ON:BMARK_OFF)+'<span class="pl-name">'+esc(pl.name)+'</span></div>';
+  }).join('');
+  if(!pls.length)list.innerHTML='<div style="padding:10px 16px;font-size:12px;color:#888;">אין עדיין פלייליסטים</div>';
+}
+function submitNewPlaylist(){
+  const inp=document.getElementById('newPlInp');
+  const name=inp.value.trim();
+  if(!name)return;
+  const id=createPlaylist(name);
+  if(id&&currentSong)toggleSongInPlaylist(id,currentSong);
+  renderPlPopup();
+  updateModalAddBtn();
+  document.getElementById('newPlForm').classList.remove('open');
+  inp.value='';
+}
+</script><div id="playlistPopup" class="playlist-popup"><div class="playlist-popup-title">שמור לפלייליסט</div><div id="plPopupList"></div><div class="playlist-popup-new" onclick="document.getElementById('newPlForm').classList.toggle('open');document.getElementById('newPlInp').focus()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F0F0F" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>פלייליסט חדש</span></div><div class="new-pl-form" id="newPlForm"><input id="newPlInp" class="new-pl-inp" placeholder="שם הפלייליסט" onkeydown="if(event.key==='Enter')submitNewPlaylist()"><button class="new-pl-ok" onclick="submitNewPlaylist()">יצירה</button></div></div>
+</body>
 </html>
