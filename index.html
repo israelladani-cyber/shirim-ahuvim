@@ -392,7 +392,6 @@ body.admin .btn-move-folder{display:flex;}
         <span class="btn-label">סגור הכל</span>
       </button>
       <button class="admin-lock" onclick="openAdminLogin()" title="מצב מנהל">🔐</button>
-      <button class="pl-admin-btn" onclick="openQueuePanel()">♫ פלייליסטים</button>
     </div>
   </div>
 </div>
@@ -447,17 +446,6 @@ body.admin .btn-move-folder{display:flex;}
   </div>
   <button class="mini-ctrl" id="miniPlayBtn" title="נגן/עצור" onclick="event.stopPropagation();miniPlayPause()">⏸</button>
   <button class="mini-ctrl" title="סגור" onclick="event.stopPropagation();closeModal();clearSession()">&#x2715;</button>
-</div>
-
-<!-- FLOAT PLAYER (PiP) -->
-<div class="float-player" id="floatPlayer">
-  <div id="float-video-slot"></div>
-  <div class="float-bar" id="floatBar">
-    <div class="float-bar-song" id="floatSong">—</div>
-    <button class="fbar-btn" id="pipPlayBtn" onclick="pipPlayPause()" title="נגן/עצור">⏸</button>
-    <button class="fbar-btn" onclick="expandFloat()" title="פתח">⛶</button>
-    <button class="fbar-btn" onclick="closeFloat()" title="סגור">✕</button>
-  </div>
 </div>
 
 <!-- QUEUE PANEL -->
