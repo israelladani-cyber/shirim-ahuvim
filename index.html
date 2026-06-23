@@ -82,7 +82,8 @@ body.admin .artist-avatar:hover::after{display:flex;}
 .btn-play:hover{transform:scale(1.1);background:#e8e8e8;}
 .btn-play svg{width:12px;height:14px;}
 .btn-add{width:28px;height:28px;border-radius:50%;background:none;border:1.5px solid #444;color:#0F0F0F;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;line-height:1;transition:all .15s;}
-.btn-add:hover,.btn-add.in-queue{background:#FF0000;border-color:#FF0000;color:#000;}
+.btn-add:hover{background:#e5e5e5;border-color:#999;}
+.btn-add.in-playlist{background:#2e7d4f;border-color:#2e7d4f;color:#fff;}
 .btn-yt{width:28px;height:20px;background:#FF0000;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .15s,opacity .15s;opacity:.85;flex-shrink:0;}
 .btn-yt:hover{opacity:1;transform:scale(1.08);}
 
@@ -535,9 +536,12 @@ function updateQueueBar(){
   if(document.getElementById('queuePanel')?.classList.contains('open'))openQueuePanel();
 }
 function refreshAddBtns(){
-  document.querySelectorAll('.btn-add[data-vid]').forEach(b=>{
-    b.className='btn-add'+(isInQueue(b.dataset.vid)?' in-queue':'');
-    b.title=isInQueue(b.dataset.vid)?'הסר מהפלייליסט':'הוסף לפלייליסט';
+  var _pr=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
+  document.querySelectorAll('.btn-add[data-vid]').forEach(function(b){
+    var vid=b.dataset.vid;
+    var inPl=_pr.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===vid;});});
+    b.className='btn-add'+(inPl?' in-playlist':'');
+    b.title=inPl?'הסר מהפלייליסט':'הוסף לפלייליסט';
   });
   updateModalAddBtn();
 }
@@ -1102,6 +1106,7 @@ function render(term){
     });
   }
   if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
+  var _plsForBtns=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
   for(const a of ord){
     const vid=g[a][0].v;
     h+=`<div class="artist-block" data-open="${q?'true':'false'}" data-vid="${vid}"
@@ -1121,7 +1126,7 @@ function render(term){
     h+=`</div>`;
     h+=`</div><div class="songs-wrap"><table class="songs-table">`;
     g[a].forEach((r,i)=>{
-      const inQ=isInQueue(r.v);
+      const inQ=_plsForBtns.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===(r.v||r.mp4);});});
       h+=`<tr data-vid="${r.v||r.mp4}"
            ondragover="_dndSongOver(event,'${r.v||r.mp4}')" ondrop="_dndSongDrop(event,'${r.v||r.mp4}')" ondragleave="_dndLeave(event)">
         <td onclick="playVid('${r.v||r.mp4}')" style="cursor:pointer"><div>${hl(r.s,q)}</div><div class="song-artist-sub">${hl(r.a,q)}</div></td>
@@ -1137,7 +1142,7 @@ function render(term){
             <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
-            <button class="btn-add${inQ?' in-queue':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();openPlPicker(ALL.find(s=>(s.v||s.mp4)==='${r.v||r.mp4}'))">${inQ?'✓':'+'}</button>
+            <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'✓':'+'}</button>`
             ${r.mp4?'':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
             <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
           </div>
@@ -1901,6 +1906,21 @@ function renderPlPopup(){
   }).join('');
 }
 
+function showPlaylistPopupForSong(e,vid){
+  if(e)e.stopPropagation();
+  var song=ALL.find(function(s){return (s.v||s.mp4)===vid;});
+  if(!song)return;
+  currentSong=song;
+  var popup=document.getElementById('playlistPopup');
+  var btn=e.currentTarget||e.target;
+  var rect=btn.getBoundingClientRect();
+  popup.style.top=(rect.bottom+8)+'px';
+  popup.style.bottom='auto';
+  popup.style.right=(window.innerWidth-rect.right)+'px';
+  renderPlPopup();
+  popup.classList.add('open');
+  setTimeout(function(){document.addEventListener('click',closePlPopupOutside);},50);
+}
 function showPlaylistPopup(e){
   if(e)e.stopPropagation();
   if(!currentSong)return;
