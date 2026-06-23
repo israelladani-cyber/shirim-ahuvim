@@ -40,8 +40,8 @@ body{font-family:Arial,sans-serif;background:#F9F9F9;color:#0F0F0F;direction:rtl
 .content{padding:20px 16px;max-width:860px;margin:0 auto;}
 .artist-block{margin-bottom:14px;background:#FFFFFF;border-radius:12px;overflow:hidden;}
 .artist-block:hover{background:#F2F2F2;}
-.artist-header{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#F2F2F2;cursor:pointer;user-select:none;}
-.artist-header:hover{background:#E5E5E5;}
+.artist-header{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#c8edd4;border-bottom:1px solid #a8d5b5;cursor:pointer;user-select:none;}
+.artist-header:hover{background:#b0e0be;}
 .playlist-block{margin-bottom:0;}
 .playlist-row{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#c8edd4;cursor:pointer;user-select:none;border-bottom:1px solid #a8d5b5;}
 .playlist-row:hover{background:#b0e0be;}
@@ -58,7 +58,7 @@ body{font-family:Arial,sans-serif;background:#F9F9F9;color:#0F0F0F;direction:rtl
 body.admin .artist-avatar{cursor:pointer;}
 body.admin .artist-avatar::after{content:'📷';position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);font-size:22px;border-radius:50%;}
 body.admin .artist-avatar:hover::after{display:flex;}
-.artist-name-text{font-size:17px;font-weight:700;flex:1;}
+.artist-name-text{font-size:17px;font-weight:700;flex:1;color:#1a5c30;}
 .chevron{color:#0F0F0F;transition:transform .25s;display:flex;align-items:center;}
 .artist-block[data-open="false"] .chevron{transform:rotate(-90deg);}
 .songs-wrap{overflow:hidden;}
