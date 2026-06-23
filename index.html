@@ -43,12 +43,13 @@ body{font-family:Arial,sans-serif;background:#F9F9F9;color:#0F0F0F;direction:rtl
 .artist-header{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#F2F2F2;cursor:pointer;user-select:none;}
 .artist-header:hover{background:#E5E5E5;}
 .playlist-block{margin-bottom:0;}
-.playlist-row{display:flex;align-items:center;gap:10px;padding:8px 16px;background:#d4f1dc;cursor:pointer;user-select:none;border-bottom:1px solid #a8d5b5;min-height:36px;}
-.playlist-row:hover{background:#bce8cc;}
-.playlist-row-icon{font-size:15px;color:#1a7a3a;flex-shrink:0;}
-.playlist-row-name{font-weight:700;font-size:14px;flex:1;color:#1a5c30;direction:rtl;}
-.playlist-row-count{font-size:12px;color:#4a8a5a;flex-shrink:0;}
-.playlist-row-chevron{font-size:11px;color:#1a7a3a;transition:transform .2s;flex-shrink:0;}
+.playlist-row{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#c8edd4;cursor:pointer;user-select:none;border-bottom:1px solid #a8d5b5;}
+.playlist-row:hover{background:#b0e0be;}
+.playlist-row-avatar{width:48px;height:48px;border-radius:50%;background:#2e7d4f;display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;flex-shrink:0;}
+.playlist-row-info{flex:1;min-width:0;}
+.playlist-row-name{font-weight:700;font-size:14px;color:#1a5c30;}
+.playlist-row-count{font-size:12px;color:#4a8a5a;margin-top:2px;}
+.playlist-row-chevron{font-size:11px;color:#2e7d4f;transition:transform .2s;flex-shrink:0;}
 .playlist-block[data-open="true"] .playlist-row-chevron{transform:rotate(180deg);}
 .playlist-block-songs{display:none;}
 .playlist-block[data-open="true"] .playlist-block-songs{display:block;}
@@ -1091,15 +1092,14 @@ function render(term){
   });
   let h='';
   // Playlist rows at top
-  const _pls=loadPlaylists().filter(p=>p.songs&&p.songs.length>0);
+  var _plsRaw=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return [];}})();
+  var _pls=_plsRaw.filter(function(p){return p.songs&&p.songs.length>0;});
   if(_pls.length){
-    h+=_pls.map(pl=>{
-      const _cnt=pl.songs.length;
-      const _id=pl.id.replace(/['"]/g,'');
-      const _name=esc(pl.name);
-      const _rows=pl.songs.map(r=>`<tr onclick="playVid('${r.v||r.mp4}')" style="cursor:pointer"><td onclick="playVid('${r.v||r.mp4}')" style="cursor:pointer"><div>${esc(r.s)}</div><div class="song-artist-sub">${esc(r.a)}</div></td></tr>`).join('');
-      return `<div class="playlist-block" data-pl-id="${_id}" data-open="false"><div class="playlist-row" onclick="togglePlaylistBlock('${_id}')"><span class="playlist-row-icon">&#9835;</span><span class="playlist-row-name">${_name}</span><span class="playlist-row-count">${_cnt} ${_cnt===1?'שיר':'שירים'}</span><span class="playlist-row-chevron">&#9660;</span></div><div class="playlist-block-songs"><table class="songs-table">${_rows}</table></div></div>`;
-    }).join('');
+    _pls.forEach(function(pl){
+      var _cnt=pl.songs.length;
+      var _rows=pl.songs.map(function(r){var vid=r.v||r.mp4;return '<tr onclick="playVid(\x27'+vid+'\x27)" style="cursor:pointer"><td><div>'+esc(r.s)+'</div><div class="song-artist-sub">'+esc(r.a)+'</div></td></tr>';}).join('');
+      h+='<div class="playlist-block" data-pl-id="'+pl.id+'" data-open="false"><div class="playlist-row" onclick="togglePlaylistBlock(this)"><div class="playlist-row-avatar">&#9835;</div><div class="playlist-row-info"><div class="playlist-row-name">'+esc(pl.name)+'</div><div class="playlist-row-count">'+_cnt+(_cnt===1?' שיר':' שירים')+'</div></div><span class="playlist-row-chevron">&#9660;</span></div><div class="playlist-block-songs"><table class="songs-table">'+_rows+'</table></div></div>';
+    });
   }
   if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
   for(const a of ord){
@@ -1699,8 +1699,8 @@ document.getElementById('artistPhotoInput').addEventListener('change',function()
   reader.readAsDataURL(this.files[0]);
   this.value='';_curPhotoArtist=null;
 });
-function togglePlaylistBlock(id){
-  const block=document.querySelector('[data-pl-id="'+id+'"]');
+function togglePlaylistBlock(rowEl){
+  var block=rowEl.closest?rowEl.closest('.playlist-block'):rowEl.parentElement;
   if(!block)return;
   block.dataset.open=block.dataset.open==='true'?'false':'true';
 }
