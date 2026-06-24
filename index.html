@@ -2077,6 +2077,7 @@ function renderPlPanel(){
   var pls=loadPlaylists();
   var body=document.getElementById('plPanelBody');
   if(!pls.length){body.innerHTML='<div style="text-align:center;color:#888;padding:40px 16px;font-size:13px;">אין פלייליסטים עדיין<br><br>לחץ "+ פלייליסט חדש" להתחיל</div>';return;}
+  var _openIds={};body.querySelectorAll('.pl-item[data-pl-id]').forEach(function(el){if(el.dataset.open==='true')_openIds[el.dataset.plId]=true;});
   body.innerHTML=pls.map(function(pl){
     var cnt=(pl.songs||[]).length;
     var songs=(pl.songs||[]).map(function(s,si){
@@ -2104,6 +2105,7 @@ function renderPlPanel(){
       +(cnt?'<div class="pl-item-songs">'+songs+'</div>':'')
       +'</div>';
   }).join('');
+  body.querySelectorAll('.pl-item[data-pl-id]').forEach(function(el){if(_openIds[el.dataset.plId])el.dataset.open='true';});
 }
 function togglePlItem(hdrEl){var item=hdrEl.closest('.pl-item');item.dataset.open=item.dataset.open==='true'?'false':'true';}
 function openPlCtx(e,plId){
