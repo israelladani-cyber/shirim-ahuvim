@@ -2283,7 +2283,7 @@ function submitNewPlaylist(){
   if(id&&currentSong)toggleSongInPlaylist(id,currentSong);
   updateModalAddBtn();
   inp.value='';
-  if(window.innerWidth<=767){inp.blur();setTimeout(function(){window.scrollTo({left:0,top:window._plScrollY||0,behavior:'instant'});},300);}
+  if(window.innerWidth<=767){var _sy=window._plScrollY||0;inp.blur();if(window.visualViewport){var _vvh=window.visualViewport;var _fn=function(){document.documentElement.scrollLeft=0;document.body.scrollLeft=0;window.scrollTo(0,_sy);_vvh.removeEventListener('resize',_fn);};_vvh.addEventListener('resize',_fn);}else{setTimeout(function(){document.documentElement.scrollLeft=0;document.body.scrollLeft=0;window.scrollTo(0,_sy);},400);}}
   closePlaylistPopup();
 }
 </script><div id="playlistPopup" class="playlist-popup"><div class="playlist-popup-title"><span>באיזה פלייליסט לשמור?</span><button class="playlist-popup-close" onclick="document.getElementById('playlistPopup').classList.remove('open')">✕</button></div><div id="plPopupList"></div><div class="playlist-popup-new" onclick="document.getElementById('newPlForm').classList.toggle('open')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F0F0F" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>פלייליסט חדש</span></div><div class="new-pl-form" id="newPlForm"><input id="newPlInp" class="new-pl-inp" placeholder="שם הפלייליסט" onkeydown="if(event.key==='Enter')submitNewPlaylist()"><button class="new-pl-ok" onclick="submitNewPlaylist()">יצירה</button></div></div>
