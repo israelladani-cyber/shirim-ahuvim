@@ -1824,7 +1824,7 @@ async function adminSyncGitHub(){
 <div class="adm-overlay" id="admLoginOv">
   <div class="adm-box">
     <div class="adm-title">🔐 כניסת מנהל</div>
-    <input class="adm-inp" type="password" id="admPin" placeholder="קוד PIN" maxlength="30"
+    <input class="adm-inp" type="password" id="admPin" placeholder="קוד PIN" maxlength="30" inputmode="numeric"
       onkeydown="if(event.key==='Enter')doAdmLogin()">
     <div class="adm-err" id="admPinErr"></div>
     <div class="adm-row">
