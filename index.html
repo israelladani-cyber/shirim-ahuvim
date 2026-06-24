@@ -89,6 +89,7 @@ body.admin .artist-avatar:hover::after{display:flex;}
 
 /* PLAYLIST SIDE PANEL */
 .pl-panel{flex:0 0 0;width:0;min-width:0;overflow:hidden;background:#fff;border-left:1px solid #E5E5E5;display:flex;flex-direction:column;transition:flex-basis .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1);}
+#plPanel:not(.pl-panel){display:none!important;}
 .pl-panel.open{flex-basis:338px;width:338px;}
 .pl-panel-hdr{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid #E5E5E5;gap:6px;flex-shrink:0;background:#fff;}
 .pl-panel-title{flex:1;font-size:15px;font-weight:700;}
