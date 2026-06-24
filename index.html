@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>קריוקי מזרחית</title>
+<title>×§×¨×××§× ×××¨×××ª</title>
 <link rel="icon" type="image/svg+xml" href="logo%209.svg">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23121212'/%3E%3Crect x='12' y='3' width='8' height='14' rx='4' fill='%231DB954'/%3E%3Cpath d='M8 15 Q8 24 16 24 Q24 24 24 15' fill='none' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='16' y1='24' x2='16' y2='28' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='11' y1='28' x2='21' y2='28' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <style>
@@ -56,7 +56,7 @@ body{font-family:Arial,sans-serif;background:#F9F9F9;color:#0F0F0F;direction:rtl
 .artist-avatar{width:60px;height:60px;background:linear-gradient(135deg,#FF0000,#CC0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#000;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center top;position:relative;}
 .artist-avatar.has-photo{box-shadow:0 2px 8px rgba(0,0,0,.5);}
 body.admin .artist-avatar{cursor:pointer;}
-body.admin .artist-avatar::after{content:'📷';position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);font-size:22px;border-radius:50%;}
+body.admin .artist-avatar::after{content:'ð·';position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);font-size:22px;border-radius:50%;}
 body.admin .artist-avatar:hover::after{display:flex;}
 .artist-name-text{font-size:17px;font-weight:700;flex:1;color:#0F0F0F;}
 .chevron{color:#0F0F0F;transition:transform .25s;display:flex;align-items:center;}
@@ -177,7 +177,7 @@ body.theater .panel-theater-btn{color:#FF0000;}
 @media(min-width:768px){
   body.playing .player-panel{display:flex;height:100%;flex:1 1 0%;}
   body.playing .list-panel{flex:0 0 338px;min-width:0;transition:flex-basis .3s cubic-bezier(.4,0,.2,1),opacity .25s cubic-bezier(.4,0,.2,1);}
-  /* Sliding doors: list collapses as playlist expands — player stays fixed */
+  /* Sliding doors: list collapses as playlist expands â player stays fixed */
   body.playing .page-body:has(.pl-panel.open) .list-panel{flex-basis:0;overflow:hidden;opacity:0;pointer-events:none;}
   body.playing .top{padding:0 24px;}
   /* Compact song list in sidebar */
@@ -215,8 +215,8 @@ body.theater .panel-theater-btn{color:#FF0000;}
   .pl-panel.open{flex-basis:73vw;width:73vw;}
 }
 
-/* ── FLOAT PLAYER (PiP) ── */
-/* flex column: video on top, drag-bar below — no overlay blocking the iframe */
+/* ââ FLOAT PLAYER (PiP) ââ */
+/* flex column: video on top, drag-bar below â no overlay blocking the iframe */
 .float-player{position:fixed;left:0;top:0;width:340px;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.18);z-index:9999;display:none;background:#FFFFFF;touch-action:none;user-select:none;}
 .float-player.visible{display:flex;flex-direction:column;}
 /* Float mode mini-PIP: panel stays in DOM, CSS positions it as a fixed mini window */
@@ -229,11 +229,11 @@ body.theater .panel-theater-btn{color:#FF0000;}
 }
 .float-player.pip-snap{transition:left .2s cubic-bezier(.25,.46,.45,.94),top .2s cubic-bezier(.25,.46,.45,.94);}
 @media(min-width:768px){body.float-playing .player-panel.pip-snap{transition:left .2s cubic-bezier(.25,.46,.45,.94),top .2s cubic-bezier(.25,.46,.45,.94)!important;}}
-/* video slot — explicit height, no overlay blocking it */
+/* video slot â explicit height, no overlay blocking it */
 #float-video-slot{width:100%;height:124px;position:relative;overflow:hidden;background:#000;flex-shrink:0;}
 #float-video-slot #yt-player{width:100%!important;height:100%!important;}
 #float-video-slot #yt-player iframe{width:100%!important;height:100%!important;display:block!important;}
-/* bottom bar — this is the drag handle; video above is fully interactive */
+/* bottom bar â this is the drag handle; video above is fully interactive */
 .float-bar{display:flex;align-items:center;background:#FFFFFF;padding:6px 8px 6px 12px;gap:4px;cursor:grab;touch-action:none;flex-shrink:0;border-top:1px solid #E5E5E5;}
 .float-bar.grabbing{cursor:grabbing;}
 .float-bar-song{flex:1;font-size:13px;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;min-width:0;pointer-events:none;line-height:1.3;}
@@ -262,7 +262,7 @@ body.has-song:not(.playing) .mini-bar{display:flex;}
 .mini-ctrl:hover{background:rgba(0,0,0,.07);}
 body.admin .mini-bar{bottom:var(--adm-h,58px);}
 body.admin .mini-fab{bottom:calc(var(--adm-h,58px) + 20px);}
-/* Floating mini fab — appears bottom-right when minimizing from playlist mode */
+/* Floating mini fab â appears bottom-right when minimizing from playlist mode */
 .mini-fab{display:none;position:fixed;bottom:20px;right:20px;z-index:300;background:#fff;border:1px solid #E5E5E5;border-radius:40px;box-shadow:0 4px 20px rgba(0,0,0,.15);padding:6px 16px 6px 8px;align-items:center;gap:10px;cursor:pointer;width:240px;transition:box-shadow .15s;}
 .mini-fab:hover{box-shadow:0 6px 24px rgba(0,0,0,.2);}
 .mini-fab.visible{display:flex;}
@@ -305,7 +305,7 @@ mark{background:rgba(29,185,84,.2);color:#FF0000;border-radius:3px;padding:0 2px
 .queue-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:599;display:none;}
 .queue-overlay.open{display:block;}
 
-/* ── ADMIN MODE ── */
+/* ââ ADMIN MODE ââ */
 .admin-lock{background:none;border:none;color:#606060;cursor:pointer;font-size:17px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .15s;flex-shrink:0;padding:0;}
 .admin-lock:hover{background:#F2F2F2;color:#0F0F0F;}
 body.admin .admin-lock{color:#FF0000;}
@@ -322,7 +322,7 @@ body.admin .admin-lock{color:#FF0000;}
 .adm-btn.sec:hover{background:#0F0F0F;color:#0F0F0F;}
 .adm-note{font-size:12px;color:#888;line-height:1.7;margin-bottom:14px;}
 .adm-note b{color:#ccc;}
-/* ── ADMIN TOOLBAR ── */
+/* ââ ADMIN TOOLBAR ââ */
 .adm-toolbar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-top:2px solid #fff;padding:10px 16px;z-index:600;display:none;direction:rtl;gap:8px;flex-direction:row;flex-wrap:nowrap;align-items:center;overflow-x:auto;}
 body.admin .adm-toolbar{display:flex;}
 body.admin{--adm-h:58px;}
@@ -462,15 +462,15 @@ body.admin .btn-move-folder{display:flex;}
 
 <div class="top">
   <div class="top-row">
-<div class="brand" onclick="goHome()" title="חזרה לדף הבית">
-      <img src="logo%208.svg" style="height:75px;width:300px;display:block;" alt="לוגו">
+<div class="brand" onclick="goHome()" title="×××¨× ×××£ ××××ª">
+      <img src="logo%208.svg" style="height:75px;width:300px;display:block;" alt="××××">
     </div>
     <div class="search-section">
       <div class="yt-search" id="ytSearch">
         <span class="yt-search-icon" onclick="document.getElementById('q').focus()">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
         </span>
-        <input type="text" id="q" placeholder="חיפוש שיר או אמן..." autocomplete="off"
+        <input type="text" id="q" placeholder="×××¤××© ×©××¨ ×× ×××..." autocomplete="off"
           onfocus="showSearchHistory()" onblur="setTimeout(hideSearchHistory,150)"
           onkeydown="if(event.key==='Enter'){saveSearchHistory(this.value);hideSearchHistory();}"/>
         <button class="yt-clear" id="clr" onclick="clearSearch()">&#x2715;</button>
@@ -478,62 +478,62 @@ body.admin .btn-move-folder{display:flex;}
       </div>
       <button class="toolbar-btn" id="btnExpandAll" onclick="expandAll()">
         <span class="bc" style="transform:rotate(0deg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-        <span class="btn-label">פתח הכל</span>
+        <span class="btn-label">×¤×ª× ×××</span>
       </button>
       <button class="toolbar-btn" id="btnCollapseAll" onclick="collapseAll()">
         <span class="bc" style="transform:rotate(-90deg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
-        <span class="btn-label">סגור הכל</span>
+        <span class="btn-label">×¡×××¨ ×××</span>
       </button>
       <button class="toolbar-btn" id="btnPlPanel" onclick="var p=document.getElementById('plPanel');if(!p.classList.contains('open')){openPlPanel();}else if(!document.body.classList.contains('playing')){closePlPanel();}">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-        <span class="btn-label">פלייליסטים</span>
+        <span class="btn-label">×¤××××××¡×××</span>
       </button>
-      <button class="admin-lock" onclick="openAdminLogin()" title="מצב מנהל">🔐</button>
+      <button class="admin-lock" onclick="openAdminLogin()" title="××¦× ×× ××">ð</button>
     </div>
   </div>
 </div>
 
 <div class="page-body" id="pageBody">
-  <!-- PLAYLIST SIDE PANEL (inline flex child — first in RTL = rightmost) -->
+  <!-- PLAYLIST SIDE PANEL (inline flex child â first in RTL = rightmost) -->
   <div class="pl-panel" id="plPanel">
     <div class="pl-panel-hdr">
-      <span class="pl-panel-title">הפלייליסטים שלי</span>
-      <button class="pl-panel-close" onclick="minimizeToMiniBar();" title="מזער">&#x2014;</button>
-      <button class="pl-panel-close" onclick="closePlPanelAndPlayer()" title="סגור">✕</button>
+      <span class="pl-panel-title">××¤××××××¡××× ×©××</span>
+      <button class="pl-panel-close" onclick="minimizeToMiniBar();" title="×××¢×¨">&#x2014;</button>
+      <button class="pl-panel-close" onclick="closePlPanelAndPlayer()" title="×¡×××¨">â</button>
     </div>
     <div class="pl-panel-body" id="plPanelBody"></div>
     <div class="pl-panel-footer">
-      <button class="pl-create-btn" onclick="plPanelCreate()">פלייליסט חדש</button>
+      <button class="pl-create-btn" onclick="plPanelCreate()">×¤××××××¡× ×××©</button>
     </div>
   </div>
   <!-- PLAYER PANEL: right side on desktop, overlay on mobile -->
   <div class="player-panel" id="playerPanel">
     <div class="panel-header">
       <div class="panel-song-info">
-        <div class="panel-song-name" id="panelSong">—</div>
-        <div class="panel-artist-name" id="panelArtist">—</div>
+        <div class="panel-song-name" id="panelSong">â</div>
+        <div class="panel-artist-name" id="panelArtist">â</div>
       </div>
       <div class="panel-nav-group">
         <button class="modal-nav-btn" id="btnPrev" onclick="modalNav(-1)">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-          הקודם
+          ××§×××
         </button>
         <div class="modal-queue-info" id="modalQueueInfo"></div>
-        <button class="modal-add-btn" id="modalAddBtn" onclick="showPlaylistPopup(event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> שמור</button>
+        <button class="modal-add-btn" id="modalAddBtn" onclick="showPlaylistPopup(event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> ×©×××¨</button>
         <button class="modal-nav-btn" id="btnNext" onclick="modalNav(1)">
-          הבא
+          ×××
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         </button>
       </div>
       <!-- Theater mode (desktop) -->
-      <button class="panel-theater-btn" id="theaterBtn" onclick="toggleTheater()" title="מצב קולנוע">
+      <button class="panel-theater-btn" id="theaterBtn" onclick="toggleTheater()" title="××¦× ×§××× ××¢">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/></svg>
       </button>
       <!-- Float mini-pip (desktop) -->
-      <button class="panel-float-btn" onclick="minimizeToFloat()" title="מזער לחלון צף">
+      <button class="panel-float-btn" onclick="minimizeToFloat()" title="×××¢×¨ ××××× ×¦×£">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><rect x="13" y="13" width="8" height="5" rx="1" fill="currentColor" stroke="none"/></svg>
       </button>
-      <button class="panel-minimize-btn" onclick="minimizePlayerOnly()" title="מזער לסרגל">&#x2014;</button>
+      <button class="panel-minimize-btn" onclick="minimizePlayerOnly()" title="×××¢×¨ ××¡×¨××">&#x2014;</button>
       <button class="panel-close" onclick="closePanelOrAll()">&#x2715;</button>
     </div>
     <div class="panel-video" id="panel-video-slot">
@@ -550,26 +550,26 @@ body.admin .btn-move-folder{display:flex;}
 <div class="mini-fab" id="miniFab" onclick="fabResume()">
   <div class="mini-fab-thumb" id="miniFabThumb"></div>
   <div class="mini-fab-info">
-    <div class="mini-fab-song" id="miniFabSong">—</div>
-    <div class="mini-fab-artist" id="miniFabArtist">—</div>
+    <div class="mini-fab-song" id="miniFabSong">â</div>
+    <div class="mini-fab-artist" id="miniFabArtist">â</div>
   </div>
-  <button class="mini-fab-close" onclick="event.stopPropagation();hideFab();clearSession()" title="סגור">✕</button>
+  <button class="mini-fab-close" onclick="event.stopPropagation();hideFab();clearSession()" title="×¡×××¨">â</button>
 </div>
 
 <!-- MOBILE MINI BAR -->
 <div class="mini-bar" id="miniBar" onclick="resumeOrOpen()">
   <div class="mini-thumb" id="miniThumb"></div>
   <div class="mini-info">
-    <div class="mini-song" id="miniSong">—</div>
-    <div class="mini-artist" id="miniArtist">—</div>
+    <div class="mini-song" id="miniSong">â</div>
+    <div class="mini-artist" id="miniArtist">â</div>
   </div>
-  <button class="mini-ctrl" id="miniPlayBtn" title="נגן/עצור" onclick="event.stopPropagation();miniPlayPause()">⏸</button>
-  <button class="mini-ctrl" title="סגור" onclick="event.stopPropagation();if(ytPlayer&&playerReady)ytPlayer.pauseVideo();var _v=document.getElementById('mp4Player');if(_v)_v.pause();hideFloatPlayer();_miniBarSavedState=null;document.body.classList.remove('has-song','playing','theater');clearSession();">&#x2715;</button>
+  <button class="mini-ctrl" id="miniPlayBtn" title="× ××/×¢×¦××¨" onclick="event.stopPropagation();miniPlayPause()">â¸</button>
+  <button class="mini-ctrl" title="×¡×××¨" onclick="event.stopPropagation();if(ytPlayer&&playerReady)ytPlayer.pauseVideo();var _v=document.getElementById('mp4Player');if(_v)_v.pause();hideFloatPlayer();_miniBarSavedState=null;document.body.classList.remove('has-song','playing','theater');clearSession();">&#x2715;</button>
 </div>
 
 <div class="pl-ctx-menu" id="plCtxMenu">
-  <div class="pl-ctx-item" onclick="plCtxRename()">✏️ שנה שם</div>
-  <div class="pl-ctx-item danger" onclick="plCtxDelete()">🗑 מחק</div>
+  <div class="pl-ctx-item" onclick="plCtxRename()">âï¸ ×©× × ×©×</div>
+  <div class="pl-ctx-item danger" onclick="plCtxDelete()">ð ×××§</div>
 </div>
 
 <!-- QUEUE PANEL -->
@@ -584,9 +584,9 @@ body.admin .btn-move-folder{display:flex;}
   <div id="float-video-slot"></div>
   <div class="float-bar" id="floatBar">
     <span class="float-bar-song" id="floatSong"></span>
-    <button class="fbar-btn" id="pipPlayBtn" onclick="pipPlayPause()" title="נגן/עצור">▶</button>
-    <button class="fbar-btn" onclick="expandFloat()" title="הגדל">⤢</button>
-    <button class="fbar-btn" onclick="closeFloat()" title="סגור">✕</button>
+    <button class="fbar-btn" id="pipPlayBtn" onclick="pipPlayPause()" title="× ××/×¢×¦××¨">â¶</button>
+    <button class="fbar-btn" onclick="expandFloat()" title="××××">â¤¢</button>
+    <button class="fbar-btn" onclick="closeFloat()" title="×¡×××¨">â</button>
   </div>
 </div>
 
@@ -594,14 +594,14 @@ body.admin .btn-move-folder{display:flex;}
 let _folderPickerEl=null,_pickerArtists=[];
 // YouTube IFrame API
 var tag=document.createElement('script');tag.src="https://www.youtube.com/iframe_api";document.head.appendChild(tag);
-const ALL=[{"a":"אבי סינואני","s":"מחרוזת לעולם לא נפרד","v":"Ns-KxKmv7Lo"},{"a":"אביעד סהר","s":"מחרוזת \"יום הרווקים\"","v":"C0R6N4gYhgQ"},{"a":"אביעד סהר","s":"מחרוזת \"המתחתנים\"","v":"4MCjF7jCUV8"},{"a":"אביעד סהר","s":"מחרוזת זעבור (החתונות)","v":"gu9cDEH5O08"},{"a":"אביעד סהר","s":"מחרוזת מערבבת שוקולטה","v":"HyewrBXD56I"},{"a":"אביעד סהר","s":"מחרוזת \"משגע את כולן\"","v":"H0Nht_hWaX8"},{"a":"אביעד סהר","s":"מחרוזת \"מי זה אמר לך\"","v":"wv6R8c23t9k"},{"a":"אבישי אשל","s":"מחרוזת תימנית","v":"1N8faBjTg_M"},{"a":"אבנר גדסי","s":"שרונה","v":"L3q4A5gfcFg"},{"a":"אושר כהן","s":"בברגעים שאת הולכת","v":"_OYSFzHyZBw"},{"a":"אייל גולן","s":"מחרוזת ברצלונה","v":"f83zZvgmjYo"},{"a":"אייל גולן","s":"עיר נמל","v":"IfuOLaaA0jo"},{"a":"אייל גולן","s":"דמעות","v":"bgcKHw2Qcn8"},{"a":"אייל גולן","s":"שוב לאהוב","v":"I3xsVXQiBLE"},{"a":"אייל גולן","s":"שבוי לאהבה","v":"Jx7tz0SoFTY"},{"a":"אייל גולן","s":"זה מסוכן","v":"_RWI5Z8_bx0"},{"a":"אייל גולן","s":"כשתגדל","v":"yImq0QVgpVM"},{"a":"אייל גולן","s":"רחוק מכאן","v":"8Rv7PbeChPU"},{"a":"אייל גולן","s":"טוב לך איתו","v":"3jdr8LnBarM"},{"a":"אייל גולן","s":"לאן הגענו","v":"je_DnhPQH4Q"},{"a":"אייל גולן","s":"משחקים של כבוד","v":"vYCIjzpInDY"},{"a":"אייל גולן","s":"בלי להתכוון","v":"H7Xg1JJdL0E"},{"a":"אייל גולן","s":"לא מבינה עברית","v":"1gfR5IMp9xQ"},{"a":"אייל גולן","s":"טעיתי","v":"O36-H5725E0"},{"a":"אייל גולן","s":"דברי איתי","v":"d_ruDSff4fo"},{"a":"אייל גולן","s":"מקום אחר","v":"3mO0NrbHgjs"},{"a":"אייל גולן","s":"אהבה ראשונה","v":"FHXeW0h9Qjo"},{"a":"אייל גולן","s":"תבואי היום","v":"sGDxuERpg_E"},{"a":"אייל גולן","s":"חוזר הביתה","v":"kWRIZVdIrRM"},{"a":"אייל גולן","s":"מבעד לדמעה","v":"Tl2CocQ_yyg"},{"a":"אייל גולן","s":"עושה עם העיניים","v":"XdGSt8_j5MQ"},{"a":"אייל גולן","s":"ביט","v":"WwR_7iPJ7Es"},{"a":"אייל גולן","s":"חיים שלמים","v":"ZiribWW3siY"},{"a":"אייל גולן","s":"קחי לך את היום","v":"rkIZ2YdTD7U"},{"a":"אייל גולן","s":"כמו בספרים ההם","v":"36c4jcw8YE8"},{"a":"אייל גולן","s":"נכון להיום (עם זוהר ארגוב)","v":"7KOjWkCdHTI"},{"a":"אייל גולן","s":"טירוף מתוק","v":"h_wjl-rCCOU"},{"a":"אייל גולן","s":"מחפשים אהבה","v":"Crny_ptxmXQ"},{"a":"אייל גולן","s":"עינייך מספרות","v":"qF1WDa7F7d4"},{"a":"אייל גולן","s":"שומרני אל","v":"B1xwlpYc4gg"},{"a":"אייל גולן","s":"תודה לאל","v":"Pio92gl_Glw"},{"a":"אייל גולן","s":"נתתי לך ת'לב","v":"d-psG4JnsfA"},{"a":"אייל גולן","s":"מתי את חוזרת","v":"JH4p0waLDtk"},{"a":"אייל גולן","s":"מחרוזת: אלינור, ילדתי, ים של דמעות","v":"x22-T5ze3y0"},{"a":"אייל גולן","s":"אתה המלך עם ציון גולן","v":"h4P0V4XFhqc"},{"a":"אייל גולן","s":"חצי לב","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%90%D7%99%D7%99%D7%9C%20%D7%92%D7%95%D7%9C%D7%9F%20-%20%D7%97%D7%A6%D7%99%20%D7%9C%D7%91%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"אלי לוזון","s":"פרי גנך","v":"x-kW0Qh-ZMY"},{"a":"אלי לוזון","s":"מחרוזת בניגון הישן","v":"ZwlNcPIYdWA"},{"a":"אלי לוזון","s":"נערת החלומות","v":"ofQtnH7heJ8"},{"a":"אלי לוזון","s":"איזו מדינה","v":"G6Bwx0PSKyY"},{"a":"אלי לוזון","s":"ילדה","v":"gMmB8Qvby4k"},{"a":"אלעד שער","s":"מחרוזת תימנית נוסטלגית","v":"BwWS9-3QfOg"},{"a":"בני ברדא","s":"מחרוזת יום שישי הגיע","v":"-6IwjnOmaCw"},{"a":"דודו אהרון","s":"אמא יקרה","v":"dNwZW4y73nk"},{"a":"דורון מירן","s":"מח' חפלה","v":"56CWx5CFYeY"},{"a":"דקלון","s":"מח' אהובת לבבי & צעד תימני & הלאה הלאה","v":"4BjSS6Ojo5s"},{"a":"האולטראס","s":"מסיבה בחיפה","v":"5w6_feY2KNU"},{"a":"הפרויקט של רביבו","s":"מחרוזת אינתה עומרי","v":"1puqK1iO0GM"},{"a":"הפרויקט של רביבו","s":"מחרוזת עת דודים כלה","v":"Vb-qYcgXJME"},{"a":"הפרויקט של רביבו","s":"מחרוזת עוד יום יבוא","v":"rOV_omdzY8k"},{"a":"הפרויקט של רביבו","s":"מחרוזת תן לזמן ללכת","v":"-MAnJipJEdc"},{"a":"הפרויקט של רביבו","s":"מחרוזת כמו שיכור","v":"Gpo5xiI2Z5U"},{"a":"הפרויקט של רביבו","s":"מחרוזת אוהב לחיות","v":"RK8tQjuoAww"},{"a":"הפרויקט של רביבו","s":"מחרוזת עד סוף הקיץ","v":"pujMDF06t-s"},{"a":"הפרויקט של רביבו","s":"מחרוזת כך עוברים חיי","v":"e-TF92xwJCQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת עד מתי אלוהי","v":"JaeWeRKbUkw"},{"a":"הפרויקט של רביבו","s":"מחרוזת קסם המזרח","v":"FV4LXx303AM"},{"a":"הפרויקט של רביבו","s":"מחרוזת אני שר","v":"J67uptywkHY"},{"a":"הפרויקט של רביבו","s":"מחרוזת לילה שלי","v":"-oHr9LGCZuI"},{"a":"הפרויקט של רביבו","s":"מחרוזת חנותך","v":"gSopjSOEKoU"},{"a":"הפרויקט של רביבו","s":"מחרוזת מה נותר","v":"Ennydylg8dQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת יותר מוארת","v":"VyNO-0eFy4w"},{"a":"הפרויקט של רביבו","s":"מחרוזת שבויה באהבה","v":"BaMs8tfwFpk"},{"a":"הפרויקט של רביבו","s":"מחרוזת אמא","v":"To5EKVAQFYo"},{"a":"הפרויקט של רביבו","s":"מחרוזת תני לי את הלב","v":"K0lQlEIDQF0"},{"a":"הפרויקט של רביבו","s":"מחרוזת שורשים","v":"EDGzXrahSCM"},{"a":"הפרויקט של רביבו","s":"מחרוזת שושנת פלאים","v":"K0xaDOC_X2Q"},{"a":"הפרויקט של רביבו","s":"מחרוזת חולפות השנים","v":"3YHcde-XLEc"},{"a":"הפרויקט של רביבו","s":"מחרוזת בדד","v":"NBTSA3wLXTw"},{"a":"הפרויקט של רביבו","s":"מחרוזת הפרח בגני","v":"znqnqDWST8M"},{"a":"הפרויקט של רביבו","s":"מחרוזת נכון להיום","v":"aR-YPd8mgy8"},{"a":"הפרויקט של רביבו","s":"מחרוזת חיכיתי שנים","v":"05ryjGanJHQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת אדם שחקן","v":"jUPMSfjY8u0"},{"a":"הפרויקט של רביבו","s":"מחרוזת ליסה","v":"KmWaPwHNmYg"},{"a":"הפרויקט של רביבו","s":"מחרוזת נגילה הללויה","v":"eAkeQo3GajQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת סאלם עליכום","v":"Sg4_BGueaO8"},{"a":"הפרויקט של רביבו","s":"מחרוזת אהבה בסוף הקיץ","v":"y4IWD2LX-7w"},{"a":"הפרויקט של רביבו","s":"מחרוזת עדות","v":"O6AJNdoYd6k"},{"a":"הפרויקט של רביבו","s":"מחרוזת פעמון זהב","v":"XDbLkzmSmh8"},{"a":"הפרויקט של רביבו","s":"מחרוזת מן הקולות","v":"GBCHm2lfA60"},{"a":"הפרויקט של רביבו","s":"מחרוזת נע ונד","v":"RiH2LHqdqzU"},{"a":"הפרויקט של רביבו","s":"מחרוזת יד ביד","v":"W2RBujKry9k"},{"a":"הפרויקט של רביבו","s":"מחרוזת שיר לדרך","v":"lpMIYFHbqQ4"},{"a":"הפרויקט של רביבו","s":"מחרוזת שיר השירים","v":"vrpVitwiCjk"},{"a":"הפרויקט של רביבו","s":"מחרוזת הו שיכור","v":"xhR9P2Uuyz4"},{"a":"הפרויקט של רביבו","s":"מחרוזת בת המלך","v":"e9aI3FQjDZM"},{"a":"הפרויקט של רביבו","s":"מחרוזת רונה","v":"Lcw9JLAO1mM"},{"a":"הפרויקט של רביבו","s":"מחרוזת פני מלאך (עם יואב יצחק)","v":"-MDCmjFGHCc"},{"a":"הפרויקט של רביבו","s":"מחרוזת כבר עברו השנים","v":"z8eLDo2XyqI"},{"a":"הפרויקט של רביבו","s":"אלה","v":"gr3KdRGRD04"},{"a":"הפרויקט של רביבו","s":"מחרוזת להשתטות","v":"-1-saniPYE8"},{"a":"הפרויקט של רביבו","s":"מחרוזת סליחות","v":"orE5pCQV-7Y"},{"a":"הפרויקט של רביבו","s":"מחרוזת חיפשתי שירים","v":"KbIERiLa87c"},{"a":"הפרויקט של רביבו","s":"מחרוזת אמא","v":"y0tlMWu4Hm4"},{"a":"הפרויקט של רביבו","s":"מחרוזת תני חיבוק ילדונת","v":"MgRx-FweMAA"},{"a":"הפרויקט של רביבו","s":"מחרוזת לא חשוב לי לאן","v":"EOACbrQk90k"},{"a":"הפרויקט של רביבו","s":"מחרוזת ילדתי חזרי","v":"eiPHLJ2SHOk"},{"a":"הפרויקט של רביבו","s":"מחרוזת עוד יום עולה","v":"Bc9eJm8QkIc"},{"a":"הפרויקט של רביבו","s":"מחרוזת שבת","v":"MaqYg4eEol8"},{"a":"הפרויקט של רביבו","s":"מחרוזת ג'ינם","v":"tDwiPQCTX90"},{"a":"זוהר ארגוב","s":"מחרוזת קריוקי","v":"adpYu9lVXM0"},{"a":"זוהר ארגוב","s":"להיות אדם","v":"UatW5lF3mz8"},{"a":"זוהר ארגוב","s":"מה לך ילדה","v":"eI-ZF4kIEgk"},{"a":"זוהר ארגוב","s":"כבר עברו השנים","v":"IC60IrzMsmY"},{"a":"זוהר ארגוב","s":"כך עוברים חיי","v":"n3HJtk8wbOQ"},{"a":"זוהר ארגוב","s":"נכון להיום","v":"knpBE4HRESo"},{"a":"זוהר ארגוב","s":"אהבת רעייה רצוני","v":"Ckq0n7d8M3I"},{"a":"זוהר ארגוב","s":"אמא טובה","v":"cRozJR66HZk"},{"a":"זוהר ארגוב","s":"עד מתי אלוהיי","v":"pGSlA3My8GI"},{"a":"זוהר ארגוב","s":"כשאת לידי","v":"a0V-22tb6Uo"},{"a":"זוהר ארגוב","s":"ים של דמעות","v":"go0HEEcUBCY"},{"a":"זוהר ארגוב","s":"אל נבקש","v":"HOma-YRkfGU"},{"a":"זוהר ארגוב","s":"רעייה","v":"tqqw2CxBqb8"},{"a":"זוהר ארגוב","s":"הזוהר לארגוב (חברים שרים)","v":"itzNUuVLhLQ"},{"a":"זוהר ארגוב","s":"שיר השופט (חברים שרים)","v":"tSyl0Jmidg4"},{"a":"זוהר ארגוב","s":"אבי אבי","v":"fE1jg-cuPZo"},{"a":"זוהר ארגוב","s":"כל עוברים חיי","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%96%D7%95%D7%94%D7%A8%20%D7%90%D7%A8%D7%92%D7%95%D7%91%20-%20%D7%9B%D7%9A%20%D7%A2%D7%95%D7%91%D7%A8%D7%99%D7%9D%20%D7%97%D7%99%D7%99%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"זוהר יעיש","s":"מחרוזת שקטים","v":"oNHNZmZaA8g"},{"a":"זוהר צברי","s":"מחרוזת הוי אנשים, סיגלית, בואי נערה","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%96%D7%95%D7%94%D7%A8%20%D7%A6%D7%91%D7%A8%D7%99%20-%20%D7%94%D7%95%D7%99%20%D7%90%D7%A0%D7%A9%D7%99%D7%9D%2C%20%D7%A1%D7%99%D7%92%D7%9C%D7%99%D7%AA%2C%20%D7%91%D7%95%D7%90%D7%99%20%D7%A0%D7%A2%D7%A8%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"חיים ישראל","s":"לך אלי תשוקתי","v":"swl39jE8twE"},{"a":"חיים ישראל","s":"אתאנו לחלות פניך","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%97%D7%99%D7%99%D7%9D%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C%20-%20%D7%90%D7%AA%D7%90%D7%A0%D7%95%20%D7%9C%D7%97%D7%9C%D7%95%D7%AA%20%D7%A4%D7%A0%D7%99%D7%9A%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"חיים משה","s":"פלייבק התמונות שבאלבום","v":"bcMnQJwFZvE"},{"a":"חיים משה","s":"מה עם הילד","v":"06WS9u9vdmo"},{"a":"חיים משה","s":"באו הצלילים","v":"_8tAv3ftsFU"},{"a":"חיים משה","s":"אמא אמא","v":"V8bxVrIKztU"},{"a":"חיים משה","s":"אהבת חיי","v":"HqZIjFTqKqU"},{"a":"חיים משה","s":"הגיטרה","v":"GY1426jv22c"},{"a":"חיים משה","s":"ילד שלי","v":"afItsCqdToU"},{"a":"חיים משה","s":"על סף דלתך","v":"xd673oYBLAo"},{"a":"חיים משה","s":"מחרוזת נשבע","v":"m0oZYrnSWzE"},{"a":"חיים משה","s":"הקולות של פיראוס","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%97%D7%99%D7%99%D7%9D%20%D7%9E%D7%A9%D7%94%20-%20%D7%94%D7%A7%D7%95%D7%9C%D7%95%D7%AA%20%D7%A9%D7%9C%20%D7%A4%D7%99%D7%A8%D7%90%D7%95%D7%A1%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"יואב יצחק","s":"צלצולי פעמונים","v":"Rysq94khOcs"},{"a":"יואב יצחק","s":"זה הזמן לסלוח","v":"5mfjYA9qpqM"},{"a":"יואב יצחק","s":"אין לי מרגוע והוי לאהבה","v":"X5gRYg-1TgE"},{"a":"יואב יצחק","s":"מיליון סיבות","v":"zYhDV4pF8qg"},{"a":"יואב יצחק","s":"פני מלאך","v":"-KIupnnjswo"},{"a":"יואב יצחק","s":"מחרוזת שירי יואב יצחק","v":"8j3MjOK0i04"},{"a":"ישי לוי","s":"אלוהים נתן לך","v":"3Bj1BcnT2c0"},{"a":"ישי לוי","s":"זירת חיי","v":"z015DfcVnUs"},{"a":"ישי לוי","s":"תלתלים שחורים","v":"fd54y_k7lhw"},{"a":"ישי לוי","s":"אחת ויחידה","v":"kq5--PjdIZw"},{"a":"ישי לוי","s":"איפה את היום","v":"Q6smcuyam3E"},{"a":"ישי לוי","s":"צליל ענבלים","v":"HJzuFvSw6s4"},{"a":"ישי לוי","s":"אנה בחלאם ביק","v":"cj5irI7Ga-I"},{"a":"ישי לוי","s":"מנולייה","v":"nXWv5FXxk6M"},{"a":"ישי לוי","s":"מח' מצהלות","v":"SKjqz0LxZ5U"},{"a":"ישי לוי","s":"מחרוזת רחוק רחוק","v":"Ly7oPA3KoEQ"},{"a":"ישי לוי","s":"רק חיוכים","v":"0Tz-7z_Egmg"},{"a":"ישי לוי","s":"רעיה","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%A2%D7%99%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"ליסה ליסה","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%9C%D7%99%D7%A1%D7%94%20%D7%9C%D7%99%D7%A1%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"בשבילי את השער לגן עדן (הופעה)","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%91%D7%A9%D7%91%D7%99%D7%9C%D7%99%20%D7%90%D7%AA%20%D7%94%D7%A9%D7%A2%D7%A8%20%D7%9C%D7%92%D7%9F%20%D7%A2%D7%93%D7%9F%20%D7%94%D7%95%D7%A4%D7%A2%D7%94.mp4"},{"a":"ישי לוי","s":"מכתב פרידה ","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%9E%D7%9B%D7%AA%D7%91%20%D7%A4%D7%A8%D7%99%D7%93%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"עלם חמודות","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A2%D7%9C%D7%9D%20%D7%97%D7%9E%D7%95%D7%93%D7%95%D7%AA%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"ריח של פריחה","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%99%D7%97%20%D7%A9%D7%9C%20%D7%A4%D7%A8%D7%99%D7%97%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"ריקדי","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%A7%D7%93%D7%99%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"מחרוזת רעיה ובאו הצלילים (הופעה)","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%E2%80%8F%E2%80%8F%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%9E%D7%97%D7%A8%D7%95%D7%96%D7%AA%20%D7%A8%D7%A2%D7%99%D7%94%20%D7%95%D7%91%D7%90%D7%95%20%D7%94%D7%A6%D7%9C%D7%99%D7%9C%D7%99%D7%9D%20%D7%94%D7%95%D7%A4%D7%A2%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"לי פישמן","s":"אנחנו מאמינים","v":"4FwyMvq73pY"},{"a":"ליאור מיארה","s":"מחרוזת פורטוגל","v":"1NTHxT8Q-B0"},{"a":"ליאור מיארה","s":"מחרוזת הצגה","v":"4Fv6OdSQtaw"},{"a":"ליאור מיארה","s":"מחרוזת תלתלים","v":"rw8VBlPTOiY"},{"a":"ליאור מיארה","s":"מחרוזת רקדי","v":"e43DGSCGxv0"},{"a":"ליאור מיארה","s":"מחרוזת נערה","v":"kHh5vHKTqCc"},{"a":"ליאור מיארה","s":"מחרוזת מהשמיים","v":"JfrBGRvHSzg"},{"a":"ליאור מיארה","s":"מחרוזת שביל האושר","v":"IlViJvjKz5U"},{"a":"ליאור מיארה","s":"מחרוזת מאושרת","v":"uyTwar0O-Xk"},{"a":"ליאור מיארה","s":"מחרוזת בסוף היום","v":"Rpi-3KFOBD8"},{"a":"ליאור מיארה","s":"מחרוזת בסבוסה","v":"TBwYecZ18_c"},{"a":"ליאור מיארה","s":"מחרוזת דמייני","v":"NoulwMeSKR8"},{"a":"לירן טל","s":"מחרוזת חלפו ימיי","v":"7-Qv_TLBJNQ"},{"a":"מאיר טל והפרוייקט","s":"מחרוזת אהבת חיי","v":"OwN9YtzRmms"},{"a":"מרגלית צנעני","s":"נערי שובה אליי","v":"0RwTNKJk-x4"},{"a":"משה פרץ","s":"הטעם הישן","v":"q6UYBs5m9uo"},{"a":"משה פרץ","s":"גם אם העולם יתהפך","v":"YeJEaEjZynE"},{"a":"משה פרץ","s":"ברצלונה","v":"VBy48Go9ScI"},{"a":"משה פרץ","s":"סימני הזמן","v":"V9okgFOUZwE"},{"a":"נסרין","s":"למה לי למה לו","v":"ut18SMAzJh8"},{"a":"נסרין","s":"לומדת ללכת","v":"iJVtwEhcEHs"},{"a":"נסרין","s":"אתה עושה לי טוב","v":"qivezVDvibY"},{"a":"נתנאל","s":"ילדה של אב","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%A0%D7%AA%D7%A0%D7%90%D7%9C%20-%20%D7%99%D7%9C%D7%93%D7%94%20%D7%A9%D7%9C%20%D7%90%D7%91%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"סגיב כהן","s":"מחרוזת אסלית בתימנית","v":"Jq8sH8yXg_s"},{"a":"סמיר שוקרי","s":"רונה","v":"t-BhB-xk0W4"},{"a":"עופר לוי","s":"אני ואת","v":"8zjP3kh0rvM"},{"a":"עופר לוי","s":"יום הרווקים","v":"o3x7pTK0WGc"},{"a":"עופר לוי","s":"מאוהב בגשם","v":"4SNVki5CMd0"},{"a":"עידו יצחק","s":"מחרוזת החברות שלך","v":"F4G8tvUlv-I"},{"a":"פאר טסי","s":"אהבה חולה","v":"IMFVvoSCjDY"},{"a":"פאר טסי","s":"ערק","v":"XU6DX6ahK5c"},{"a":"פאר טסי","s":"סלחי לי אמא","v":"Q0QhHgZi5Ss"},{"a":"פאר טסי","s":"היא לא יודעת למה","v":"pME4AuEvCcw"},{"a":"פאר טסי","s":"כתבתי מילים","v":"JXthYmOFXpk"},{"a":"פאר טסי","s":"משקה יקר","v":"Z7W0kDQ0CJA"},{"a":"פאר טסי","s":"דפיקות הלב","v":"jWraDnHjRA0"},{"a":"פאר טסי","s":"38","v":"k_u_ObTq2So"},{"a":"פאר טסי","s":"בואי ניפגש","v":"_Niml1PtHjg"},{"a":"פאר טסי","s":"הי מאמא","v":"j3qWPwy-_PU"},{"a":"פאר טסי","s":"אל תהיי עצובה","v":"9ylJabMFP14"},{"a":"פאר טסי","s":"את עוד תראי","v":"omJ9_Mz6FgI"},{"a":"קוקו מאילת","s":"מחרוזת קלאסיקה","v":"uW_G2pRWoHI"},{"a":"קוקו מאילת","s":"מחרוזת כמה חבל","v":"Z3Y1IyhQsIw"},{"a":"קוקו מאילת","s":"מחרוזת אלופה","v":"oVCVYkdGUMo"},{"a":"ראובן המלאך","s":"מחרוזת קפה בשניים","v":"dUdF-Zsalmg"},{"a":"רובי חן","s":"סמרה","v":"e_-KQSbrKsg"},{"a":"רובי לוי","s":"כינורי","v":"Fe-VtyiAN4o"},{"a":"רוני אחיאל","s":"לחזור לחיים","v":"-NSIJHFyc9o"},{"a":"שי שרעבי","s":"מחרוזת רוקדת בלילות","v":"cxBC29bjxC8"},{"a":"שי שרעבי","s":"מחרוזת זוכרת (עם גלעד צארום)","v":"vqkxSlgynJg"},{"a":"שי שרעבי","s":"מחרוזת עושה לכם שכונה","v":"Aeve4FA3ozU"},{"a":"שי שרעבי","s":"רוקדת בלילות","v":"RZFJpO_hafU"},{"a":"שימי מזרחי","s":"מחרוזת להיות חופשיה","v":"y8bKtiVUdtU"},{"a":"שימי מזרחי","s":"סלחתי לך","v":"5qn6AnUZ7aE"},{"a":"שקד קוממי","s":"מחרוזת ילדונת","v":"BteCJUos2ng"},{"a":"שקד קוממי","s":"מחרוזת ילדה","v":"dL5YMPUliiA"},{"a":"שקד קוממי","s":"מחרוזת סורו ממני","v":"TIWoEXwE4W0"},{"a":"שריף","s":"בבוקר שאחרי","v":"gE__u2gZaOs"},{"a":"שריף","s":"מחרוזת יאללה חתונה","v":"SjAXtHSpQ-Q"},{"a":"שריף","s":"בסבוסה","v":"PTi_GZgCeRw"},{"a":"שריף","s":"למה לא & בת המלך","v":"KvqlFxIJbkI"}];
-const CUSTOM_PHOTOS={"אבנר גדסי":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Avner_gadassi.jpg/330px-Avner_gadassi.jpg","אבי סינואני":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אבי סינואני.webp","אושר כהן":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/%D7%90%D7%95%D7%A9%D7%A8_%D7%9B%D7%94%D7%9F.jpg/330px-%D7%90%D7%95%D7%A9%D7%A8_%D7%9B%D7%94%D7%9F.jpg","דורון מירן":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/דורון מירן.jpg","דודו אהרון":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Dudu_Aharon_2015.jpg/330px-Dudu_Aharon_2015.jpg","דקלון":"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/%D7%93%D7%A7%D7%9C%D7%95%D7%9F_%D7%91%D7%94%D7%95%D7%A4%D7%A2%D7%94_%D7%97%D7%99%D7%94_%D7%91%D7%97%D7%95%D7%A3_%D7%90%D7%99%D7%9C%D7%AA.jpg/330px-%D7%93%D7%A7%D7%9C%D7%95%D7%9F_%D7%91%D7%94%D7%95%D7%A4%D7%A2%D7%94_%D7%97%D7%99%D7%94_%D7%91%D7%97%D7%95%D7%A3_%D7%90%D7%99%D7%9C%D7%AA.jpg","זוהר ארגוב":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/זוהר ארגוב.jpg","אביעד סהר":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אביעד סהר.jpg","חיים ישראל":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Haim_Israel_4.jpg/330px-Haim_Israel_4.jpg","חיים משה":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/חיים משה.webp","אבישי אשל":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אבישי אשל.jpg","אלעד שער":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אלעד שער.jpg","בני ברדא":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/בני ברדא.jpg","ישי לוי":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Yishai_Levi.jpg/330px-Yishai_Levi.jpg","זוהר יעיש":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/זוהר יעיש.jpg","הפרויקט של רביבו":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/הפרויקט של רביבו.jpg","מרגלית צנעני":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/מרגלית צנעני.jpg","משה פרץ":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Moshe_Peretz.jpg/330px-Moshe_Peretz.jpg","לי פישמן":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/לי פישמן.jpg","עופר לוי":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Ofer_Levy_1.jpg/330px-Ofer_Levy_1.jpg","יואב יצחק":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/יואב יצחק.jpg","סמיר שוקרי":"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/%D9%84%D9%88%D8%AD%D8%AF%D9%8A.jpg/330px-%D9%84%D9%88%D8%AD%D8%AF%D9%8A.jpg","ליאור מיארה":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/ליאור מיארה.jpg","לירן טל":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/לירן טל.jpg","פאר טסי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/פאר טסי.jpg","סגיב כהן":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/סגיב כהן.jpg","נסרין":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/נסרין.jpg","רובי לוי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/רובי לוי.jpg","אייל גולן":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Eyal_Golan_1_%28cropped%29.jpg/330px-Eyal_Golan_1_%28cropped%29.jpg","עידו יצחק":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/עידו יצחק.jpg","ראובן המלאך":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/ראובן המלאך.webp","רובי חן":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/רובי חן.jpg","שי שרעבי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/שי שרעבי.jpg","שימי מזרחי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/שימי מזרחי.jpg","שקד קוממי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/שקד קוממי.jpg","שריף":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/שריף.jpg","אלי לוזון":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אלי לוזון.jpg","האולטראס":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/האולטראס.jpg","רוני אחיאל":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/רוני אחיאל.jpg","קוקו מאילת":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/קוקו מאילת.jpg","מאיר טל והפרוייקט":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/מאיר טל והפרוייקט.jpg","זוהר צברי":"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/33/6a/83/336a8306-c2c2-ac50-8b07-715cc877f4d0/198846131535.jpg/600x600bb.jpg","נתנאל":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/נתנאל.webp"};
+const ALL=[{"a":"××× ×¡×× ××× ×","s":"×××¨×××ª ××¢××× ×× × ×¤×¨×","v":"Ns-KxKmv7Lo"},{"a":"××××¢× ×¡××¨","s":"×××¨×××ª \"××× ××¨×××§××\"","v":"C0R6N4gYhgQ"},{"a":"××××¢× ×¡××¨","s":"×××¨×××ª \"×××ª××ª× ××\"","v":"4MCjF7jCUV8"},{"a":"××××¢× ×¡××¨","s":"×××¨×××ª ××¢×××¨ (×××ª×× ××ª)","v":"gu9cDEH5O08"},{"a":"××××¢× ×¡××¨","s":"×××¨×××ª ××¢×¨×××ª ×©××§××××","v":"HyewrBXD56I"},{"a":"××××¢× ×¡××¨","s":"×××¨×××ª \"××©××¢ ××ª ××××\"","v":"H0Nht_hWaX8"},{"a":"××××¢× ×¡××¨","s":"×××¨×××ª \"×× ×× ×××¨ ××\"","v":"wv6R8c23t9k"},{"a":"××××©× ××©×","s":"×××¨×××ª ×ª××× ××ª","v":"1N8faBjTg_M"},{"a":"××× ×¨ ×××¡×","s":"×©×¨×× ×","v":"L3q4A5gfcFg"},{"a":"×××©×¨ ×××","s":"×××¨××¢×× ×©××ª ×××××ª","v":"_OYSFzHyZBw"},{"a":"×××× ××××","s":"×××¨×××ª ××¨×¦××× ×","v":"f83zZvgmjYo"},{"a":"×××× ××××","s":"×¢××¨ × ××","v":"IfuOLaaA0jo"},{"a":"×××× ××××","s":"×××¢××ª","v":"bgcKHw2Qcn8"},{"a":"×××× ××××","s":"×©×× ×××××","v":"I3xsVXQiBLE"},{"a":"×××× ××××","s":"×©××× ×××××","v":"Jx7tz0SoFTY"},{"a":"×××× ××××","s":"×× ××¡×××","v":"_RWI5Z8_bx0"},{"a":"×××× ××××","s":"××©×ª×××","v":"yImq0QVgpVM"},{"a":"×××× ××××","s":"×¨×××§ ××××","v":"8Rv7PbeChPU"},{"a":"×××× ××××","s":"××× ×× ×××ª×","v":"3jdr8LnBarM"},{"a":"×××× ××××","s":"××× ×××¢× ×","v":"je_DnhPQH4Q"},{"a":"×××× ××××","s":"××©××§×× ×©× ××××","v":"vYCIjzpInDY"},{"a":"×××× ××××","s":"××× ×××ª××××","v":"H7Xg1JJdL0E"},{"a":"×××× ××××","s":"×× ×××× × ×¢××¨××ª","v":"1gfR5IMp9xQ"},{"a":"×××× ××××","s":"××¢××ª×","v":"O36-H5725E0"},{"a":"×××× ××××","s":"×××¨× ×××ª×","v":"d_ruDSff4fo"},{"a":"×××× ××××","s":"××§×× ×××¨","v":"3mO0NrbHgjs"},{"a":"×××× ××××","s":"×××× ×¨××©×× ×","v":"FHXeW0h9Qjo"},{"a":"×××× ××××","s":"×ª×××× ××××","v":"sGDxuERpg_E"},{"a":"×××× ××××","s":"××××¨ ××××ª×","v":"kWRIZVdIrRM"},{"a":"×××× ××××","s":"×××¢× ××××¢×","v":"Tl2CocQ_yyg"},{"a":"×××× ××××","s":"×¢××©× ×¢× ××¢×× ×××","v":"XdGSt8_j5MQ"},{"a":"×××× ××××","s":"×××","v":"WwR_7iPJ7Es"},{"a":"×××× ××××","s":"×××× ×©××××","v":"ZiribWW3siY"},{"a":"×××× ××××","s":"×§×× ×× ××ª ××××","v":"rkIZ2YdTD7U"},{"a":"×××× ××××","s":"××× ××¡×¤×¨×× ×××","v":"36c4jcw8YE8"},{"a":"×××× ××××","s":"× ××× ××××× (×¢× ××××¨ ××¨×××)","v":"7KOjWkCdHTI"},{"a":"×××× ××××","s":"×××¨××£ ××ª××§","v":"h_wjl-rCCOU"},{"a":"×××× ××××","s":"×××¤×©×× ××××","v":"Crny_ptxmXQ"},{"a":"×××× ××××","s":"×¢×× ××× ××¡×¤×¨××ª","v":"qF1WDa7F7d4"},{"a":"×××× ××××","s":"×©×××¨× × ××","v":"B1xwlpYc4gg"},{"a":"×××× ××××","s":"×ª××× ×××","v":"Pio92gl_Glw"},{"a":"×××× ××××","s":"× ×ª×ª× ×× ×ª'××","v":"d-psG4JnsfA"},{"a":"×××× ××××","s":"××ª× ××ª ××××¨×ª","v":"JH4p0waLDtk"},{"a":"×××× ××××","s":"×××¨×××ª: ×××× ××¨, ××××ª×, ×× ×©× ×××¢××ª","v":"x22-T5ze3y0"},{"a":"×××× ××××","s":"××ª× ×××× ×¢× ×¦××× ××××","v":"h4P0V4XFhqc"},{"a":"×××× ××××","s":"××¦× ××","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%90%D7%99%D7%99%D7%9C%20%D7%92%D7%95%D7%9C%D7%9F%20-%20%D7%97%D7%A6%D7%99%20%D7%9C%D7%91%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"××× ×××××","s":"×¤×¨× ×× ×","v":"x-kW0Qh-ZMY"},{"a":"××× ×××××","s":"×××¨×××ª ×× ×××× ×××©×","v":"ZwlNcPIYdWA"},{"a":"××× ×××××","s":"× ×¢×¨×ª ×××××××ª","v":"ofQtnH7heJ8"},{"a":"××× ×××××","s":"×××× ×××× ×","v":"G6Bwx0PSKyY"},{"a":"××× ×××××","s":"××××","v":"gMmB8Qvby4k"},{"a":"×××¢× ×©×¢×¨","s":"×××¨×××ª ×ª××× ××ª × ××¡×××××ª","v":"BwWS9-3QfOg"},{"a":"×× × ××¨××","s":"×××¨×××ª ××× ×©××©× ××××¢","v":"-6IwjnOmaCw"},{"a":"×××× ×××¨××","s":"××× ××§×¨×","v":"dNwZW4y73nk"},{"a":"×××¨×× ×××¨×","s":"××' ××¤××","v":"56CWx5CFYeY"},{"a":"××§×××","s":"××' ×××××ª ×××× & ×¦×¢× ×ª××× × & ×××× ××××","v":"4BjSS6Ojo5s"},{"a":"××××××¨××¡","s":"××¡××× ××××¤×","v":"5w6_feY2KNU"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ××× ×ª× ×¢×××¨×","v":"1puqK1iO0GM"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¢×ª ××××× ×××","v":"Vb-qYcgXJME"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¢×× ××× ××××","v":"rOV_omdzY8k"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×ª× ×××× ××××ª","v":"-MAnJipJEdc"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ××× ×©××××¨","v":"Gpo5xiI2Z5U"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××× ×××××ª","v":"RK8tQjuoAww"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¢× ×¡××£ ××§××¥","v":"pujMDF06t-s"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×× ×¢×××¨×× ×××","v":"e-TF92xwJCQ"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¢× ××ª× ×××××","v":"JaeWeRKbUkw"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×§×¡× ××××¨×","v":"FV4LXx303AM"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×× × ×©×¨","v":"J67uptywkHY"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××× ×©××","v":"-oHr9LGCZuI"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×× ××ª×","v":"gSopjSOEKoU"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×× × ××ª×¨","v":"Ennydylg8dQ"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××ª×¨ ××××¨×ª","v":"VyNO-0eFy4w"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×©×××× ×××××","v":"BaMs8tfwFpk"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××","v":"To5EKVAQFYo"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×ª× × ×× ××ª ×××","v":"K0lQlEIDQF0"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×©××¨×©××","v":"EDGzXrahSCM"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×©××©× ×ª ×¤××××","v":"K0xaDOC_X2Q"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ××××¤××ª ××©× ××","v":"3YHcde-XLEc"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××","v":"NBTSA3wLXTw"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ××¤×¨× ××× ×","v":"znqnqDWST8M"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª × ××× ×××××","v":"aR-YPd8mgy8"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××××ª× ×©× ××","v":"05ryjGanJHQ"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ××× ×©××§×","v":"jUPMSfjY8u0"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××¡×","v":"KmWaPwHNmYg"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª × ×××× ××××××","v":"eAkeQo3GajQ"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¡××× ×¢×××××","v":"Sg4_BGueaO8"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××× ××¡××£ ××§××¥","v":"y4IWD2LX-7w"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¢×××ª","v":"O6AJNdoYd6k"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¤×¢××× ×××","v":"XDbLkzmSmh8"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×× ××§××××ª","v":"GBCHm2lfA60"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª × ×¢ ×× ×","v":"RiH2LHqdqzU"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×× ×××","v":"W2RBujKry9k"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×©××¨ ×××¨×","v":"lpMIYFHbqQ4"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×©××¨ ××©××¨××","v":"vrpVitwiCjk"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×× ×©××××¨","v":"xhR9P2Uuyz4"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ××ª ××××","v":"e9aI3FQjDZM"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¨×× ×","v":"Lcw9JLAO1mM"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¤× × ×××× (×¢× ×××× ××¦××§)","v":"-MDCmjFGHCc"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××¨ ×¢××¨× ××©× ××","v":"z8eLDo2XyqI"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××","v":"gr3KdRGRD04"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××©×ª×××ª","v":"-1-saniPYE8"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¡×××××ª","v":"orE5pCQV-7Y"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××¤×©×ª× ×©××¨××","v":"KbIERiLa87c"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×××","v":"y0tlMWu4Hm4"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×ª× × ×××××§ ××××× ×ª","v":"MgRx-FweMAA"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×× ××©×× ×× ×××","v":"EOACbrQk90k"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ××××ª× ×××¨×","v":"eiPHLJ2SHOk"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×¢×× ××× ×¢×××","v":"Bc9eJm8QkIc"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×©××ª","v":"MaqYg4eEol8"},{"a":"××¤×¨×××§× ×©× ×¨××××","s":"×××¨×××ª ×'×× ×","v":"tDwiPQCTX90"},{"a":"××××¨ ××¨×××","s":"×××¨×××ª ×§×¨×××§×","v":"adpYu9lVXM0"},{"a":"××××¨ ××¨×××","s":"×××××ª ×××","v":"UatW5lF3mz8"},{"a":"××××¨ ××¨×××","s":"×× ×× ××××","v":"eI-ZF4kIEgk"},{"a":"××××¨ ××¨×××","s":"×××¨ ×¢××¨× ××©× ××","v":"IC60IrzMsmY"},{"a":"××××¨ ××¨×××","s":"×× ×¢×××¨×× ×××","v":"n3HJtk8wbOQ"},{"a":"××××¨ ××¨×××","s":"× ××× ×××××","v":"knpBE4HRESo"},{"a":"××××¨ ××¨×××","s":"××××ª ×¨×¢××× ×¨×¦×× ×","v":"Ckq0n7d8M3I"},{"a":"××××¨ ××¨×××","s":"××× ××××","v":"cRozJR66HZk"},{"a":"××××¨ ××¨×××","s":"×¢× ××ª× ××××××","v":"pGSlA3My8GI"},{"a":"××××¨ ××¨×××","s":"××©××ª ××××","v":"a0V-22tb6Uo"},{"a":"××××¨ ××¨×××","s":"×× ×©× ×××¢××ª","v":"go0HEEcUBCY"},{"a":"××××¨ ××¨×××","s":"×× × ××§×©","v":"HOma-YRkfGU"},{"a":"××××¨ ××¨×××","s":"×¨×¢×××","v":"tqqw2CxBqb8"},{"a":"××××¨ ××¨×××","s":"×××××¨ ×××¨××× (×××¨×× ×©×¨××)","v":"itzNUuVLhLQ"},{"a":"××××¨ ××¨×××","s":"×©××¨ ××©××¤× (×××¨×× ×©×¨××)","v":"tSyl0Jmidg4"},{"a":"××××¨ ××¨×××","s":"××× ×××","v":"fE1jg-cuPZo"},{"a":"××××¨ ××¨×××","s":"×× ×¢×××¨×× ×××","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%96%D7%95%D7%94%D7%A8%20%D7%90%D7%A8%D7%92%D7%95%D7%91%20-%20%D7%9B%D7%9A%20%D7%A2%D7%95%D7%91%D7%A8%D7%99%D7%9D%20%D7%97%D7%99%D7%99%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"××××¨ ××¢××©","s":"×××¨×××ª ×©×§×××","v":"oNHNZmZaA8g"},{"a":"××××¨ ×¦××¨×","s":"×××¨×××ª ××× ×× ×©××, ×¡×××××ª, ×××× × ×¢×¨×","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%96%D7%95%D7%94%D7%A8%20%D7%A6%D7%91%D7%A8%D7%99%20-%20%D7%94%D7%95%D7%99%20%D7%90%D7%A0%D7%A9%D7%99%D7%9D%2C%20%D7%A1%D7%99%D7%92%D7%9C%D7%99%D7%AA%2C%20%D7%91%D7%95%D7%90%D7%99%20%D7%A0%D7%A2%D7%A8%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"×××× ××©×¨××","s":"×× ××× ×ª×©××§×ª×","v":"swl39jE8twE"},{"a":"×××× ××©×¨××","s":"××ª×× × ×××××ª ×¤× ××","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%97%D7%99%D7%99%D7%9D%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C%20-%20%D7%90%D7%AA%D7%90%D7%A0%D7%95%20%D7%9C%D7%97%D7%9C%D7%95%D7%AA%20%D7%A4%D7%A0%D7%99%D7%9A%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"×××× ××©×","s":"×¤×××××§ ××ª××× ××ª ×©××××××","v":"bcMnQJwFZvE"},{"a":"×××× ××©×","s":"×× ×¢× ××××","v":"06WS9u9vdmo"},{"a":"×××× ××©×","s":"××× ××¦×××××","v":"_8tAv3ftsFU"},{"a":"×××× ××©×","s":"××× ×××","v":"V8bxVrIKztU"},{"a":"×××× ××©×","s":"××××ª ×××","v":"HqZIjFTqKqU"},{"a":"×××× ××©×","s":"×××××¨×","v":"GY1426jv22c"},{"a":"×××× ××©×","s":"××× ×©××","v":"afItsCqdToU"},{"a":"×××× ××©×","s":"×¢× ×¡×£ ×××ª×","v":"xd673oYBLAo"},{"a":"×××× ××©×","s":"×××¨×××ª × ×©××¢","v":"m0oZYrnSWzE"},{"a":"×××× ××©×","s":"××§××××ª ×©× ×¤××¨×××¡","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%97%D7%99%D7%99%D7%9D%20%D7%9E%D7%A9%D7%94%20-%20%D7%94%D7%A7%D7%95%D7%9C%D7%95%D7%AA%20%D7%A9%D7%9C%20%D7%A4%D7%99%D7%A8%D7%90%D7%95%D7%A1%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"×××× ××¦××§","s":"×¦××¦××× ×¤×¢××× ××","v":"Rysq94khOcs"},{"a":"×××× ××¦××§","s":"×× ×××× ××¡×××","v":"5mfjYA9qpqM"},{"a":"×××× ××¦××§","s":"××× ×× ××¨×××¢ ×××× ×××××","v":"X5gRYg-1TgE"},{"a":"×××× ××¦××§","s":"×××××× ×¡××××ª","v":"zYhDV4pF8qg"},{"a":"×××× ××¦××§","s":"×¤× × ××××","v":"-KIupnnjswo"},{"a":"×××× ××¦××§","s":"×××¨×××ª ×©××¨× ×××× ××¦××§","v":"8j3MjOK0i04"},{"a":"××©× ×××","s":"×××××× × ×ª× ××","v":"3Bj1BcnT2c0"},{"a":"××©× ×××","s":"×××¨×ª ×××","v":"z015DfcVnUs"},{"a":"××©× ×××","s":"×ª××ª××× ×©×××¨××","v":"fd54y_k7lhw"},{"a":"××©× ×××","s":"×××ª ××××××","v":"kq5--PjdIZw"},{"a":"××©× ×××","s":"×××¤× ××ª ××××","v":"Q6smcuyam3E"},{"a":"××©× ×××","s":"×¦××× ×¢× ××××","v":"HJzuFvSw6s4"},{"a":"××©× ×××","s":"×× × ××××× ×××§","v":"cj5irI7Ga-I"},{"a":"××©× ×××","s":"×× ×××××","v":"nXWv5FXxk6M"},{"a":"××©× ×××","s":"××' ××¦××××ª","v":"SKjqz0LxZ5U"},{"a":"××©× ×××","s":"×××¨×××ª ×¨×××§ ×¨×××§","v":"Ly7oPA3KoEQ"},{"a":"××©× ×××","s":"×¨×§ ××××××","v":"0Tz-7z_Egmg"},{"a":"××©× ×××","s":"×¨×¢××","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%A2%D7%99%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"××©× ×××","s":"×××¡× ×××¡×","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%9C%D7%99%D7%A1%D7%94%20%D7%9C%D7%99%D7%A1%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"××©× ×××","s":"××©×××× ××ª ××©×¢×¨ ××× ×¢×× (×××¤×¢×)","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%91%D7%A9%D7%91%D7%99%D7%9C%D7%99%20%D7%90%D7%AA%20%D7%94%D7%A9%D7%A2%D7%A8%20%D7%9C%D7%92%D7%9F%20%D7%A2%D7%93%D7%9F%20%D7%94%D7%95%D7%A4%D7%A2%D7%94.mp4"},{"a":"××©× ×××","s":"×××ª× ×¤×¨××× ","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%9E%D7%9B%D7%AA%D7%91%20%D7%A4%D7%A8%D7%99%D7%93%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"××©× ×××","s":"×¢×× ××××××ª","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A2%D7%9C%D7%9D%20%D7%97%D7%9E%D7%95%D7%93%D7%95%D7%AA%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"××©× ×××","s":"×¨×× ×©× ×¤×¨×××","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%99%D7%97%20%D7%A9%D7%9C%20%D7%A4%D7%A8%D7%99%D7%97%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"××©× ×××","s":"×¨××§××","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%A7%D7%93%D7%99%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"××©× ×××","s":"×××¨×××ª ×¨×¢×× ×××× ××¦××××× (×××¤×¢×)","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%E2%80%8F%E2%80%8F%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%9E%D7%97%D7%A8%D7%95%D7%96%D7%AA%20%D7%A8%D7%A2%D7%99%D7%94%20%D7%95%D7%91%D7%90%D7%95%20%D7%94%D7%A6%D7%9C%D7%99%D7%9C%D7%99%D7%9D%20%D7%94%D7%95%D7%A4%D7%A2%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"×× ×¤××©××","s":"×× ×× × ××××× ××","v":"4FwyMvq73pY"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ×¤××¨××××","v":"1NTHxT8Q-B0"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ××¦××","v":"4Fv6OdSQtaw"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ×ª××ª×××","v":"rw8VBlPTOiY"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ×¨×§××","v":"e43DGSCGxv0"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª × ×¢×¨×","v":"kHh5vHKTqCc"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ×××©××××","v":"JfrBGRvHSzg"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ×©××× ××××©×¨","v":"IlViJvjKz5U"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ××××©×¨×ª","v":"uyTwar0O-Xk"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ××¡××£ ××××","v":"Rpi-3KFOBD8"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ××¡×××¡×","v":"TBwYecZ18_c"},{"a":"×××××¨ ××××¨×","s":"×××¨×××ª ××××× ×","v":"NoulwMeSKR8"},{"a":"×××¨× ××","s":"×××¨×××ª ×××¤× ××××","v":"7-Qv_TLBJNQ"},{"a":"××××¨ ×× ×××¤×¨××××§×","s":"×××¨×××ª ××××ª ×××","v":"OwN9YtzRmms"},{"a":"××¨××××ª ×¦× ×¢× ×","s":"× ×¢×¨× ×©××× ××××","v":"0RwTNKJk-x4"},{"a":"××©× ×¤×¨×¥","s":"×××¢× ×××©×","v":"q6UYBs5m9uo"},{"a":"××©× ×¤×¨×¥","s":"×× ×× ××¢××× ××ª××¤×","v":"YeJEaEjZynE"},{"a":"××©× ×¤×¨×¥","s":"××¨×¦××× ×","v":"VBy48Go9ScI"},{"a":"××©× ×¤×¨×¥","s":"×¡××× × ××××","v":"V9okgFOUZwE"},{"a":"× ×¡×¨××","s":"××× ×× ××× ××","v":"ut18SMAzJh8"},{"a":"× ×¡×¨××","s":"×××××ª ××××ª","v":"iJVtwEhcEHs"},{"a":"× ×¡×¨××","s":"××ª× ×¢××©× ×× ×××","v":"qivezVDvibY"},{"a":"× ×ª× ××","s":"×××× ×©× ××","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%A0%D7%AA%D7%A0%D7%90%D7%9C%20-%20%D7%99%D7%9C%D7%93%D7%94%20%D7%A9%D7%9C%20%D7%90%D7%91%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"×¡××× ×××","s":"×××¨×××ª ××¡×××ª ××ª××× ××ª","v":"Jq8sH8yXg_s"},{"a":"×¡×××¨ ×©××§×¨×","s":"×¨×× ×","v":"t-BhB-xk0W4"},{"a":"×¢××¤×¨ ×××","s":"×× × ×××ª","v":"8zjP3kh0rvM"},{"a":"×¢××¤×¨ ×××","s":"××× ××¨×××§××","v":"o3x7pTK0WGc"},{"a":"×¢××¤×¨ ×××","s":"××××× ×××©×","v":"4SNVki5CMd0"},{"a":"×¢××× ××¦××§","s":"×××¨×××ª ××××¨××ª ×©××","v":"F4G8tvUlv-I"},{"a":"×¤××¨ ××¡×","s":"×××× ××××","v":"IMFVvoSCjDY"},{"a":"×¤××¨ ××¡×","s":"×¢×¨×§","v":"XU6DX6ahK5c"},{"a":"×¤××¨ ××¡×","s":"×¡××× ×× ×××","v":"Q0QhHgZi5Ss"},{"a":"×¤××¨ ××¡×","s":"××× ×× ××××¢×ª ×××","v":"pME4AuEvCcw"},{"a":"×¤××¨ ××¡×","s":"××ª××ª× ×××××","v":"JXthYmOFXpk"},{"a":"×¤××¨ ××¡×","s":"××©×§× ××§×¨","v":"Z7W0kDQ0CJA"},{"a":"×¤××¨ ××¡×","s":"××¤××§××ª ×××","v":"jWraDnHjRA0"},{"a":"×¤××¨ ××¡×","s":"38","v":"k_u_ObTq2So"},{"a":"×¤××¨ ××¡×","s":"×××× × ××¤××©","v":"_Niml1PtHjg"},{"a":"×¤××¨ ××¡×","s":"×× ××××","v":"j3qWPwy-_PU"},{"a":"×¤××¨ ××¡×","s":"×× ×ª××× ×¢×¦×××","v":"9ylJabMFP14"},{"a":"×¤××¨ ××¡×","s":"××ª ×¢×× ×ª×¨××","v":"omJ9_Mz6FgI"},{"a":"×§××§× ×××××ª","s":"×××¨×××ª ×§×××¡××§×","v":"uW_G2pRWoHI"},{"a":"×§××§× ×××××ª","s":"×××¨×××ª ××× ×××","v":"Z3Y1IyhQsIw"},{"a":"×§××§× ×××××ª","s":"×××¨×××ª ××××¤×","v":"oVCVYkdGUMo"},{"a":"×¨×××× ×××××","s":"×××¨×××ª ×§×¤× ××©× ×××","v":"dUdF-Zsalmg"},{"a":"×¨××× ××","s":"×¡××¨×","v":"e_-KQSbrKsg"},{"a":"×¨××× ×××","s":"××× ××¨×","v":"Fe-VtyiAN4o"},{"a":"×¨×× × ×××××","s":"×××××¨ ×××××","v":"-NSIJHFyc9o"},{"a":"×©× ×©×¨×¢××","s":"×××¨×××ª ×¨××§××ª ××××××ª","v":"cxBC29bjxC8"},{"a":"×©× ×©×¨×¢××","s":"×××¨×××ª ××××¨×ª (×¢× ×××¢× ×¦××¨××)","v":"vqkxSlgynJg"},{"a":"×©× ×©×¨×¢××","s":"×××¨×××ª ×¢××©× ××× ×©××× ×","v":"Aeve4FA3ozU"},{"a":"×©× ×©×¨×¢××","s":"×¨××§××ª ××××××ª","v":"RZFJpO_hafU"},{"a":"×©××× ×××¨××","s":"×××¨×××ª ×××××ª ×××¤×©××","v":"y8bKtiVUdtU"},{"a":"×©××× ×××¨××","s":"×¡×××ª× ××","v":"5qn6AnUZ7aE"},{"a":"×©×§× ×§××××","s":"×××¨×××ª ××××× ×ª","v":"BteCJUos2ng"},{"a":"×©×§× ×§××××","s":"×××¨×××ª ××××","v":"dL5YMPUliiA"},{"a":"×©×§× ×§××××","s":"×××¨×××ª ×¡××¨× ××× ×","v":"TIWoEXwE4W0"},{"a":"×©×¨××£","s":"××××§×¨ ×©×××¨×","v":"gE__u2gZaOs"},{"a":"×©×¨××£","s":"×××¨×××ª ××××× ××ª×× ×","v":"SjAXtHSpQ-Q"},{"a":"×©×¨××£","s":"××¡×××¡×","v":"PTi_GZgCeRw"},{"a":"×©×¨××£","s":"××× ×× & ××ª ××××","v":"KvqlFxIJbkI"}];
+const CUSTOM_PHOTOS={"××× ×¨ ×××¡×":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Avner_gadassi.jpg/330px-Avner_gadassi.jpg","××× ×¡×× ××× ×":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××× ×¡×× ××× ×.webp","×××©×¨ ×××":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/%D7%90%D7%95%D7%A9%D7%A8_%D7%9B%D7%94%D7%9F.jpg/330px-%D7%90%D7%95%D7%A9%D7%A8_%D7%9B%D7%94%D7%9F.jpg","×××¨×× ×××¨×":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×××¨×× ×××¨×.jpg","×××× ×××¨××":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Dudu_Aharon_2015.jpg/330px-Dudu_Aharon_2015.jpg","××§×××":"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/%D7%93%D7%A7%D7%9C%D7%95%D7%9F_%D7%91%D7%94%D7%95%D7%A4%D7%A2%D7%94_%D7%97%D7%99%D7%94_%D7%91%D7%97%D7%95%D7%A3_%D7%90%D7%99%D7%9C%D7%AA.jpg/330px-%D7%93%D7%A7%D7%9C%D7%95%D7%9F_%D7%91%D7%94%D7%95%D7%A4%D7%A2%D7%94_%D7%97%D7%99%D7%94_%D7%91%D7%97%D7%95%D7%A3_%D7%90%D7%99%D7%9C%D7%AA.jpg","××××¨ ××¨×××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××××¨ ××¨×××.jpg","××××¢× ×¡××¨":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××××¢× ×¡××¨.jpg","×××× ××©×¨××":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Haim_Israel_4.jpg/330px-Haim_Israel_4.jpg","×××× ××©×":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×××× ××©×.webp","××××©× ××©×":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××××©× ××©×.jpg","×××¢× ×©×¢×¨":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×××¢× ×©×¢×¨.jpg","×× × ××¨××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×× × ××¨××.jpg","××©× ×××":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Yishai_Levi.jpg/330px-Yishai_Levi.jpg","××××¨ ××¢××©":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××××¨ ××¢××©.jpg","××¤×¨×××§× ×©× ×¨××××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××¤×¨×××§× ×©× ×¨××××.jpg","××¨××××ª ×¦× ×¢× ×":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××¨××××ª ×¦× ×¢× ×.jpg","××©× ×¤×¨×¥":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Moshe_Peretz.jpg/330px-Moshe_Peretz.jpg","×× ×¤××©××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×× ×¤××©××.jpg","×¢××¤×¨ ×××":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Ofer_Levy_1.jpg/330px-Ofer_Levy_1.jpg","×××× ××¦××§":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×××× ××¦××§.jpg","×¡×××¨ ×©××§×¨×":"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/%D9%84%D9%88%D8%AD%D8%AF%D9%8A.jpg/330px-%D9%84%D9%88%D8%AD%D8%AF%D9%8A.jpg","×××××¨ ××××¨×":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×××××¨ ××××¨×.jpg","×××¨× ××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×××¨× ××.jpg","×¤××¨ ××¡×":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×¤××¨ ××¡×.jpg","×¡××× ×××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×¡××× ×××.jpg","× ×¡×¨××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/× ×¡×¨××.jpg","×¨××× ×××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×¨××× ×××.jpg","×××× ××××":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Eyal_Golan_1_%28cropped%29.jpg/330px-Eyal_Golan_1_%28cropped%29.jpg","×¢××× ××¦××§":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×¢××× ××¦××§.jpg","×¨×××× ×××××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×¨×××× ×××××.webp","×¨××× ××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×¨××× ××.jpg","×©× ×©×¨×¢××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×©× ×©×¨×¢××.jpg","×©××× ×××¨××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×©××× ×××¨××.jpg","×©×§× ×§××××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×©×§× ×§××××.jpg","×©×¨××£":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×©×¨××£.jpg","××× ×××××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××× ×××××.jpg","××××××¨××¡":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××××××¨××¡.jpg","×¨×× × ×××××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×¨×× × ×××××.jpg","×§××§× ×××××ª":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/×§××§× ×××××ª.jpg","××××¨ ×× ×××¤×¨××××§×":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/××××¨ ×× ×××¤×¨××××§×.jpg","××××¨ ×¦××¨×":"https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/33/6a/83/336a8306-c2c2-ac50-8b07-715cc877f4d0/198846131535.jpg/600x600bb.jpg","× ×ª× ××":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/× ×ª× ××.webp"};
 function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 const CHEV=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
 const PLAY_ICO=`<svg viewBox="0 0 12 14" fill="#121212" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L11 7L1 13V1Z"/></svg>`;
 const YT_ICO=`<svg viewBox="0 0 24 17" width="18" height="13" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M9.5 4.5L16.5 8.5L9.5 12.5V4.5Z"/></svg>`;
 
-// ── QUEUE ──
+// ââ QUEUE ââ
 let queue=[], ytPlayer=null, playerReady=false, _pipWin=null;
 // currentSong: what's open in modal right now
 let currentSong=null, currentSongList=[], currentSongIdx=0;
@@ -615,8 +615,8 @@ function onYouTubeIframeAPIReady(){
       onStateChange:(e)=>{
         if(e.data===YT.PlayerState.ENDED)modalNav(1);
         const playing=e.data===YT.PlayerState.PLAYING;
-        const b=document.getElementById('miniPlayBtn');if(b)b.textContent=playing?'⏸':'▶';
-        const pb=document.getElementById('pipPlayBtn');if(pb)pb.textContent=playing?'⏸':'▶';
+        const b=document.getElementById('miniPlayBtn');if(b)b.textContent=playing?'â¸':'â¶';
+        const pb=document.getElementById('pipPlayBtn');if(pb)pb.textContent=playing?'â¸':'â¶';
         if('mediaSession' in navigator)navigator.mediaSession.playbackState=playing?'playing':(e.data===YT.PlayerState.PAUSED?'paused':'none');
       },
       onError:(e)=>{
@@ -625,7 +625,7 @@ function onYouTubeIframeAPIReady(){
         if(e.data===101||e.data===150){
           const vid=currentSong?currentSong.v:null;
           if(vid){window.open('https://www.youtube.com/watch?v='+vid,'_blank');}
-          _atbStat('▶ נפתח ביוטיוב','ok');
+          _atbStat('â¶ × ×¤×ª× ×××××××','ok');
         }else if(e.data===100){
           setTimeout(()=>{ if(currentSongIdx<currentSongList.length-1)modalNav(1); },2000);
         }
@@ -651,7 +651,7 @@ function isInQueue(vid){return queue.some(s=>s.v===vid);}
 function updateQueueBar(){
   const bar=document.getElementById('queueBar');
   bar.className='queue-bar'+(queue.length>0?' visible':'');
-  document.getElementById('queueBarText').textContent=`${queue.length} ${queue.length===1?'שיר':'שירים'} בפלייליסט`;
+  document.getElementById('queueBarText').textContent=`${queue.length} ${queue.length===1?'×©××¨':'×©××¨××'} ××¤××××××¡×`;
   // Update panel count
   const cnt=document.getElementById('queuePanelCount');
   if(cnt)cnt.textContent=queue.length;
@@ -664,7 +664,7 @@ function refreshAddBtns(){
     var vid=b.dataset.vid;
     var inPl=_pr.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===vid;});});
     b.className='btn-add'+(inPl?' in-playlist':'');
-    b.title=inPl?'הסר מהפלייליסט':'הוסף לפלייליסט';
+    b.title=inPl?'××¡×¨ ×××¤××××××¡×':'×××¡×£ ××¤××××××¡×';
     b.innerHTML=inPl?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
   });
   updateModalAddBtn();
@@ -676,7 +676,7 @@ function toggleAddSong(vid){
   else addToQueue(song);
 }
 
-// ── PLAYER ──
+// ââ PLAYER ââ
 function setTopH(){document.documentElement.style.setProperty('--top-h',document.querySelector('.top').offsetHeight+'px');}
 window.addEventListener('resize',()=>{setTopH();if(window.innerWidth>=768){document.getElementById('playerPanel').classList.remove('open');document.body.style.overflow='';}});
 setTopH();
@@ -699,7 +699,7 @@ function setupMediaSession(song){
   navigator.mediaSession.metadata=new MediaMetadata({
     title:song.s,
     artist:song.a||'',
-    album:'שירים אהובים',
+    album:'×©××¨×× ××××××',
     artwork:[
       {src:`https://i.ytimg.com/vi/${song.v}/mqdefault.jpg`,sizes:'320x180',type:'image/jpeg'},
       {src:`https://i.ytimg.com/vi/${song.v}/maxresdefault.jpg`,sizes:'1280x720',type:'image/jpeg'}
@@ -717,7 +717,7 @@ function setupMediaSession(song){
 function openModal(song,songList,idx,startSeconds){
   // Close Document PiP first so player iframe is back in main doc
   if(_pipWin){try{_pipWin.close();}catch(e){}_pipWin=null;}
-  // If the same song is already playing/buffering in the float player, just restore panel — don't restart
+  // If the same song is already playing/buffering in the float player, just restore panel â don't restart
   if(!song.mp4&&song.v===currentSong?.v&&document.body.classList.contains('float-playing')&&ytPlayer&&playerReady){
     hideFloatPlayer();
     document.getElementById('panelSong').textContent=song.s;
@@ -729,7 +729,7 @@ function openModal(song,songList,idx,startSeconds){
     requestAnimationFrame(setTopH);
     updateModalNav();
     updateModalAddBtn();
-    // No DOM move happened — iframe never left panel-slot — just ensure video is playing
+    // No DOM move happened â iframe never left panel-slot â just ensure video is playing
     const st=ytPlayer.getPlayerState();
     if(st!==YT.PlayerState.PLAYING&&st!==YT.PlayerState.BUFFERING)ytPlayer.playVideo();
     return;
@@ -751,7 +751,7 @@ function openModal(song,songList,idx,startSeconds){
   function _loadOrSeek(vid,sec){
     let curVid=null;try{curVid=ytPlayer.getVideoData()?.video_id;}catch(e){}
     const st=ytPlayer.getPlayerState();
-    // Only seek+play when video is genuinely paused — all other states use loadVideoById for reliability
+    // Only seek+play when video is genuinely paused â all other states use loadVideoById for reliability
     if(curVid===vid&&st===YT.PlayerState.PAUSED){
       ytPlayer.seekTo(sec,true);ytPlayer.playVideo();
     }else{
@@ -759,7 +759,7 @@ function openModal(song,songList,idx,startSeconds){
     }
   }
   if(song.mp4){if(ytPlayer&&playerReady)ytPlayer.pauseVideo();var _m=document.getElementById('mp4Player');document.getElementById('yt-player').style.display='none';_m.style.display='block';_m.src=song.mp4;_m.currentTime=start;_m.play().catch(()=>{});}else{document.getElementById('yt-player').style.display='';var _m2=document.getElementById('mp4Player');if(_m2){_m2.style.display='none';_m2.pause();_m2.src='';}if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);else setTimeout(()=>{if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);},500);}
-  document.getElementById('miniPlayBtn').textContent='⏸';
+  document.getElementById('miniPlayBtn').textContent='â¸';
   updateModalNav();
   updateModalAddBtn();
   saveSession(song);
@@ -790,21 +790,21 @@ async function mobilePiP(){
         '.pa{background:none;border:none;color:#aaa;font-size:14px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}'+
         '.pa:hover{background:#333;color:#fff;}';
       pipWin.document.head.appendChild(st);
-      // Force iframe dimensions (no position:static — that breaks YouTube rendering)
+      // Force iframe dimensions (no position:static â that breaks YouTube rendering)
       const ifr=ytEl.querySelector('iframe');
       if(ifr)ifr.style.cssText='width:320px!important;height:180px!important;display:block!important;';
       // Build toolbar
       const bar=pipWin.document.createElement('div');bar.className='pb';
       const titleEl=pipWin.document.createElement('div');titleEl.className='pt';
-      titleEl.textContent=currentSong.s+(currentSong.a?' – '+currentSong.a:'');
-      const playBtn=pipWin.document.createElement('button');playBtn.className='pa';playBtn.textContent='⏸';
+      titleEl.textContent=currentSong.s+(currentSong.a?' â '+currentSong.a:'');
+      const playBtn=pipWin.document.createElement('button');playBtn.className='pa';playBtn.textContent='â¸';
       playBtn.addEventListener('click',()=>{
         if(!ytPlayer||!playerReady)return;
         const pl=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING;
         pl?ytPlayer.pauseVideo():ytPlayer.playVideo();
-        playBtn.textContent=pl?'▶':'⏸';
+        playBtn.textContent=pl?'â¶':'â¸';
       });
-      const expBtn=pipWin.document.createElement('button');expBtn.className='pa';expBtn.title='פתח';expBtn.textContent='⛶';
+      const expBtn=pipWin.document.createElement('button');expBtn.className='pa';expBtn.title='×¤×ª×';expBtn.textContent='â¶';
       expBtn.addEventListener('click',()=>{
         pipWin.close(); // pagehide handler moves player back
         setTimeout(()=>{
@@ -888,7 +888,7 @@ function showFab(withSong){
     document.getElementById('miniFabArtist').textContent=currentSong.a||'';
     document.getElementById('miniFabThumb').style.backgroundImage=currentSong.v?'url(https://i.ytimg.com/vi/'+currentSong.v+'/mqdefault.jpg)':'none';
   }else{
-    document.getElementById('miniFabSong').textContent='הפלייליסטים שלי';
+    document.getElementById('miniFabSong').textContent='××¤××××××¡××× ×©××';
     document.getElementById('miniFabArtist').textContent='';
     document.getElementById('miniFabThumb').style.backgroundImage='none';
   }
@@ -898,7 +898,7 @@ function hideFab(){document.getElementById('miniFab').classList.remove('visible'
 function fabResume(){
   hideFab();
   if(_miniBarSavedState){resumeOrOpen();return;}
-  // No-song case — just reopen playlist
+  // No-song case â just reopen playlist
   if(_fabPlState){
     var st=_fabPlState;_fabPlState=null;
     document.getElementById('plPanel').classList.add('open');
@@ -919,7 +919,7 @@ function minimizeToMiniBar(){
   var plBody=document.getElementById('plPanelBody');
   var hasSong=document.body.classList.contains('playing');
   if(hasSong){
-    // Player active — save full state, use regular mini bar (no FAB)
+    // Player active â save full state, use regular mini bar (no FAB)
     _miniBarSavedState={
       theater:document.body.classList.contains('theater'),
       plOpen:plPanel.classList.contains('open'),
@@ -932,7 +932,7 @@ function minimizeToMiniBar(){
     document.body.style.overflow='';
     hideFloatPlayer();
   }else{
-    // No player — save only playlist state, FAB with "הפלייליסטים שלי"
+    // No player â save only playlist state, FAB with "××¤××××××¡××× ×©××"
     _fabPlState={plHTML:plBody?plBody.innerHTML:'',plScroll:plBody?plBody.scrollTop:0};
     plPanel.classList.remove('open');
     showFab(false);
@@ -956,8 +956,8 @@ function clearSession(){
 function miniPlayPause(){
   var _mp4e=document.getElementById('mp4Player');
   if(currentSong&&currentSong.mp4&&_mp4e){
-    if(_mp4e.paused){_mp4e.play().catch(()=>{});document.getElementById('miniPlayBtn').textContent='⏸';}
-    else{_mp4e.pause();document.getElementById('miniPlayBtn').textContent='▶';}
+    if(_mp4e.paused){_mp4e.play().catch(()=>{});document.getElementById('miniPlayBtn').textContent='â¸';}
+    else{_mp4e.pause();document.getElementById('miniPlayBtn').textContent='â¶';}
     return;
   }
   if(!ytPlayer||!playerReady)return;
@@ -985,14 +985,14 @@ function updateModalNav(){
   document.getElementById('btnPrev').disabled=currentSongIdx<=0;
   document.getElementById('btnNext').disabled=currentSongIdx>=currentSongList.length-1;
   const info=document.getElementById('modalQueueInfo');
-  info.innerHTML=currentSongList.length>1?`שיר <b>${currentSongIdx+1}</b> מתוך <b>${currentSongList.length}</b>`:'';
+  info.innerHTML=currentSongList.length>1?`×©××¨ <b>${currentSongIdx+1}</b> ××ª×× <b>${currentSongList.length}</b>`:'';
 }
 function updateModalAddBtn(){
   if(!currentSong)return;
   const btn=document.getElementById('modalAddBtn');
   const inQ=isInQueue(currentSong.v||currentSong.mp4);
   btn.className='modal-add-btn'+(inQ?' in-queue':'');
-  btn.innerHTML=inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> נשמר':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> שמור';
+  btn.innerHTML=inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> × ×©××¨':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> ×©×××¨';
 }
 function toggleCurrentInQueue(){
   if(!currentSong)return;
@@ -1003,7 +1003,7 @@ function playQueue(){
   openModal(queue[0],queue,0);
 }
 
-// ── ARTISTS / RENDER ──
+// ââ ARTISTS / RENDER ââ
 const IMG_CACHE={};
 function applyPhoto(el,url){el.style.backgroundImage=`url('${url}')`;el.style.backgroundSize='cover';el.style.backgroundPosition='center top';el.textContent='';el.classList.add('has-photo');}
 let _curPhotoArtist=null;
@@ -1014,17 +1014,17 @@ function adminClickAvatar(name,ev){
   const inp=document.getElementById('artistPhotoInput');inp.value='';inp.click();
 }
 function toggleArtist(h){const b=h.closest('.artist-block');b.dataset.open=b.dataset.open==='false'?'true':'false';updateToggleBtn();}
-// ── FLOAT PLAYER / PiP ──
+// ââ FLOAT PLAYER / PiP ââ
 let _pipDrag=false,_pipOX=0,_pipOY=0,_pipSX=0,_pipSY=0,_pipMoved=false;
 
 function showFloatPlayer(){
   const fp=document.getElementById('floatPlayer');
   if(!fp||!currentSong)return;
   // Song label
-  document.getElementById('floatSong').textContent=currentSong.s+(currentSong.a?' – '+currentSong.a:'');
+  document.getElementById('floatSong').textContent=currentSong.s+(currentSong.a?' â '+currentSong.a:'');
   // Play/pause button state
   const pb=document.getElementById('pipPlayBtn');
-  if(pb&&ytPlayer&&playerReady)pb.textContent=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?'⏸':'▶';
+  if(pb&&ytPlayer&&playerReady)pb.textContent=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?'â¸':'â¶';
   document.body.classList.add('float-playing');
   const pw=window.innerWidth<768?185:340;
   // On desktop: reset any drag overrides so CSS default position kicks in
@@ -1039,14 +1039,14 @@ function showFloatPlayer(){
   fp.style.right='auto';
   fp.style.display='';
   fp.classList.add('visible');
-  // No DOM move — iframe stays in panel-video-slot; CSS makes panel the mini-pip
+  // No DOM move â iframe stays in panel-video-slot; CSS makes panel the mini-pip
 }
 
 function hideFloatPlayer(){
   const fp=document.getElementById('floatPlayer');
   if(fp)fp.classList.remove('visible');
   document.body.classList.remove('float-playing');
-  // No DOM move — iframe always stays in panel-video-slot
+  // No DOM move â iframe always stays in panel-video-slot
 }
 
 function closeFloat(){
@@ -1065,7 +1065,7 @@ function expandFloat(){
 function pipPlayPause(){
   if(!ytPlayer||!playerReady)return;
   const s=ytPlayer.getPlayerState();
-  // PLAYING=1, BUFFERING=3 → pause; anything else → play
+  // PLAYING=1, BUFFERING=3 â pause; anything else â play
   if(s===YT.PlayerState.PLAYING||s===YT.PlayerState.BUFFERING){ytPlayer.pauseVideo();}
   else{ytPlayer.playVideo();}
   // Button text updated via onStateChange
@@ -1125,7 +1125,7 @@ function initPiP(){
     return fp.getBoundingClientRect();
   }
 
-  // ── TOUCH drag via bottom bar ──
+  // ââ TOUCH drag via bottom bar ââ
   bar.addEventListener('touchstart',e=>{
     if(e.target.closest('.fbar-btn'))return;
     _pipDrag=true;_pipMoved=false;
@@ -1166,7 +1166,7 @@ function initPiP(){
     _snapToCorner(fp);
   });
 
-  // ── MOUSE drag via bottom bar (desktop) ──
+  // ââ MOUSE drag via bottom bar (desktop) ââ
   bar.addEventListener('mousedown',e=>{
     if(e.target.closest('.fbar-btn'))return;
     _pipDrag=true;_pipMoved=false;
@@ -1202,7 +1202,7 @@ function initPiP(){
 document.addEventListener('DOMContentLoaded',initPiP);
 // Mobile player gestures (YouTube-style)
 function initMobileGestures(){
-  // Swipe down on full player → minimize to mini player
+  // Swipe down on full player â minimize to mini player
   let pSY=0,pSX=0;
   const panel=document.getElementById('playerPanel');
   panel.addEventListener('touchstart',e=>{pSY=e.touches[0].clientY;pSX=e.touches[0].clientX;},{passive:true});
@@ -1212,7 +1212,7 @@ function initMobileGestures(){
     const dx=Math.abs(e.changedTouches[0].clientX-pSX);
     if(dy>80&&dx<120&&panel.classList.contains('open'))mobilePiP();
   },{passive:true});
-  // Float player expand/close handled by ⛶ and ✕ buttons
+  // Float player expand/close handled by â¶ and â buttons
 }
 document.addEventListener('DOMContentLoaded',initMobileGestures);
 // PiP when leaving page
@@ -1234,7 +1234,7 @@ async function fetchArtistImg(name){
   try{const r=await fetch(`https://he.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name.replace(/ /g,'_'))}`);
     if(r.ok){const d=await r.json();if(d.thumbnail?.source)return d.thumbnail.source;}
   }catch(e){}
-  // 2. iTunes — search by song (artworkUrl100 only exists on song/album results)
+  // 2. iTunes â search by song (artworkUrl100 only exists on song/album results)
   try{const r=await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(name)}&entity=song&limit=5&country=IL`);
     if(r.ok){const d=await r.json();
       for(const s of(d.results||[])){
@@ -1281,7 +1281,7 @@ function render(term){
     g[r.a].push(r);
   });
   let h='';
-  if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
+  if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">×× × ××¦×× ×ª××¦×××ª</div>';}
   var _plsForBtns=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
   for(const a of ord){
     const vid=g[a][0].v;
@@ -1296,9 +1296,9 @@ function render(term){
           ondragstart="event.stopPropagation();_dndArtistStart(event,'${vid}')"
           ondragend="_dndEnd(event)"
           onclick="event.stopPropagation()"
-          title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>`;
-    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה">✏️</button>`;
-    h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="מחק תיקייה">🗑</button>`;
+          title="××¨××¨ ××©×× ×× ×¡××¨"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>`;
+    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="×©× × ×©× ×ª××§×××">âï¸</button>`;
+    h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="×××§ ×ª××§×××">ð</button>`;
     h+=`</div>`;
     h+=`</div><div class="songs-wrap"><table class="songs-table">`;
     g[a].forEach((r,i)=>{
@@ -1312,15 +1312,15 @@ function render(term){
               ondragstart="_dndSongStart(event,'${r.v||r.mp4}')"
               ondragend="_dndEnd(event)"
               onclick="event.stopPropagation()"
-              title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
-            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v||r.mp4}')" title="שנה שם שיר">✏️</button>
-            <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v||r.mp4}',this)" title="העבר לתיקייה אחרת">📂</button>
-            <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
+              title="××¨××¨ ××©×× ×× ×¡××¨"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
+            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v||r.mp4}')" title="×©× × ×©× ×©××¨">âï¸</button>
+            <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v||r.mp4}',this)" title="××¢××¨ ××ª××§××× ×××¨×ª">ð</button>
+            <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="× ××">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
-            <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'}</button>
-            ${r.mp4?'<span style="width:28px;flex-shrink:0;display:inline-flex;"></span>':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
-            <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
+            <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'××¡×¨ ×××¤××××××¡×':'×××¡×£ ××¤××××××¡×'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'}</button>
+            ${r.mp4?'<span style="width:28px;flex-shrink:0;display:inline-flex;"></span>':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="×¤×ª× ×××××××">${YT_ICO}</a>`}
+            <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="×××§ ×©××¨">ð</button>
           </div>
         </td>
       </tr>`;
@@ -1334,7 +1334,7 @@ function render(term){
 }
 function clearSearch(){const i=document.getElementById('q');i.value='';document.getElementById('clr').classList.remove('visible');render('');}
 
-// ── SEARCH HISTORY ──
+// ââ SEARCH HISTORY ââ
 const HIST_KEY='karaoke_hist';
 function getSearchHistory(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]');}catch(e){return[];}}
 function saveSearchHistory(term){if(!term.trim())return;let h=getSearchHistory().filter(t=>t!==term);h.unshift(term);h=h.slice(0,8);try{localStorage.setItem(HIST_KEY,JSON.stringify(h));}catch(e){}}
@@ -1343,13 +1343,13 @@ function showSearchHistory(){
   const h=getSearchHistory();
   const dd=document.getElementById('ytHistory');
   if(!h.length){dd.classList.remove('open');return;}
-  dd.innerHTML=h.map(t=>`<div class="yt-hist-item" onmousedown="pickHistory('${t.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${t}</div>`).join('')+'<div class="yt-hist-clear" onmousedown="clearSearchHistory()">נקה היסטוריה</div>';
+  dd.innerHTML=h.map(t=>`<div class="yt-hist-item" onmousedown="pickHistory('${t.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${t}</div>`).join('')+'<div class="yt-hist-clear" onmousedown="clearSearchHistory()">× ×§× ×××¡×××¨××</div>';
   dd.classList.add('open');
 }
 function hideSearchHistory(){document.getElementById('ytHistory').classList.remove('open');}
 function pickHistory(term){const i=document.getElementById('q');i.value=term;render(term);document.getElementById('clr').classList.add('visible');hideSearchHistory();saveSearchHistory(term);}
 
-// ── QUEUE PANEL ──
+// ââ QUEUE PANEL ââ
 function openQueuePanel(){
   window._activeQueueTab='temp';var _qp0=document.getElementById('queuePanel');if(_qp0)_qp0.classList.remove('minimized');renderQueueTabs();
   const panel=document.getElementById('queuePanel');
@@ -1357,7 +1357,7 @@ function openQueuePanel(){
   const list=document.getElementById('queuePanelList');
   if(list){
     if(!queue.length){
-      list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">הפלייליסט ריק</div>';
+      list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">××¤××××××¡× ×¨××§</div>';
     }else{
       list.innerHTML=queue.map((s,i)=>`<div class="queue-item${currentSong&&currentSong.v===s.v?' active':''}"
           draggable="true" data-vid="${s.v}"
@@ -1367,14 +1367,14 @@ function openQueuePanel(){
           ondragleave="_dndLeave(event)"
           ondragend="_dndEnd(event)"
           onclick="openModal(queue.find(x=>x.v==='${s.v}'),queue,queue.findIndex(x=>x.v==='${s.v}'))">
-        <span class="qi-drag" onclick="event.stopPropagation()">☰</span>
+        <span class="qi-drag" onclick="event.stopPropagation()">â°</span>
         <span class="qi-num">${i+1}</span>
         <div class="qi-thumb" style="background-image:url('https://i.ytimg.com/vi/${s.v}/mqdefault.jpg')"></div>
         <div class="qi-info">
           <div class="qi-name">${esc(s.s)}</div>
           <div class="qi-artist">${esc(s.a||'')}</div>
         </div>
-        <button class="qi-rm" onclick="event.stopPropagation();removeFromQueue('${s.v||s.mp4}')" title="הסר">✕</button>
+        <button class="qi-rm" onclick="event.stopPropagation();removeFromQueue('${s.v||s.mp4}')" title="××¡×¨">â</button>
       </div>`).join('');
     }
   }
@@ -1382,7 +1382,7 @@ function openQueuePanel(){
 }
 function closeQueuePanel(){const panel=document.getElementById('queuePanel');if(panel)panel.classList.remove('open');}
 
-// ── SESSION ──
+// ââ SESSION ââ
 const SESSION_KEY='karaoke_session';
 function saveSession(song){try{localStorage.setItem(SESSION_KEY,JSON.stringify({v:song.v,s:song.s,a:song.a,list:currentSongList.map(s=>s.v),idx:currentSongIdx}));}catch(e){}}
 function loadSession(){
@@ -1390,7 +1390,7 @@ function loadSession(){
     const d=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
     if(!d)return;
     currentSong={v:d.v,s:d.s,a:d.a};
-    // Don't set has-song on page load — home state is always clean (no mini bar)
+    // Don't set has-song on page load â home state is always clean (no mini bar)
     const mini=document.getElementById('miniSong');
     const miniA=document.getElementById('miniArtist');
     if(mini)mini.textContent=d.s;
@@ -1403,7 +1403,7 @@ function resumeOrOpen(){
   if(!currentSong)return;
   var st=_miniBarSavedState;
   _miniBarSavedState=null;
-  // Explicit minimize — restore panels directly, video still running behind display:none
+  // Explicit minimize â restore panels directly, video still running behind display:none
   if(st){
     hideFab();
     document.getElementById('playerPanel').classList.add('open');
@@ -1418,7 +1418,7 @@ function resumeOrOpen(){
     requestAnimationFrame(setTopH);
     return;
   }
-  // Mini bar from float/close — player still loaded
+  // Mini bar from float/close â player still loaded
   if(ytPlayer&&playerReady&&ytPlayer.getPlayerState()!==YT.PlayerState.UNSTARTED){
     document.getElementById('playerPanel').classList.add('open');
     document.body.classList.add('playing');
@@ -1426,7 +1426,7 @@ function resumeOrOpen(){
     requestAnimationFrame(setTopH);
     return;
   }
-  // Page was reloaded — restore from session
+  // Page was reloaded â restore from session
   const saved=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
   if(saved&&saved.list){
     const songList2=ALL.filter(s=>saved.list.includes(s.v));
@@ -1458,7 +1458,7 @@ document.addEventListener('keydown',e=>{
   if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(1);
 });
 
-// ── ADMIN MODE ──
+// ââ ADMIN MODE ââ
 const _ADM_HASH='213f367b1af015a79e0b0cf92a3d4084e6bd5fbc3fbb4364881b05854bf86924';// SHA-256("8213")
 let _admMode=false,_admDirty=false,_atbT=null;
 
@@ -1476,18 +1476,18 @@ async function doAdmLogin(){
   const pin=document.getElementById('admPin').value;if(!pin)return;
   const h=await _sha256(pin);
   const saved=localStorage.getItem('adm_pin')||_ADM_HASH;
-  if(h!==saved){document.getElementById('admPinErr').textContent='קוד שגוי, נסה שוב';return;}
+  if(h!==saved){document.getElementById('admPinErr').textContent='×§×× ×©×××, × ×¡× ×©××';return;}
   document.getElementById('admLoginOv').classList.remove('open');
   _admMode=true;document.body.classList.add('admin');
   _fillArtistList();render(document.getElementById('q').value||'');
   if(!localStorage.getItem('gh_token'))document.getElementById('admTokenOv').classList.add('open');
 }
 function exitAdmin(){
-  if(_admDirty&&!confirm('יש שינויים שלא נשמרו ב-GitHub. לצאת בכל זאת?'))return;
+  if(_admDirty&&!confirm('××© ×©×× ×××× ×©×× × ×©××¨× ×-GitHub. ××¦××ª ××× ×××ª?'))return;
   _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
   render(document.getElementById('q').value||'');
 }
-// ── DRAG & DROP ──
+// ââ DRAG & DROP ââ
 let _dndType=null,_dndVid=null,_dndQueueVid=null,_dndScrollDir=0,_dndScrollIv=null;
 function _dndArtistStart(e,vid){
   _dndType='artist';_dndVid=vid;
@@ -1559,7 +1559,7 @@ function _dndCleanup(){
 function toggleDelMode(){
   document.body.classList.toggle('del-mode');
 }
-// ── QUEUE DnD ──
+// ââ QUEUE DnD ââ
 function _dndQueueStart(e,vid){
   _dndType='queue';_dndQueueVid=vid;
   e.dataTransfer.effectAllowed='move';
@@ -1585,26 +1585,26 @@ function _dndQueueDrop(e,targetVid){
   queue.splice(after?ti+1:ti,0,song);
   _dndCleanup();updateQueueBar();openQueuePanel();
 }
-// ── ARTIST MANAGEMENT ──
+// ââ ARTIST MANAGEMENT ââ
 function _artistOf(vid){const s=ALL.find(x=>x.v===vid);return s?s.a:null;}
 function _artistOrder(){const seen=new Set(),ord=[];ALL.forEach(s=>{if(!seen.has(s.a)){seen.add(s.a);ord.push(s.a);}});return ord;}
 function _rebuildFromGroups(ord,groups){ALL.length=0;ord.forEach(a=>groups[a].forEach(s=>ALL.push(s)));}
 
 function adminRenameArtist(vid){
   const old=_artistOf(vid);if(!old)return;
-  const neu=prompt('שם חדש לתיקייה:',old);
+  const neu=prompt('×©× ×××© ××ª××§×××:',old);
   if(!neu||neu===old)return;
   const exists=_artistOrder().includes(neu)&&neu!==old;
-  if(exists&&!confirm(`תיקייה "${neu}" כבר קיימת. למזג את השירים?`))return;
+  if(exists&&!confirm(`×ª××§××× "${neu}" ×××¨ ×§××××ª. ×××× ××ª ××©××¨××?`))return;
   ALL.forEach(s=>{if(s.a===old)s.a=neu;});
-  _markDirty();_atbStat('✏️ תיקייה שונה שם','ok');render(document.getElementById('q').value||'');
+  _markDirty();_atbStat('âï¸ ×ª××§××× ×©×× × ×©×','ok');render(document.getElementById('q').value||'');
 }
 function adminDeleteArtist(vid){
   const name=_artistOf(vid);if(!name)return;
   const cnt=ALL.filter(s=>s.a===name).length;
-  if(!confirm(`למחוק את התיקייה "${name}" עם ${cnt} שירים?`))return;
+  if(!confirm(`×××××§ ××ª ××ª××§××× "${name}" ×¢× ${cnt} ×©××¨××?`))return;
   for(let i=ALL.length-1;i>=0;i--){if(ALL[i].a===name){if(isInQueue(ALL[i].v))removeFromQueue(ALL[i].v);ALL.splice(i,1);}}
-  _markDirty();_atbStat('🗑 תיקייה נמחקה','ok');render(document.getElementById('q').value||'');
+  _markDirty();_atbStat('ð ×ª××§××× × ×××§×','ok');render(document.getElementById('q').value||'');
 }
 function adminMoveArtistUp(vid){
   const name=_artistOf(vid);if(!name)return;
@@ -1622,7 +1622,7 @@ function adminMoveArtistDown(vid){
   _rebuildFromGroups(ord,groups);
   _markDirty();render(document.getElementById('q').value||'');
 }
-// ── MOVE SONG TO FOLDER ──
+// ââ MOVE SONG TO FOLDER ââ
 function adminMoveSongToFolder(vid,btn){
   if(!_admMode)return;
   closeeFolderPicker();
@@ -1631,11 +1631,11 @@ function adminMoveSongToFolder(vid,btn){
   const picker=document.createElement('div');
   picker.className='folder-picker';
   picker.onclick=e=>e.stopPropagation();
-  picker.innerHTML=`<div class="folder-picker-title">העבר לתיקייה</div>`+
+  picker.innerHTML=`<div class="folder-picker-title">××¢××¨ ××ª××§×××</div>`+
     _pickerArtists.map((a,idx)=>`<div class="folder-picker-item${a===song.a?' current':''}"
       ${a!==song.a?`onclick="applyMoveSongToFolder('${vid}',_pickerArtists[${idx}]);closeeFolderPicker()"`:''}>
-      ${esc(a)}${a===song.a?' ✓':''}</div>`).join('')+
-    `<div class="folder-picker-new" onclick="adminMoveSongNewFolder('${vid}');closeeFolderPicker()">＋ תיקייה חדשה</div>`;
+      ${esc(a)}${a===song.a?' â':''}</div>`).join('')+
+    `<div class="folder-picker-new" onclick="adminMoveSongNewFolder('${vid}');closeeFolderPicker()">ï¼ ×ª××§××× ×××©×</div>`;
   document.body.appendChild(picker);
   _folderPickerEl=picker;
   const rect=btn.getBoundingClientRect();
@@ -1652,23 +1652,23 @@ function closeeFolderPicker(){
 function applyMoveSongToFolder(vid,newArtist){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song||song.a===newArtist)return;
   song.a=newArtist;
-  _markDirty();_atbStat('✓ שיר הועבר ל'+newArtist,'ok');
+  _markDirty();_atbStat('â ×©××¨ ×××¢××¨ ×'+newArtist,'ok');
   render(document.getElementById('q').value||'');
 }
 function adminMoveSongNewFolder(vid){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
-  const name=prompt('שם התיקייה החדשה:','');
+  const name=prompt('×©× ××ª××§××× ××××©×:','');
   if(!name||!name.trim())return;
   applyMoveSongToFolder(vid,name.trim());
 }
 
-// ── SONG MANAGEMENT ──
+// ââ SONG MANAGEMENT ââ
 function adminRenameSong(vid){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
-  const neu=prompt('שם חדש לשיר:',song.s);
+  const neu=prompt('×©× ×××© ××©××¨:',song.s);
   if(!neu||neu===song.s)return;
   song.s=neu;
-  _markDirty();_atbStat('✏️ שיר שונה שם','ok');render(document.getElementById('q').value||'');
+  _markDirty();_atbStat('âï¸ ×©××¨ ×©×× × ×©×','ok');render(document.getElementById('q').value||'');
 }
 function adminMoveSongUp(vid){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
@@ -1688,47 +1688,47 @@ function adminMoveSongDown(vid){
 }
 function saveAdmToken(){
   const t=document.getElementById("admTokenInp").value.trim();
-  if(!t){document.getElementById("admTokenErr").textContent="הזן Token";return;}
+  if(!t){document.getElementById("admTokenErr").textContent="××× Token";return;}
   localStorage.setItem("gh_token",t);
   document.getElementById("admTokenOv").classList.remove("open");
-  _atbStat("✓ Token נשמר","ok");
+  _atbStat("â Token × ×©××¨","ok");
 }
 function _fillArtistList(){
   const sel=document.getElementById("atbArtist");if(!sel||sel.tagName!=='SELECT')return;
   const cur=sel.value;
   const artists=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,"he"));
-  sel.innerHTML='<option value="">בחר אמן / תיקייה</option>'+
+  sel.innerHTML='<option value="">×××¨ ××× / ×ª××§×××</option>'+
     artists.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('')+
-    '<option value="__new__">＋ תיקייה חדשה</option>';
+    '<option value="__new__">ï¼ ×ª××§××× ×××©×</option>';
   if(cur&&cur!=='__new__')sel.value=cur;
 }
 function adminDeleteSong(vid){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
-  if(!confirm('למחוק "'+song.s+'" של '+song.a+'?'))return;
+  if(!confirm('×××××§ "'+song.s+'" ×©× '+song.a+'?'))return;
   ALL.splice(ALL.findIndex(s=>s.v===vid),1);
   if(isInQueue(vid))removeFromQueue(vid);
   render(document.getElementById("q").value||"");
-  _markDirty();_atbStat("🗑 שיר נמחק","ok");
+  _markDirty();_atbStat("ð ×©××¨ × ×××§","ok");
 }
 function adminAddSong(){
   let artist=document.getElementById("atbArtist").value.trim();
   if(artist==='__new__'){
-    const n=prompt('שם האמן / תיקייה החדשה:','');
+    const n=prompt('×©× ×××× / ×ª××§××× ××××©×:','');
     if(!n||!n.trim()){return;}
     artist=n.trim();
   }
   const song=document.getElementById("atbSong").value.trim();
   const url=document.getElementById("atbUrl").value.trim();
-  if(!artist||!song){_atbStat("חסר שם אמן או שם שיר","err");return;}
+  if(!artist||!song){_atbStat("××¡×¨ ×©× ××× ×× ×©× ×©××¨","err");return;}
   let entry;
   if(url.match(/\.mp4/i)||url.includes('.r2.dev')){
-    if(ALL.some(s=>s.mp4===url)){_atbStat('שיר זה כבר קיים ברשימה','err');return;}
+    if(ALL.some(s=>s.mp4===url)){_atbStat('×©××¨ ×× ×××¨ ×§××× ××¨×©×××','err');return;}
     entry={a:artist,s:song,mp4:url};
   }else{
   const m=url.match(/[?&]v=([A-Za-z0-9_-]+)/);
-  if(!m){_atbStat("קישור יוטיוב לא תקין","err");return;}
+  if(!m){_atbStat("×§××©××¨ ×××××× ×× ×ª×§××","err");return;}
   const vid=m[1];
-  if(ALL.some(s=>s.v===vid)){_atbStat("שיר זה כבר קיים ברשימה","err");return;}
+  if(ALL.some(s=>s.v===vid)){_atbStat("×©××¨ ×× ×××¨ ×§××× ××¨×©×××","err");return;}
     entry={a:artist,s:song,v:vid};
   }
   const lastIdx=ALL.reduce((li,s,i)=>s.a===artist?i:li,-1);
@@ -1747,11 +1747,11 @@ function adminAddSong(){
   document.getElementById("atbArtist").value="";
   document.getElementById("atbSong").focus();
   render(document.getElementById("q").value||"");
-  _markDirty();_atbStat("✓ שיר נוסף","ok");
+  _markDirty();_atbStat("â ×©××¨ × ××¡×£","ok");
 }
 function adminSetPhoto(artist){
   const cur=CUSTOM_PHOTOS[artist]||localStorage.getItem('artist_photo_'+artist)||'';
-  const url=prompt('כתובת תמונה לאמן "'+artist+'":\n(ריק = מחיקה)',cur);
+  const url=prompt('××ª×××ª ×ª××× × ×××× "'+artist+'":\n(×¨××§ = ××××§×)',cur);
   if(url===null)return;
   if(url.trim()){CUSTOM_PHOTOS[artist]=url.trim();localStorage.setItem('artist_photo_'+artist,url.trim());}
   else{delete CUSTOM_PHOTOS[artist];localStorage.removeItem('artist_photo_'+artist);}
@@ -1759,12 +1759,12 @@ function adminSetPhoto(artist){
   const _os={};document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{_os[b.dataset.vid]=b.dataset.open;});
   render(document.getElementById('q').value||'');
   document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{if(_os[b.dataset.vid])b.dataset.open=_os[b.dataset.vid];});
-  _markDirty();_atbStat('🖼️ תמונה עודכנה','ok');
+  _markDirty();_atbStat('ð¼ï¸ ×ª××× × ×¢×××× ×','ok');
 }
 function _markDirty(){
   _admDirty=true;
   const b=document.getElementById("atbSyncBtn");
-  if(b){b.style.outline="2px solid #f0a500";b.title="יש שינויים שלא נשמרו";}
+  if(b){b.style.outline="2px solid #f0a500";b.title="××© ×©×× ×××× ×©×× × ×©××¨×";}
 }
 function _atbStat(msg,cls){
   clearTimeout(_atbT);const el=document.getElementById("atbStat");if(!el)return;
@@ -1775,11 +1775,11 @@ async function adminSyncGitHub(){
   const token=localStorage.getItem("gh_token");
   if(!token){document.getElementById("admTokenOv").classList.add("open");return;}
   const btn=document.getElementById("atbSyncBtn");
-  btn.textContent="מסנכרן...";btn.disabled=true;
+  btn.textContent="××¡× ××¨×...";btn.disabled=true;
   try{
     const r=await fetch("https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html",
       {headers:{"Authorization":"Bearer "+token,"Accept":"application/vnd.github.v3+json"}});
-    if(!r.ok)throw new Error("GitHub API שגיאה: "+r.status);
+    if(!r.ok)throw new Error("GitHub API ×©××××: "+r.status);
     const d=await r.json();
     const raw=decodeURIComponent(escape(atob(d.content.replace(/\n/g,""))));
     const newAll="const ALL="+JSON.stringify(ALL)+";";
@@ -1792,7 +1792,7 @@ async function adminSyncGitHub(){
         if(_u&&_u.startsWith('data:')){
           const _ext=_u.startsWith('data:image/webp')?'webp':'jpg',_b64=_u.split(',')[1];
           const _chk=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/photos/'+encodeURIComponent(_n+'.'+_ext),{headers:{'Authorization':'Bearer '+token}});
-          const _cj=await _chk.json();const _pb={message:'תמונת '+_n,content:_b64};if(_cj.sha)_pb.sha=_cj.sha;
+          const _cj=await _chk.json();const _pb={message:'×ª××× ×ª '+_n,content:_b64};if(_cj.sha)_pb.sha=_cj.sha;
           const _pr=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/photos/'+encodeURIComponent(_n+'.'+_ext),{method:'PUT',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(_pb)});
           const _pj=await _pr.json();
           if(_pj.content&&_pj.content.download_url){CUSTOM_PHOTOS[_n]=_pj.content.download_url;localStorage.setItem('artist_photo_'+_n,_pj.content.download_url);}
@@ -1800,72 +1800,72 @@ async function adminSyncGitHub(){
       }
     const newCustomPhotos="const CUSTOM_PHOTOS="+JSON.stringify(CUSTOM_PHOTOS)+";";
     newHtml=newHtml.replace(/const CUSTOM_PHOTOS=\{[\s\S]*?\};/,newCustomPhotos);
-    if(newHtml===raw)throw new Error("לא ניתן לאתר את מערך השירים בקובץ");
+    if(newHtml===raw)throw new Error("×× × ××ª× ×××ª×¨ ××ª ××¢×¨× ××©××¨×× ××§×××¥");
     const enc=btoa(unescape(encodeURIComponent(newHtml)));
     const put=await fetch("https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html",{
       method:"PUT",
       headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
-      body:JSON.stringify({message:"עדכון שירים דרך פאנל ניהול",content:enc,sha:d.sha})
+      body:JSON.stringify({message:"×¢×××× ×©××¨×× ××¨× ×¤×× × × ××××",content:enc,sha:d.sha})
     });
-    if(!put.ok){const e=await put.json();throw new Error(e.message||"שגיאה "+put.status);}
+    if(!put.ok){const e=await put.json();throw new Error(e.message||"×©×××× "+put.status);}
     _admDirty=false;
     btn.style.outline="none";btn.title="";
-    btn.textContent="✓ נשמר!";
-    setTimeout(()=>btn.textContent="⟳ שמור ב-GitHub",3000);
-    _atbStat("✓ עודכן ב-GitHub בהצלחה","ok");
+    btn.textContent="â × ×©××¨!";
+    setTimeout(()=>btn.textContent="â³ ×©×××¨ ×-GitHub",3000);
+    _atbStat("â ×¢×××× ×-GitHub ×××¦×××","ok");
   document.getElementById("atbArtist").value="";
   document.getElementById("atbSong").value="";
   document.getElementById("atbUrl").value="";
   }catch(e){
-    _atbStat("שגיאה: "+e.message,"err");
-    btn.textContent="⟳ שמור ב-GitHub";
+    _atbStat("×©××××: "+e.message,"err");
+    btn.textContent="â³ ×©×××¨ ×-GitHub";
   }finally{btn.disabled=false;}
 }
 </script>
 
-<!-- ── ADMIN OVERLAYS ── -->
+<!-- ââ ADMIN OVERLAYS ââ -->
 <div class="adm-overlay" id="admLoginOv">
   <div class="adm-box">
-    <div class="adm-title">🔐 כניסת מנהל</div>
-    <input class="adm-inp" type="password" id="admPin" placeholder="קוד PIN" maxlength="30" inputmode="numeric"
+    <div class="adm-title">ð ×× ××¡×ª ×× ××</div>
+    <input class="adm-inp" type="password" id="admPin" placeholder="×§×× PIN" maxlength="30" inputmode="numeric"
       onkeydown="if(event.key==='Enter')doAdmLogin()">
     <div class="adm-err" id="admPinErr"></div>
     <div class="adm-row">
-      <button class="adm-btn" onclick="doAdmLogin()">כניסה</button>
-      <button class="adm-btn sec" onclick="document.getElementById('admLoginOv').classList.remove('open')">ביטול</button>
+      <button class="adm-btn" onclick="doAdmLogin()">×× ××¡×</button>
+      <button class="adm-btn sec" onclick="document.getElementById('admLoginOv').classList.remove('open')">×××××</button>
     </div>
   </div>
 </div>
 
 <div class="adm-overlay" id="admTokenOv">
   <div class="adm-box">
-    <div class="adm-title">🔑 GitHub Token</div>
-    <p style="font-size:13px;color:#ccc;margin:0 0 10px">הכנס Personal Access Token עם הרשאות repo</p>
+    <div class="adm-title">ð GitHub Token</div>
+    <p style="font-size:13px;color:#ccc;margin:0 0 10px">××× ×¡ Personal Access Token ×¢× ××¨×©×××ª repo</p>
     <input class="adm-inp" type="password" id="admTokenInp" placeholder="ghp_..." maxlength="200"
       onkeydown="if(event.key==='Enter')saveAdmToken()">
     <div class="adm-row">
-      <button class="adm-btn sec" onclick="document.getElementById('admTokenOv').classList.remove('open')">ביטול</button>
-      <button class="adm-btn" onclick="saveAdmToken()">שמור</button>
+      <button class="adm-btn sec" onclick="document.getElementById('admTokenOv').classList.remove('open')">×××××</button>
+      <button class="adm-btn" onclick="saveAdmToken()">×©×××¨</button>
     </div>
   </div>
 </div>
 
-<!-- ── ADMIN TOOLBAR ── -->
+<!-- ââ ADMIN TOOLBAR ââ -->
 <div class="adm-toolbar" id="admToolbar">
   <div class="atb-add-row">
     <select class="atb-inp atb-artist-sel" id="atbArtist">
-      <option value="">בחר אמן / תיקייה</option>
-      <option value="__new__">＋ תיקייה חדשה</option>
+      <option value="">×××¨ ××× / ×ª××§×××</option>
+      <option value="__new__">ï¼ ×ª××§××× ×××©×</option>
     </select>
-    <input class="atb-inp" id="atbSong" placeholder="שם שיר">
-    <input class="atb-inp" id="atbUrl" placeholder="קישור YouTube">
-    <button class="atb-btn green" onclick="adminAddSong()">+ הוסף שיר</button>
+    <input class="atb-inp" id="atbSong" placeholder="×©× ×©××¨">
+    <input class="atb-inp" id="atbUrl" placeholder="×§××©××¨ YouTube">
+    <button class="atb-btn green" onclick="adminAddSong()">+ ×××¡×£ ×©××¨</button>
   </div>
   <div class="atb-actions-row">
-    <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
-    <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
+    <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">ð ××××§×</button>
+    <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">â³ ×©×××¨ ×-GitHub</button>
     <span class="atb-stat" id="atbStat"></span>
-    <button class="atb-btn" style="margin-right:auto" onclick="exitAdmin()">✕ יציאה</button>
+    <button class="atb-btn" style="margin-right:auto" onclick="exitAdmin()">â ××¦×××</button>
   </div>
 </div>
 
@@ -1900,7 +1900,7 @@ function togglePlaylistBlock(rowEl){
   block.dataset.open=block.dataset.open==='true'?'false':'true';
 }
 </script>
-<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">הוסף לפלייליסט</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">שנה שם</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">🗑️</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
+<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">×××¡×£ ××¤××××××¡×</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> ×¤××××××¡× ×××©</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">â</button><div class="pl-ph-title">××¤××××××¡××× ×©××</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">â</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">â¶ × ×× ×××</button><button class="pl-btn" onclick="plRename()">×©× × ×©×</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">ðï¸</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
 function _plLoad(){try{return JSON.parse(localStorage.getItem('kpl')||'[]');}catch(e){return[];}}
 function _plSave(l){localStorage.setItem('kpl',JSON.stringify(l));}
 function _plId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
@@ -1908,7 +1908,7 @@ window._plSong=null;
 function openPlPicker(song){
   window._plSong=song;
   var pls=_plLoad(),sid=song?(song.v||song.mp4):null,inQ=sid?isInQueue(sid):false;
-  var html='<div class="pl-pick-item'+(inQ?' checked':'')+'" onclick="plPickQueue()"><span class="pl-pick-check">'+(inQ?'\u2713':'')+'<\/span>▶ פלייליסט זמני<\/div>';
+  var html='<div class="pl-pick-item'+(inQ?' checked':'')+'" onclick="plPickQueue()"><span class="pl-pick-check">'+(inQ?'\u2713':'')+'<\/span>â¶ ×¤××××××¡× ××× ×<\/div>';
   if(pls.length)html+='<div class="pl-pick-sep"><\/div>';
   pls.forEach(function(pl){
     var has=sid?pl.songs.some(function(s){return(s.v||s.mp4)===sid;}):false;
@@ -1929,7 +1929,7 @@ function plPickAdd(plId){
   if(document.getElementById('plPanel').classList.contains('open'))_plRenderList();
 }
 function plNewFromPicker(){
-  var name=prompt('שם הפלייליסט:','');if(!name||!name.trim())return;
+  var name=prompt('×©× ××¤××××××¡×:','');if(!name||!name.trim())return;
   var pls=_plLoad(),song=window._plSong;
   pls.push({id:_plId(),name:name.trim(),songs:song?[song]:[],created:Date.now()});
   _plSave(pls);closePlPicker();
@@ -1940,17 +1940,17 @@ function plBackToList(){document.getElementById('plDetailView').style.display='n
 function _plRenderList(){
   var pls=_plLoad(),c=document.getElementById('plList');
   var qn=(typeof queue!=='undefined'?queue.length:0);
-  var html='<div class="pl-list-item" onclick="closePlPanel();openQueuePanel()"><div class="pl-list-icon" style="background:linear-gradient(135deg,#FF7043,#E64A19)">\u23F1<\/div><div class="pl-list-info"><div class="pl-list-name">פלייליסט זמני<\/div><div class="pl-list-sub">'+qn+' שירים<\/div><\/div><\/div>';
-  html+='<div class="pl-new-row" onclick="plCreateNew()"><span style="font-size:22px">+<\/span> פלייליסט חדש<\/div>';
-  if(!pls.length){html+='<div class="pl-empty">אין פלייליסטים עדיין<br><span style="font-size:13px;color:#444">הוסף שירים דרך כפתור +<\/span><\/div>';}
+  var html='<div class="pl-list-item" onclick="closePlPanel();openQueuePanel()"><div class="pl-list-icon" style="background:linear-gradient(135deg,#FF7043,#E64A19)">\u23F1<\/div><div class="pl-list-info"><div class="pl-list-name">×¤××××××¡× ××× ×<\/div><div class="pl-list-sub">'+qn+' ×©××¨××<\/div><\/div><\/div>';
+  html+='<div class="pl-new-row" onclick="plCreateNew()"><span style="font-size:22px">+<\/span> ×¤××××××¡× ×××©<\/div>';
+  if(!pls.length){html+='<div class="pl-empty">××× ×¤××××××¡××× ×¢××××<br><span style="font-size:13px;color:#444">×××¡×£ ×©××¨×× ××¨× ××¤×ª××¨ +<\/span><\/div>';}
   else{pls.forEach(function(pl){html+='<div class="pl-list-item" onclick="plOpenDetail(\''+pl.id+'\')">'
     +'<div class="pl-list-icon">\uD83C\uDFB5<\/div>'
     +'<div class="pl-list-info"><div class="pl-list-name">'+pl.name+'<\/div>'
-    +'<div class="pl-list-sub">'+pl.songs.length+' שירים<\/div><\/div><\/div>';});}
+    +'<div class="pl-list-sub">'+pl.songs.length+' ×©××¨××<\/div><\/div><\/div>';});}
   c.innerHTML=html;
 }
 function plCreateNew(){
-  var name=prompt('שם הפלייליסט:','');if(!name||!name.trim())return;
+  var name=prompt('×©× ××¤××××××¡×:','');if(!name||!name.trim())return;
   var pls=_plLoad();
   pls.push({id:_plId(),name:name.trim(),songs:[],created:Date.now()});
   _plSave(pls);_plRenderList();
@@ -1965,7 +1965,7 @@ function plOpenDetail(plId){
 }
 function _plRenderDetail(pl){
   var c=document.getElementById('plDetailSongs');
-  if(!pl.songs.length){c.innerHTML='<div class="pl-empty">הפלייליסט ריק<br><span style="font-size:13px;color:#444">הוסף שירים דרך כפתור +<\/span><\/div>';return;}
+  if(!pl.songs.length){c.innerHTML='<div class="pl-empty">××¤××××××¡× ×¨××§<br><span style="font-size:13px;color:#444">×××¡×£ ×©××¨×× ××¨× ××¤×ª××¨ +<\/span><\/div>';return;}
   var html='';
   pl.songs.forEach(function(s,i){
     html+='<div class="pl-song-row">'
@@ -1988,24 +1988,24 @@ function plRemoveSong(plId,idx){
 function plDelete(){
   var plId=document.getElementById('plDetailView').dataset.plId,pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});
   if(!pl)return;
-  if(!confirm('למחוק את "'+pl.name+'"?'))return;
+  if(!confirm('×××××§ ××ª "'+pl.name+'"?'))return;
   _plSave(pls.filter(function(p){return p.id!==plId;}));plBackToList();_plRenderList();
 }
 function plRename(){
   var plId=document.getElementById('plDetailView').dataset.plId,pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
-  var name=prompt('שם חדש:',pl.name);if(!name||!name.trim())return;
+  var name=prompt('×©× ×××©:',pl.name);if(!name||!name.trim())return;
   pl.name=name.trim();_plSave(pls);document.getElementById('plDetailName').textContent=pl.name;_plRenderList();
 }
 function renderQueueTabs(){
   var tabs=document.getElementById('queueTabs');if(!tabs)return;
   var pls=_plLoad(),act=window._activeQueueTab||'temp';
   var isMin=document.getElementById('queuePanel')&&document.getElementById('queuePanel').classList.contains('minimized');
-  var h='<div class="q-tab'+(act==='temp'?' active':'')+'" onclick="switchQueueTab(\'temp\',this)">פלייליסט זמני<\/div>';
+  var h='<div class="q-tab'+(act==='temp'?' active':'')+'" onclick="switchQueueTab(\'temp\',this)">×¤××××××¡× ××× ×<\/div>';
   pls.forEach(function(pl){
     h+='<div class="q-tab'+(act===pl.id?' active':'')+'" onclick="switchQueueTab(\''+pl.id+'\',this)">'+pl.name+'<\/div>';
   });
   h+='<div style="flex:1;min-width:6px"></div>';
-  h+='<button class="q-act-btn q-naka" onclick="clearQueuePanel()">נקה<\/button>';
+  h+='<button class="q-act-btn q-naka" onclick="clearQueuePanel()">× ×§×<\/button>';
   h+='<button class="q-play-circle" onclick="(window._activeQueueTab===\'temp\'?playQueue():plPlayFrom(window._activeQueueTab,0));closeQueuePanel()">&#9654;<\/button>';
   h+='<button class="q-act-btn" onclick="toggleQueueMinimize()">'+(isMin?'&#9650;':'&#9660;')+'<\/button>';
   h+='<button class="q-act-btn" onclick="closeQueuePanel()">&#x2715;<\/button>';
@@ -2014,7 +2014,7 @@ function renderQueueTabs(){
 function clearQueuePanel(){
   clearQueue();
   var l=document.getElementById('queuePanelList');
-  if(l)l.innerHTML='<div style="padding:24px;text-align:center;color:#666">הרשימה ריקה<\/div>';
+  if(l)l.innerHTML='<div style="padding:24px;text-align:center;color:#666">××¨×©××× ×¨××§×<\/div>';
   renderQueueTabs();
 }
 function toggleQueueMinimize(){
@@ -2037,18 +2037,18 @@ function switchQueueTab(id,el){
   if(id==='temp'){var qp=document.getElementById('queuePanel');if(qp)openQueuePanel();return;}
   var pls=_plLoad(),pl=pls.find(function(p){return p.id===id;});
   if(!pl)return;
-  if(!pl.songs.length){list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">פלייליסט ריק<\/div>';return;}
+  if(!pl.songs.length){list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">×¤××××××¡× ×¨××§<\/div>';return;}
   list.innerHTML=pl.songs.map(function(s,i){return '<div class="q-item" style="cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);" onclick="plPlayFrom(\''+pl.id+'\','+i+');closeQueuePanel()">'
 +'<span class="qi-num">'+(i+1)+'<\/span>'+(s.v?'<div class="qi-thumb" style="background-image:url(https://i.ytimg.com/vi/'+s.v+'/mqdefault.jpg)"><\/div>':'<div class="qi-thumb" style="background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:16px">&#9835;<\/div>')+'<div class="qi-info"><div class="qi-name">'+s.s+'<\/div><div class="qi-artist">'+s.a+'<\/div><\/div><\/div>';}).join('');
 }
 
-// ── NAMED PLAYLISTS ──
+// ââ NAMED PLAYLISTS ââ
 const PL_KEY='karaoke_playlists';
 function loadPlaylists(){try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}}
 function savePlaylists(pls){try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}}
 function removeSongFromPl(plId,vid){var pls=loadPlaylists();var pl=pls.find(function(p){return p.id===plId;});if(!pl)return;pl.songs=pl.songs.filter(function(s){return getSongKey(s)!==vid;});savePlaylists(pls);if(document.getElementById('plPanel').classList.contains('open'))renderPlPanel();render(document.getElementById('q').value||'');}
 
-// ── PLAYLIST SIDE PANEL ──
+// ââ PLAYLIST SIDE PANEL ââ
 var _plCtxId=null,_plDndId=null;
 function openPlPanel(){
   exitTheaterIfNeeded();
@@ -2079,7 +2079,7 @@ function playVidFromPl(plId, vid){
 function renderPlPanel(){
   var pls=loadPlaylists();
   var body=document.getElementById('plPanelBody');
-  if(!pls.length){body.innerHTML='<div style="text-align:center;color:#888;padding:40px 16px;font-size:13px;">אין פלייליסטים עדיין<br><br>לחץ "+ פלייליסט חדש" להתחיל</div>';return;}
+  if(!pls.length){body.innerHTML='<div style="text-align:center;color:#888;padding:40px 16px;font-size:13px;">××× ×¤××××××¡××× ×¢××××<br><br>×××¥ "+ ×¤××××××¡× ×××©" ×××ª×××</div>';return;}
   var _openIds={};body.querySelectorAll('.pl-item[data-pl-id]').forEach(function(el){if(el.dataset.open==='true')_openIds[el.dataset.plId]=true;});
   body.innerHTML=pls.map(function(pl){
     var cnt=(pl.songs||[]).length;
@@ -2090,20 +2090,21 @@ function renderPlPanel(){
         +' ondragover="songDndOver(event,\''+pl.id+'\','+si+')"'
         +' ondrop="songDndDrop(event,\''+pl.id+'\','+si+')"'
         +' ondragleave="songDndLeave(event)">'
-        +'<span class="pl-song-drag" title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
+        +'<span class="pl-song-drag" title="××¨××¨ ××©×× ×× ×¡××¨"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
         +'<div class="pl-song-info" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" style="cursor:pointer;flex:1;min-width:0"><div class="pl-song-name">'+esc(s.s)+'</div><div class="pl-song-artist">'+esc(s.a)+'</div></div>'
-        +(s.v?'<a class="btn-yt pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="פתח ביוטיוב" onclick="event.stopPropagation()">'+YT_ICO+'<\/a>':'')
-        +'<button class="pl-song-del" onclick="event.stopPropagation();removeSongFromPl(\''+pl.id+'\',\''+vid+'\')" title="הסר">✕</button>'
+        +'<button class="pl-song-play'+(s.mp4?' mp4':'')+'" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="'+(s.mp4?'#fff':'#121212')+'" width="10" height="12"><polygon points="0,0 12,7 0,14"/></svg></button>'
+        +(s.v?'<a class="btn-yt pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="×¤×ª× ×××××××" onclick="event.stopPropagation()">'+YT_ICO+'<\/a>':'')
+        +'<button class="pl-song-del" onclick="event.stopPropagation();removeSongFromPl(\''+pl.id+'\',\''+vid+'\')" title="××¡×¨">â</button>'
         +'</div>';
       }).join('');
     return '<div class="pl-item" data-pl-id="'+pl.id+'" data-open="false"'
       +' ondragover="plDndOver(event,\''+pl.id+'\')" ondrop="plDndDrop(event,\''+pl.id+'\')" ondragleave="plDndLeave(event)">'
       +'<div class="pl-item-hdr" onclick="togglePlItem(this)">'
-      +'<span class="pl-item-drag" draggable="true" ondragstart="plDndStart(event,\''+pl.id+'\')" onclick="event.stopPropagation()" title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
-      +'<div class="pl-item-icon">♫</div>'
-      +'<div class="pl-item-info"><div class="pl-item-name">'+esc(pl.name)+'</div><div class="pl-item-count">'+cnt+(cnt===1?' שיר':' שירים')+'</div></div>'
-      +'<button class="pl-item-menu-btn" onclick="event.stopPropagation();openPlCtx(event,\''+pl.id+'\')" title="אפשרויות">⋮</button>'
-      +'<span class="pl-item-chev">▾</span>'
+      +'<span class="pl-item-drag" draggable="true" ondragstart="plDndStart(event,\''+pl.id+'\')" onclick="event.stopPropagation()" title="××¨××¨ ××©×× ×× ×¡××¨"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
+      +'<div class="pl-item-icon">â«</div>'
+      +'<div class="pl-item-info"><div class="pl-item-name">'+esc(pl.name)+'</div><div class="pl-item-count">'+cnt+(cnt===1?' ×©××¨':' ×©××¨××')+'</div></div>'
+      +'<button class="pl-item-menu-btn" onclick="event.stopPropagation();openPlCtx(event,\''+pl.id+'\')" title="××¤×©×¨××××ª">â®</button>'
+      +'<span class="pl-item-chev">â¾</span>'
       +'</div>'
       +(cnt?'<div class="pl-item-songs">'+songs+'</div>':'')
       +'</div>';
@@ -2150,11 +2151,11 @@ function plCtxRename(){
 function plCtxDelete(){
   var id=_plCtxId;
   var pls=loadPlaylists();var pl=pls.find(function(p){return p.id===id;});if(!pl)return;
-  if(!confirm('למחוק את "'+pl.name+'"?'))return;
+  if(!confirm('×××××§ ××ª "'+pl.name+'"?'))return;
   savePlaylists(pls.filter(function(p){return p.id!==id;}));renderPlPanel();refreshAddBtns();
 }
 function plPanelCreate(){
-  var name=prompt('שם הפלייליסט החדש:');
+  var name=prompt('×©× ××¤××××××¡× ××××©:');
   if(!name||!name.trim())return;
   var pls=loadPlaylists();
   pls.push({id:'pl_'+Date.now(),name:name.trim(),songs:[]});
@@ -2220,7 +2221,7 @@ function handlePlItemClick(el){
   if(!pl||!currentSong)return;
   const wasIn=isInPlaylist(plId,currentSong);
   toggleSongInPlaylist(plId,currentSong);
-  showToast(wasIn?'הוסר מ״'+pl.name+'״':'נוסף ל״'+pl.name+'״');
+  showToast(wasIn?'×××¡×¨ ××´'+pl.name+'×´':'× ××¡×£ ××´'+pl.name+'×´');
   renderPlPopup();
   updateModalAddBtn();
 }
@@ -2230,7 +2231,7 @@ function renderPlPopup(){
   const song=currentSong;
   const BON='<svg width="18" height="18" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
   const BOFF='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="2"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
-  if(!pls.length){list.innerHTML='<div style="padding:10px 16px;font-size:12px;color:#888;">אין עדיין פלייליסטים</div>';return;}
+  if(!pls.length){list.innerHTML='<div style="padding:10px 16px;font-size:12px;color:#888;">××× ×¢×××× ×¤××××××¡×××</div>';return;}
   list.innerHTML=pls.map(pl=>{
     const inPl=isInPlaylist(pl.id,song);
     return '<div class="playlist-popup-item" data-plid="'+pl.id+'" onclick="handlePlItemClick(this)">'+
@@ -2289,7 +2290,7 @@ function submitNewPlaylist(){
   if(window.innerWidth<=767){var _sy=window._plScrollY||0;inp.blur();if(window.visualViewport){var _vvh=window.visualViewport;var _fn=function(){document.documentElement.scrollLeft=0;document.body.scrollLeft=0;window.scrollTo(0,_sy);_vvh.removeEventListener('resize',_fn);};_vvh.addEventListener('resize',_fn);}else{setTimeout(function(){document.documentElement.scrollLeft=0;document.body.scrollLeft=0;window.scrollTo(0,_sy);},400);}}
   closePlaylistPopup();
 }
-</script><div id="playlistPopup" class="playlist-popup"><div class="playlist-popup-title"><span>באיזה פלייליסט לשמור?</span><button class="playlist-popup-close" onclick="document.getElementById('playlistPopup').classList.remove('open')">✕</button></div><div id="plPopupList"></div><div class="playlist-popup-new" onclick="document.getElementById('newPlForm').classList.toggle('open')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F0F0F" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>פלייליסט חדש</span></div><div class="new-pl-form" id="newPlForm"><input id="newPlInp" class="new-pl-inp" placeholder="שם הפלייליסט" onkeydown="if(event.key==='Enter')submitNewPlaylist()"><button class="new-pl-ok" onclick="submitNewPlaylist()">יצירה</button></div></div>
+</script><div id="playlistPopup" class="playlist-popup"><div class="playlist-popup-title"><span>××××× ×¤××××××¡× ××©×××¨?</span><button class="playlist-popup-close" onclick="document.getElementById('playlistPopup').classList.remove('open')">â</button></div><div id="plPopupList"></div><div class="playlist-popup-new" onclick="document.getElementById('newPlForm').classList.toggle('open')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F0F0F" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>×¤××××××¡× ×××©</span></div><div class="new-pl-form" id="newPlForm"><input id="newPlInp" class="new-pl-inp" placeholder="×©× ××¤××××××¡×" onkeydown="if(event.key==='Enter')submitNewPlaylist()"><button class="new-pl-ok" onclick="submitNewPlaylist()">××¦××¨×</button></div></div>
 <div id="karaokToast" class="karaoke-toast"></div>
 </body>
 </html>
