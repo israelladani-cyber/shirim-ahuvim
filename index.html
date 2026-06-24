@@ -72,10 +72,10 @@ body.admin .artist-avatar:hover::after{display:flex;}
 .songs-table td{padding:10px 14px;font-size:15px;color:#0F0F0F;vertical-align:middle;}
 .songs-table tr:hover td{color:#0F0F0F;}
 .td-num{width:28px;text-align:center;color:#909090;font-size:14px;}
-.td-actions{width:112px;text-align:left;}
+.td-actions{width:112px;}
 .song-artist-sub{font-size:11px;color:#909090;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .songs-table tr:hover .song-artist-sub{color:#888;}
-.song-actions{display:flex;align-items:center;gap:5px;justify-content:flex-start;}
+.song-actions{display:flex;align-items:center;gap:5px;justify-content:flex-end;}
 
 /* ACTION BUTTONS */
 .btn-play{width:30px;height:30px;border-radius:50%;background:#FFFFFF;border:1px solid #E5E5E5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .15s,border-color .15s;padding-right:1px;}.btn-play.mp4{background:#00BCD4!important;border-color:#00ACC1!important;}.btn-play.mp4 svg polygon{fill:#fff!important;}
@@ -266,6 +266,8 @@ body.admin.del-mode .atb-btn.warn{background:#ff5a5a;color:#0F0F0F;}
 body.admin.del-mode .btn-del{display:flex;}
 .btn-del:hover{background:#ff5a5a;border-color:#ff5a5a;color:#0F0F0F;}
 body.admin{padding-bottom:72px;}
+body.admin .mini-bar{bottom:var(--adm-h,58px);}
+body.admin .mini-fab{bottom:calc(var(--adm-h,58px) + 20px);}
 @media(max-width:767px){body.admin{padding-bottom:72px;}.atb-inp[id="atbArtist"],.atb-inp[id="atbSong"]{width:90px;}}
 /* Drag handles */
 .drag-handle{cursor:grab;color:#606060;font-size:15px;padding:2px 6px;user-select:none;display:none;line-height:1;flex-shrink:0;transition:color .15s;}
@@ -1143,7 +1145,7 @@ function render(term){
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
             <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'✓':'+'}</button>
-            ${r.mp4?'':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
+            ${r.mp4?'<span style="width:28px;flex-shrink:0;display:inline-flex;"></span>':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
             <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
           </div>
         </td>
