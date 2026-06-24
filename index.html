@@ -451,7 +451,7 @@ body.admin .btn-move-folder{display:flex;}
 .q-naka:hover{background:rgba(255,68,68,.15);}
 .q-play-circle{background:#E53935;color:#fff;border-radius:50%;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;padding:0!important;font-size:11px;flex-shrink:0;border:none;cursor:pointer;}
 .q-play-circle:hover{background:#B71C1C;}
-.playlist-popup{position:fixed;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.22);padding:8px 0;min-width:240px;z-index:600;display:none;direction:rtl;}.playlist-popup.open{display:block;}.playlist-popup-title{font-size:13px;font-weight:700;color:#0F0F0F;padding:10px 16px 8px;border-bottom:1px solid #eee;text-align:right;}.playlist-popup-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .1s;direction:rtl;}.playlist-popup-item:hover{background:#f5f5f5;}.playlist-popup-item .pl-name{font-size:13px;color:#0F0F0F;flex:1;}.playlist-popup-new{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .1s;border-top:1px solid #eee;direction:rtl;}.playlist-popup-new:hover{background:#f5f5f5;}.playlist-popup-new span{font-size:13px;color:#0F0F0F;}.new-pl-form{padding:8px 16px 12px;display:none;gap:6px;direction:rtl;}.new-pl-form.open{display:flex;}.new-pl-inp{flex:1;border:1px solid #ccc;border-radius:6px;padding:6px 10px;font-size:13px;font-family:Arial,sans-serif;direction:rtl;}.new-pl-ok{background:#0F0F0F;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:13px;flex-shrink:0;}.modal-add-btn.saved{background:#0F0F0F;color:#fff;border-color:#0F0F0F;}
+.playlist-popup{position:fixed;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.22);padding:8px 0;min-width:240px;max-width:calc(100vw - 16px);z-index:600;display:none;direction:rtl;}.playlist-popup.open{display:block;}.playlist-popup-title{font-size:13px;font-weight:700;color:#0F0F0F;padding:10px 16px 8px;border-bottom:1px solid #eee;text-align:right;}.playlist-popup-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .1s;direction:rtl;}.playlist-popup-item:hover{background:#f5f5f5;}.playlist-popup-item .pl-name{font-size:13px;color:#0F0F0F;flex:1;}.playlist-popup-new{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .1s;border-top:1px solid #eee;direction:rtl;}.playlist-popup-new:hover{background:#f5f5f5;}.playlist-popup-new span{font-size:13px;color:#0F0F0F;}.new-pl-form{padding:8px 16px 12px;display:none;gap:6px;direction:rtl;}.new-pl-form.open{display:flex;}.new-pl-inp{flex:1;border:1px solid #ccc;border-radius:6px;padding:6px 10px;font-size:13px;font-family:Arial,sans-serif;direction:rtl;}.new-pl-ok{background:#0F0F0F;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:13px;flex-shrink:0;}.modal-add-btn.saved{background:#0F0F0F;color:#fff;border-color:#0F0F0F;}
 .karaoke-toast{position:fixed;top:72px;left:16px;background:#0F0F0F;color:#fff;border-radius:4px;padding:10px 16px;font-size:13px;z-index:700;transform:translateX(-120%);transition:transform .3s;pointer-events:none;max-width:300px;direction:rtl;white-space:nowrap;}.karaoke-toast.show{transform:translateX(0);}
 </style>
 </head>
@@ -2245,7 +2245,7 @@ function showPlaylistPopupForSong(e,vid){
   var rect=btn.getBoundingClientRect();
   popup.style.top=(rect.bottom+8)+'px';
   popup.style.bottom='auto';
-  popup.style.right=(window.innerWidth-rect.right)+'px';
+  popup.style.right=Math.max(8,Math.min(window.innerWidth-rect.right,window.innerWidth-248))+'px';
   renderPlPopup();
   popup.classList.add('open');
   setTimeout(function(){document.addEventListener('click',closePlPopupOutside);},50);
@@ -2258,7 +2258,7 @@ function showPlaylistPopup(e){
   const rect=btn.getBoundingClientRect();
   popup.style.top=(rect.bottom+8)+'px';
   popup.style.bottom='auto';
-  popup.style.right=(window.innerWidth-rect.right)+'px';
+  popup.style.right=Math.max(8,Math.min(window.innerWidth-rect.right,window.innerWidth-248))+'px';
   renderPlPopup();
   popup.classList.add('open');
   setTimeout(()=>document.addEventListener('click',closePlPopupOutside),50);
