@@ -2092,7 +2092,6 @@ function renderPlPanel(){
         +' ondragleave="songDndLeave(event)">'
         +'<span class="pl-song-drag" title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
         +'<div class="pl-song-info" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" style="cursor:pointer;flex:1;min-width:0"><div class="pl-song-name">'+esc(s.s)+'</div><div class="pl-song-artist">'+esc(s.a)+'</div></div>'
-        +(s.v?'<a class="pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="פתח ביוטיוב" onclick="event.stopPropagatio+'<button class="pl-song-play'+(s.mp4?' mp4':'')+'" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="'+(s.mp4?'#fff':'#121212')+'" width="10" height="12"><polygon points="0,0 12,7 0,14"/></svg></button>'
         +(s.v?'<a class="btn-yt pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="פתח ביוטיוב" onclick="event.stopPropagation()">'+YT_ICO+'<\/a>':'')
         +'<button class="pl-song-del" onclick="event.stopPropagation();removeSongFromPl(\''+pl.id+'\',\''+vid+'\')" title="הסר">✕</button>'
         +'</div>';
