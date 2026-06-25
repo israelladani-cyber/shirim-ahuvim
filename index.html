@@ -2097,6 +2097,18 @@ function renderPlPanel(){
         +'<button class="pl-song-del" onclick="event.stopPropagation();removeSongFromPl(\''+pl.id+'\',\''+vid+'\')" title="הסר">✕</button>'
         +'</div>';
     }).join('');
+    return '<div class="pl-item" data-pl-id="'+pl.id+'" data-open="false"'
+      +' ondragover="plDndOver(event,\''+pl.id+'\')" ondrop="plDndDrop(event,\''+pl.id+'\')" ondragleave="plDndLeave(event)">'
+      +'<div class="pl-item-hdr" onclick="togglePlItem(this)">'
+      +'<span class="pl-item-drag" draggable="true" ondragstart="plDndStart(event,\''+pl.id+'\')" onclick="event.stopPropagation()" title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
+      +'<div class="pl-item-icon">♫</div>'
+      +'<div class="pl-item-info"><div class="pl-item-name">'+esc(pl.name)+'</div><div class="pl-item-count">'+cnt+(cnt===1?' שיר':' שירים')+'</div></div>'
+      +'<button class="pl-item-menu-btn" onclick="event.stopPropagation();openPlCtx(event,\''+pl.id+'\')" title="אפשרויות">⋮</button>'
+      +'<span class="pl-item-chev">▾</span>'
+      +'</div>'
+      +(cnt?'<div class="pl-item-songs">'+songs+'</div>':'')
+      +'</div>';
+  }).join('');
   body.querySelectorAll('.pl-item[data-pl-id]').forEach(function(el){if(_openIds[el.dataset.plId])el.dataset.open='true';});
 }
 function togglePlItem(hdrEl){var item=hdrEl.closest('.pl-item');item.dataset.open=item.dataset.open==='true'?'false':'true';}
