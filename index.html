@@ -1224,8 +1224,8 @@ document.addEventListener('visibilitychange',()=>{
 });
 
 function exitTheaterIfNeeded(){if(document.body.classList.contains('theater')){document.body.classList.remove('theater');requestAnimationFrame(setTopH);}}
-function expandAll(){exitTheaterIfNeeded();if(document.body.classList.contains('playing'))closePlPanel();document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true');}
-function collapseAll(){exitTheaterIfNeeded();if(document.body.classList.contains('playing'))closePlPanel();document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false');}
+function expandAll(){exitTheaterIfNeeded();if(document.body.classList.contains('playing')){closePlPanel();setTimeout(()=>document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true'),320);}else{document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true');}}
+function collapseAll(){exitTheaterIfNeeded();if(document.body.classList.contains('playing')){closePlPanel();setTimeout(()=>document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false'),320);}else{document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false');}}
 function updateToggleBtn(){}
 function hl(t,q){if(!q)return esc(t);return esc(t).replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
 
