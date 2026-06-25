@@ -1328,7 +1328,6 @@ function render(term){
     h+='</table></div></div>';
   }
   document.getElementById('content').innerHTML=h;
-  if(!q)document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{if(_prevOpen[b.dataset.vid])b.dataset.open=_prevOpen[b.dataset.vid];});
   updateToggleBtn();
   loadImages();
 }
