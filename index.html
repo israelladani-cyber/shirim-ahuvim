@@ -1224,8 +1224,8 @@ document.addEventListener('visibilitychange',()=>{
 });
 
 function exitTheaterIfNeeded(){if(document.body.classList.contains('theater')){document.body.classList.remove('theater');requestAnimationFrame(setTopH);}}
-function expandAll(){exitTheaterIfNeeded();closePlPanel();document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true');}
-function collapseAll(){exitTheaterIfNeeded();closePlPanel();document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false');}
+function expandAll(){exitTheaterIfNeeded();document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true');}
+function collapseAll(){exitTheaterIfNeeded();document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false');}
 function updateToggleBtn(){}
 function hl(t,q){if(!q)return esc(t);return esc(t).replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
 
