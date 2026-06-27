@@ -1484,7 +1484,7 @@ async function doAdmLogin(){
   if(h!==saved){document.getElementById('admPinErr').textContent='קוד שגוי, נסה שוב';return;}
   document.getElementById('admLoginOv').classList.remove('open');
   _admMode=true;document.body.classList.add('admin');
-  _fillArtistList();render(document.getElementById('q').value||'');
+  _fillArtistList();const _openSt={};document.querySelectorAll('.artist-block').forEach(b=>{_openSt[b.dataset.vid]=b.dataset.open;});render(document.getElementById('q').value||'');document.querySelectorAll('.artist-block').forEach(b=>{if(_openSt[b.dataset.vid])b.dataset.open=_openSt[b.dataset.vid];});
   if(!localStorage.getItem('gh_token'))document.getElementById('admTokenOv').classList.add('open');
 }
 function exitAdmin(){
