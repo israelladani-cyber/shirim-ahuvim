@@ -219,7 +219,9 @@ body.theater .panel-theater-btn{color:#FF0000;}
   .yt-search{min-width:80px!important;flex:1 1 80px!important;}
   #_authDd{display:none!important;}
   .adm-overlay{align-items:flex-start!important;padding-top:80px!important;}
-  body.admin .adm-toolbar{padding:8px 10px!important;flex-wrap:nowrap!important;gap:6px!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch!important;position:fixed!important;bottom:0!important;left:0!important;right:0!important;}
+  body.admin{display:flex!important;flex-direction:column!important;height:100dvh!important;overflow:hidden!important;}
+  body.admin .page-body{flex:1!important;height:auto!important;min-height:0!important;}
+  body.admin .adm-toolbar{position:static!important;flex-shrink:0!important;padding:8px 10px!important;flex-wrap:nowrap!important;gap:6px!important;overflow-x:auto!important;}
   body.admin .adm-toolbar .atb-inp{min-width:110px!important;flex-shrink:0!important;}
   body.admin .adm-toolbar #atbArtist{min-width:100px!important;flex-shrink:0!important;}
   body.admin .adm-toolbar .atb-btn{flex-shrink:0!important;}
