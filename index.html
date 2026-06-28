@@ -494,20 +494,7 @@ body.admin .btn-move-folder{display:flex;}
 <script>(function(){
 var _AL='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/allowed.json';
 async function _fa(){try{var r=await fetch(_AL+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;return(await r.json()).map(function(e){return e.toLowerCase().trim();});}catch(e){return null;}}
-function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(o)o.style.display='none';}if(document.readyState==='loading')// Mobile admin toolbar: pin to visual bottom (iOS keyboard fix)
-(function(){
-  var toolbar = document.getElementById('admToolbar');
-  if(!toolbar || !window.visualViewport) return;
-  function pinToolbar(){
-    var vv = window.visualViewport;
-    var offset = window.innerHeight - vv.height - vv.pageTop;
-    toolbar.style.bottom = Math.max(0, offset) + 'px';
-  }
-  window.visualViewport.addEventListener('resize', pinToolbar);
-  window.visualViewport.addEventListener('scroll', pinToolbar);
-})();
-
-document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
+function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(o)o.style.display='none';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}o.style.display='flex';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 function _ub(nm,em,pic){function _d(){
   var b=document.getElementById('userAuthBtn');if(!b)return;
