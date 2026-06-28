@@ -152,6 +152,7 @@ body.playing .content{max-width:none;margin:0;}
 .player-panel{display:none;flex-direction:column;background:#FFFFFF;border-right:1px solid #E5E5E5;min-width:0;}
 .panel-header{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#fff;border-bottom:1px solid #ddd;flex-shrink:0;}
 .panel-song-info{flex:1;min-width:0;}
+.panel-win-btns{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:2px;}
 .panel-song-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0F0F0F;}
 .panel-artist-name{font-size:11px;color:#0F0F0F;margin-top:1px;}
 .panel-close{background:none;border:none;color:#333;cursor:pointer;font-size:20px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}.panel-close:hover{background:#e0e0e0;}
@@ -203,6 +204,8 @@ body.theater .panel-theater-btn{color:#FF0000;}
 @media(max-width:767px){
   .player-panel{position:fixed;inset:0;z-index:300;flex-direction:column;background:#FFFFFF;border:none;}
   .panel-header{flex-wrap:wrap!important;gap:4px!important;padding:6px 10px!important;}
+  .panel-win-btns{flex:0!important;justify-content:flex-end!important;}
+  .panel-nav-group{flex:1!important;justify-content:center!important;}
   .panel-song-info{flex:1 1 100%!important;padding-bottom:2px!important;}
   .panel-nav-group{gap:4px!important;}
   .modal-nav-btn{padding:5px 8px!important;gap:3px!important;}
@@ -638,6 +641,7 @@ _ia();
         </button>
       </div>
       <!-- Theater mode (desktop) -->
+      <div class="panel-win-btns">
       <button class="panel-theater-btn" id="theaterBtn" onclick="toggleTheater()" title="מצב קולנוע">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/></svg>
       </button>
@@ -647,6 +651,7 @@ _ia();
       </button>
       <button class="panel-minimize-btn" onclick="minimizePlayerOnly()" title="מזער לסרגל">&#x2014;</button>
       <button class="panel-close" onclick="closePanelOrAll()">&#x2715;</button>
+    </div>
     </div>
     <div class="panel-video" id="panel-video-slot">
       <div id="yt-player"></div><video id="mp4Player" style="display:none;width:100%;height:100%;object-fit:contain;background:#000;" controls></video>
