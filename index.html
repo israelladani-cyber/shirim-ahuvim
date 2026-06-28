@@ -223,7 +223,7 @@ body.theater .panel-theater-btn{color:#FF0000;}
   .yt-search{min-width:80px!important;flex:1 1 80px!important;}
   #_authDd{display:none!important;}
   .adm-overlay{align-items:flex-start!important;padding-top:80px!important;}
-  body.admin{position:fixed!important;width:100%!important;display:flex!important;flex-direction:column!important;height:100dvh!important;overflow:hidden!important;padding-bottom:60px!important;}
+  body.admin{position:fixed!important;width:100%!important;display:flex!important;flex-direction:column!important;height:100dvh!important;overflow:hidden!important;padding-bottom:80px!important;}
   body.admin .page-body{flex:1!important;height:auto!important;min-height:0!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;padding-bottom:12px!important;}
   body.admin .adm-toolbar{position:static!important;flex-shrink:0!important;padding:8px 10px!important;flex-wrap:nowrap!important;gap:6px!important;overflow-x:auto!important;touch-action:pan-x pan-down!important;}
   body.admin .adm-toolbar{scroll-snap-type:x mandatory!important;gap:0!important;padding:0!important;}
@@ -2401,6 +2401,12 @@ function submitNewPlaylist(){
   if(window.innerWidth<=767){var _sy=window._plScrollY||0;inp.blur();if(window.visualViewport){var _vvh=window.visualViewport;var _fn=function(){document.documentElement.scrollLeft=0;document.body.scrollLeft=0;window.scrollTo(0,_sy);_vvh.removeEventListener('resize',_fn);};_vvh.addEventListener('resize',_fn);}else{setTimeout(function(){document.documentElement.scrollLeft=0;document.body.scrollLeft=0;window.scrollTo(0,_sy);},400);}}
   closePlaylistPopup();
 }
+
+// Prevent admin toolbar vertical scroll on iOS
+document.addEventListener('DOMContentLoaded',function(){
+  var tb=document.getElementById('admToolbar');
+  if(tb)tb.addEventListener('touchmove',function(e){e.preventDefault();},{passive:false});
+});
 </script><div id="playlistPopup" class="playlist-popup"><div class="playlist-popup-title"><span>באיזה פלייליסט לשמור?</span><button class="playlist-popup-close" onclick="document.getElementById('playlistPopup').classList.remove('open')">✕</button></div><div id="plPopupList"></div><div class="playlist-popup-new" onclick="document.getElementById('newPlForm').classList.toggle('open')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F0F0F" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>פלייליסט חדש</span></div><div class="new-pl-form" id="newPlForm"><input id="newPlInp" class="new-pl-inp" placeholder="שם הפלייליסט" onkeydown="if(event.key==='Enter')submitNewPlaylist()"><button class="new-pl-ok" onclick="submitNewPlaylist()">יצירה</button></div></div>
 <div id="karaokToast" class="karaoke-toast"></div>
 </body>
