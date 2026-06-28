@@ -222,8 +222,11 @@ body.theater .panel-theater-btn{color:#FF0000;}
   body.admin{display:flex!important;flex-direction:column!important;height:100dvh!important;overflow:hidden!important;}
   body.admin .page-body{flex:1!important;height:auto!important;min-height:0!important;}
   body.admin .adm-toolbar{position:static!important;flex-shrink:0!important;padding:8px 10px!important;flex-wrap:nowrap!important;gap:6px!important;overflow-x:auto!important;}
-  body.admin .adm-toolbar .atb-inp{flex:0 0 calc((100vw - 44px) / 3)!important;width:calc((100vw - 44px) / 3)!important;min-width:0!important;flex-shrink:0!important;}
-  body.admin .adm-toolbar .atb-btn{flex-shrink:0!important;height:36px!important;box-sizing:border-box!important;}
+  body.admin .adm-toolbar{scroll-snap-type:x mandatory!important;gap:0!important;}
+  body.admin .adm-toolbar .atb-add-row{display:flex!important;flex-shrink:0!important;width:100vw!important;gap:6px!important;padding:0 10px!important;box-sizing:border-box!important;align-items:center!important;scroll-snap-align:start!important;}
+  body.admin .adm-toolbar .atb-actions-row{display:flex!important;flex-shrink:0!important;width:100vw!important;gap:6px!important;padding:0 10px!important;box-sizing:border-box!important;align-items:center!important;scroll-snap-align:start!important;}
+  body.admin .adm-toolbar .atb-inp{flex:1!important;min-width:0!important;height:36px!important;}
+  body.admin .adm-toolbar .atb-btn{flex:1!important;min-width:0!important;height:36px!important;box-sizing:border-box!important;justify-content:center!important;}
   body.admin .adm-toolbar #atbStat{display:none!important;}
 }
 
@@ -1955,17 +1958,21 @@ async function adminSyncGitHub(){
 
 <!-- ── ADMIN TOOLBAR ── -->
 <div class="adm-toolbar" id="admToolbar">
-  <select class="atb-inp atb-artist-sel" id="atbArtist">
-    <option value="">בחר אמן / תיקייה</option>
-    <option value="__new__">＋ תיקייה חדשה</option>
-  </select>
-  <input class="atb-inp" id="atbSong" placeholder="שם שיר">
-  <input class="atb-inp" id="atbUrl" placeholder="קישור YouTube">
-  <button class="atb-btn green" onclick="adminAddSong()">+ הוסף שיר</button>
-  <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
-  <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
-  <span class="atb-stat" id="atbStat"></span>
-  <button class="atb-btn" onclick="exitAdmin()">✕ יציאה</button>
+  <div class="atb-add-row">
+    <select class="atb-inp atb-artist-sel" id="atbArtist">
+      <option value="">בחר אמן / תיקייה</option>
+      <option value="__new__">＋ תיקייה חדשה</option>
+    </select>
+    <input class="atb-inp" id="atbSong" placeholder="שם שיר">
+    <input class="atb-inp" id="atbUrl" placeholder="קישור YouTube">
+  </div>
+  <div class="atb-actions-row">
+    <button class="atb-btn green" onclick="adminAddSong()">+ הוסף שיר</button>
+    <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
+    <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
+    <span class="atb-stat" id="atbStat"></span>
+    <button class="atb-btn" onclick="exitAdmin()">✕ יציאה</button>
+  </div>
 </div>
 
 <input type="file" id="artistPhotoInput" accept="image/*" style="display:none">
