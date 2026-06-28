@@ -462,7 +462,19 @@ body.admin .btn-move-folder{display:flex;}
 <body>
 
 <!-- ── GOOGLE AUTH ── -->
-<div id="gAuthOverlay" style="position:fixed;inset:0;background:#F5F5F5;z-index:99999;display:flex;align-items:center;justify-content:center;"><div style="background:#fff;border-radius:16px;box-shadow:0 4px 32px rgba(0,0,0,.14);padding:48px 36px;text-align:center;max-width:360px;width:90%;direction:rtl;"><div style="font-size:44px;margin-bottom:16px;">🎤</div><h2 style="font-size:22px;margin:0 0 8px;color:#0F0F0F;font-family:Arial,sans-serif;">קריוקי מזרחית</h2><p style="color:#666;font-size:14px;margin:0 0 32px;font-family:Arial,sans-serif;">כניסה עם חשבון Google</p><div id="g_id_onload" data-client_id="978399961472-9jmveopmp6dngajq8767tl34k3eo81ak.apps.googleusercontent.com" data-callback="handleGoogleAuth" data-auto_select="false" data-itp_support="true"></div><div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large" data-locale="he" data-width="280"></div><div id="gAuthErr" style="display:none;margin-top:20px;padding:10px 16px;background:#FFF3F3;border-radius:8px;color:#C62828;font-size:13px;font-family:Arial,sans-serif;">❌ אין לך הרשאת גישה לאתר זה</div><div id="gAuthLoading" style="display:none;margin-top:20px;color:#666;font-size:13px;font-family:Arial,sans-serif;">⏳ בודק הרשאות...</div></div></div>
+<div id="gAuthOverlay" style="position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,#0d0d1a 0%,#1a1040 60%,#0d1a2e 100%);z-index:9999;">
+  <div id="g_id_onload" data-client_id="978399961472-9jmveopmp6dngajq8767tl34k3eo81ak.apps.googleusercontent.com" data-callback="handleGoogleAuth" data-auto_select="true" data-use_fedcm_for_prompt="true"></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:28px;text-align:center;">
+    <div style="font-size:64px;line-height:1;">🎤</div>
+    <div>
+      <div style="font-size:34px;font-weight:700;color:#fff;font-family:Arial,sans-serif;letter-spacing:-0.5px;">&#1511;&#1512;&#1497;&#1493;&#1511;&#1497; &#1502;&#1494;&#1512;&#1495;&#1497;&#1514;</div>
+      <div style="font-size:14px;color:rgba(255,255,255,.45);margin-top:6px;font-family:Arial,sans-serif;">&#1499;&#1504;&#1497;&#1505;&#1492; &#1506;&#1501; &#1495;&#1513;&#1489;&#1493;&#1503; Google</div>
+    </div>
+    <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="filled_black" data-text="signin_with" data-size="large" data-locale="he"></div>
+    <div id="gAuthErr" style="display:none;color:#ff7070;font-size:13px;font-family:Arial,sans-serif;"></div>
+    <div id="gAuthLoading" style="display:none;color:rgba(255,255,255,.5);font-size:13px;font-family:Arial,sans-serif;">&#1502;&#1488;&#1502;&#1514;&#1489;&#1512;...</div>
+  </div>
+</div>
 <script>(function(){
 var _AL='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/allowed.json';
 async function _fa(){try{var r=await fetch(_AL+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;return(await r.json()).map(function(e){return e.toLowerCase().trim();});}catch(e){return null;}}
