@@ -465,44 +465,55 @@ body.admin .btn-move-folder{display:flex;}
 <div id="gAuthOverlay" style="position:fixed;inset:0;background:#F5F5F5;z-index:99999;display:flex;align-items:center;justify-content:center;"><div style="background:#fff;border-radius:16px;box-shadow:0 4px 32px rgba(0,0,0,.14);padding:48px 36px;text-align:center;max-width:360px;width:90%;direction:rtl;"><div style="font-size:44px;margin-bottom:16px;">🎤</div><h2 style="font-size:22px;margin:0 0 8px;color:#0F0F0F;font-family:Arial,sans-serif;">קריוקי מזרחית</h2><p style="color:#666;font-size:14px;margin:0 0 32px;font-family:Arial,sans-serif;">כניסה עם חשבון Google</p><div id="g_id_onload" data-client_id="978399961472-9jmveopmp6dngajq8767tl34k3eo81ak.apps.googleusercontent.com" data-callback="handleGoogleAuth" data-auto_select="false" data-itp_support="true"></div><div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with" data-size="large" data-locale="he" data-width="280"></div><div id="gAuthErr" style="display:none;margin-top:20px;padding:10px 16px;background:#FFF3F3;border-radius:8px;color:#C62828;font-size:13px;font-family:Arial,sans-serif;">❌ אין לך הרשאת גישה לאתר זה</div><div id="gAuthLoading" style="display:none;margin-top:20px;color:#666;font-size:13px;font-family:Arial,sans-serif;">⏳ בודק הרשאות...</div></div></div>
 <script>(function(){
 var _AL='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/allowed.json';
-// allowlist fetch — null on network error, array on success
 async function _fa(){try{var r=await fetch(_AL+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;return(await r.json()).map(function(e){return e.toLowerCase().trim();});}catch(e){return null;}}
-// hide overlay (DOM-safe)
 function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(o)o.style.display='none';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
-// show overlay with optional message
 function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}o.style.display='flex';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
-// show user button (DOM-safe)
-function _ub(nm,em){function _d(){var b=document.getElementById('userAuthBtn');if(!b)return;b.title='מחובר: '+em+'\nלחץ להתנתקות';b.textContent='👤 '+nm.split(' ')[0];b.style.display='inline-flex';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
-// Google sign-in callback
+function _ub(nm,em,pic){function _d(){
+  var b=document.getElementById('userAuthBtn');if(!b)return;
+  b.innerHTML=pic?'<img src="'+pic+'" style="width:34px;height:34px;border-radius:50%;object-fit:cover;display:block;">':'<span style="font-size:22px;">&#128100;</span>';
+  b.title='';b.style.cssText='background:none;border:none;cursor:pointer;padding:2px;border-radius:50%;display:inline-flex;align-items:center;';
+  var wrap=b.parentElement;wrap.style.position='relative';
+  var dd=document.getElementById('_authDd');if(dd)dd.remove();
+  dd=document.createElement('div');dd.id='_authDd';
+  dd.style.cssText='position:absolute;top:calc(100% + 6px);left:0;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.22);min-width:220px;display:none;z-index:9999;overflow:hidden;direction:rtl;font-family:Arial,sans-serif;';
+  var hdr=document.createElement('div');
+  hdr.style.cssText='padding:16px 16px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee;';
+  hdr.innerHTML=(pic?'<img src="'+pic+'" style="width:44px;height:44px;border-radius:50%;flex-shrink:0;">':'')+'<div><div style="font-weight:600;font-size:14px;color:#202124;">'+nm+'</div><div style="font-size:12px;color:#5f6368;margin-top:2px;">'+em+'</div></div>';
+  dd.appendChild(hdr);
+  function _row(icon,label,fn){var row=document.createElement('div');row.style.cssText='padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;color:#202124;font-size:14px;';row.innerHTML=icon+'<span>'+label+'</span>';row.onmouseenter=function(){this.style.background='#f1f3f4';};row.onmouseleave=function(){this.style.background='';};row.onclick=fn;dd.appendChild(row);}
+  _row('<svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>','בחירה בחשבון אחר',function(){window._logout();});
+  _row('<svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>','יציאה',function(){window._logout();});
+  wrap.appendChild(dd);
+  b.onclick=function(ev){ev.stopPropagation();dd.style.display=dd.style.display==='none'?'block':'none';};
+  document.addEventListener('click',function(){if(dd)dd.style.display='none';});
+  b.style.display='inline-flex';
+}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 window.handleGoogleAuth=async function(rp){
   var errEl=document.getElementById('gAuthErr'),ldEl=document.getElementById('gAuthLoading');
   errEl.style.display='none';ldEl.style.display='block';
   try{
     var p=rp.credential.split('.');
     var pl=JSON.parse(decodeURIComponent(escape(atob(p[1].replace(/-/g,'+').replace(/_/g,'/')))));
-    var em=pl.email.toLowerCase().trim(),nm=pl.name||em;
+    var em=pl.email.toLowerCase().trim(),nm=pl.name||em,pic=pl.picture||'';
     var al=await _fa();
     if(al===null){ldEl.style.display='none';errEl.textContent='שגיאת רשת — נסה שוב';errEl.style.display='block';return;}
     if(al.includes(em)){
-      localStorage.setItem('_kauth',JSON.stringify({e:em,n:nm,t:Date.now()}));
+      localStorage.setItem('_kauth',JSON.stringify({e:em,n:nm,i:pic,t:Date.now()}));
       document.getElementById('gAuthOverlay').style.display='none';
-      _ub(nm,em);
+      _ub(nm,em,pic);
     }else{
       ldEl.style.display='none';errEl.textContent='אין הרשאה לכתובת זו';errEl.style.display='block';
       localStorage.removeItem('_kauth');
     }
   }catch(ex){ldEl.style.display='none';errEl.textContent='שגיאה — נסה שוב';errEl.style.display='block';}
 };
-// logout
 window._logout=function(){localStorage.removeItem('_kauth');if(window.google&&google.accounts)google.accounts.id.disableAutoSelect();location.reload();};
-// init
 async function _ia(){
   var c=localStorage.getItem('_kauth');
   if(c){try{
-    var o=JSON.parse(c),e=o.e,n=o.n,t=o.t,age=Date.now()-t;
+    var o=JSON.parse(c),e=o.e,n=o.n,t=o.t,pic=o.i||'',age=Date.now()-t;
     if(age<3600000){
-      // cache valid — let in, verify in background with retry
-      _hideOv();_ub(n,e);
+      _hideOv();_ub(n,e,pic);
       _fa().then(async function(al){
         if(al===null)return;
         if(!al.includes(e)){
@@ -513,17 +524,9 @@ async function _ia(){
       });
       return;
     }
-    // cache expired — re-verify
     var al=await _fa();
-    if(al===null){
-      // network error — extend 15 min
-      localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,t:Date.now()-3300000}));
-      _hideOv();_ub(n,e);return;
-    }
-    if(al.includes(e)){
-      localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,t:Date.now()}));
-      _hideOv();_ub(n,e);return;
-    }
+    if(al===null){localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,i:pic,t:Date.now()-3300000}));_hideOv();_ub(n,e,pic);return;}
+    if(al.includes(e)){localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,i:pic,t:Date.now()}));_hideOv();_ub(n,e,pic);return;}
     localStorage.removeItem('_kauth');
   }catch(x){localStorage.removeItem('_kauth');}}
   _showOv();
