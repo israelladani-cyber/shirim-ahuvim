@@ -470,7 +470,7 @@ function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');i
 function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}o.style.display='flex';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 function _ub(nm,em,pic){function _d(){
   var b=document.getElementById('userAuthBtn');if(!b)return;
-  b.innerHTML=pic?'<img src="'+pic+'" style="width:26px;height:26px;border-radius:50%;object-fit:cover;display:block;">':'<span style="font-size:22px;">&#128100;</span>';
+  b.innerHTML=pic?'<img src="'+pic+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block;">':'<span style="font-size:22px;">&#128100;</span>';
   b.title='';b.style.cssText='background:none;border:none;cursor:pointer;padding:2px;border-radius:50%;display:inline-flex;align-items:center;';
   var wrap=b.parentElement;wrap.style.position='relative';
   var dd=document.getElementById('_authDd');if(dd)dd.remove();
