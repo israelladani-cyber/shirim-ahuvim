@@ -1,7 +1,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>קריוקי מזרחית</title>
 <link rel="icon" type="image/svg+xml" href="logo%209.svg">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23121212'/%3E%3Crect x='12' y='3' width='8' height='14' rx='4' fill='%231DB954'/%3E%3Cpath d='M8 15 Q8 24 16 24 Q24 24 24 15' fill='none' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='16' y1='24' x2='16' y2='28' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='11' y1='28' x2='21' y2='28' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
@@ -206,7 +206,7 @@ body.theater .panel-theater-btn{color:#FF0000;}
   body.playing .queue-bar{bottom:90px;}
 
   /* Mobile top bar layout */
-  .top-row{flex-direction:column;align-items:stretch;gap:6px;min-height:unset;padding:8px 0 6px;}
+  .top-row{flex-direction:column;align-items:stretch;gap:6px;min-height:unset;padding:8px 0 6px;position:sticky;top:0;z-index:200;background:#f9f9f9;}
   .brand{position:static;transform:none;display:flex;justify-content:center;}
   .queue-bar{position:static;transform:none;align-self:center;}
   .search-section{width:100%;max-width:100%;flex-wrap:nowrap;gap:8px;}
@@ -1961,7 +1961,7 @@ async function adminSyncGitHub(){
     <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
     <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
     <span class="atb-stat" id="atbStat"></span>
-    <button class="atb-btn" style="margin-right:auto" onclick="exitAdmin()">✕ יציאה</button>
+    <button class="atb-btn" onclick="exitAdmin()">✕ יציאה</button>
   </div>
 </div>
 
