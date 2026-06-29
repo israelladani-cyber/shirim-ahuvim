@@ -89,7 +89,7 @@ body.admin .artist-avatar:hover::after{display:flex;}
 .btn-yt:hover{opacity:1;transform:scale(1.08);}
 
 /* PLAYLIST SIDE PANEL */
-.pl-panel{flex:0 0 0;width:0;min-width:0;overflow:hidden;background:#fff;border-left:none;opacity:0;pointer-events:none;display:flex;flex-direction:column;transition:flex-basis .3s cubic-bezier(.4,0,.2,1),width .3s cubic-bezier(.4,0,.2,1),opacity .25s cubic-bezier(.4,0,.2,1);}
+.pl-panel{flex:0 0 0;width:0;min-width:0;overflow:hidden;background:#fff;border-left:none;opacity:0;pointer-events:none;display:flex;flex-direction:column;transition:flex-basis .4s cubic-bezier(0,0,.2,1),width .4s cubic-bezier(0,0,.2,1),opacity .3s cubic-bezier(0,0,.2,1);}
 #plPanel:not(.pl-panel){display:none!important;}
 .pl-panel.open{flex-basis:338px;width:338px;border-left:1px solid #E5E5E5;opacity:1;pointer-events:auto;}
 .pl-panel-hdr{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid #E5E5E5;gap:6px;flex-shrink:0;background:#fff;}
@@ -178,7 +178,7 @@ body.theater .panel-theater-btn{color:#FF0000;}
 /* DESKTOP PLAYING: compact top bar + side-by-side */
 @media(min-width:768px){
   body.playing .player-panel{display:flex;height:100%;flex:1 1 0%;}
-  body.playing .list-panel{flex:0 0 338px;min-width:0;transition:flex-basis .3s cubic-bezier(.4,0,.2,1),opacity .25s cubic-bezier(.4,0,.2,1);}
+  body.playing .list-panel{flex:0 0 338px;min-width:0;transition:flex-basis .4s cubic-bezier(0,0,.2,1),opacity .3s cubic-bezier(0,0,.2,1);}
   /* Sliding doors: list collapses as playlist expands — player stays fixed */
   body.playing .page-body:has(.pl-panel.open) .list-panel{flex-basis:0;overflow:hidden;opacity:0;pointer-events:none;}
   body.playing .top{padding:0 24px;}
