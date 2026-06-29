@@ -1,1 +1,2433 @@
-hello test
+<html lang="he" dir="rtl">
+<head>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#121212">
+<title>קריוקי מזרחית</title>
+<link rel="icon" type="image/svg+xml" href="logo%209.svg">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23121212'/%3E%3Crect x='12' y='3' width='8' height='14' rx='4' fill='%231DB954'/%3E%3Cpath d='M8 15 Q8 24 16 24 Q24 24 24 15' fill='none' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='16' y1='24' x2='16' y2='28' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3Cline x1='11' y1='28' x2='21' y2='28' stroke='%231DB954' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:Arial,sans-serif;background:#ffffff;color:#0F0F0F;direction:rtl;min-height:100vh;padding-bottom:80px;}
+
+/* TOP BAR */
+.top{background:#ffffff;border-bottom:1px solid #E5E5E5;padding:0 24px;position:relative;z-index:10;flex-shrink:0;}
+.top-row{min-height:80px;display:flex;align-items:center;justify-content:center;}
+.brand{position:absolute;right:12px;top:50%;transform:translateY(-50%);display:flex;align-items:center;cursor:pointer;}
+
+/* SEARCH SECTION */
+.search-section{width:860px;max-width:calc(100% - 24px);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.yt-search{position:relative;flex:1;display:flex;align-items:center;direction:ltr;background:#ffffff;border-radius:24px;border:1px solid #ccc;height:38px;padding:0 12px;gap:8px;transition:box-shadow .2s;}
+.yt-search:focus-within{box-shadow:0 0 0 2px #FF0000;border-color:transparent;}
+.yt-search-icon{display:flex;align-items:center;color:#606060;flex-shrink:0;cursor:pointer;}
+.yt-search input{flex:1;border:none;outline:none;font-size:16px;color:#121212;background:transparent;direction:rtl;font-family:Arial,sans-serif;min-width:0;}
+.yt-search input::placeholder{color:#999;}
+.yt-clear{background:none;border:none;cursor:pointer;color:#999;font-size:18px;line-height:1;display:none;flex-shrink:0;}
+.yt-clear.visible{display:block;}
+.yt-history{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border-radius:14px;box-shadow:0 4px 24px rgba(0,0,0,.18);display:none;z-index:200;overflow:hidden;}
+.yt-history.open{display:block;}
+.yt-hist-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;color:#0F0F0F;font-size:14px;font-family:Arial,sans-serif;direction:rtl;}
+.yt-hist-item:hover{background:#f5f5f5;}
+.yt-hist-item svg{flex-shrink:0;color:#888;}
+.yt-hist-clear{text-align:center;padding:8px;font-size:12px;color:#888;cursor:pointer;border-top:1px solid #eee;}
+.yt-hist-clear:hover{background:#f5f5f5;color:#e00;}
+.stats{color:#0F0F0F;font-size:12px;}.stats b{color:#FF0000;}
+.toolbar-btn{display:flex;align-items:center;gap:6px;background:#F2F2F2;border:none;color:#0F0F0F;border-radius:8px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;}
+.toolbar-btn:hover{background:rgba(0,0,0,.07);color:#0F0F0F;}
+.toolbar-btn .bc{transition:transform .25s;display:flex;align-items:center;}
+.all-closed .bc{transform:rotate(-90deg);}
+
+/* CONTENT */
+.content{padding:20px 16px;max-width:860px;margin:0 auto;}
+.artist-block{margin-bottom:14px;background:#FFFFFF;border-radius:12px;overflow:hidden;}
+.artist-block:hover{background:#F2F2F2;}
+.artist-header{display:flex;align-items:center;gap:12px;padding:6px 16px;background:#F2F2F2;cursor:pointer;user-select:none;}
+.artist-header:hover{background:#E5E5E5;}
+.playlist-block{margin-bottom:14px;background:#FFFFFF;border-radius:12px;overflow:hidden;}
+.playlist-row{display:flex;align-items:center;gap:12px;padding:4px 16px;background:#F2F2F2;cursor:pointer;user-select:none;}
+.playlist-row:hover{background:#E5E5E5;}
+.playlist-row-avatar{width:34px;height:34px;border-radius:50%;background:#888;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;flex-shrink:0;}
+.playlist-row-info{flex:1;min-width:0;}
+.playlist-row-name{font-weight:700;font-size:14px;color:#0F0F0F;}
+.playlist-row-count{font-size:12px;color:#666;margin-top:2px;}
+.playlist-row-chevron{font-size:11px;color:#666;transition:transform .2s;flex-shrink:0;}
+.playlist-block[data-open="true"] .playlist-row-chevron{transform:rotate(180deg);}
+.playlist-block-songs{display:none;}
+.playlist-block[data-open="true"] .playlist-block-songs{display:block;}
+.artist-avatar{width:60px;height:60px;background:linear-gradient(135deg,#FF0000,#CC0000);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;color:#000;flex-shrink:0;overflow:hidden;background-size:cover;background-position:center top;position:relative;}
+.artist-avatar.has-photo{box-shadow:0 2px 8px rgba(0,0,0,.5);}
+body.admin .artist-avatar{cursor:pointer;}
+body.admin .artist-avatar::after{content:'📷';position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.45);font-size:22px;border-radius:50%;}
+body.admin .artist-avatar:hover::after{display:flex;}
+.artist-name-text{font-size:17px;font-weight:700;flex:1;color:#0F0F0F;}
+.chevron{color:#0F0F0F;transition:transform .25s;display:flex;align-items:center;}
+.artist-block[data-open="false"] .chevron{transform:rotate(-90deg);}
+.songs-wrap{overflow:hidden;}
+.artist-block[data-open="false"] .songs-wrap{display:none;}
+
+/* SONGS TABLE */
+.songs-table{width:100%;border-collapse:collapse;}
+.songs-table tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
+.songs-table tr:last-child{border-bottom:none;}
+.songs-table tr:hover{background:rgba(0,0,0,.05);}
+.songs-table td{padding:10px 14px;font-size:15px;color:#0F0F0F;vertical-align:middle;}
+.songs-table tr:hover td{color:#0F0F0F;}
+.td-num{width:28px;text-align:center;color:#909090;font-size:14px;}
+.td-actions{width:112px;}
+.song-artist-sub{font-size:11px;color:#909090;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.songs-table tr:hover .song-artist-sub{color:#888;}
+.song-actions{display:flex;align-items:center;gap:5px;justify-content:flex-end;}
+
+/* ACTION BUTTONS */
+.btn-play{width:30px;height:30px;border-radius:50%;background:#FFFFFF;border:1px solid #E5E5E5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .15s,border-color .15s;padding-right:1px;}.btn-play.mp4{background:#00BCD4!important;border-color:#00ACC1!important;}.btn-play.mp4 svg polygon{fill:#fff!important;}
+.btn-play:hover{transform:scale(1.1);background:#e8e8e8;}
+.btn-play svg{width:12px;height:14px;}
+.btn-add{height:32px;border-radius:18px;background:#F2F2F2;border:none;color:#0F0F0F;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:500;padding:0 14px;gap:5px;transition:background .15s;white-space:nowrap;}
+.btn-add:hover{background:#E5E5E5;}
+.btn-add.in-playlist{background:#0F0F0F;color:#fff;}
+.btn-yt{width:28px;height:20px;background:#FF0000;border-radius:5px;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;transition:transform .15s,opacity .15s;opacity:.85;flex-shrink:0;}
+.btn-yt:hover{opacity:1;transform:scale(1.08);}
+
+/* PLAYLIST SIDE PANEL */
+.pl-panel{flex:0 0 0;width:0;min-width:0;overflow:hidden;background:#fff;border-left:none;opacity:0;pointer-events:none;display:flex;flex-direction:column;transition:flex-basis .4s cubic-bezier(0,0,.2,1),width .4s cubic-bezier(0,0,.2,1),opacity .3s cubic-bezier(0,0,.2,1);}
+#plPanel:not(.pl-panel){display:none!important;}
+.pl-panel.open{flex-basis:338px;width:338px;border-left:1px solid #E5E5E5;opacity:1;pointer-events:auto;}
+.pl-panel-hdr{display:flex;align-items:center;padding:8px 12px;border-bottom:1px solid #E5E5E5;gap:6px;flex-shrink:0;background:#fff;}
+.pl-panel-title{flex:1;font-size:15px;font-weight:700;}
+.pl-panel-close{background:none;border:none;cursor:pointer;font-size:16px;color:#666;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.pl-panel-close:hover{background:#E5E5E5;}
+.pl-panel-body{flex:1;overflow-y:auto;padding:8px 0;background:#fff;}
+.pl-item{margin:4px 8px;border-radius:10px;overflow:hidden;border:1px solid transparent;}
+.pl-item.dnd-over{border-color:#FF0000;}
+.pl-item-hdr{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;background:#F2F2F2;}
+.pl-item-hdr:hover{background:#E5E5E5;}
+.pl-item-icon{width:32px;height:32px;border-radius:50%;background:#888;display:flex;align-items:center;justify-content:center;font-size:14px;color:#fff;flex-shrink:0;}
+.pl-item-info{flex:1;min-width:0;}
+.pl-item-name{font-weight:700;font-size:14px;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-item-count{font-size:12px;color:#888;margin-top:2px;}
+.pl-item-menu-btn{background:none;border:none;cursor:pointer;color:#666;padding:4px 6px;border-radius:6px;font-size:16px;flex-shrink:0;line-height:1;}
+.pl-item-menu-btn:hover{background:#E5E5E5;}
+.pl-item-chev{font-size:24px;color:#666;transition:transform .2s;flex-shrink:0;line-height:1;}
+.pl-item-drag{cursor:grab;color:#bbb;padding:0 5px;flex-shrink:0;display:flex;align-items:center;user-select:none;}
+.pl-item-drag:hover{color:#666;}
+.pl-item-drag:active{cursor:grabbing;}
+.pl-song-drag{cursor:grab;color:#ccc;padding:0 4px;flex-shrink:0;display:flex;align-items:center;user-select:none;}
+.pl-song-drag:hover{color:#888;}
+.pl-song-drag:active{cursor:grabbing;}
+.pl-song-row{display:flex;align-items:center;gap:4px;padding:5px 10px;border-bottom:1px solid #F5F5F5;}
+.pl-song-row.dnd-over{background:#EEF2FF;}
+.pl-item[data-open="true"] .pl-item-chev{transform:rotate(180deg);}
+.pl-item-songs{display:none;background:#F2F2F2;}
+.pl-item[data-open="true"] .pl-item-songs{display:block;}
+.pl-song-row{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;border-top:1px solid #E5E5E5;}
+.pl-song-row:hover{background:#E5E5E5;}
+.pl-song-info{flex:1;min-width:0;}
+.pl-song-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.pl-song-artist{font-size:12px;color:#888;margin-top:1px;}
+.pl-song-play{width:30px;height:30px;border-radius:50%;background:#FFFFFF;border:1px solid #E5E5E5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding-right:1px;transition:transform .15s,background .15s,border-color .15s;}
+.pl-song-play:hover{transform:scale(1.1);background:#e8e8e8;}
+.pl-song-play.mp4{background:#00BCD4;border-color:#00ACC1;}
+.pl-song-play.mp4:hover{background:#00ACC1;transform:scale(1.1);}
+.pl-song-del{width:22px;height:22px;border-radius:50%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:#aaa;}
+.pl-song-del:hover{background:#F2F2F2;color:#e00;}
+.pl-song-yt{flex-shrink:0;}
+.pl-panel-footer{padding:12px 16px;border-top:1px solid #E5E5E5;flex-shrink:0;background:#fff;}
+.pl-create-btn{width:100%;padding:10px;border-radius:10px;background:#fff;border:1px solid #E5E5E5;cursor:pointer;font-size:13px;font-weight:600;font-family:Arial,sans-serif;color:#0F0F0F;}
+.pl-create-btn:hover{background:#F2F2F2;}
+.pl-ctx-menu{position:fixed;background:#fff;border:1px solid #E5E5E5;border-radius:10px;box-shadow:0 4px 20px rgba(0,0,0,.15);z-index:1000;min-width:140px;overflow:hidden;display:none;}
+.pl-ctx-menu.open{display:block;}
+.pl-ctx-item{padding:10px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:8px;}
+.pl-ctx-item:hover{background:#F2F2F2;}
+.pl-ctx-item.danger{color:#e00;}
+
+/* LAYOUT */
+:root{--top-h:120px;--adm-h:0px;}
+html,body{height:100%;overflow:hidden;}
+.page-body{display:flex;height:calc(100dvh - var(--top-h) - var(--adm-h));overflow:hidden;}
+.list-panel{flex:1;min-width:0;overflow-y:auto;height:100%;}
+.pl-panel.open{height:100%;}
+body.playing .content{max-width:none;margin:0;}
+
+/* PLAYER PANEL */
+.player-panel{display:none;flex-direction:column;background:#FFFFFF;min-width:0;}
+.panel-header{display:flex;align-items:center;gap:6px;padding:8px 12px;background:#fff;border-bottom:1px solid #ddd;flex-shrink:0;}
+.panel-song-info{flex:1;min-width:0;}
+.panel-win-btns{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:2px;}
+.panel-song-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0F0F0F;}
+.panel-artist-name{font-size:11px;color:#0F0F0F;margin-top:1px;}
+.panel-close{background:none;border:none;color:#333;cursor:pointer;font-size:20px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}.panel-close:hover{background:#e0e0e0;}
+.panel-minimize-btn{background:none;border:none;color:#333;cursor:pointer;font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;line-height:1;}
+.panel-minimize-btn:hover{background:#e0e0e0;}
+.panel-pip-btn{display:none!important;}
+.panel-float-btn,.panel-theater-btn{display:none;background:none;border:none;color:#333;cursor:pointer;width:30px;height:30px;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
+.panel-float-btn:hover,.panel-theater-btn:hover{background:#e0e0e0;}
+body.theater .panel-theater-btn{color:#FF0000;}
+@media(min-width:768px){.panel-float-btn,.panel-theater-btn{display:flex;}}
+.panel-video{position:relative;flex:1;min-height:0;background:#000;}
+.panel-video iframe{position:absolute;inset:0;width:100%;height:100%;}
+.panel-footer{display:none;}.panel-nav-group{display:flex;align-items:center;gap:6px;flex-shrink:0;}
+.modal-nav-btn{background:#F2F2F2;border:none;color:#0F0F0F;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;gap:5px;}
+.modal-nav-btn:hover{background:#F2F2F2;color:#0F0F0F;}
+.modal-nav-btn:disabled{opacity:.35;cursor:default;}
+.modal-queue-info{flex:1;text-align:center;font-size:12px;color:#0F0F0F;}
+.modal-queue-info b{color:#FF0000;}
+.modal-add-btn{height:32px;border-radius:18px;background:#F2F2F2;border:none;color:#0F0F0F;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;font-weight:500;padding:0 14px;gap:5px;transition:background .15s;white-space:nowrap;font-family:Arial,sans-serif;}
+.modal-add-btn:hover{background:#E5E5E5;}
+.modal-add-btn.in-queue{background:#0F0F0F;color:#fff;}
+
+/* DESKTOP PLAYING: compact top bar + side-by-side */
+@media(min-width:768px){
+  body.playing .player-panel{display:flex;height:100%;flex:1 1 0%;}
+  body.playing .list-panel{flex:0 0 338px;min-width:0;transition:flex-basis .4s cubic-bezier(0,0,.2,1),opacity .3s cubic-bezier(0,0,.2,1);}
+  /* Sliding doors: list collapses as playlist expands — player stays fixed */
+  body.playing .page-body:has(.pl-panel.open) .list-panel{flex-basis:0;overflow:hidden;opacity:0;pointer-events:none;}
+  body.playing .top{padding:0 24px;}
+  /* Compact song list in sidebar */
+  body.playing .songs-table td{padding:6px 8px;font-size:13px;}
+  body.playing .song-artist-sub{font-size:11px;}
+  body.playing .btn-add{height:26px;padding:0 7px;}
+  .btn-add{padding:0 10px;}
+  body.playing .btn-yt{width:22px;height:16px;}
+  body.playing .song-actions{gap:3px;}
+  body.playing .btn-play{width:24px;height:24px;}
+  body.playing .btn-play svg{width:9px;height:11px;}
+  body.playing .artist-header{padding:5px 8px;}
+  body.playing .artist-avatar{width:36px;height:36px;font-size:13px;}
+  body.playing .artist-name-text{font-size:14px;}
+  /* Theater mode: player takes full width */
+  body.playing.theater .list-panel{flex-basis:0!important;overflow:hidden;opacity:0;pointer-events:none;}
+  body.playing.theater .pl-panel:not(.open){flex-basis:0;width:0;overflow:hidden;}
+  body.playing.theater .pl-panel.open{flex-basis:338px;width:338px;}
+}
+
+/* MOBILE: overlay + mini bar */
+@media(max-width:767px){
+  .player-panel{position:fixed;inset:0;z-index:300;flex-direction:column;background:#FFFFFF;border:none;}
+  .panel-header{flex-wrap:wrap!important;padding:5px 10px!important;}
+  .panel-song-info{flex:1 1 100%!important;min-width:0!important;}
+  .panel-song-name{font-size:16px!important;}
+  .panel-artist-name{font-size:13px!important;}
+  .panel-nav-group{display:flex!important;align-items:center!important;gap:4px!important;}
+  .panel-nav-group .modal-queue-info{font-size:11px!important;}
+  .modal-nav-btn{font-size:14px!important;}
+  .modal-add-btn{font-size:14px!important;}
+  .modal-nav-btn{padding:5px 8px!important;gap:3px!important;}
+  .player-panel.open{display:flex;}
+  body.playing{padding-bottom:70px;}body.has-song{padding-bottom:57px;}
+  body.playing .queue-bar{bottom:90px;}
+
+  /* Mobile top bar layout */
+  .top-row{flex-direction:column;align-items:stretch;gap:6px;min-height:unset;padding:8px 0 6px;position:sticky;top:0;z-index:200;background:#ffffff;}
+  .top-row .yt-search{background:#ffffff!important;border-color:#ccc!important;}
+  .brand{position:static;transform:none;display:flex;justify-content:center;}
+  .queue-bar{position:static;transform:none;align-self:center;}
+  .search-section{width:100%;max-width:100%;flex-wrap:nowrap;gap:8px;}
+  /* Hide button text on mobile - icons only */
+  .toolbar-btn .btn-label{display:none;}
+  .pl-panel.open{flex-basis:73vw;width:73vw;}
+  #btnExpandAll,#btnCollapseAll,#btnPlPanel{padding:5px 7px!important;font-size:11px!important;flex-shrink:0;}
+  .yt-search{min-width:80px!important;flex:1 1 80px!important;}
+
+  .adm-overlay{align-items:flex-start!important;padding-top:80px!important;}
+  body.admin{position:fixed!important;width:100%!important;display:flex!important;flex-direction:column!important;height:100dvh!important;overflow:hidden!important;padding-bottom:80px!important;}
+  body.admin .player-panel{z-index:700!important;}
+  body.admin.playing .player-panel{display:flex!important;position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:calc(var(--adm-h) + 72px)!important;}
+  body.admin .page-body{flex:1!important;height:auto!important;min-height:0!important;overflow-y:scroll!important;-webkit-overflow-scrolling:touch!important;padding-bottom:12px!important;}
+  body.admin .adm-toolbar{position:static!important;flex-shrink:0!important;padding:8px 10px!important;flex-wrap:nowrap!important;gap:6px!important;overflow-x:auto!important;touch-action:pan-x pan-down!important;}
+  body.admin .adm-toolbar{scroll-snap-type:x mandatory!important;gap:0!important;padding:0!important;}
+  body.admin .adm-toolbar .atb-add-row{display:flex!important;flex-shrink:0!important;width:100vw!important;gap:6px!important;padding:4px 10px!important;box-sizing:border-box!important;align-items:center!important;scroll-snap-align:start!important;}
+  body.admin .adm-toolbar .atb-actions-row{display:flex!important;flex-shrink:0!important;width:100vw!important;gap:4px!important;padding:4px 8px!important;box-sizing:border-box!important;align-items:center!important;scroll-snap-align:start!important;}
+  body.admin .adm-toolbar .atb-inp{flex:1!important;min-width:0!important;height:32px!important;}
+  body.admin .adm-toolbar .atb-btn{flex:1!important;min-width:0!important;height:32px!important;box-sizing:border-box!important;justify-content:center!important;padding:2px 6px!important;font-size:11px!important;}
+  body.admin .adm-toolbar #atbStat{display:none!important;}
+}
+
+/* ── FLOAT PLAYER (PiP) ── */
+/* flex column: video on top, drag-bar below — no overlay blocking the iframe */
+.float-player{position:fixed;left:0;top:0;width:340px;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.18);z-index:9999;display:none;background:#FFFFFF;touch-action:none;user-select:none;}
+.float-player.visible{display:flex;flex-direction:column;}
+/* Float mode mini-PIP: panel stays in DOM, CSS positions it as a fixed mini window */
+@media(min-width:768px){
+  body.float-playing .player-panel{display:flex!important;position:fixed!important;right:12px!important;bottom:96px;left:auto!important;width:340px;height:192px;z-index:9998;border-radius:14px 14px 0 0;box-shadow:0 10px 36px rgba(0,0,0,.18);overflow:hidden;flex-direction:column;}
+  body.float-playing .panel-header{display:none!important;}
+  body.float-playing .panel-footer{display:none!important;}
+  body.float-playing .panel-video{flex:1!important;min-height:0!important;}
+  body.float-playing #float-video-slot{display:none!important;}
+}
+.float-player.pip-snap{transition:left .2s cubic-bezier(.25,.46,.45,.94),top .2s cubic-bezier(.25,.46,.45,.94);}
+@media(min-width:768px){body.float-playing .player-panel.pip-snap{transition:left .2s cubic-bezier(.25,.46,.45,.94),top .2s cubic-bezier(.25,.46,.45,.94)!important;}}
+/* video slot — explicit height, no overlay blocking it */
+#float-video-slot{width:100%;height:124px;position:relative;overflow:hidden;background:#000;flex-shrink:0;}
+#float-video-slot #yt-player{width:100%!important;height:100%!important;}
+#float-video-slot #yt-player iframe{width:100%!important;height:100%!important;display:block!important;}
+/* bottom bar — this is the drag handle; video above is fully interactive */
+.float-bar{display:flex;align-items:center;background:#FFFFFF;padding:6px 8px 6px 12px;gap:4px;cursor:grab;touch-action:none;flex-shrink:0;border-top:1px solid #E5E5E5;}
+.float-bar.grabbing{cursor:grabbing;}
+.float-bar-song{flex:1;font-size:13px;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;min-width:0;pointer-events:none;line-height:1.3;}
+.fbar-btn{background:none;border:none;color:#888;cursor:pointer;font-size:15px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;flex-shrink:0;}
+.fbar-btn:hover,.fbar-btn:active{color:#0F0F0F;background:rgba(0,0,0,.12);}
+#pipPlayBtn{font-size:20px;color:#ddd;}
+body.float-playing .mini-bar{display:none!important;}
+@media(max-width:767px){
+  .float-player{width:185px;}
+  #float-video-slot{height:104px;}
+  body.float-playing{padding-bottom:16px;}
+  .float-bar{padding:4px 5px 4px 8px;gap:2px;}
+  .float-bar-song{font-size:10px;}
+  .fbar-btn{width:26px;height:26px;font-size:12px;}
+  #pipPlayBtn{font-size:15px;}
+}
+
+.atb-add-row,.atb-actions-row{display:contents;}
+/* MINI BAR */
+.mini-bar{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #E5E5E5;border-radius:12px 12px 0 0;padding:6px 14px 10px;z-index:200;align-items:center;gap:10px;cursor:pointer;box-shadow:0 -4px 16px rgba(0,0,0,.1);}
+body.has-song:not(.playing) .mini-bar{display:flex;}
+.mini-thumb{width:40px;height:40px;border-radius:6px;background:#eee center/cover no-repeat;flex-shrink:0;}
+.mini-info{flex:1;min-width:0;}
+.mini-song{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0F0F0F;}
+.mini-artist{font-size:11px;color:#606060;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mini-ctrl{background:none;border:none;color:#0F0F0F;cursor:pointer;font-size:20px;width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;transition:background .15s;}
+.mini-ctrl:hover{background:rgba(0,0,0,.07);}
+body.admin .mini-bar{bottom:var(--adm-h,58px);}
+body.admin .mini-fab{bottom:calc(var(--adm-h,58px) + 20px);}
+/* Floating mini fab — appears bottom-right when minimizing from playlist mode */
+.mini-fab{display:none;position:fixed;bottom:20px;right:20px;z-index:300;background:#fff;border:1px solid #E5E5E5;border-radius:40px;box-shadow:0 4px 20px rgba(0,0,0,.15);padding:6px 16px 6px 8px;align-items:center;gap:10px;cursor:pointer;width:240px;transition:box-shadow .15s;}
+.mini-fab:hover{box-shadow:0 6px 24px rgba(0,0,0,.2);}
+.mini-fab.visible{display:flex;}
+.mini-fab-thumb{width:34px;height:34px;border-radius:50%;background:#eee center/cover no-repeat;flex-shrink:0;}
+.mini-fab-info{flex:1;min-width:0;}
+.mini-fab-song{font-size:12px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0F0F0F;}
+.mini-fab-artist{font-size:10px;color:#606060;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.mini-fab-close{background:none;border:none;color:#aaa;cursor:pointer;font-size:14px;width:24px;height:24px;display:flex;align-items:center;justify-content:center;border-radius:50%;flex-shrink:0;transition:background .15s;padding:0;}
+.mini-fab-close:hover{background:#F2F2F2;color:#333;}
+
+/* QUEUE BAR */
+.queue-bar{position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:200;background:#FF0000;border-radius:500px;padding:7px 16px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,.4);transition:opacity .3s;opacity:0;pointer-events:none;white-space:nowrap;}
+.queue-bar.visible{opacity:1;pointer-events:auto;}
+.queue-bar-text{font-size:13px;font-weight:700;color:#000;}
+.queue-play-btn{background:#000;color:#FF0000;border:none;border-radius:500px;padding:5px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
+.queue-clear-btn{background:none;border:none;color:rgba(0,0,0,.6);cursor:pointer;font-size:18px;line-height:1;padding:0 0 0 4px;}
+
+mark{background:rgba(29,185,84,.2);color:#FF0000;border-radius:3px;padding:0 2px;font-weight:700;}
+.no-results{text-align:center;padding:60px 20px;color:#0F0F0F;font-size:15px;}
+
+/* QUEUE PANEL */
+.queue-panel{position:fixed;bottom:0;left:0;right:0;max-height:65vh;overflow-y:auto;background:#FFFFFF;border-top:2px solid #FF0000;border-radius:20px 20px 0 0;z-index:600;transform:translateY(110%);transition:transform .35s cubic-bezier(.4,0,.2,1);}
+.queue-panel.open{transform:translateY(0);}
+.queue-panel-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px 12px;border-bottom:1px solid #333;position:sticky;top:0;background:#FFFFFF;z-index:1;}
+.queue-panel-title{font-size:15px;font-weight:700;color:#0F0F0F;}
+.queue-panel-actions{display:flex;gap:8px;align-items:center;}
+.q-play-btn{background:#FF0000;border:none;color:#000;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
+.q-clear-btn{background:#0F0F0F;border:none;color:#0F0F0F;border-radius:8px;padding:7px 12px;font-size:12px;cursor:pointer;font-family:Arial,sans-serif;}
+.q-close-btn{background:none;border:none;color:#888;cursor:pointer;font-size:22px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;}
+.q-close-btn:hover{background:#0F0F0F;color:#0F0F0F;}
+.queue-item{display:flex;align-items:center;padding:10px 20px;gap:12px;border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;cursor:pointer;}
+.queue-item:hover{background:rgba(0,0,0,.05);}
+.qi-num{color:#909090;font-size:12px;min-width:20px;text-align:center;flex-shrink:0;}
+.qi-thumb{width:42px;height:42px;border-radius:6px;background:#0F0F0F;flex-shrink:0;background-size:cover;background-position:center;}
+.qi-info{flex:1;min-width:0;}
+.qi-name{font-size:13px;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.qi-artist{font-size:11px;color:#0F0F0F;margin-top:2px;}
+.qi-rm{background:none;border:none;color:#909090;cursor:pointer;font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .15s;flex-shrink:0;}
+.qi-rm:hover{background:#0F0F0F;color:#e04;}
+.queue-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:599;display:none;}
+.queue-overlay.open{display:block;}
+
+/* ── ADMIN MODE ── */
+.admin-lock{background:none;border:none;color:#606060;cursor:pointer;font-size:17px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:all .15s;flex-shrink:0;padding:0;}
+.admin-lock:hover{background:#F2F2F2;color:#0F0F0F;}
+body.admin .admin-lock{color:#FF0000;}
+.adm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);z-index:2000;display:none;align-items:center;justify-content:center;}
+.adm-overlay.open{display:flex;}
+.adm-box{background:#FAFAFA;border:1px solid #333;border-radius:16px;padding:28px;width:360px;max-width:92vw;direction:rtl;box-shadow:0 24px 64px rgba(0,0,0,.9);}
+.adm-title{font-size:17px;font-weight:700;margin-bottom:18px;color:#0F0F0F;}
+.adm-inp{width:100%;background:#E5E5E5;border:1px solid #444;color:#0F0F0F;border-radius:8px;padding:10px 14px;font-size:15px;font-family:Arial,sans-serif;box-sizing:border-box;margin-bottom:10px;direction:rtl;}
+.adm-inp:focus{outline:none;border-color:#FF0000;}
+.adm-err{color:#ff5a5a;font-size:13px;margin-bottom:10px;min-height:18px;}
+.adm-row{display:flex;gap:8px;margin-top:4px;}
+.adm-btn{flex:1;background:#FF0000;border:none;color:#fff;border-radius:8px;padding:10px 0;font-size:14px;font-weight:700;cursor:pointer;font-family:Arial,sans-serif;}
+.adm-btn.sec{background:#E5E5E5;color:#0F0F0F;flex:1;border:1px solid #444;}
+.adm-btn.sec:hover{background:#0F0F0F;color:#ffffff;}
+.adm-note{font-size:12px;color:#888;line-height:1.7;margin-bottom:14px;}
+.adm-note b{color:#ccc;}
+/* ── ADMIN TOOLBAR ── */
+.adm-toolbar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,255,255,.97);backdrop-filter:blur(20px);border-top:2px solid #fff;padding:10px 16px;z-index:600;display:none;direction:rtl;gap:8px;flex-direction:row;flex-wrap:nowrap;align-items:center;overflow-x:auto;}
+body.admin .adm-toolbar{display:flex;}
+body.admin{--adm-h:58px;}
+
+/* Inputs match site search bar */
+.atb-inp{background:#fff;border:1px solid #ddd;color:#121212;border-radius:24px;height:36px;padding:0 14px;font-size:14px;font-family:Arial,sans-serif;direction:rtl;min-width:0;flex-shrink:0;}
+.atb-inp:focus{outline:none;box-shadow:0 0 0 2px #FF0000;border-color:transparent;}
+.atb-inp[id="atbArtist"],.atb-inp[id="atbSong"]{width:130px;}
+select.atb-artist-sel{cursor:pointer;padding-left:4px;}
+.atb-inp[id="atbUrl"]{flex:1;min-width:120px;max-width:860px;flex-shrink:1;}
+/* Buttons match site toolbar-btn style */
+.atb-btn{display:flex;align-items:center;gap:6px;background:#F2F2F2;border:none;color:#0F0F0F;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;}
+.atb-btn:hover{background:rgba(0,0,0,.07);color:#0F0F0F;}
+.atb-btn:disabled{opacity:.5;cursor:default;}
+.atb-btn.green{background:#FF0000;color:#000;font-weight:700;}
+.atb-btn.green:hover{background:#CC0000;}
+.atb-btn.warn{background:#F2F2F2;color:#0F0F0F;}
+body.admin.del-mode .atb-btn.warn{background:#ff5a5a;color:#0F0F0F;}
+.atb-stat{font-size:12px;flex-shrink:0;}
+.atb-stat.ok{color:#FF0000;}.atb-stat.err{color:#ff5a5a;}
+/* Delete button per song row */
+.btn-del{width:28px;height:28px;border-radius:50%;background:none;border:1.5px solid transparent;color:#909090;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;line-height:1;transition:all .15s;}
+body.admin.del-mode .btn-del{display:flex;}
+.btn-del:hover{background:#ff5a5a;border-color:#ff5a5a;color:#0F0F0F;}
+body.admin{padding-bottom:72px;}
+@media(max-width:767px){body.admin{padding-bottom:72px;}.atb-inp[id="atbArtist"],.atb-inp[id="atbSong"]{width:90px;}}
+/* Drag handles */
+.drag-handle{cursor:grab;color:#606060;font-size:15px;padding:2px 6px;user-select:none;display:none;line-height:1;flex-shrink:0;transition:color .15s;}
+body.admin .drag-handle{display:inline-flex;align-items:center;}
+.drag-handle:hover{color:#999;}
+.drag-handle:active{cursor:grabbing;}
+.drag-handle-song{cursor:grab;font-size:13px;width:20px;height:20px;border-radius:3px;background:none;border:none;padding:0;display:none;align-items:center;justify-content:center;color:#606060;flex-shrink:0;transition:color .15s;}
+body.admin .drag-handle-song{display:flex;}
+.drag-handle-song:hover{color:#999;}
+.drag-handle-song:active{cursor:grabbing;}
+/* Drag-over visual feedback - YouTube style line indicator */
+.artist-block.drag-over-above>.artist-header{box-shadow:inset 0 2px 0 #FF0000;}
+.artist-block.drag-over-below>.artist-header{box-shadow:inset 0 -2px 0 #FF0000;}
+.songs-table tr.drag-over-above td{box-shadow:inset 0 2px 0 #FF0000;}
+.songs-table tr.drag-over-below td{box-shadow:inset 0 -2px 0 #FF0000;}
+/* Queue DnD */
+.queue-item.drag-over-above{box-shadow:inset 0 2px 0 #FF0000;}
+.queue-item.drag-over-below{box-shadow:inset 0 -2px 0 #FF0000;}
+.qi-drag{cursor:grab;color:#606060;font-size:15px;padding:0 4px;flex-shrink:0;user-select:none;display:flex;align-items:center;transition:color .15s;}
+.qi-drag:hover{color:#999;}
+.qi-drag:active{cursor:grabbing;}
+/* Admin: artist-level controls */
+.admin-artist-btns{display:none;gap:4px;align-items:center;flex-shrink:0;}
+body.admin .admin-artist-btns{display:flex;}
+.btn-artist-ctrl{background:none;border:none;cursor:pointer;border-radius:5px;padding:2px 5px;font-size:13px;color:#606060;transition:all .15s;line-height:1;white-space:nowrap;display:flex;align-items:center;}
+.btn-artist-ctrl:hover{background:#0F0F0F;color:#0F0F0F;}
+.btn-del-folder{display:none!important;}
+body.admin.del-mode .btn-del-folder{display:flex!important;color:#ff5a5a;}
+body.admin.del-mode .btn-del-folder:hover{background:#ff5a5a;color:#0F0F0F;}
+/* Admin: song-level controls (rename only - reorder via drag) */
+.btn-song-ctrl{width:22px;height:22px;border-radius:4px;background:none;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:12px;color:#666;transition:all .15s;flex-shrink:0;}
+.btn-song-ctrl:hover{background:#0F0F0F;color:#0F0F0F;}
+body.admin .btn-song-ctrl{display:flex;}
+body.admin .td-actions{width:auto;}
+/* Move to folder */
+.btn-move-folder{width:22px;height:22px;border-radius:4px;background:none;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:13px;color:#666;transition:all .15s;flex-shrink:0;}
+.btn-move-folder:hover{background:rgba(74,158,255,.15);color:#4a9eff;}
+body.admin .btn-move-folder{display:flex;}
+.folder-picker{position:fixed;background:#FAFAFA;border:1px solid #444;border-radius:12px;padding:6px 0;z-index:3000;min-width:180px;max-height:290px;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,.85);direction:rtl;}
+.folder-picker-title{font-size:11px;color:#666;padding:4px 14px 7px;border-bottom:1px solid #333;margin-bottom:3px;font-weight:700;}
+.folder-picker-item{padding:8px 14px;font-size:13px;color:#0F0F0F;cursor:pointer;white-space:nowrap;}
+.folder-picker-item:hover{background:#F2F2F2;color:#0F0F0F;}
+.folder-picker-item.current{color:#FF0000;pointer-events:none;}
+.folder-picker-new{padding:8px 14px;font-size:13px;color:#4a9eff;cursor:pointer;border-top:1px solid #333;margin-top:3px;}
+.folder-picker-new:hover{background:#F2F2F2;}
+
+
+/* PLAYLIST PICKER */
+#plPickerOverlay{position:fixed;inset:0;z-index:3000;display:none;pointer-events:none;}
+#plPickerOverlay.open{display:block;pointer-events:auto;}
+.pl-picker-bg{position:absolute;inset:0;}
+#plPicker{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);background:#1e2025;border:1px solid rgba(255,255,255,.15);border-radius:14px;padding:6px 0;min-width:240px;max-height:70vh;overflow-y:auto;box-shadow:0 12px 40px rgba(0,0,0,.7);direction:rtl;}
+.pl-picker-title{padding:12px 16px 8px;font-size:12px;color:#888;font-weight:700;letter-spacing:.8px;}
+.pl-pick-item{padding:11px 16px;cursor:pointer;font-size:14px;display:flex;align-items:center;gap:8px;color:#fff;transition:background .12s;}
+.pl-pick-item:hover{background:rgba(255,255,255,.07);}
+.pl-pick-item.checked{color:#00BCD4;}
+.pl-pick-check{width:14px;text-align:center;font-size:12px;color:#00BCD4;flex-shrink:0;}
+.pl-pick-sep{height:1px;background:rgba(255,255,255,.08);margin:4px 8px;}
+.pl-pick-new{padding:11px 16px;cursor:pointer;font-size:14px;color:#0F0F0F;font-weight:600;display:flex;align-items:center;gap:10px;}
+.pl-pick-new:hover{background:rgba(0,0,0,.06);}
+/* PLAYLISTS PANEL */
+#plPanel{direction:rtl;}
+.pl-ph{display:flex;align-items:center;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08);gap:10px;flex-shrink:0;}
+.pl-ph-back{background:none;border:none;color:#aaa;font-size:22px;cursor:pointer;padding:4px 10px;border-radius:8px;line-height:1;}
+.pl-ph-back:hover{background:rgba(255,255,255,.1);color:#fff;}
+.pl-ph-title{font-size:18px;font-weight:700;flex:1;color:#fff;}
+.pl-ph-actions{display:flex;gap:6px;}
+.pl-btn{background:rgba(255,255,255,.1);border:none;color:#fff;padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer;white-space:nowrap;}
+.pl-btn:hover{background:rgba(255,255,255,.2);}
+.pl-btn.pri{background:#00BCD4;color:#000;font-weight:700;}
+.pl-body{flex:1;overflow-y:auto;padding:12px 16px;}
+.pl-new-row{display:flex;align-items:center;gap:12px;padding:14px 8px;cursor:pointer;color:#0F0F0F;font-size:15px;font-weight:600;border-radius:10px;}
+.pl-new-row:hover{background:rgba(0,0,0,.06);}
+.pl-list-item{display:flex;align-items:center;padding:12px 8px;border-radius:10px;cursor:pointer;gap:12px;transition:background .15s;}
+.pl-list-item:hover{background:rgba(255,255,255,.06);}
+.pl-list-icon{width:46px;height:46px;background:linear-gradient(135deg,#00BCD4,#0097A7);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.pl-list-info{flex:1;min-width:0;}
+.pl-list-name{font-size:15px;font-weight:600;color:#fff;}
+.pl-list-sub{font-size:12px;color:#888;margin-top:2px;}
+.pl-empty{text-align:center;color:#555;padding:60px 20px;font-size:15px;line-height:2;}
+.pl-song-row{display:flex;align-items:center;gap:8px;padding:11px 4px;border-bottom:1px solid rgba(255,255,255,.05);}
+.pl-song-row:last-child{border:none;}
+.pl-song-info{flex:1;cursor:pointer;min-width:0;}
+.pl-song-title{font-size:14px;font-weight:500;color:#e0e0e0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.pl-song-sub{font-size:12px;color:#888;margin-top:2px;}
+/* pl-song-play defined above */
+.pl-song-del{background:none;border:none;color:#555;font-size:16px;cursor:pointer;padding:4px 8px;flex-shrink:0;}
+.pl-song-del:hover{color:#f55;}
+.pl-top-btn{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.12);color:#ccc;border-radius:20px;padding:5px 13px;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.pl-top-btn:hover{background:rgba(255,255,255,.16);color:#fff;}
+
+.pl-admin-btn{background:#FF0000;border:none;color:#fff;border-radius:20px;padding:5px 13px;font-size:13px;cursor:pointer;white-space:nowrap;flex-shrink:0;}
+.pl-admin-btn:hover{background:#B71C1C;}
+
+.queue-tabs{display:flex;gap:6px;padding:6px 8px;overflow-x:auto;background:#1a1a1a;border-bottom:1px solid rgba(255,255,255,.08);flex-shrink:0;scrollbar-width:none;align-items:center;}
+.queue-panel.minimized #queuePanelList{display:none;}
+.queue-tabs::-webkit-scrollbar{display:none;}
+.q-tab{background:rgba(255,255,255,.09);border:none;color:#fff;border-radius:14px;padding:4px 11px;font-size:12px;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit;}
+.q-tab:hover{background:rgba(255,255,255,.16);color:#fff;}
+.q-tab.active{background:#FF0000;color:#fff;font-weight:600;}
+.q-act-btn{background:none;border:none;color:#ccc;font-size:14px;cursor:pointer;padding:4px 9px;border-radius:6px;flex-shrink:0;font-family:inherit;line-height:1;}
+.q-act-btn:hover{background:rgba(255,255,255,.1);color:#fff;}
+.q-naka{color:#FF4444;}
+.q-naka:hover{background:rgba(255,68,68,.15);}
+.q-play-circle{background:#E53935;color:#fff;border-radius:50%;width:28px;height:28px;display:inline-flex;align-items:center;justify-content:center;padding:0!important;font-size:11px;flex-shrink:0;border:none;cursor:pointer;}
+.q-play-circle:hover{background:#B71C1C;}
+.playlist-popup{position:fixed;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.22);padding:8px 0;min-width:240px;max-width:calc(100vw - 16px);z-index:600;display:none;direction:rtl;}.playlist-popup.open{display:block;}.playlist-popup-title{font-size:13px;font-weight:700;color:#0F0F0F;padding:10px 16px 8px;border-bottom:1px solid #eee;text-align:right;display:flex;align-items:center;justify-content:space-between;}.playlist-popup-close{background:none;border:none;cursor:pointer;font-size:16px;color:#888;line-height:1;padding:0;margin-right:8px;flex-shrink:0;}.playlist-popup-close:hover{color:#0F0F0F;}.playlist-popup-item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .1s;direction:rtl;}.playlist-popup-item:hover{background:#f5f5f5;}.playlist-popup-item .pl-name{font-size:13px;color:#0F0F0F;flex:1;}.playlist-popup-new{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;transition:background .1s;border-top:1px solid #eee;direction:rtl;}.playlist-popup-new:hover{background:#f5f5f5;}.playlist-popup-new span{font-size:13px;color:#0F0F0F;}.new-pl-form{padding:8px 16px 12px;display:none;gap:6px;direction:rtl;}.new-pl-form.open{display:flex;}.new-pl-inp{flex:1;border:1px solid #ccc;border-radius:6px;padding:6px 10px;font-size:13px;font-family:Arial,sans-serif;direction:rtl;}.new-pl-ok{background:#0F0F0F;color:#fff;border:none;border-radius:6px;padding:6px 12px;cursor:pointer;font-size:13px;flex-shrink:0;}.modal-add-btn.saved{background:#0F0F0F;color:#fff;border-color:#0F0F0F;}
+.karaoke-toast{position:fixed;top:72px;left:16px;background:#0F0F0F;color:#fff;border-radius:4px;padding:10px 16px;font-size:13px;z-index:700;transform:translateX(calc(-100% - 20px));transition:transform .3s;pointer-events:none;max-width:300px;direction:rtl;white-space:nowrap;}.karaoke-toast.show{transform:translateX(0);}
+@media(max-width:768px){.pl-panel{border:none!important;}.pl-panel:not(.open){display:none!important;}body.playing .list-panel{flex:0 0 0!important;width:0!important;min-width:0!important;display:none!important;}body.playing .player-panel{flex:1!important;max-width:100vw!important;}}
+</style>
+<script src="https://accounts.google.com/gsi/client" defer></script>
+</head>
+<body>
+
+<!-- ── GOOGLE AUTH ── -->
+<div id="gAuthOverlay" style="position:fixed;inset:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;z-index:99999;overflow:hidden;">
+  <div id="g_id_onload" data-client_id="978399961472-9jmveopmp6dngajq8767tl34k3eo81ak.apps.googleusercontent.com" data-callback="handleGoogleAuth" data-auto_select="true" data-use_fedcm_for_prompt="false"></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:32px;text-align:center;">
+    <img src="logo 8.svg" style="width:min(450px,42vw);height:auto;object-fit:contain;transform:scaleX(2.25);transform-origin:center;">
+    <div style="font-size:14px;color:#777;font-family:Arial,sans-serif;">&#1499;&#1504;&#1497;&#1505;&#1492; &#1506;&#1501; &#1495;&#1513;&#1489;&#1493;&#1503; Google</div>
+    <div class="g_id_signin" data-type="icon" data-shape="circle" data-theme="outline" data-size="large"></div>
+    <div id="_gFallback" style="display:none;margin-top:4px;">
+      <button onclick="if(window.google&&google.accounts)google.accounts.id.prompt();" style="display:flex;align-items:center;gap:10px;background:#fff;border:1px solid #dadce0;border-radius:24px;padding:10px 20px;font-size:14px;font-family:Arial,sans-serif;color:#3c4043;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.12);">
+        <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M17.64 9.2c0-.637-.057-1.251-.164-1.84H9v3.481h4.844c-.209 1.125-.843 2.078-1.796 2.717v2.258h2.908c1.702-1.567 2.684-3.874 2.684-6.615z"/><path fill="#34A853" d="M9 18c2.43 0 4.467-.806 5.956-2.18l-2.908-2.259c-.806.54-1.837.86-3.048.86-2.344 0-4.328-1.584-5.036-3.711H.957v2.332C2.438 15.983 5.482 18 9 18z"/><path fill="#FBBC05" d="M3.964 10.71c-.18-.54-.282-1.117-.282-1.71s.102-1.17.282-1.71V4.958H.957C.347 6.173 0 7.548 0 9s.348 2.827.957 4.042l3.007-2.332z"/><path fill="#EA4335" d="M9 3.58c1.321 0 2.508.454 3.44 1.345l2.582-2.58C13.463.891 11.426 0 9 0 5.482 0 2.438 2.017.957 4.958L3.964 7.29C4.672 5.163 6.656 3.58 9 3.58z"/></svg>
+        &#1499;&#1504;&#1497;&#1505;&#1492; &#1506;&#1501; Google
+      </button>
+    </div>
+    <script>setTimeout(function(){var g=document.querySelector('.g_id_signin iframe');var fb=document.getElementById('_gFallback');if(fb&&(!g||!g.offsetParent))fb.style.display='block';},1500);</script>
+    <div id="gAuthErr" style="display:none;color:#c00;font-size:13px;font-family:Arial,sans-serif;"></div>
+    <div id="gAuthLoading" style="display:none;color:#888;font-size:13px;font-family:Arial,sans-serif;">&#1502;&#1488;&#1502;&#1514;&#1489;&#1512;...</div>
+  </div>
+</div>
+<script>(function(){
+var _AL='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/allowed.json';
+async function _fa(){try{var r=await fetch(_AL+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;return(await r.json()).map(function(e){return e.toLowerCase().trim();});}catch(e){return null;}}
+function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(o)o.style.display='none';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
+function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}o.style.display='flex';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
+function _ub(nm,em,pic){function _d(){
+  var b=document.getElementById('userAuthBtn');if(!b)return;
+  b.innerHTML=pic?'<img src="'+pic+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block;">':'<span style="font-size:22px;">&#128100;</span>';
+  b.title='';b.style.cssText='background:none;border:none;cursor:pointer;padding:2px;border-radius:50%;display:inline-flex;align-items:center;';
+  var wrap=b.parentElement;wrap.style.position='relative';
+  var dd=document.getElementById('_authDd');if(dd)dd.remove();
+  dd=document.createElement('div');dd.id='_authDd';
+  dd.style.cssText='position:absolute;top:calc(100% + 6px);left:0;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.22);min-width:220px;display:none;z-index:9999;overflow:hidden;direction:rtl;font-family:Arial,sans-serif;';
+  var hdr=document.createElement('div');
+  hdr.style.cssText='padding:16px 16px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee;';
+  hdr.innerHTML=(pic?'<img src="'+pic+'" style="width:36px;height:36px;border-radius:50%;flex-shrink:0;">':'')+'<div><div style="font-weight:600;font-size:14px;color:#202124;">'+nm+'</div><div style="font-size:12px;color:#5f6368;margin-top:2px;">'+em+'</div></div>';
+  dd.appendChild(hdr);
+  function _row(icon,label,fn){var row=document.createElement('div');row.style.cssText='padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;color:#202124;font-size:14px;';row.innerHTML=icon+'<span>'+label+'</span>';row.onmouseenter=function(){this.style.background='#f1f3f4';};row.onmouseleave=function(){this.style.background='';};row.onclick=fn;dd.appendChild(row);}
+  _row('<svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>','בחירה בחשבון אחר',function(){window._logout();});
+  _row('<svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>','יציאה',function(){window._logout();});
+  wrap.appendChild(dd);
+  b.onclick=function(ev){ev.stopPropagation();dd.style.display=dd.style.display==='none'?'block':'none';};
+  document.addEventListener('click',function(){if(dd)dd.style.display='none';});
+  b.style.display='inline-flex';
+}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
+window.handleGoogleAuth=async function(rp){
+  var errEl=document.getElementById('gAuthErr'),ldEl=document.getElementById('gAuthLoading');
+  errEl.style.display='none';ldEl.style.display='block';
+  try{
+    var p=rp.credential.split('.');
+    var pl=JSON.parse(decodeURIComponent(escape(atob(p[1].replace(/-/g,'+').replace(/_/g,'/')))));
+    var em=pl.email.toLowerCase().trim(),nm=pl.name||em,pic=pl.picture||'';
+    var al=await _fa();
+    if(al===null){ldEl.style.display='none';errEl.textContent='שגיאת רשת — נסה שוב';errEl.style.display='block';return;}
+    if(al.includes(em)){
+      localStorage.setItem('_kauth',JSON.stringify({e:em,n:nm,i:pic,t:Date.now()}));
+      document.getElementById('gAuthOverlay').style.display='none';
+      _ub(nm,em,pic);
+    }else{
+      ldEl.style.display='none';errEl.textContent='אין הרשאה לכתובת זו';errEl.style.display='block';
+      localStorage.removeItem('_kauth');
+    }
+  }catch(ex){ldEl.style.display='none';errEl.textContent='שגיאה — נסה שוב';errEl.style.display='block';}
+};
+window._logout=function(){localStorage.removeItem('_kauth');if(window.google&&google.accounts)google.accounts.id.disableAutoSelect();location.reload();};
+async function _ia(){
+  var c=localStorage.getItem('_kauth');
+  if(c){try{
+    var o=JSON.parse(c),e=o.e,n=o.n,t=o.t,pic=o.i||'',age=Date.now()-t;
+    if(age<3600000){
+      _hideOv();_ub(n,e,pic);
+      _fa().then(async function(al){
+        if(al===null)return;
+        if(!al.includes(e)){
+          await new Promise(function(r){setTimeout(r,5000);});
+          var al2=await _fa();
+          if(al2!==null&&!al2.includes(e)){localStorage.removeItem('_kauth');location.reload();}
+        }
+      });
+      return;
+    }
+    var al=await _fa();
+    if(al===null){localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,i:pic,t:Date.now()-3300000}));_hideOv();_ub(n,e,pic);return;}
+    if(al.includes(e)){localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,i:pic,t:Date.now()}));_hideOv();_ub(n,e,pic);return;}
+    localStorage.removeItem('_kauth');
+  }catch(x){localStorage.removeItem('_kauth');}}
+  _showOv();
+}
+_ia();
+})()</script>
+
+<div class="top">
+  <div class="top-row">
+<div class="brand" onclick="goHome()" title="חזרה לדף הבית">
+      <img src="logo%208.svg" style="height:75px;width:300px;display:block;" alt="לוגו">
+    </div>
+    <div class="search-section">
+      <div class="yt-search" id="ytSearch">
+        <span class="yt-search-icon" onclick="document.getElementById('q').focus()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </span>
+        <input type="text" id="q" placeholder="חיפוש שיר או אמן..." autocomplete="off"
+          onfocus="showSearchHistory()" onblur="setTimeout(hideSearchHistory,150)"
+          onkeydown="if(event.key==='Enter'){saveSearchHistory(this.value);hideSearchHistory();}"/>
+        <button class="yt-clear" id="clr" onclick="clearSearch()">&#x2715;</button>
+        <div class="yt-history" id="ytHistory"></div>
+      </div>
+      <button class="toolbar-btn" id="btnExpandAll" onclick="expandAll()">
+        <span class="bc" style="transform:rotate(0deg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <span class="btn-label">פתח הכל</span>
+      </button>
+      <button class="toolbar-btn" id="btnCollapseAll" onclick="collapseAll()">
+        <span class="bc" style="transform:rotate(-90deg)"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg></span>
+        <span class="btn-label">סגור הכל</span>
+      </button>
+      <button class="toolbar-btn" id="btnPlPanel" onclick="var p=document.getElementById('plPanel');if(!p.classList.contains('open')){openPlPanel();}else if(!document.body.classList.contains('playing')){closePlPanel();}">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        <span class="btn-label">פלייליסטים</span>
+      </button>
+      <button class="admin-lock" onclick="openAdminLogin()" title="מצב מנהל">🔐</button>
+      <button class="admin-lock" id="userAuthBtn" onclick="_logout()" style="display:none;font-size:11px;font-weight:600;color:#0F0F0F;background:#fff;border:1px solid #E5E5E5;border-radius:20px;padding:4px 12px;cursor:pointer;direction:rtl;white-space:nowrap;"></button>
+    </div>
+  </div>
+</div>
+
+<div class="page-body" id="pageBody">
+  <!-- PLAYLIST SIDE PANEL (inline flex child — first in RTL = rightmost) -->
+  <div class="pl-panel" id="plPanel">
+    <div class="pl-panel-hdr">
+      <span class="pl-panel-title">הפלייליסטים שלי</span>
+      <button class="pl-panel-close" onclick="minimizeToMiniBar();" title="מזער">&#x2014;</button>
+      <button class="pl-panel-close" onclick="closePlPanel()" title="סגור">✕</button>
+    </div>
+    <div class="pl-panel-body" id="plPanelBody"></div>
+    <div class="pl-panel-footer">
+      <button class="pl-create-btn" onclick="plPanelCreate()">פלייליסט חדש</button>
+    </div>
+  </div>
+  <!-- PLAYER PANEL: right side on desktop, overlay on mobile -->
+  <div class="player-panel" id="playerPanel">
+    <div class="panel-header">
+      <div class="panel-song-info">
+        <div class="panel-song-name" id="panelSong">—</div>
+        <div class="panel-artist-name" id="panelArtist">—</div>
+      </div>
+      <div class="panel-nav-group">
+        <button class="modal-nav-btn" id="btnPrev" onclick="modalNav(-1)">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+          הקודם
+        </button>
+        <div class="modal-queue-info" id="modalQueueInfo"></div>
+        <button class="modal-add-btn" id="modalAddBtn" onclick="showPlaylistPopup(event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> שמור</button>
+        <button class="modal-nav-btn" id="btnNext" onclick="modalNav(1)">
+          הבא
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+      <!-- Theater mode (desktop) -->
+      <div class="panel-win-btns">
+      <button class="panel-theater-btn" id="theaterBtn" onclick="toggleTheater()" title="מצב קולנוע">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/></svg>
+      </button>
+      <!-- Float mini-pip (desktop) -->
+      <button class="panel-float-btn" onclick="minimizeToFloat()" title="מזער לחלון צף">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><rect x="13" y="13" width="8" height="5" rx="1" fill="currentColor" stroke="none"/></svg>
+      </button>
+      <button class="panel-minimize-btn" onclick="minimizePlayerOnly()" title="מזער לסרגל">&#x2014;</button>
+      <button class="panel-close" onclick="closePanelOrAll()">&#x2715;</button>
+    </div>
+    </div>
+    <div class="panel-video" id="panel-video-slot">
+      <div id="yt-player"></div><video id="mp4Player" style="display:none;width:100%;height:100%;object-fit:contain;background:#000;" controls></video>
+    </div>
+  </div>
+  <!-- LIST PANEL -->
+  <div class="list-panel">
+    <div class="content" id="content"></div>
+  </div>
+</div>
+
+<!-- FLOATING MINI FAB (playlist minimize) -->
+<div class="mini-fab" id="miniFab" onclick="fabResume()">
+  <div class="mini-fab-thumb" id="miniFabThumb"></div>
+  <div class="mini-fab-info">
+    <div class="mini-fab-song" id="miniFabSong">—</div>
+    <div class="mini-fab-artist" id="miniFabArtist">—</div>
+  </div>
+  <button class="mini-fab-close" onclick="event.stopPropagation();hideFab();clearSession()" title="סגור">✕</button>
+</div>
+
+<!-- MOBILE MINI BAR -->
+<div class="mini-bar" id="miniBar" onclick="resumeOrOpen()">
+  <div class="mini-thumb" id="miniThumb"></div>
+  <div class="mini-info">
+    <div class="mini-song" id="miniSong">—</div>
+    <div class="mini-artist" id="miniArtist">—</div>
+  </div>
+  <button class="mini-ctrl" id="miniPlayBtn" title="נגן/עצור" onclick="event.stopPropagation();miniPlayPause()">⏸</button>
+  <button class="mini-ctrl" title="סגור" onclick="event.stopPropagation();if(ytPlayer&&playerReady)ytPlayer.pauseVideo();var _v=document.getElementById('mp4Player');if(_v)_v.pause();hideFloatPlayer();_miniBarSavedState=null;document.body.classList.remove('has-song','playing','theater');clearSession();">&#x2715;</button>
+</div>
+
+<div class="pl-ctx-menu" id="plCtxMenu">
+  <div class="pl-ctx-item" onclick="plCtxRename()">✏️ שנה שם</div>
+  <div class="pl-ctx-item danger" onclick="plCtxDelete()">🗑 מחק</div>
+</div>
+
+<!-- QUEUE PANEL -->
+<div class="queue-overlay" id="queueOverlay" onclick="closeQueuePanel()"></div>
+<div class="queue-panel" id="queuePanel">
+  <div id="queueTabs" class="queue-tabs"></div>
+  <div id="queuePanelList"></div>
+</div>
+
+<!-- FLOAT PLAYER (control bar; on desktop the .player-panel is repositioned as the video) -->
+<div class="float-player" id="floatPlayer">
+  <div id="float-video-slot"></div>
+  <div class="float-bar" id="floatBar">
+    <span class="float-bar-song" id="floatSong"></span>
+    <button class="fbar-btn" id="pipPlayBtn" onclick="pipPlayPause()" title="נגן/עצור">▶</button>
+    <button class="fbar-btn" onclick="expandFloat()" title="הגדל">⤢</button>
+    <button class="fbar-btn" onclick="closeFloat()" title="סגור">✕</button>
+  </div>
+</div>
+
+<script>
+let _folderPickerEl=null,_pickerArtists=[];
+// YouTube IFrame API
+var tag=document.createElement('script');tag.src="https://www.youtube.com/iframe_api";document.head.appendChild(tag);
+const ALL=[{"a":"אבי סינואני","s":"מחרוזת לעולם לא נפרד","v":"Ns-KxKmv7Lo"},{"a":"אביחי מליחי","s":"פלא טבעי","v":"Em_E3ohrEyw"},{"a":"אביעד סהר","s":"מחרוזת \"יום הרווקים\"","v":"C0R6N4gYhgQ"},{"a":"אביעד סהר","s":"מחרוזת \"המתחתנים\"","v":"4MCjF7jCUV8"},{"a":"אביעד סהר","s":"מחרוזת זעבור (החתונות)","v":"gu9cDEH5O08"},{"a":"אביעד סהר","s":"מחרוזת מערבבת שוקולטה","v":"HyewrBXD56I"},{"a":"אביעד סהר","s":"מחרוזת \"משגע את כולן\"","v":"H0Nht_hWaX8"},{"a":"אביעד סהר","s":"מחרוזת \"מי זה אמר לך\"","v":"wv6R8c23t9k"},{"a":"אבישי אשל","s":"מחרוזת תימנית","v":"1N8faBjTg_M"},{"a":"אבנר גדסי","s":"שרונה","v":"L3q4A5gfcFg"},{"a":"אושר כהן","s":"בברגעים שאת הולכת","v":"_OYSFzHyZBw"},{"a":"אייל גולן","s":"מחרוזת ברצלונה","v":"f83zZvgmjYo"},{"a":"אייל גולן","s":"עיר נמל","v":"IfuOLaaA0jo"},{"a":"אייל גולן","s":"דמעות","v":"bgcKHw2Qcn8"},{"a":"אייל גולן","s":"שוב לאהוב","v":"I3xsVXQiBLE"},{"a":"אייל גולן","s":"שבוי לאהבה","v":"Jx7tz0SoFTY"},{"a":"אייל גולן","s":"זה מסוכן","v":"_RWI5Z8_bx0"},{"a":"אייל גולן","s":"כשתגדל","v":"yImq0QVgpVM"},{"a":"אייל גולן","s":"רחוק מכאן","v":"8Rv7PbeChPU"},{"a":"אייל גולן","s":"טוב לך איתו","v":"3jdr8LnBarM"},{"a":"אייל גולן","s":"לאן הגענו","v":"je_DnhPQH4Q"},{"a":"אייל גולן","s":"משחקים של כבוד","v":"vYCIjzpInDY"},{"a":"אייל גולן","s":"בלי להתכוון","v":"H7Xg1JJdL0E"},{"a":"אייל גולן","s":"לא מבינה עברית","v":"1gfR5IMp9xQ"},{"a":"אייל גולן","s":"טעיתי","v":"O36-H5725E0"},{"a":"אייל גולן","s":"דברי איתי","v":"d_ruDSff4fo"},{"a":"אייל גולן","s":"מקום אחר","v":"3mO0NrbHgjs"},{"a":"אייל גולן","s":"אהבה ראשונה","v":"FHXeW0h9Qjo"},{"a":"אייל גולן","s":"תבואי היום","v":"sGDxuERpg_E"},{"a":"אייל גולן","s":"חוזר הביתה","v":"kWRIZVdIrRM"},{"a":"אייל גולן","s":"מבעד לדמעה","v":"Tl2CocQ_yyg"},{"a":"אייל גולן","s":"עושה עם העיניים","v":"XdGSt8_j5MQ"},{"a":"אייל גולן","s":"ביט","v":"WwR_7iPJ7Es"},{"a":"אייל גולן","s":"חיים שלמים","v":"ZiribWW3siY"},{"a":"אייל גולן","s":"קחי לך את היום","v":"rkIZ2YdTD7U"},{"a":"אייל גולן","s":"כמו בספרים ההם","v":"36c4jcw8YE8"},{"a":"אייל גולן","s":"נכון להיום (עם זוהר ארגוב)","v":"7KOjWkCdHTI"},{"a":"אייל גולן","s":"טירוף מתוק","v":"h_wjl-rCCOU"},{"a":"אייל גולן","s":"מחפשים אהבה","v":"Crny_ptxmXQ"},{"a":"אייל גולן","s":"עינייך מספרות","v":"qF1WDa7F7d4"},{"a":"אייל גולן","s":"שומרני אל","v":"B1xwlpYc4gg"},{"a":"אייל גולן","s":"תודה לאל","v":"Pio92gl_Glw"},{"a":"אייל גולן","s":"נתתי לך ת'לב","v":"d-psG4JnsfA"},{"a":"אייל גולן","s":"מתי את חוזרת","v":"JH4p0waLDtk"},{"a":"אייל גולן","s":"מחרוזת: אלינור, ילדתי, ים של דמעות","v":"x22-T5ze3y0"},{"a":"אייל גולן","s":"אתה המלך עם ציון גולן","v":"h4P0V4XFhqc"},{"a":"אייל גולן","s":"חצי לב","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%90%D7%99%D7%99%D7%9C%20%D7%92%D7%95%D7%9C%D7%9F%20-%20%D7%97%D7%A6%D7%99%20%D7%9C%D7%91%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"אלי לוזון","s":"פרי גנך","v":"x-kW0Qh-ZMY"},{"a":"אלי לוזון","s":"מחרוזת בניגון הישן","v":"ZwlNcPIYdWA"},{"a":"אלי לוזון","s":"נערת החלומות","v":"ofQtnH7heJ8"},{"a":"אלי לוזון","s":"איזו מדינה","v":"G6Bwx0PSKyY"},{"a":"אלי לוזון","s":"ילדה","v":"gMmB8Qvby4k"},{"a":"אלעד שער","s":"מחרוזת תימנית נוסטלגית","v":"BwWS9-3QfOg"},{"a":"בני ברדא","s":"מחרוזת יום שישי הגיע","v":"-6IwjnOmaCw"},{"a":"דודו אהרון","s":"אמא יקרה","v":"dNwZW4y73nk"},{"a":"דורון מירן","s":"מח' חפלה","v":"56CWx5CFYeY"},{"a":"דקלון","s":"מח' אהובת לבבי & צעד תימני & הלאה הלאה","v":"4BjSS6Ojo5s"},{"a":"האולטראס","s":"מסיבה בחיפה","v":"5w6_feY2KNU"},{"a":"הפרויקט של רביבו","s":"מחרוזת אינתה עומרי","v":"1puqK1iO0GM"},{"a":"הפרויקט של רביבו","s":"מחרוזת עת דודים כלה","v":"Vb-qYcgXJME"},{"a":"הפרויקט של רביבו","s":"מחרוזת עוד יום יבוא","v":"rOV_omdzY8k"},{"a":"הפרויקט של רביבו","s":"מחרוזת תן לזמן ללכת","v":"-MAnJipJEdc"},{"a":"הפרויקט של רביבו","s":"מחרוזת כמו שיכור","v":"Gpo5xiI2Z5U"},{"a":"הפרויקט של רביבו","s":"מחרוזת אוהב לחיות","v":"RK8tQjuoAww"},{"a":"הפרויקט של רביבו","s":"מחרוזת עד סוף הקיץ","v":"pujMDF06t-s"},{"a":"הפרויקט של רביבו","s":"מחרוזת כך עוברים חיי","v":"e-TF92xwJCQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת עד מתי אלוהי","v":"JaeWeRKbUkw"},{"a":"הפרויקט של רביבו","s":"מחרוזת קסם המזרח","v":"FV4LXx303AM"},{"a":"הפרויקט של רביבו","s":"מחרוזת אני שר","v":"J67uptywkHY"},{"a":"הפרויקט של רביבו","s":"מחרוזת לילה שלי","v":"-oHr9LGCZuI"},{"a":"הפרויקט של רביבו","s":"מחרוזת חנותך","v":"gSopjSOEKoU"},{"a":"הפרויקט של רביבו","s":"מחרוזת מה נותר","v":"Ennydylg8dQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת יותר מוארת","v":"VyNO-0eFy4w"},{"a":"הפרויקט של רביבו","s":"מחרוזת שבויה באהבה","v":"BaMs8tfwFpk"},{"a":"הפרויקט של רביבו","s":"מחרוזת אמא","v":"To5EKVAQFYo"},{"a":"הפרויקט של רביבו","s":"מחרוזת תני לי את הלב","v":"K0lQlEIDQF0"},{"a":"הפרויקט של רביבו","s":"מחרוזת שורשים","v":"EDGzXrahSCM"},{"a":"הפרויקט של רביבו","s":"מחרוזת שושנת פלאים","v":"K0xaDOC_X2Q"},{"a":"הפרויקט של רביבו","s":"מחרוזת חולפות השנים","v":"3YHcde-XLEc"},{"a":"הפרויקט של רביבו","s":"מחרוזת בדד","v":"NBTSA3wLXTw"},{"a":"הפרויקט של רביבו","s":"מחרוזת הפרח בגני","v":"znqnqDWST8M"},{"a":"הפרויקט של רביבו","s":"מחרוזת נכון להיום","v":"aR-YPd8mgy8"},{"a":"הפרויקט של רביבו","s":"מחרוזת חיכיתי שנים","v":"05ryjGanJHQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת אדם שחקן","v":"jUPMSfjY8u0"},{"a":"הפרויקט של רביבו","s":"מחרוזת ליסה","v":"KmWaPwHNmYg"},{"a":"הפרויקט של רביבו","s":"מחרוזת נגילה הללויה","v":"eAkeQo3GajQ"},{"a":"הפרויקט של רביבו","s":"מחרוזת סאלם עליכום","v":"Sg4_BGueaO8"},{"a":"הפרויקט של רביבו","s":"מחרוזת אהבה בסוף הקיץ","v":"y4IWD2LX-7w"},{"a":"הפרויקט של רביבו","s":"מחרוזת עדות","v":"O6AJNdoYd6k"},{"a":"הפרויקט של רביבו","s":"מחרוזת פעמון זהב","v":"XDbLkzmSmh8"},{"a":"הפרויקט של רביבו","s":"מחרוזת מן הקולות","v":"GBCHm2lfA60"},{"a":"הפרויקט של רביבו","s":"מחרוזת נע ונד","v":"RiH2LHqdqzU"},{"a":"הפרויקט של רביבו","s":"מחרוזת יד ביד","v":"W2RBujKry9k"},{"a":"הפרויקט של רביבו","s":"מחרוזת שיר לדרך","v":"lpMIYFHbqQ4"},{"a":"הפרויקט של רביבו","s":"מחרוזת שיר השירים","v":"vrpVitwiCjk"},{"a":"הפרויקט של רביבו","s":"מחרוזת הו שיכור","v":"xhR9P2Uuyz4"},{"a":"הפרויקט של רביבו","s":"מחרוזת בת המלך","v":"e9aI3FQjDZM"},{"a":"הפרויקט של רביבו","s":"מחרוזת רונה","v":"Lcw9JLAO1mM"},{"a":"הפרויקט של רביבו","s":"מחרוזת פני מלאך (עם יואב יצחק)","v":"-MDCmjFGHCc"},{"a":"הפרויקט של רביבו","s":"מחרוזת כבר עברו השנים","v":"z8eLDo2XyqI"},{"a":"הפרויקט של רביבו","s":"אלה","v":"gr3KdRGRD04"},{"a":"הפרויקט של רביבו","s":"מחרוזת להשתטות","v":"-1-saniPYE8"},{"a":"הפרויקט של רביבו","s":"מחרוזת סליחות","v":"orE5pCQV-7Y"},{"a":"הפרויקט של רביבו","s":"מחרוזת חיפשתי שירים","v":"KbIERiLa87c"},{"a":"הפרויקט של רביבו","s":"מחרוזת אמא","v":"y0tlMWu4Hm4"},{"a":"הפרויקט של רביבו","s":"מחרוזת תני חיבוק ילדונת","v":"MgRx-FweMAA"},{"a":"הפרויקט של רביבו","s":"מחרוזת לא חשוב לי לאן","v":"EOACbrQk90k"},{"a":"הפרויקט של רביבו","s":"מחרוזת ילדתי חזרי","v":"eiPHLJ2SHOk"},{"a":"הפרויקט של רביבו","s":"מחרוזת עוד יום עולה","v":"Bc9eJm8QkIc"},{"a":"הפרויקט של רביבו","s":"מחרוזת שבת","v":"MaqYg4eEol8"},{"a":"הפרויקט של רביבו","s":"מחרוזת ג'ינם","v":"tDwiPQCTX90"},{"a":"זוהר ארגוב","s":"מחרוזת קריוקי","v":"adpYu9lVXM0"},{"a":"זוהר ארגוב","s":"להיות אדם","v":"UatW5lF3mz8"},{"a":"זוהר ארגוב","s":"מה לך ילדה","v":"eI-ZF4kIEgk"},{"a":"זוהר ארגוב","s":"כבר עברו השנים","v":"IC60IrzMsmY"},{"a":"זוהר ארגוב","s":"כך עוברים חיי","v":"n3HJtk8wbOQ"},{"a":"זוהר ארגוב","s":"נכון להיום","v":"knpBE4HRESo"},{"a":"זוהר ארגוב","s":"אהבת רעייה רצוני","v":"Ckq0n7d8M3I"},{"a":"זוהר ארגוב","s":"אמא טובה","v":"cRozJR66HZk"},{"a":"זוהר ארגוב","s":"עד מתי אלוהיי","v":"pGSlA3My8GI"},{"a":"זוהר ארגוב","s":"כשאת לידי","v":"a0V-22tb6Uo"},{"a":"זוהר ארגוב","s":"ים של דמעות","v":"go0HEEcUBCY"},{"a":"זוהר ארגוב","s":"אל נבקש","v":"HOma-YRkfGU"},{"a":"זוהר ארגוב","s":"רעייה","v":"tqqw2CxBqb8"},{"a":"זוהר ארגוב","s":"הזוהר לארגוב (חברים שרים)","v":"itzNUuVLhLQ"},{"a":"זוהר ארגוב","s":"שיר השופט (חברים שרים)","v":"tSyl0Jmidg4"},{"a":"זוהר ארגוב","s":"אבי אבי","v":"fE1jg-cuPZo"},{"a":"זוהר ארגוב","s":"כל עוברים חיי","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%96%D7%95%D7%94%D7%A8%20%D7%90%D7%A8%D7%92%D7%95%D7%91%20-%20%D7%9B%D7%9A%20%D7%A2%D7%95%D7%91%D7%A8%D7%99%D7%9D%20%D7%97%D7%99%D7%99%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"זוהר יעיש","s":"מחרוזת שקטים","v":"oNHNZmZaA8g"},{"a":"זוהר צברי","s":"מחרוזת הוי אנשים, סיגלית, בואי נערה","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%96%D7%95%D7%94%D7%A8%20%D7%A6%D7%91%D7%A8%D7%99%20-%20%D7%94%D7%95%D7%99%20%D7%90%D7%A0%D7%A9%D7%99%D7%9D%2C%20%D7%A1%D7%99%D7%92%D7%9C%D7%99%D7%AA%2C%20%D7%91%D7%95%D7%90%D7%99%20%D7%A0%D7%A2%D7%A8%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"חיים ישראל","s":"לך אלי תשוקתי","v":"swl39jE8twE"},{"a":"חיים ישראל","s":"אתאנו לחלות פניך","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%97%D7%99%D7%99%D7%9D%20%D7%99%D7%A9%D7%A8%D7%90%D7%9C%20-%20%D7%90%D7%AA%D7%90%D7%A0%D7%95%20%D7%9C%D7%97%D7%9C%D7%95%D7%AA%20%D7%A4%D7%A0%D7%99%D7%9A%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"חיים משה","s":"פלייבק התמונות שבאלבום","v":"bcMnQJwFZvE"},{"a":"חיים משה","s":"מה עם הילד","v":"06WS9u9vdmo"},{"a":"חיים משה","s":"באו הצלילים","v":"_8tAv3ftsFU"},{"a":"חיים משה","s":"אמא אמא","v":"V8bxVrIKztU"},{"a":"חיים משה","s":"אהבת חיי","v":"HqZIjFTqKqU"},{"a":"חיים משה","s":"הגיטרה","v":"GY1426jv22c"},{"a":"חיים משה","s":"ילד שלי","v":"afItsCqdToU"},{"a":"חיים משה","s":"על סף דלתך","v":"xd673oYBLAo"},{"a":"חיים משה","s":"מחרוזת נשבע","v":"m0oZYrnSWzE"},{"a":"חיים משה","s":"הקולות של פיראוס","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%97%D7%99%D7%99%D7%9D%20%D7%9E%D7%A9%D7%94%20-%20%D7%94%D7%A7%D7%95%D7%9C%D7%95%D7%AA%20%D7%A9%D7%9C%20%D7%A4%D7%99%D7%A8%D7%90%D7%95%D7%A1%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"יואב יצחק","s":"צלצולי פעמונים","v":"Rysq94khOcs"},{"a":"יואב יצחק","s":"זה הזמן לסלוח","v":"5mfjYA9qpqM"},{"a":"יואב יצחק","s":"אין לי מרגוע והוי לאהבה","v":"X5gRYg-1TgE"},{"a":"יואב יצחק","s":"מיליון סיבות","v":"zYhDV4pF8qg"},{"a":"יואב יצחק","s":"פני מלאך","v":"-KIupnnjswo"},{"a":"יואב יצחק","s":"מחרוזת שירי יואב יצחק","v":"8j3MjOK0i04"},{"a":"יואב יצחק","s":"אהבתי את יופייך","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%95%D7%90%D7%91%20%D7%99%D7%A6%D7%97%D7%A7%20-%20%D7%90%D7%94%D7%91%D7%AA%D7%99%20%D7%90%D7%AA%20%D7%99%D7%95%D7%A4%D7%99%D7%99%D7%9A%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"יואב יצחק","s":"מחרוזת משתוללת בחוץ","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%95%D7%90%D7%91%20%D7%99%D7%A6%D7%97%D7%A7-%20%D7%9E%D7%97%D7%A8%D7%95%D7%96%D7%AA%20%D7%9E%D7%A9%D7%AA%D7%95%D7%9C%D7%9C%D7%AA%20%D7%91%D7%97%D7%95%D7%A5%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"אלוהים נתן לך","v":"3Bj1BcnT2c0"},{"a":"ישי לוי","s":"זירת חיי","v":"z015DfcVnUs"},{"a":"ישי לוי","s":"תלתלים שחורים","v":"fd54y_k7lhw"},{"a":"ישי לוי","s":"אחת ויחידה","v":"kq5--PjdIZw"},{"a":"ישי לוי","s":"איפה את היום","v":"Q6smcuyam3E"},{"a":"ישי לוי","s":"צליל ענבלים","v":"HJzuFvSw6s4"},{"a":"ישי לוי","s":"אנה בחלאם ביק","v":"cj5irI7Ga-I"},{"a":"ישי לוי","s":"מנולייה","v":"nXWv5FXxk6M"},{"a":"ישי לוי","s":"מח' מצהלות","v":"SKjqz0LxZ5U"},{"a":"ישי לוי","s":"מחרוזת רחוק רחוק","v":"Ly7oPA3KoEQ"},{"a":"ישי לוי","s":"רק חיוכים","v":"0Tz-7z_Egmg"},{"a":"ישי לוי","s":"רעיה","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%A2%D7%99%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"ליסה ליסה","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%9C%D7%99%D7%A1%D7%94%20%D7%9C%D7%99%D7%A1%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"מכתב פרידה ","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%9E%D7%9B%D7%AA%D7%91%20%D7%A4%D7%A8%D7%99%D7%93%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"עלם חמודות","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A2%D7%9C%D7%9D%20%D7%97%D7%9E%D7%95%D7%93%D7%95%D7%AA%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"ריח של פריחה","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%99%D7%97%20%D7%A9%D7%9C%20%D7%A4%D7%A8%D7%99%D7%97%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"ריקדי","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%A7%D7%93%D7%99%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"בשבילי את השער לגן עדן (אולפן)","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%91%D7%A9%D7%91%D7%99%D7%9C%D7%99%20%D7%90%D7%AA%20%D7%94%D7%A9%D7%A2%D7%A8%20%D7%9C%D7%92%D7%9F%20%D7%A2%D7%93%D7%9F%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"בשבילי את השער לגן עדן (הופעה)","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%91%D7%A9%D7%91%D7%99%D7%9C%D7%99%20%D7%90%D7%AA%20%D7%94%D7%A9%D7%A2%D7%A8%20%D7%9C%D7%92%D7%9F%20%D7%A2%D7%93%D7%9F%20%D7%94%D7%95%D7%A4%D7%A2%D7%94.mp4"},{"a":"ישי לוי","s":"מחרוזת רעיה ובאו הצלילים (הופעה)","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%E2%80%8F%E2%80%8F%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%9E%D7%97%D7%A8%D7%95%D7%96%D7%AA%20%D7%A8%D7%A2%D7%99%D7%94%20%D7%95%D7%91%D7%90%D7%95%20%D7%94%D7%A6%D7%9C%D7%99%D7%9C%D7%99%D7%9D%20%D7%94%D7%95%D7%A4%D7%A2%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"ישי לוי","s":"אחת ויחידה (הופעה)","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%99%D7%A9%D7%99%20%D7%9C%D7%95%D7%99%20-%20%D7%90%D7%97%D7%AA%20%D7%95%D7%99%D7%97%D7%99%D7%93%D7%94%20%D7%94%D7%95%D7%A4%D7%A2%D7%94%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"לי פישמן","s":"אנחנו מאמינים","v":"4FwyMvq73pY"},{"a":"ליאור מיארה","s":"מחרוזת פורטוגל","v":"1NTHxT8Q-B0"},{"a":"ליאור מיארה","s":"מחרוזת הצגה","v":"4Fv6OdSQtaw"},{"a":"ליאור מיארה","s":"מחרוזת תלתלים","v":"rw8VBlPTOiY"},{"a":"ליאור מיארה","s":"מחרוזת רקדי","v":"e43DGSCGxv0"},{"a":"ליאור מיארה","s":"מחרוזת נערה","v":"kHh5vHKTqCc"},{"a":"ליאור מיארה","s":"מחרוזת מהשמיים","v":"JfrBGRvHSzg"},{"a":"ליאור מיארה","s":"מחרוזת שביל האושר","v":"IlViJvjKz5U"},{"a":"ליאור מיארה","s":"מחרוזת מאושרת","v":"uyTwar0O-Xk"},{"a":"ליאור מיארה","s":"מחרוזת בסוף היום","v":"Rpi-3KFOBD8"},{"a":"ליאור מיארה","s":"מחרוזת בסבוסה","v":"TBwYecZ18_c"},{"a":"ליאור מיארה","s":"מחרוזת דמייני","v":"NoulwMeSKR8"},{"a":"לירן טל","s":"מחרוזת חלפו ימיי","v":"7-Qv_TLBJNQ"},{"a":"מאיר טל והפרוייקט","s":"מחרוזת אהבת חיי","v":"OwN9YtzRmms"},{"a":"מרגלית צנעני","s":"נערי שובה אליי","v":"0RwTNKJk-x4"},{"a":"משה פרץ","s":"הטעם הישן","v":"q6UYBs5m9uo"},{"a":"משה פרץ","s":"גם אם העולם יתהפך","v":"YeJEaEjZynE"},{"a":"משה פרץ","s":"ברצלונה","v":"VBy48Go9ScI"},{"a":"משה פרץ","s":"סימני הזמן","v":"V9okgFOUZwE"},{"a":"נסרין","s":"למה לי למה לו","v":"ut18SMAzJh8"},{"a":"נסרין","s":"לומדת ללכת","v":"iJVtwEhcEHs"},{"a":"נסרין","s":"אתה עושה לי טוב","v":"qivezVDvibY"},{"a":"נתנאל","s":"ילדה של אב","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%A0%D7%AA%D7%A0%D7%90%D7%9C%20-%20%D7%99%D7%9C%D7%93%D7%94%20%D7%A9%D7%9C%20%D7%90%D7%91%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"סגיב כהן","s":"מחרוזת אסלית בתימנית","v":"Jq8sH8yXg_s"},{"a":"סמיר שוקרי","s":"רונה","v":"t-BhB-xk0W4"},{"a":"עופר לוי","s":"אני ואת","v":"8zjP3kh0rvM"},{"a":"עופר לוי","s":"יום הרווקים","v":"o3x7pTK0WGc"},{"a":"עופר לוי","s":"מאוהב בגשם","v":"4SNVki5CMd0"},{"a":"עופר לוי","s":"ציפור השמש","v":"pCO6ZUkEwtw"},{"a":"עופר לוי","s":"רוצה בך אוי אוי אוי","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%A2%D7%95%D7%A4%D7%A8%20%D7%9C%D7%95%D7%99%20-%20%D7%A8%D7%95%D7%A6%D7%94%20%D7%91%D7%9A%20%D7%90%D7%95%D7%99%20%D7%90%D7%95%D7%99%20%D7%90%D7%95%D7%99%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"עופר לוי","s":"עדים לנו כוכבי מרום","v":"NzxgV32aiVg"},{"a":"עידו יצחק","s":"מחרוזת החברות שלך","v":"F4G8tvUlv-I"},{"a":"פאר טסי","s":"אהבה חולה","v":"IMFVvoSCjDY"},{"a":"פאר טסי","s":"ערק","v":"XU6DX6ahK5c"},{"a":"פאר טסי","s":"סלחי לי אמא","v":"Q0QhHgZi5Ss"},{"a":"פאר טסי","s":"היא לא יודעת למה","v":"pME4AuEvCcw"},{"a":"פאר טסי","s":"כתבתי מילים","v":"JXthYmOFXpk"},{"a":"פאר טסי","s":"משקה יקר","v":"Z7W0kDQ0CJA"},{"a":"פאר טסי","s":"דפיקות הלב","v":"jWraDnHjRA0"},{"a":"פאר טסי","s":"38","v":"k_u_ObTq2So"},{"a":"פאר טסי","s":"בואי ניפגש","v":"_Niml1PtHjg"},{"a":"פאר טסי","s":"הי מאמא","v":"j3qWPwy-_PU"},{"a":"פאר טסי","s":"אל תהיי עצובה","v":"9ylJabMFP14"},{"a":"פאר טסי","s":"את עוד תראי","v":"omJ9_Mz6FgI"},{"a":"פאר טסי","s":"כמו שיכור","v":"42bpXVr3QZE"},{"a":"ציון גולן","s":"שור ממעון קדשך","mp4":"https://pub-a3b0efd8129f4749b90d1d72700f986e.r2.dev/%D7%A6%D7%99%D7%95%D7%9F%20%D7%92%D7%95%D7%9C%D7%9F%20-%20%D7%A9%D7%95%D7%A8%20%D7%9E%D7%9E%D7%A2%D7%95%D7%9F%20%D7%A7%D7%93%D7%A9%D7%9A%20%D7%A7%D7%A8%D7%99%D7%95%D7%A7%D7%99.mp4"},{"a":"קוקו מאילת","s":"מחרוזת קלאסיקה","v":"uW_G2pRWoHI"},{"a":"קוקו מאילת","s":"מחרוזת כמה חבל","v":"Z3Y1IyhQsIw"},{"a":"קוקו מאילת","s":"מחרוזת אלופה","v":"oVCVYkdGUMo"},{"a":"ראובן המלאך","s":"מחרוזת קפה בשניים","v":"dUdF-Zsalmg"},{"a":"רובי חן","s":"סמרה","v":"e_-KQSbrKsg"},{"a":"רובי לוי","s":"כינורי","v":"Fe-VtyiAN4o"},{"a":"רוני אחיאל","s":"לחזור לחיים","v":"-NSIJHFyc9o"},{"a":"שי שרעבי","s":"מחרוזת רוקדת בלילות","v":"cxBC29bjxC8"},{"a":"שי שרעבי","s":"מחרוזת זוכרת (עם גלעד צארום)","v":"vqkxSlgynJg"},{"a":"שי שרעבי","s":"מחרוזת עושה לכם שכונה","v":"Aeve4FA3ozU"},{"a":"שי שרעבי","s":"רוקדת בלילות","v":"RZFJpO_hafU"},{"a":"שימי מזרחי","s":"מחרוזת להיות חופשיה","v":"y8bKtiVUdtU"},{"a":"שימי מזרחי","s":"סלחתי לך","v":"5qn6AnUZ7aE"},{"a":"שקד קוממי","s":"מחרוזת ילדונת","v":"BteCJUos2ng"},{"a":"שקד קוממי","s":"מחרוזת ילדה","v":"dL5YMPUliiA"},{"a":"שקד קוממי","s":"מחרוזת סורו ממני","v":"TIWoEXwE4W0"},{"a":"שריף","s":"בבוקר שאחרי","v":"gE__u2gZaOs"},{"a":"שריף","s":"מחרוזת יאללה חתונה","v":"SjAXtHSpQ-Q"},{"a":"שריף","s":"בסבוסה","v":"PTi_GZgCeRw"},{"a":"שריף","s":"זה שובר לב של גבר","v":"zhH6Vbu1xOM"}];
+const CUSTOM_PHOTOS={"אבנר גדסי":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/70/Avner_gadassi.jpg/330px-Avner_gadassi.jpg","אבי סינואני":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אבי סינואני.webp","אושר כהן":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/%D7%90%D7%95%D7%A9%D7%A8_%D7%9B%D7%94%D7%9F.jpg/330px-%D7%90%D7%95%D7%A9%D7%A8_%D7%9B%D7%94%D7%9F.jpg","דורון מירן":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/דורון מירן.jpg","דודו אהרון":"https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Dudu_Aharon_2015.jpg/330px-Dudu_Aharon_2015.jpg","דקלון":"https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/%D7%93%D7%A7%D7%9C%D7%95%D7%9F_%D7%91%D7%94%D7%95%D7%A4%D7%A2%D7%94_%D7%97%D7%99%D7%94_%D7%91%D7%97%D7%95%D7%A3_%D7%90%D7%99%D7%9C%D7%AA.jpg/330px-%D7%93%D7%A7%D7%9C%D7%95%D7%9F_%D7%91%D7%94%D7%95%D7%A4%D7%A2%D7%94_%D7%97%D7%99%D7%94_%D7%91%D7%97%D7%95%D7%A3_%D7%90%D7%99%D7%9C%D7%AA.jpg","זוהר ארגוב":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/זוהר ארגוב.jpg","אביעד סהר":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אביעד סהר.jpg","חיים ישראל":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Haim_Israel_4.jpg/330px-Haim_Israel_4.jpg","חיים משה":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/חיים משה.webp","אבישי אשל":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אבישי אשל.jpg","אלעד שער":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אלעד שער.jpg","בני ברדא":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/בני ברדא.jpg","ישי לוי":"https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Yishai_Levi.jpg/330px-Yishai_Levi.jpg","זוהר יעיש":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/זוהר יעיש.jpg","הפרויקט של רביבו":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/הפרויקט של רביבו.jpg","מרגלית צנעני":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/מרגלית צנעני.jpg","משה פרץ":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/Moshe_Peretz.jpg/330px-Moshe_Peretz.jpg","לי פישמן":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/לי פישמן.jpg","עופר לוי":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Ofer_Levy_1.jpg/330px-Ofer_Levy_1.jpg","יואב יצחק":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/יואב יצחק.jpg","סמיר שוקרי":"https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/%D9%84%D9%88%D8%AD%D8%AF%D9%8A.jpg/330px-%D9%84%D9%88%D8%AD%D8%AF%D9%8A.jpg","ליאור מיארה":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/ליאור מיארה.jpg","לירן טל":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/לירן טל.jpg","פאר טסי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/פאר טסי.jpg","סגיב כהן":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/סגיב כהן.jpg","נסרין":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/נסרין.jpg","רובי לוי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/רובי לוי.jpg","אייל גולן":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Eyal_Golan_1_%28cropped%29.jpg/330px-Eyal_Golan_1_%28cropped%29.jpg","עידו יצחק":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/עידו יצחק.jpg","ראובן המלאך":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/ראובן המלאך.webp","רובי חן":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/רובי חן.jpg","שי שרעבי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/שי שרעבי.jpg","שימי מזרחי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/שימי מזרחי.jpg","שקד קוממי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/שקד קוממי.jpg","שריף":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/שריף.jpg","אלי לוזון":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אלי לוזון.jpg","האולטראס":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/האולטראס.jpg","רוני אחיאל":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/רוני אחיאל.jpg","קוקו מאילת":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/קוקו מאילת.jpg","מאיר טל והפרוייקט":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/מאיר טל והפרוייקט.jpg","זוהר צברי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/זוהר צברי.jpg","נתנאל":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/נתנאל.webp","אביחי מליחי":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/אביחי מליחי.jpg","ציון גולן":"https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/photos/ציון גולן.jpg"};
+function esc(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+const CHEV=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>`;
+const PLAY_ICO=`<svg viewBox="0 0 12 14" fill="#121212" xmlns="http://www.w3.org/2000/svg"><path d="M1 1L11 7L1 13V1Z"/></svg>`;
+const YT_ICO=`<svg viewBox="0 0 24 17" width="18" height="13" xmlns="http://www.w3.org/2000/svg"><path fill="white" d="M9.5 4.5L16.5 8.5L9.5 12.5V4.5Z"/></svg>`;
+
+// ── QUEUE ──
+let queue=[], ytPlayer=null, playerReady=false, _pipWin=null;
+// currentSong: what's open in modal right now
+let currentSong=null, currentSongList=[], currentSongIdx=0;
+
+function onYouTubeIframeAPIReady(){
+  ytPlayer=new YT.Player('yt-player',{
+    width:'100%',height:'100%',
+    playerVars:{autoplay:1,rel:0,modestbranding:1},
+    events:{
+      onReady:()=>{playerReady=true;const ifr=document.querySelector('#yt-player iframe');if(ifr){const a=ifr.getAttribute('allow')||'';if(!a.includes('autoplay'))ifr.setAttribute('allow',a+';autoplay;picture-in-picture');}},
+      onStateChange:(e)=>{
+        if(e.data===YT.PlayerState.ENDED)modalNav(1);
+        const playing=e.data===YT.PlayerState.PLAYING;
+        const b=document.getElementById('miniPlayBtn');if(b)b.textContent=playing?'⏸':'▶';
+        const pb=document.getElementById('pipPlayBtn');if(pb)pb.textContent=playing?'⏸':'▶';
+        if('mediaSession' in navigator)navigator.mediaSession.playbackState=playing?'playing':(e.data===YT.PlayerState.PAUSED?'paused':'none');
+      },
+      onError:(e)=>{
+        // YouTube error codes: 2=invalid ID, 5=HTML5 error, 100=not found, 101/150=embed not allowed
+        console.warn('YouTube player error:',e.data);
+        if(e.data===101||e.data===150){
+          const vid=currentSong?currentSong.v:null;
+          if(vid){window.open('https://www.youtube.com/watch?v='+vid,'_blank');}
+          _atbStat('▶ נפתח ביוטיוב','ok');
+        }else if(e.data===100){
+          setTimeout(()=>{ if(currentSongIdx<currentSongList.length-1)modalNav(1); },2000);
+        }
+      }
+    }
+  });
+}
+
+function addToQueue(song){
+  if(queue.some(s=>s.v===song.v))return;
+  queue.push(song);
+  updateQueueBar();
+  refreshAddBtns();
+}
+function removeFromQueue(vid){
+  queue=queue.filter(s=>(s.v||s.mp4)!==vid);
+  updateQueueBar();
+  refreshAddBtns();
+}
+function clearQueue(){queue=[];updateQueueBar();refreshAddBtns();}
+function isInQueue(vid){return queue.some(s=>s.v===vid);}
+
+function updateQueueBar(){
+  const bar=document.getElementById('queueBar');
+  bar.className='queue-bar'+(queue.length>0?' visible':'');
+  document.getElementById('queueBarText').textContent=`${queue.length} ${queue.length===1?'שיר':'שירים'} בפלייליסט`;
+  // Update panel count
+  const cnt=document.getElementById('queuePanelCount');
+  if(cnt)cnt.textContent=queue.length;
+  // Re-render panel list if it's open
+  if(document.getElementById('queuePanel')?.classList.contains('open'))openQueuePanel();
+}
+function refreshAddBtns(){
+  var _pr=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
+  document.querySelectorAll('.btn-add[data-vid]').forEach(function(b){
+    var vid=b.dataset.vid;
+    var inPl=_pr.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===vid;});});
+    b.className='btn-add'+(inPl?' in-playlist':'');
+    b.title=inPl?'הסר מהפלייליסט':'הוסף לפלייליסט';
+    b.innerHTML=inPl?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
+  });
+  updateModalAddBtn();
+}
+function toggleAddSong(vid){
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);
+  if(!song)return;
+  if(isInQueue(vid))removeFromQueue(vid);
+  else addToQueue(song);
+}
+
+// ── PLAYER ──
+function setTopH(){document.documentElement.style.setProperty('--top-h',document.querySelector('.top').offsetHeight+'px');}
+window.addEventListener('resize',()=>{setTopH();if(window.innerWidth>=768){document.getElementById('playerPanel').classList.remove('open');document.body.style.overflow='';}});
+setTopH();
+
+function playVid(vid){
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);
+  if(!song)return;
+  const songList=ALL.filter(s=>s.a===song.a);
+  const idx=songList.findIndex(s=>(s.v||s.mp4)===vid);
+  openModal(song,songList,idx);
+  setTimeout(()=>{
+    const artistEl=document.querySelector('.artist-avatar[data-artist="'+CSS.escape(song.a)+'"]');
+    const blk=artistEl?artistEl.closest('.artist-block'):null;
+    if(blk){blk.dataset.open='true';blk.scrollIntoView({behavior:'smooth',block:'nearest'});}
+  },150);
+}
+
+function setupMediaSession(song){
+  if(!('mediaSession' in navigator))return;
+  navigator.mediaSession.metadata=new MediaMetadata({
+    title:song.s,
+    artist:song.a||'',
+    album:'שירים אהובים',
+    artwork:[
+      {src:`https://i.ytimg.com/vi/${song.v}/mqdefault.jpg`,sizes:'320x180',type:'image/jpeg'},
+      {src:`https://i.ytimg.com/vi/${song.v}/maxresdefault.jpg`,sizes:'1280x720',type:'image/jpeg'}
+    ]
+  });
+  navigator.mediaSession.setActionHandler('play',()=>{if(ytPlayer&&playerReady)ytPlayer.playVideo();});
+  navigator.mediaSession.setActionHandler('pause',()=>{if(ytPlayer&&playerReady)ytPlayer.pauseVideo();});
+  navigator.mediaSession.setActionHandler('nexttrack',()=>modalNav(1));
+  navigator.mediaSession.setActionHandler('previoustrack',()=>modalNav(-1));
+  try{navigator.mediaSession.setActionHandler('seekto',(d)=>{if(ytPlayer&&playerReady&&d.seekTime!=null)ytPlayer.seekTo(d.seekTime,true);});}catch(e){}
+  try{navigator.mediaSession.setActionHandler('seekbackward',(d)=>{if(ytPlayer&&playerReady)ytPlayer.seekTo(Math.max(0,(ytPlayer.getCurrentTime()||-0)-(d.seekOffset||10)),true);});}catch(e){}
+  try{navigator.mediaSession.setActionHandler('seekforward',(d)=>{if(ytPlayer&&playerReady)ytPlayer.seekTo((ytPlayer.getCurrentTime()||0)+(d.seekOffset||10),true);});}catch(e){}
+}
+
+function openModal(song,songList,idx,startSeconds){
+  // Close Document PiP first so player iframe is back in main doc
+  if(_pipWin){try{_pipWin.close();}catch(e){}_pipWin=null;}
+  // If the same song is already playing/buffering in the float player, just restore panel — don't restart
+  if(!song.mp4&&song.v===currentSong?.v&&document.body.classList.contains('float-playing')&&ytPlayer&&playerReady){
+    hideFloatPlayer();
+    document.getElementById('panelSong').textContent=song.s;
+    document.getElementById('panelArtist').textContent=song.a;
+    document.body.classList.add('playing');
+    document.body.classList.add('has-song');
+    if(window.innerWidth>=768){window.scrollTo(0,0);}
+    if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');document.body.style.overflow='hidden';}
+    requestAnimationFrame(setTopH);
+    updateModalNav();
+    updateModalAddBtn();
+    // No DOM move happened — iframe never left panel-slot — just ensure video is playing
+    const st=ytPlayer.getPlayerState();
+    if(st!==YT.PlayerState.PLAYING&&st!==YT.PlayerState.BUFFERING)ytPlayer.playVideo();
+    return;
+  }
+  hideFloatPlayer();
+  currentSong=song;currentSongList=songList;currentSongIdx=idx;
+  document.getElementById('panelSong').textContent=song.s;
+  document.getElementById('panelArtist').textContent=song.a;
+  document.getElementById('miniSong').textContent=song.s;
+  document.getElementById('miniArtist').textContent=song.a;
+  if(song.mp4){document.getElementById('miniThumb').style.backgroundImage='none';}else{document.getElementById('miniThumb').style.backgroundImage=`url('https://i.ytimg.com/vi/${song.v}/mqdefault.jpg')`;}
+  // Open panel FIRST so iframe is visible before seeking/playing
+  document.body.classList.add('playing');
+  document.body.classList.add('has-song');
+  if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');}
+  if(window.innerWidth>=768){window.scrollTo(0,0);}
+  if(window.innerWidth<768){document.getElementById('playerPanel').classList.add('open');document.body.style.overflow='hidden';}
+  requestAnimationFrame(setTopH);
+  const start=startSeconds||0;
+  function _loadOrSeek(vid,sec){
+    let curVid=null;try{curVid=ytPlayer.getVideoData()?.video_id;}catch(e){}
+    const st=ytPlayer.getPlayerState();
+    // Only seek+play when video is genuinely paused — all other states use loadVideoById for reliability
+    if(curVid===vid&&st===YT.PlayerState.PAUSED){
+      ytPlayer.seekTo(sec,true);ytPlayer.playVideo();
+    }else{
+      ytPlayer.loadVideoById({videoId:vid,startSeconds:sec});
+    }
+  }
+  if(song.mp4){if(ytPlayer&&playerReady)ytPlayer.pauseVideo();var _m=document.getElementById('mp4Player');document.getElementById('yt-player').style.display='none';_m.style.display='block';_m.src=song.mp4;_m.currentTime=start;_m.play().catch(()=>{});}else{document.getElementById('yt-player').style.display='';var _m2=document.getElementById('mp4Player');if(_m2){_m2.style.display='none';_m2.pause();_m2.src='';}if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);else setTimeout(()=>{if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);},500);}
+  document.getElementById('miniPlayBtn').textContent='⏸';
+  updateModalNav();
+  updateModalAddBtn();
+  saveSession(song);
+  setupMediaSession(song);
+}
+function openFullPlayer(){
+  // Mobile: expand mini bar to full overlay
+  document.getElementById('playerPanel').classList.add('open');
+  document.body.classList.add('playing');
+  document.body.style.overflow='hidden';
+}
+async function mobilePiP(){
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.classList.remove('playing');
+  document.body.style.overflow='';
+  if(!currentSong)return;
+  // Try native Document Picture-in-Picture (Chrome 116+ desktop / Edge 116+)
+  if('documentPictureInPicture' in window){
+    try{
+      const ytEl=document.getElementById('yt-player');
+      const pipWin=await documentPictureInPicture.requestWindow({width:320,height:212});
+      _pipWin=pipWin;
+      const st=pipWin.document.createElement('style');
+      st.textContent='*{box-sizing:border-box;margin:0;padding:0}body{background:#000;font-family:Arial,sans-serif;overflow:hidden}'+
+        '#yt-player,#yt-player iframe{width:320px!important;height:180px!important;display:block!important;}'+
+        '.pb{display:flex;align-items:center;background:#181818;padding:5px 8px;gap:5px;border-top:1px solid #2a2a2a;}'+
+        '.pt{flex:1;font-size:11px;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;}'+
+        '.pa{background:none;border:none;color:#aaa;font-size:14px;cursor:pointer;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;}'+
+        '.pa:hover{background:#333;color:#fff;}';
+      pipWin.document.head.appendChild(st);
+      // Force iframe dimensions (no position:static — that breaks YouTube rendering)
+      const ifr=ytEl.querySelector('iframe');
+      if(ifr)ifr.style.cssText='width:320px!important;height:180px!important;display:block!important;';
+      // Build toolbar
+      const bar=pipWin.document.createElement('div');bar.className='pb';
+      const titleEl=pipWin.document.createElement('div');titleEl.className='pt';
+      titleEl.textContent=currentSong.s+(currentSong.a?' – '+currentSong.a:'');
+      const playBtn=pipWin.document.createElement('button');playBtn.className='pa';playBtn.textContent='⏸';
+      playBtn.addEventListener('click',()=>{
+        if(!ytPlayer||!playerReady)return;
+        const pl=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING;
+        pl?ytPlayer.pauseVideo():ytPlayer.playVideo();
+        playBtn.textContent=pl?'▶':'⏸';
+      });
+      const expBtn=pipWin.document.createElement('button');expBtn.className='pa';expBtn.title='פתח';expBtn.textContent='⛶';
+      expBtn.addEventListener('click',()=>{
+        pipWin.close(); // pagehide handler moves player back
+        setTimeout(()=>{
+          document.getElementById('playerPanel').classList.add('open');
+          document.body.classList.add('playing');
+          document.body.style.overflow='hidden';
+          requestAnimationFrame(setTopH);
+        },60);
+      });
+      bar.append(titleEl,playBtn,expBtn);
+      pipWin.document.body.append(ytEl,bar);
+      document.body.classList.add('float-playing');
+      // On close: restore player to main panel
+      pipWin.addEventListener('pagehide',()=>{
+        _pipWin=null;
+        if(ifr)ifr.style.cssText='';
+        const slot=document.getElementById('panel-video-slot');
+        if(ytEl.parentNode!==slot)slot.appendChild(ytEl);
+        document.body.classList.remove('float-playing');
+      });
+      return;
+    }catch(e){console.log('Document PiP not available:',e);}
+  }
+  // Fallback: custom draggable float player
+  showFloatPlayer();
+}
+function closePanelOrAll(){
+  // X button in player: close player only, keep playlist open
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.classList.remove('playing');
+  document.body.classList.remove('theater');
+  document.body.style.overflow='';
+  hideFloatPlayer();
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
+  var _mp4cl=document.getElementById('mp4Player');if(_mp4cl){_mp4cl.pause();}
+  document.body.classList.remove('has-song');
+}
+function minimizeToFloat(){
+  if(window.innerWidth<768){mobilePiP();return;}
+  document.body.classList.remove('playing');
+  document.body.classList.remove('theater');
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.style.overflow='';
+  showFloatPlayer();
+}
+var _theaterPlWasOpen=false;
+function toggleTheater(){
+  var entering=!document.body.classList.contains('theater');
+  if(entering){
+    _theaterPlWasOpen=document.getElementById('plPanel').classList.contains('open');
+    closePlPanel();
+  }
+  document.body.classList.toggle('theater');
+  if(!entering && _theaterPlWasOpen) openPlPanel();
+  requestAnimationFrame(setTopH);
+}
+function goHome(){
+  closePlPanel();
+  hideFab();
+  _miniBarSavedState=null;
+  _fabPlState=null;
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.classList.remove('playing','theater','has-song');
+  document.body.style.overflow='';
+  hideFloatPlayer();
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
+  var _mp4gh=document.getElementById('mp4Player');if(_mp4gh)_mp4gh.pause();
+  clearSession();
+  document.querySelectorAll('.artist-block[data-open="true"]').forEach(b=>b.dataset.open='false');
+  const inp=document.getElementById('q');if(inp){inp.value='';}
+  document.getElementById('clr')?.classList.remove('visible');
+  render('');
+  window.scrollTo({top:0,behavior:'smooth'});
+  requestAnimationFrame(setTopH);
+}
+var _miniBarSavedState=null;
+var _fabPlState=null; // saved playlist state for no-song FAB
+function showFab(withSong){
+  if(withSong){
+    document.getElementById('miniFabSong').textContent=currentSong.s||'';
+    document.getElementById('miniFabArtist').textContent=currentSong.a||'';
+    document.getElementById('miniFabThumb').style.backgroundImage=currentSong.v?'url(https://i.ytimg.com/vi/'+currentSong.v+'/mqdefault.jpg)':'none';
+  }else{
+    document.getElementById('miniFabSong').textContent='הפלייליסטים שלי';
+    document.getElementById('miniFabArtist').textContent='';
+    document.getElementById('miniFabThumb').style.backgroundImage='none';
+  }
+  document.getElementById('miniFab').classList.add('visible');
+}
+function hideFab(){document.getElementById('miniFab').classList.remove('visible');}
+function fabResume(){
+  hideFab();
+  if(_miniBarSavedState){resumeOrOpen();return;}
+  // No-song case — just reopen playlist
+  if(_fabPlState){
+    var st=_fabPlState;_fabPlState=null;
+    document.getElementById('plPanel').classList.add('open');
+    var plBody=document.getElementById('plPanelBody');
+    if(plBody&&st.plHTML){plBody.innerHTML=st.plHTML;plBody.scrollTop=st.plScroll||0;}
+  }else{openPlPanel();}
+}
+function minimizePlayerOnly(){
+  _miniBarSavedState={theater:document.body.classList.contains('theater'),plOpen:false,useFab:false};
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.classList.remove('playing','theater');
+  document.body.style.overflow='';
+  hideFloatPlayer();
+  requestAnimationFrame(setTopH);
+}
+function minimizeToMiniBar(){
+  var plPanel=document.getElementById('plPanel');
+  var plBody=document.getElementById('plPanelBody');
+  var hasSong=document.body.classList.contains('playing');
+  if(hasSong){
+    // Player active — save full state, use regular mini bar (no FAB)
+    _miniBarSavedState={
+      theater:document.body.classList.contains('theater'),
+      plOpen:plPanel.classList.contains('open'),
+      plHTML:plBody?plBody.innerHTML:'',
+      plScroll:plBody?plBody.scrollTop:0
+    };
+    plPanel.classList.remove('open');
+    document.getElementById('playerPanel').classList.remove('open');
+    document.body.classList.remove('playing','theater');
+    document.body.style.overflow='';
+    hideFloatPlayer();
+  }else{
+    // No player — save only playlist state, FAB with "הפלייליסטים שלי"
+    _fabPlState={plHTML:plBody?plBody.innerHTML:'',plScroll:plBody?plBody.scrollTop:0};
+    plPanel.classList.remove('open');
+    showFab(false);
+  }
+  requestAnimationFrame(setTopH);
+}
+function closeModal(){
+  document.body.classList.remove('playing');
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.style.overflow='';
+  requestAnimationFrame(setTopH);
+  if(window.innerWidth>=768&&currentSong){showFloatPlayer();return;}
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
+  // keep has-song so mini bar stays (like Spotify)
+}
+function clearSession(){
+  currentSong=null;
+  document.body.classList.remove('has-song');
+  try{localStorage.removeItem('karaokeSession');}catch(e){}
+}
+function miniPlayPause(){
+  var _mp4e=document.getElementById('mp4Player');
+  if(currentSong&&currentSong.mp4&&_mp4e){
+    if(_mp4e.paused){_mp4e.play().catch(()=>{});document.getElementById('miniPlayBtn').textContent='⏸';}
+    else{_mp4e.pause();document.getElementById('miniPlayBtn').textContent='▶';}
+    return;
+  }
+  if(!ytPlayer||!playerReady)return;
+  const s=ytPlayer.getPlayerState();
+  if(s===YT.PlayerState.PLAYING||s===YT.PlayerState.BUFFERING){ytPlayer.pauseVideo();}
+  else{ytPlayer.playVideo();}
+  // Button text updated via onStateChange
+}
+function modalNav(dir){
+  const next=currentSongIdx+dir;
+  if(next<0||next>=currentSongList.length)return;
+  currentSongIdx=next;
+  currentSong=currentSongList[next];
+  document.getElementById('panelSong').textContent=currentSong.s;
+  document.getElementById('panelArtist').textContent=currentSong.a;
+  document.getElementById('miniSong').textContent=currentSong.s;
+  document.getElementById('miniArtist').textContent=currentSong.a;
+  document.getElementById('miniThumb').style.backgroundImage=currentSong.mp4?'none':`url('https://i.ytimg.com/vi/${currentSong.v}/mqdefault.jpg')`;
+  if(currentSong.mp4){var _nm=document.getElementById('mp4Player');document.getElementById('yt-player').style.display='none';_nm.style.display='block';_nm.src=currentSong.mp4;_nm.play().catch(()=>{});}else{document.getElementById('yt-player').style.display='';var _nm2=document.getElementById('mp4Player');if(_nm2){_nm2.style.display='none';_nm2.pause();_nm2.src='';}if(ytPlayer&&playerReady)ytPlayer.loadVideoById(currentSong.v);}
+  updateModalNav();
+  updateModalAddBtn();
+  saveSession(currentSong);
+}
+function updateModalNav(){
+  document.getElementById('btnPrev').disabled=currentSongIdx<=0;
+  document.getElementById('btnNext').disabled=currentSongIdx>=currentSongList.length-1;
+  const info=document.getElementById('modalQueueInfo');
+  info.innerHTML=currentSongList.length>1?`שיר <b>${currentSongIdx+1}</b> מתוך <b>${currentSongList.length}</b>`:'';
+}
+function updateModalAddBtn(){
+  if(!currentSong)return;
+  const btn=document.getElementById('modalAddBtn');
+  const inQ=isInQueue(currentSong.v||currentSong.mp4);
+  btn.className='modal-add-btn'+(inQ?' in-queue':'');
+  btn.innerHTML=inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> נשמר':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> שמור';
+}
+function toggleCurrentInQueue(){
+  if(!currentSong)return;
+  toggleAddSong(currentSong.v||currentSong.mp4);
+}
+function playQueue(){
+  if(!queue.length)return;
+  openModal(queue[0],queue,0);
+}
+
+// ── ARTISTS / RENDER ──
+const IMG_CACHE={};
+function applyPhoto(el,url){el.style.backgroundImage=`url('${url}')`;el.style.backgroundSize='cover';el.style.backgroundPosition='center top';el.textContent='';el.classList.add('has-photo');}
+let _curPhotoArtist=null;
+function adminClickAvatar(name,ev){
+  if(!_admMode)return;
+  ev.stopPropagation();
+  _curPhotoArtist=name;
+  const inp=document.getElementById('artistPhotoInput');inp.value='';inp.click();
+}
+function toggleArtist(h){const b=h.closest('.artist-block');b.dataset.open=b.dataset.open==='false'?'true':'false';updateToggleBtn();}
+// ── FLOAT PLAYER / PiP ──
+let _pipDrag=false,_pipOX=0,_pipOY=0,_pipSX=0,_pipSY=0,_pipMoved=false;
+
+function showFloatPlayer(){
+  const fp=document.getElementById('floatPlayer');
+  if(!fp||!currentSong)return;
+  // Song label
+  document.getElementById('floatSong').textContent=currentSong.s+(currentSong.a?' – '+currentSong.a:'');
+  // Play/pause button state
+  const pb=document.getElementById('pipPlayBtn');
+  if(pb&&ytPlayer&&playerReady)pb.textContent=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?'⏸':'▶';
+  document.body.classList.add('float-playing');
+  const pw=window.innerWidth<768?185:340;
+  // On desktop: reset any drag overrides so CSS default position kicks in
+  if(window.innerWidth>=768){
+    const panel=document.getElementById('playerPanel');
+    if(panel){panel.style.removeProperty('left');panel.style.removeProperty('top');panel.style.removeProperty('right');panel.style.removeProperty('bottom');}
+  }
+  // Position control bar just below the CSS mini-pip (panel bottom edge sits at bottom:96px)
+  fp.style.left=(window.innerWidth-pw-12)+'px';
+  fp.style.top=(window.innerHeight-96)+'px';
+  fp._pipPositioned=true;
+  fp.style.right='auto';
+  fp.style.display='';
+  fp.classList.add('visible');
+  // No DOM move — iframe stays in panel-video-slot; CSS makes panel the mini-pip
+}
+
+function hideFloatPlayer(){
+  const fp=document.getElementById('floatPlayer');
+  if(fp)fp.classList.remove('visible');
+  document.body.classList.remove('float-playing');
+  // No DOM move — iframe always stays in panel-video-slot
+}
+
+function closeFloat(){
+  hideFloatPlayer();
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
+  document.body.classList.remove('has-song');
+}
+
+function expandFloat(){
+  hideFloatPlayer();
+  if(window.innerWidth>=768){document.body.classList.add('playing');}
+  else{document.getElementById('playerPanel').classList.add('open');document.body.classList.add('playing');document.body.style.overflow='hidden';}
+  requestAnimationFrame(setTopH);
+}
+
+function pipPlayPause(){
+  if(!ytPlayer||!playerReady)return;
+  const s=ytPlayer.getPlayerState();
+  // PLAYING=1, BUFFERING=3 → pause; anything else → play
+  if(s===YT.PlayerState.PLAYING||s===YT.PlayerState.BUFFERING){ytPlayer.pauseVideo();}
+  else{ytPlayer.playVideo();}
+  // Button text updated via onStateChange
+}
+
+function _snapToCorner(fp){
+  const vw=window.innerWidth,vh=window.innerHeight;
+  const r=fp.getBoundingClientRect();
+  const m=12, bm=window.innerWidth<768?76:80;
+  const isDesk=window.innerWidth>=768&&document.body.classList.contains('float-playing');
+  const panel=isDesk?document.getElementById('playerPanel'):null;
+  const ph=panel?panel.offsetHeight:192;
+  // Use combined bounding box (panel+bar) to decide corner on desktop
+  const refTop=isDesk&&panel?panel.getBoundingClientRect().top:r.top;
+  const refH=isDesk?ph+r.height:r.height;
+  const goLeft=(isDesk&&panel?panel.getBoundingClientRect().left:r.left)+r.width/2<vw/2;
+  const goTop=refTop+refH/2<vh/2;
+  fp.classList.add('pip-snap');
+  if(isDesk&&panel){
+    const nx=goLeft?m:vw-340-m;
+    const ny=goTop?m:vh-ph-r.height-bm;
+    panel.classList.add('pip-snap');
+    panel.style.setProperty('left',nx+'px','important');
+    panel.style.setProperty('top',ny+'px','important');
+    panel.style.setProperty('right','auto','important');
+    panel.style.setProperty('bottom','auto','important');
+    fp.style.left=nx+'px';
+    fp.style.top=(ny+ph)+'px';
+    setTimeout(()=>{fp.classList.remove('pip-snap');panel.classList.remove('pip-snap');},280);
+  }else{
+    fp.style.left=(goLeft?m:vw-r.width-m)+'px';
+    fp.style.top=(goTop?m:vh-r.height-bm)+'px';
+    fp.style.right='auto'; fp.style.bottom='auto';
+    setTimeout(()=>fp.classList.remove('pip-snap'),280);
+  }
+}
+
+function initPiP(){
+  const fp=document.getElementById('floatPlayer');
+  const bar=document.getElementById('floatBar');
+  if(!fp||!bar)return;
+
+  function _isDesk(){return window.innerWidth>=768&&document.body.classList.contains('float-playing');}
+  function _getPanel(){return document.getElementById('playerPanel');}
+  // Move the CSS mini-pip panel to an explicit left/top position (overrides CSS right/bottom)
+  function _setPanelPos(x,y){
+    const panel=_getPanel();
+    if(!panel)return;
+    panel.style.setProperty('left',x+'px','important');
+    panel.style.setProperty('top',y+'px','important');
+    panel.style.setProperty('right','auto','important');
+    panel.style.setProperty('bottom','auto','important');
+  }
+  // Get the top-left of the combined unit (panel top-left on desktop, fp top-left on mobile)
+  function _getAnchorRect(){
+    if(_isDesk()){const panel=_getPanel();if(panel)return panel.getBoundingClientRect();}
+    return fp.getBoundingClientRect();
+  }
+
+  // ── TOUCH drag via bottom bar ──
+  bar.addEventListener('touchstart',e=>{
+    if(e.target.closest('.fbar-btn'))return;
+    _pipDrag=true;_pipMoved=false;
+    const t=e.touches[0];
+    _pipSX=t.clientX;_pipSY=t.clientY;
+    const ar=_getAnchorRect();
+    _pipOX=t.clientX-ar.left;_pipOY=t.clientY-ar.top;
+    // Lock current fp position before dragging
+    const fr=fp.getBoundingClientRect();
+    fp.style.left=fr.left+'px';fp.style.top=fr.top+'px';
+    fp.style.right='auto';
+    fp.classList.remove('pip-snap');
+    bar.classList.add('grabbing');
+  },{passive:true});
+
+  document.addEventListener('touchmove',e=>{
+    if(!_pipDrag)return;
+    e.preventDefault();
+    const t=e.touches[0];
+    if(Math.abs(t.clientX-_pipSX)>5||Math.abs(t.clientY-_pipSY)>5)_pipMoved=true;
+    const x=t.clientX-_pipOX, y=t.clientY-_pipOY;
+    if(_isDesk()){
+      _setPanelPos(x,y);
+      const ph=(_getPanel()||{offsetHeight:192}).offsetHeight;
+      fp.style.left=x+'px';fp.style.top=(y+ph)+'px';
+    }else{
+      fp.style.left=x+'px';fp.style.top=y+'px';
+    }
+  },{passive:false});
+
+  document.addEventListener('touchend',()=>{
+    if(!_pipDrag)return;
+    _pipDrag=false;
+    bar.classList.remove('grabbing');
+    if(!_pipMoved)return;
+    const r=fp.getBoundingClientRect();
+    if(r.right<-20||r.left>window.innerWidth+20){closeFloat();return;}
+    _snapToCorner(fp);
+  });
+
+  // ── MOUSE drag via bottom bar (desktop) ──
+  bar.addEventListener('mousedown',e=>{
+    if(e.target.closest('.fbar-btn'))return;
+    _pipDrag=true;_pipMoved=false;
+    _pipSX=e.clientX;_pipSY=e.clientY;
+    const ar=_getAnchorRect();
+    _pipOX=e.clientX-ar.left;_pipOY=e.clientY-ar.top;
+    const fr=fp.getBoundingClientRect();
+    fp.style.left=fr.left+'px';fp.style.top=fr.top+'px';
+    fp.style.right='auto';
+    fp.classList.remove('pip-snap');
+    bar.classList.add('grabbing');
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!_pipDrag)return;
+    if(Math.abs(e.clientX-_pipSX)>4)_pipMoved=true;
+    const x=e.clientX-_pipOX, y=e.clientY-_pipOY;
+    if(_isDesk()){
+      _setPanelPos(x,y);
+      const ph=(_getPanel()||{offsetHeight:192}).offsetHeight;
+      fp.style.left=x+'px';fp.style.top=(y+ph)+'px';
+    }else{
+      fp.style.left=x+'px';fp.style.top=y+'px';
+    }
+  });
+  document.addEventListener('mouseup',()=>{
+    if(!_pipDrag)return;
+    _pipDrag=false;
+    bar.classList.remove('grabbing');
+    if(_pipMoved)_snapToCorner(fp);
+  });
+}
+document.addEventListener('DOMContentLoaded',initPiP);
+// Mobile player gestures (YouTube-style)
+function initMobileGestures(){
+  // Swipe down on full player → minimize to mini player
+  let pSY=0,pSX=0;
+  const panel=document.getElementById('playerPanel');
+  panel.addEventListener('touchstart',e=>{pSY=e.touches[0].clientY;pSX=e.touches[0].clientX;},{passive:true});
+  panel.addEventListener('touchend',e=>{
+    if(window.innerWidth>=768)return;
+    const dy=e.changedTouches[0].clientY-pSY;
+    const dx=Math.abs(e.changedTouches[0].clientX-pSX);
+    if(dy>80&&dx<120&&panel.classList.contains('open'))mobilePiP();
+  },{passive:true});
+  // Float player expand/close handled by ⛶ and ✕ buttons
+}
+document.addEventListener('DOMContentLoaded',initMobileGestures);
+// PiP when leaving page
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden'&&currentSong){
+    const iframe=document.querySelector('#yt-player iframe');
+    if(iframe&&iframe.requestPictureInPicture){iframe.requestPictureInPicture().catch(()=>{});}
+  }
+});
+
+function exitTheaterIfNeeded(){if(document.body.classList.contains('theater')){document.body.classList.remove('theater');requestAnimationFrame(setTopH);}}
+function expandAll(){exitTheaterIfNeeded();if(document.body.classList.contains('playing')){closePlPanel();setTimeout(()=>document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true'),320);}else{document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true');}}
+function collapseAll(){exitTheaterIfNeeded();if(document.body.classList.contains('playing')){closePlPanel();setTimeout(()=>document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false'),320);}else{document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false');}}
+function updateToggleBtn(){}
+function hl(t,q){if(!q)return esc(t);return esc(t).replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
+
+async function fetchArtistImg(name){
+  // 1. Wikipedia Hebrew
+  try{const r=await fetch(`https://he.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(name.replace(/ /g,'_'))}`);
+    if(r.ok){const d=await r.json();if(d.thumbnail?.source)return d.thumbnail.source;}
+  }catch(e){}
+  // 2. iTunes — search by song (artworkUrl100 only exists on song/album results)
+  try{const r=await fetch(`https://itunes.apple.com/search?term=${encodeURIComponent(name)}&entity=song&limit=5&country=IL`);
+    if(r.ok){const d=await r.json();
+      for(const s of(d.results||[])){
+        // make sure it's the right artist
+        if(s.artworkUrl100&&s.artistName&&s.artistName.toLowerCase().includes(name.slice(0,3).toLowerCase())){
+          return s.artworkUrl100.replace('100x100bb','600x600bb');
+        }
+      }
+      // fallback: first result regardless
+      if(d.results?.[0]?.artworkUrl100)return d.results[0].artworkUrl100.replace('100x100bb','600x600bb');
+    }
+  }catch(e){}
+  return null;
+}
+
+async function loadImages(){
+  const avatars=document.querySelectorAll('.artist-avatar[data-artist]');
+  const promises=[];
+  for(const el of avatars){
+    const name=el.dataset.artist;
+    if(CUSTOM_PHOTOS[name]){applyPhoto(el,CUSTOM_PHOTOS[name]);IMG_CACHE[name]=CUSTOM_PHOTOS[name];continue;}
+  const customPhoto=localStorage.getItem('artist_photo_'+name);
+    if(customPhoto){applyPhoto(el,customPhoto);IMG_CACHE[name]=customPhoto;continue;}
+    if(IMG_CACHE[name]&&IMG_CACHE[name]!=='none'){applyPhoto(el,IMG_CACHE[name]);continue;}
+    if(IMG_CACHE[name]==='none')continue;
+    promises.push((async()=>{
+      const url=await fetchArtistImg(name);
+      if(url){IMG_CACHE[name]=url;document.querySelectorAll(`.artist-avatar[data-artist="${CSS.escape(name)}"]`).forEach(e=>applyPhoto(e,url));}
+      else IMG_CACHE[name]='none';
+    })());
+  }
+  await Promise.all(promises);
+}
+
+function render(term){
+  closeeFolderPicker();
+  const _prevOpen={};document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{_prevOpen[b.dataset.vid]=b.dataset.open;});
+  const q=(term||'').trim().toLowerCase();
+  const g={};const ord=[];
+  ALL.forEach(r=>{
+    const mt=!q||r.s.toLowerCase().includes(q)||r.a.toLowerCase().includes(q);
+    if(!mt)return;
+    if(!g[r.a]){g[r.a]=[];ord.push(r.a);}
+    g[r.a].push(r);
+  });
+  let h='';
+  if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
+  var _plsForBtns=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
+  for(const a of ord){
+    const vid=g[a][0].v;
+    h+=`<div class="artist-block" data-open="${q?'true':'false'}" data-vid="${vid}"
+         ondragover="_dndArtistOver(event,'${vid}')" ondrop="_dndArtistDrop(event,'${vid}')" ondragleave="_dndLeave(event)">`;
+    h+=`<div class="artist-header" onclick="toggleArtist(this)">`;
+    h+=`<div class="artist-avatar" data-artist="${esc(a)}" data-vid="${vid}" onclick="adminClickAvatar('${esc(a)}',event)">${esc(a.slice(0,2))}</div>`;
+    h+=`<span class="artist-name-text">${hl(a,q)}</span>`;
+    h+=`<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+    h+=`<div class="admin-artist-btns">`;
+    h+=`<span class="drag-handle" draggable="true"
+          ondragstart="event.stopPropagation();_dndArtistStart(event,'${vid}')"
+          ondragend="_dndEnd(event)"
+          onclick="event.stopPropagation()"
+          title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>`;
+    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה">✏️</button>`;
+    h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="מחק תיקייה">🗑</button>`;
+    h+=`</div>`;
+    h+=`</div><div class="songs-wrap"><table class="songs-table">`;
+    g[a].forEach((r,i)=>{
+      const inQ=_plsForBtns.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===(r.v||r.mp4);});});
+      h+=`<tr data-vid="${r.v||r.mp4}"
+           ondragover="_dndSongOver(event,'${r.v||r.mp4}')" ondrop="_dndSongDrop(event,'${r.v||r.mp4}')" ondragleave="_dndLeave(event)">
+        <td onclick="playVid('${r.v||r.mp4}')" style="cursor:pointer"><div>${hl(r.s,q)}</div><div class="song-artist-sub">${hl(r.a,q)}</div></td>
+        <td class="td-actions">
+          <div class="song-actions">
+            <button class="drag-handle-song" draggable="true"
+              ondragstart="_dndSongStart(event,'${r.v||r.mp4}')"
+              ondragend="_dndEnd(event)"
+              onclick="event.stopPropagation()"
+              title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
+            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v||r.mp4}')" title="שנה שם שיר">✏️</button>
+            <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v||r.mp4}',this)" title="העבר לתיקייה אחרת">📂</button>
+            <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
+              <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
+            </button>
+            <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'}</button>
+            ${r.mp4?'<span style="width:28px;flex-shrink:0;display:inline-flex;"></span>':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
+            <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
+          </div>
+        </td>
+      </tr>`;
+    });
+    h+='</table></div></div>';
+  }
+  document.getElementById('content').innerHTML=h;
+  updateToggleBtn();
+  loadImages();
+}
+function clearSearch(){const i=document.getElementById('q');i.value='';document.getElementById('clr').classList.remove('visible');render('');}
+
+// ── SEARCH HISTORY ──
+const HIST_KEY='karaoke_hist';
+function getSearchHistory(){try{return JSON.parse(localStorage.getItem(HIST_KEY)||'[]');}catch(e){return[];}}
+function saveSearchHistory(term){if(!term.trim())return;let h=getSearchHistory().filter(t=>t!==term);h.unshift(term);h=h.slice(0,8);try{localStorage.setItem(HIST_KEY,JSON.stringify(h));}catch(e){}}
+function clearSearchHistory(){try{localStorage.removeItem(HIST_KEY);}catch(e){}hideSearchHistory();}
+function showSearchHistory(){
+  const h=getSearchHistory();
+  const dd=document.getElementById('ytHistory');
+  if(!h.length){dd.classList.remove('open');return;}
+  dd.innerHTML=h.map(t=>`<div class="yt-hist-item" onmousedown="pickHistory('${t.replace(/'/g,"\\'").replace(/"/g,'&quot;')}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${t}</div>`).join('')+'<div class="yt-hist-clear" onmousedown="clearSearchHistory()">נקה היסטוריה</div>';
+  dd.classList.add('open');
+}
+function hideSearchHistory(){document.getElementById('ytHistory').classList.remove('open');}
+function pickHistory(term){const i=document.getElementById('q');i.value=term;render(term);document.getElementById('clr').classList.add('visible');hideSearchHistory();saveSearchHistory(term);}
+
+// ── QUEUE PANEL ──
+function openQueuePanel(){
+  window._activeQueueTab='temp';var _qp0=document.getElementById('queuePanel');if(_qp0)_qp0.classList.remove('minimized');renderQueueTabs();
+  const panel=document.getElementById('queuePanel');
+  if(!panel)return;
+  const list=document.getElementById('queuePanelList');
+  if(list){
+    if(!queue.length){
+      list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">הפלייליסט ריק</div>';
+    }else{
+      list.innerHTML=queue.map((s,i)=>`<div class="queue-item${currentSong&&currentSong.v===s.v?' active':''}"
+          draggable="true" data-vid="${s.v}"
+          ondragstart="_dndQueueStart(event,'${s.v}')"
+          ondragover="event.preventDefault();_dndQueueOver(event,'${s.v}')"
+          ondrop="_dndQueueDrop(event,'${s.v}')"
+          ondragleave="_dndLeave(event)"
+          ondragend="_dndEnd(event)"
+          onclick="openModal(queue.find(x=>x.v==='${s.v}'),queue,queue.findIndex(x=>x.v==='${s.v}'))">
+        <span class="qi-drag" onclick="event.stopPropagation()">☰</span>
+        <span class="qi-num">${i+1}</span>
+        <div class="qi-thumb" style="background-image:url('https://i.ytimg.com/vi/${s.v}/mqdefault.jpg')"></div>
+        <div class="qi-info">
+          <div class="qi-name">${esc(s.s)}</div>
+          <div class="qi-artist">${esc(s.a||'')}</div>
+        </div>
+        <button class="qi-rm" onclick="event.stopPropagation();removeFromQueue('${s.v||s.mp4}')" title="הסר">✕</button>
+      </div>`).join('');
+    }
+  }
+  panel.classList.add('open');
+}
+function closeQueuePanel(){const panel=document.getElementById('queuePanel');if(panel)panel.classList.remove('open');}
+
+// ── SESSION ──
+const SESSION_KEY='karaoke_session';
+function saveSession(song){try{localStorage.setItem(SESSION_KEY,JSON.stringify({v:song.v,s:song.s,a:song.a,list:currentSongList.map(s=>s.v),idx:currentSongIdx}));}catch(e){}}
+function loadSession(){
+  try{
+    const d=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+    if(!d)return;
+    currentSong={v:d.v,s:d.s,a:d.a};
+    // Don't set has-song on page load — home state is always clean (no mini bar)
+    const mini=document.getElementById('miniSong');
+    const miniA=document.getElementById('miniArtist');
+    if(mini)mini.textContent=d.s;
+    if(miniA)miniA.textContent=d.a||'';
+    const thumb=document.getElementById('miniThumb');
+    if(thumb)thumb.style.backgroundImage=`url(https://img.youtube.com/vi/${d.v}/default.jpg)`;
+  }catch(e){}
+}
+function resumeOrOpen(){
+  if(!currentSong)return;
+  var st=_miniBarSavedState;
+  _miniBarSavedState=null;
+  // Explicit minimize — restore panels directly, video still running behind display:none
+  if(st){
+    hideFab();
+    document.getElementById('playerPanel').classList.add('open');
+    document.body.classList.add('playing');
+    if(st.theater)document.body.classList.add('theater');
+    document.body.style.overflow='hidden';
+    if(st.plOpen){
+      document.getElementById('plPanel').classList.add('open');
+      var plBody=document.getElementById('plPanelBody');
+      if(plBody&&st.plHTML){plBody.innerHTML=st.plHTML;plBody.scrollTop=st.plScroll||0;}
+    }
+    requestAnimationFrame(setTopH);
+    return;
+  }
+  // Mini bar from float/close — player still loaded
+  if(ytPlayer&&playerReady&&ytPlayer.getPlayerState()!==YT.PlayerState.UNSTARTED){
+    document.getElementById('playerPanel').classList.add('open');
+    document.body.classList.add('playing');
+    document.body.style.overflow='hidden';
+    requestAnimationFrame(setTopH);
+    return;
+  }
+  // Page was reloaded — restore from session
+  const saved=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
+  if(saved&&saved.list){
+    const songList2=ALL.filter(s=>saved.list.includes(s.v));
+    const idx=Math.max(0,saved.list.indexOf(currentSong.v));
+    openModal(currentSong,songList2,idx,0);
+  }else{
+    openModal(currentSong,[currentSong],0,0);
+  }
+  if(window.innerWidth<768)document.getElementById('playerPanel').classList.add('open');
+}
+setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()==YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
+
+loadSession();
+render('');document.getElementById('q').focus();
+document.getElementById('q').addEventListener('input',e=>{
+  const v=e.target.value;
+  render(v);
+  document.getElementById('clr').classList.toggle('visible',v.length>0);
+  if(v.length>0)hideSearchHistory();else showSearchHistory();
+});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    const openOverlay=document.querySelector('.adm-overlay.open');
+    if(openOverlay){openOverlay.classList.remove('open');return;}
+    if(document.body.classList.contains('playing'))closeModal();
+    return;
+  }
+  if(e.key==='ArrowLeft'&&document.body.classList.contains('playing'))modalNav(-1);
+  if(e.key==='ArrowRight'&&document.body.classList.contains('playing'))modalNav(1);
+});
+
+// ── ADMIN MODE ──
+const _ADM_HASH='213f367b1af015a79e0b0cf92a3d4084e6bd5fbc3fbb4364881b05854bf86924';// SHA-256("8213")
+let _admMode=false,_admDirty=false,_atbT=null;
+
+async function _sha256(s){
+  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
+  return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+function openAdminLogin(){
+  document.getElementById('admLoginOv').classList.add('open');
+  document.getElementById('admPin').value='';
+  document.getElementById('admPinErr').textContent='';
+  setTimeout(()=>document.getElementById('admPin').focus(),80);
+}
+async function doAdmLogin(){
+  const pin=document.getElementById('admPin').value;if(!pin)return;
+  const h=await _sha256(pin);
+  const saved=localStorage.getItem('adm_pin')||_ADM_HASH;
+  if(h!==saved){document.getElementById('admPinErr').textContent='קוד שגוי, נסה שוב';return;}
+  document.getElementById('admLoginOv').classList.remove('open');
+  _admMode=true;document.body.classList.add('admin');
+  _fillArtistList();const _openSt={};document.querySelectorAll('.artist-block').forEach(b=>{_openSt[b.dataset.vid]=b.dataset.open;});render(document.getElementById('q').value||'');document.querySelectorAll('.artist-block').forEach(b=>{if(_openSt[b.dataset.vid])b.dataset.open=_openSt[b.dataset.vid];});
+  if(!localStorage.getItem('gh_token'))document.getElementById('admTokenOv').classList.add('open');
+}
+function exitAdmin(){
+  if(_admDirty&&!confirm('יש שינויים שלא נשמרו ב-GitHub. לצאת בכל זאת?'))return;
+  _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
+  render(document.getElementById('q').value||'');
+}
+// ── DRAG & DROP ──
+let _dndType=null,_dndVid=null,_dndQueueVid=null,_dndScrollDir=0,_dndScrollIv=null;
+function _dndArtistStart(e,vid){
+  _dndType='artist';_dndVid=vid;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',vid);
+  setTimeout(()=>{const el=document.querySelector(`.artist-block[data-vid="${vid}"]`);if(el)el.style.opacity='.4';},0);
+}
+function _dndSongStart(e,vid){
+  _dndType='song';_dndVid=vid;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',vid);
+  setTimeout(()=>{const el=document.querySelector(`tr[data-vid="${vid}"]`);if(el)el.style.opacity='.4';},0);
+}
+function _dndArtistOver(e,targetVid){
+  if(_dndType!=='artist'||_dndVid===targetVid)return;
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('.artist-block').forEach(b=>b.classList.remove('drag-over-above','drag-over-below'));
+  const el=document.querySelector(`.artist-block[data-vid="${targetVid}"]`);
+  if(el){const r=el.getBoundingClientRect();el.classList.add(e.clientY<r.top+r.height/2?'drag-over-above':'drag-over-below');}
+}
+function _dndSongOver(e,targetVid){
+  if(_dndType!=='song'||_dndVid===targetVid)return;
+  const src=ALL.find(s=>(s.v||s.mp4)===_dndVid),tgt=ALL.find(s=>(s.v||s.mp4)===targetVid);
+  if(!src||!tgt||src.a!==tgt.a)return;
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('tr[data-vid]').forEach(r=>r.classList.remove('drag-over-above','drag-over-below'));
+  const el=document.querySelector(`tr[data-vid="${targetVid}"]`);
+  if(el){const r=el.getBoundingClientRect();el.classList.add(e.clientY<r.top+r.height/2?'drag-over-above':'drag-over-below');}
+}
+function _dndLeave(e){
+  if(!e.currentTarget.contains(e.relatedTarget)){
+    e.currentTarget.classList.remove('drag-over','drag-over-above','drag-over-below');
+  }
+}
+function _dndArtistDrop(e,targetVid){
+  if(_dndType!=='artist'||_dndVid===targetVid)return;
+  e.preventDefault();
+  const srcName=_artistOf(_dndVid),tgtName=_artistOf(targetVid);
+  if(!srcName||!tgtName)return;
+  const tgtEl=document.querySelector(`.artist-block[data-vid="${targetVid}"]`);
+  const after=tgtEl&&tgtEl.classList.contains('drag-over-below');
+  const ord=_artistOrder();
+  const groups={};ord.forEach(a=>{groups[a]=ALL.filter(s=>s.a===a);});
+  const si=ord.indexOf(srcName);ord.splice(si,1);
+  const ti=ord.indexOf(tgtName);ord.splice(after?ti+1:ti,0,srcName);
+  _rebuildFromGroups(ord,groups);
+  _markDirty();_dndCleanup();render(document.getElementById('q').value||'');
+}
+function _dndSongDrop(e,targetVid){
+  if(_dndType!=='song'||_dndVid===targetVid)return;
+  const src=ALL.find(s=>(s.v||s.mp4)===_dndVid),tgt=ALL.find(s=>(s.v||s.mp4)===targetVid);
+  if(!src||!tgt||src.a!==tgt.a)return;
+  e.preventDefault();
+  const tgtEl=document.querySelector(`tr[data-vid="${targetVid}"]`);
+  const after=tgtEl&&tgtEl.classList.contains('drag-over-below');
+  const si=ALL.indexOf(src);ALL.splice(si,1);
+  const ti=ALL.indexOf(tgt);ALL.splice(after?ti+1:ti,0,src);
+  _markDirty();_dndCleanup();render(document.getElementById('q').value||'');
+}
+function _dndEnd(e){_dndCleanup();}
+function _dndCleanup(){
+  const cls=['drag-over','drag-over-above','drag-over-below'];
+  document.querySelectorAll('.artist-block').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
+  document.querySelectorAll('tr[data-vid]').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
+  document.querySelectorAll('.queue-item[data-vid]').forEach(el=>{el.classList.remove(...cls);el.style.opacity='';});
+  _dndType=null;_dndVid=null;_dndQueueVid=null;
+  clearInterval(_dndScrollIv);_dndScrollIv=null;_dndScrollDir=0;
+}
+function toggleDelMode(){
+  document.body.classList.toggle('del-mode');
+}
+// ── QUEUE DnD ──
+function _dndQueueStart(e,vid){
+  _dndType='queue';_dndQueueVid=vid;
+  e.dataTransfer.effectAllowed='move';
+  e.dataTransfer.setData('text/plain',vid);
+  setTimeout(()=>{const el=document.querySelector(`.queue-item[data-vid="${vid}"]`);if(el)el.style.opacity='.4';},0);
+}
+function _dndQueueOver(e,targetVid){
+  if(_dndType!=='queue'||_dndQueueVid===targetVid)return;
+  e.preventDefault();e.dataTransfer.dropEffect='move';
+  document.querySelectorAll('.queue-item').forEach(el=>el.classList.remove('drag-over-above','drag-over-below'));
+  const el=document.querySelector(`.queue-item[data-vid="${targetVid}"]`);
+  if(el){const r=el.getBoundingClientRect();el.classList.add(e.clientY<r.top+r.height/2?'drag-over-above':'drag-over-below');}
+}
+function _dndQueueDrop(e,targetVid){
+  if(_dndType!=='queue'||_dndQueueVid===targetVid)return;
+  e.preventDefault();
+  const tgtEl=document.querySelector(`.queue-item[data-vid="${targetVid}"]`);
+  const after=tgtEl&&tgtEl.classList.contains('drag-over-below');
+  const si=queue.findIndex(s=>s.v===_dndQueueVid);
+  if(si<0)return;
+  const[song]=queue.splice(si,1);
+  const ti=queue.findIndex(s=>s.v===targetVid);
+  queue.splice(after?ti+1:ti,0,song);
+  _dndCleanup();updateQueueBar();openQueuePanel();
+}
+// ── ARTIST MANAGEMENT ──
+function _artistOf(vid){const s=ALL.find(x=>x.v===vid);return s?s.a:null;}
+function _artistOrder(){const seen=new Set(),ord=[];ALL.forEach(s=>{if(!seen.has(s.a)){seen.add(s.a);ord.push(s.a);}});return ord;}
+function _rebuildFromGroups(ord,groups){ALL.length=0;ord.forEach(a=>groups[a].forEach(s=>ALL.push(s)));}
+
+function adminRenameArtist(vid){
+  const old=_artistOf(vid);if(!old)return;
+  const neu=prompt('שם חדש לתיקייה:',old);
+  if(!neu||neu===old)return;
+  const exists=_artistOrder().includes(neu)&&neu!==old;
+  if(exists&&!confirm(`תיקייה "${neu}" כבר קיימת. למזג את השירים?`))return;
+  ALL.forEach(s=>{if(s.a===old)s.a=neu;});
+  _markDirty();_atbStat('✏️ תיקייה שונה שם','ok');render(document.getElementById('q').value||'');
+}
+function adminDeleteArtist(vid){
+  const name=_artistOf(vid);if(!name)return;
+  const cnt=ALL.filter(s=>s.a===name).length;
+  if(!confirm(`למחוק את התיקייה "${name}" עם ${cnt} שירים?`))return;
+  for(let i=ALL.length-1;i>=0;i--){if(ALL[i].a===name){if(isInQueue(ALL[i].v))removeFromQueue(ALL[i].v);ALL.splice(i,1);}}
+  _markDirty();_atbStat('🗑 תיקייה נמחקה','ok');render(document.getElementById('q').value||'');
+}
+function adminMoveArtistUp(vid){
+  const name=_artistOf(vid);if(!name)return;
+  const ord=_artistOrder();const idx=ord.indexOf(name);if(idx<=0)return;
+  const groups={};ord.forEach(a=>{groups[a]=ALL.filter(s=>s.a===a);});
+  [ord[idx-1],ord[idx]]=[ord[idx],ord[idx-1]];
+  _rebuildFromGroups(ord,groups);
+  _markDirty();render(document.getElementById('q').value||'');
+}
+function adminMoveArtistDown(vid){
+  const name=_artistOf(vid);if(!name)return;
+  const ord=_artistOrder();const idx=ord.indexOf(name);if(idx>=ord.length-1)return;
+  const groups={};ord.forEach(a=>{groups[a]=ALL.filter(s=>s.a===a);});
+  [ord[idx],ord[idx+1]]=[ord[idx+1],ord[idx]];
+  _rebuildFromGroups(ord,groups);
+  _markDirty();render(document.getElementById('q').value||'');
+}
+// ── MOVE SONG TO FOLDER ──
+function adminMoveSongToFolder(vid,btn){
+  if(!_admMode)return;
+  closeeFolderPicker();
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
+  _pickerArtists=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,'he'));
+  const picker=document.createElement('div');
+  picker.className='folder-picker';
+  picker.onclick=e=>e.stopPropagation();
+  picker.innerHTML=`<div class="folder-picker-title">העבר לתיקייה</div>`+
+    _pickerArtists.map((a,idx)=>`<div class="folder-picker-item${a===song.a?' current':''}"
+      ${a!==song.a?`onclick="applyMoveSongToFolder('${vid}',_pickerArtists[${idx}]);closeeFolderPicker()"`:''}>
+      ${esc(a)}${a===song.a?' ✓':''}</div>`).join('')+
+    `<div class="folder-picker-new" onclick="adminMoveSongNewFolder('${vid}');closeeFolderPicker()">＋ תיקייה חדשה</div>`;
+  document.body.appendChild(picker);
+  _folderPickerEl=picker;
+  const rect=btn.getBoundingClientRect();
+  const pickerH=Math.min(290,_pickerArtists.length*34+70);
+  const top=rect.bottom+pickerH>window.innerHeight?rect.top-pickerH:rect.bottom+4;
+  picker.style.top=Math.max(4,top)+'px';
+  picker.style.right=Math.max(8,window.innerWidth-rect.right-10)+'px';
+  setTimeout(()=>document.addEventListener('click',closeeFolderPicker,{once:true}),0);
+}
+function closeeFolderPicker(){
+  if(_folderPickerEl){_folderPickerEl.remove();_folderPickerEl=null;}
+  document.removeEventListener('click',closeeFolderPicker);
+}
+function applyMoveSongToFolder(vid,newArtist){
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song||song.a===newArtist)return;
+  song.a=newArtist;
+  _markDirty();_atbStat('✓ שיר הועבר ל'+newArtist,'ok');
+  render(document.getElementById('q').value||'');
+}
+function adminMoveSongNewFolder(vid){
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
+  const name=prompt('שם התיקייה החדשה:','');
+  if(!name||!name.trim())return;
+  applyMoveSongToFolder(vid,name.trim());
+}
+
+// ── SONG MANAGEMENT ──
+function adminRenameSong(vid){
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
+  const neu=prompt('שם חדש לשיר:',song.s);
+  if(!neu||neu===song.s)return;
+  song.s=neu;
+  _markDirty();_atbStat('✏️ שיר שונה שם','ok');render(document.getElementById('q').value||'');
+}
+function adminMoveSongUp(vid){
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
+  const sib=ALL.filter(s=>s.a===song.a);
+  const i=sib.findIndex(s=>s.v===vid);if(i<=0)return;
+  const ai=ALL.indexOf(song),bi=ALL.indexOf(sib[i-1]);
+  [ALL[ai],ALL[bi]]=[ALL[bi],ALL[ai]];
+  _markDirty();render(document.getElementById('q').value||'');
+}
+function adminMoveSongDown(vid){
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
+  const sib=ALL.filter(s=>s.a===song.a);
+  const i=sib.findIndex(s=>s.v===vid);if(i>=sib.length-1)return;
+  const ai=ALL.indexOf(song),bi=ALL.indexOf(sib[i+1]);
+  [ALL[ai],ALL[bi]]=[ALL[bi],ALL[ai]];
+  _markDirty();render(document.getElementById("q").value||"");
+}
+function saveAdmToken(){
+  const t=document.getElementById("admTokenInp").value.trim();
+  if(!t){document.getElementById("admTokenErr").textContent="הזן Token";return;}
+  localStorage.setItem("gh_token",t);
+  document.getElementById("admTokenOv").classList.remove("open");
+  _atbStat("✓ Token נשמר","ok");
+}
+function _fillArtistList(){
+  const sel=document.getElementById("atbArtist");if(!sel||sel.tagName!=='SELECT')return;
+  const cur=sel.value;
+  const artists=[...new Set(ALL.map(s=>s.a))].sort((a,b)=>a.localeCompare(b,"he"));
+  sel.innerHTML='<option value="">בחר אמן / תיקייה</option>'+
+    artists.map(a=>`<option value="${esc(a)}">${esc(a)}</option>`).join('')+
+    '<option value="__new__">＋ תיקייה חדשה</option>';
+  if(cur&&cur!=='__new__')sel.value=cur;
+}
+function adminDeleteSong(vid){
+  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
+  if(!confirm('למחוק "'+song.s+'" של '+song.a+'?'))return;
+  ALL.splice(ALL.findIndex(s=>s.v===vid),1);
+  if(isInQueue(vid))removeFromQueue(vid);
+  render(document.getElementById("q").value||"");
+  _markDirty();_atbStat("🗑 שיר נמחק","ok");
+}
+function adminAddSong(){
+  let artist=document.getElementById("atbArtist").value.trim();
+  if(artist==='__new__'){
+    const n=prompt('שם האמן / תיקייה החדשה:','');
+    if(!n||!n.trim()){return;}
+    artist=n.trim();
+  }
+  const song=document.getElementById("atbSong").value.trim();
+  const url=document.getElementById("atbUrl").value.trim();
+  if(!artist||!song){_atbStat("חסר שם אמן או שם שיר","err");return;}
+  let entry;
+  if(url.match(/\.mp4/i)||url.includes('.r2.dev')){
+    if(ALL.some(s=>s.mp4===url)){_atbStat('שיר זה כבר קיים ברשימה','err');return;}
+    entry={a:artist,s:song,mp4:url};
+  }else{
+  const m=url.match(/[?&]v=([A-Za-z0-9_-]+)/);
+  if(!m){_atbStat("קישור יוטיוב לא תקין","err");return;}
+  const vid=m[1];
+  if(ALL.some(s=>s.v===vid)){_atbStat("שיר זה כבר קיים ברשימה","err");return;}
+    entry={a:artist,s:song,v:vid};
+  }
+  const lastIdx=ALL.reduce((li,s,i)=>s.a===artist?i:li,-1);
+  if(lastIdx>=0){
+    ALL.splice(lastIdx+1,0,entry);
+  }else{
+    ALL.push(entry);
+    const grp={};const ord2=[];
+    ALL.forEach(s=>{if(!grp[s.a]){grp[s.a]=[];ord2.push(s.a);}grp[s.a].push(s);});
+    ord2.sort((a,b)=>a<b?-1:a>b?1:0);
+    ALL.length=0;ord2.forEach(a=>grp[a].forEach(s=>ALL.push(s)));
+  }
+  document.getElementById("atbSong").value="";
+  document.getElementById("atbUrl").value="";
+  _fillArtistList();
+  document.getElementById("atbArtist").value="";
+  document.getElementById("atbSong").focus();
+  render(document.getElementById("q").value||"");
+  _markDirty();_atbStat("✓ שיר נוסף","ok");
+}
+function adminSetPhoto(artist){
+  const cur=CUSTOM_PHOTOS[artist]||localStorage.getItem('artist_photo_'+artist)||'';
+  const url=prompt('כתובת תמונה לאמן "'+artist+'":\n(ריק = מחיקה)',cur);
+  if(url===null)return;
+  if(url.trim()){CUSTOM_PHOTOS[artist]=url.trim();localStorage.setItem('artist_photo_'+artist,url.trim());}
+  else{delete CUSTOM_PHOTOS[artist];localStorage.removeItem('artist_photo_'+artist);}
+  delete IMG_CACHE[artist];
+  const _os={};document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{_os[b.dataset.vid]=b.dataset.open;});
+  render(document.getElementById('q').value||'');
+  document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{if(_os[b.dataset.vid])b.dataset.open=_os[b.dataset.vid];});
+  _markDirty();_atbStat('🖼️ תמונה עודכנה','ok');
+}
+function _markDirty(){
+  _admDirty=true;
+  const b=document.getElementById("atbSyncBtn");
+  if(b){b.style.outline="2px solid #f0a500";b.title="יש שינויים שלא נשמרו";}
+}
+function _atbStat(msg,cls){
+  clearTimeout(_atbT);const el=document.getElementById("atbStat");if(!el)return;
+  el.textContent=msg;el.className="atb-stat"+(cls?" "+cls:"");
+  _atbT=setTimeout(()=>{el.textContent="";el.className="atb-stat";},4500);
+}
+async function adminSyncGitHub(){
+  const token=localStorage.getItem("gh_token");
+  if(!token){document.getElementById("admTokenOv").classList.add("open");return;}
+  const btn=document.getElementById("atbSyncBtn");
+  btn.textContent="מסנכרן...";btn.disabled=true;
+  try{
+    const r=await fetch("https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html",
+      {headers:{"Authorization":"Bearer "+token,"Accept":"application/vnd.github.v3+json"}});
+    if(!r.ok)throw new Error("GitHub API שגיאה: "+r.status);
+    const d=await r.json();
+    const raw=decodeURIComponent(escape(atob(d.content.replace(/\n/g,""))));
+    const newAll="const ALL="+JSON.stringify(ALL)+";";
+    let newHtml=raw.replace(/const ALL=\[[\s\S]*?\];/,newAll);
+    for(const [n,u] of Object.entries(IMG_CACHE||{})){if(u&&u!=="none"&&!CUSTOM_PHOTOS[n])CUSTOM_PHOTOS[n]=u;}
+      // Merge localStorage: upload data URLs to GitHub, get real download_url
+      for(let _i=0;_i<localStorage.length;_i++){
+        const _k=localStorage.key(_i);if(!_k.startsWith('artist_photo_'))continue;
+        const _n=_k.replace('artist_photo_',''),_u=localStorage.getItem(_k);
+        if(_u&&_u.startsWith('data:')){
+          const _ext=_u.startsWith('data:image/webp')?'webp':'jpg',_b64=_u.split(',')[1];
+          const _chk=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/photos/'+encodeURIComponent(_n+'.'+_ext),{headers:{'Authorization':'Bearer '+token}});
+          const _cj=await _chk.json();const _pb={message:'תמונת '+_n,content:_b64};if(_cj.sha)_pb.sha=_cj.sha;
+          const _pr=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/photos/'+encodeURIComponent(_n+'.'+_ext),{method:'PUT',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(_pb)});
+          const _pj=await _pr.json();
+          if(_pj.content&&_pj.content.download_url){CUSTOM_PHOTOS[_n]=_pj.content.download_url;localStorage.setItem('artist_photo_'+_n,_pj.content.download_url);}
+        }else if(_u&&_u.startsWith('http')){CUSTOM_PHOTOS[_n]=_u;}
+      }
+    const newCustomPhotos="const CUSTOM_PHOTOS="+JSON.stringify(CUSTOM_PHOTOS)+";";
+    newHtml=newHtml.replace(/const CUSTOM_PHOTOS=\{[\s\S]*?\};/,newCustomPhotos);
+    if(newHtml===raw)throw new Error("לא ניתן לאתר את מערך השירים בקובץ");
+    const enc=btoa(unescape(encodeURIComponent(newHtml)));
+    const put=await fetch("https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html",{
+      method:"PUT",
+      headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+      body:JSON.stringify({message:"עדכון שירים דרך פאנל ניהול",content:enc,sha:d.sha})
+    });
+    if(!put.ok){const e=await put.json();throw new Error(e.message||"שגיאה "+put.status);}
+    _admDirty=false;
+    btn.style.outline="none";btn.title="";
+    btn.textContent="✓ נשמר!";
+    setTimeout(()=>btn.textContent="⟳ שמור ב-GitHub",3000);
+    _atbStat("✓ עודכן ב-GitHub בהצלחה","ok");
+  document.getElementById("atbArtist").value="";
+  document.getElementById("atbSong").value="";
+  document.getElementById("atbUrl").value="";
+  }catch(e){
+    _atbStat("שגיאה: "+e.message,"err");
+    btn.textContent="⟳ שמור ב-GitHub";
+  }finally{btn.disabled=false;}
+}
+</script>
+
+<!-- ── ADMIN OVERLAYS ── -->
+<div class="adm-overlay" id="admLoginOv">
+  <div class="adm-box">
+    <div class="adm-title">🔐 כניסת מנהל</div>
+    <input class="adm-inp" type="password" id="admPin" placeholder="קוד PIN" maxlength="30" inputmode="numeric"
+      onkeydown="if(event.key==='Enter')doAdmLogin()">
+    <div class="adm-err" id="admPinErr"></div>
+    <div class="adm-row">
+      <button class="adm-btn" onclick="doAdmLogin()">כניסה</button>
+      <button class="adm-btn sec" onclick="document.getElementById('admLoginOv').classList.remove('open')">ביטול</button>
+    </div>
+  </div>
+</div>
+
+<div class="adm-overlay" id="admTokenOv">
+  <div class="adm-box">
+    <div class="adm-title">🔑 GitHub Token</div>
+    <p style="font-size:13px;color:#ccc;margin:0 0 10px">הכנס Personal Access Token עם הרשאות repo</p>
+    <input class="adm-inp" type="password" id="admTokenInp" placeholder="ghp_..." maxlength="200"
+      onkeydown="if(event.key==='Enter')saveAdmToken()">
+    <div class="adm-row">
+      <button class="adm-btn sec" onclick="document.getElementById('admTokenOv').classList.remove('open')">ביטול</button>
+      <button class="adm-btn" onclick="saveAdmToken()">שמור</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── ADMIN TOOLBAR ── -->
+<div class="adm-toolbar" id="admToolbar">
+  <div class="atb-add-row">
+    <select class="atb-inp atb-artist-sel" id="atbArtist">
+      <option value="">בחר אמן / תיקייה</option>
+      <option value="__new__">＋ תיקייה חדשה</option>
+    </select>
+    <input class="atb-inp" id="atbSong" placeholder="שם שיר">
+    <input class="atb-inp" id="atbUrl" placeholder="קישור YouTube">
+  </div>
+  <div class="atb-actions-row">
+    <button class="atb-btn green" onclick="adminAddSong()">+ הוסף שיר</button>
+    <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
+    <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
+    <span class="atb-stat" id="atbStat"></span>
+    <button class="atb-btn" onclick="exitAdmin()">✕ יציאה</button>
+  </div>
+</div>
+
+<input type="file" id="artistPhotoInput" accept="image/*" style="display:none">
+<script>
+document.addEventListener('dragover',function(e){
+  if(!_dndType){clearInterval(_dndScrollIv);_dndScrollIv=null;_dndScrollDir=0;return;}
+  const zone=130;
+  const dir=e.clientY<zone?-1:e.clientY>window.innerHeight-zone?1:0;
+  if(dir===_dndScrollDir)return;
+  _dndScrollDir=dir;
+  clearInterval(_dndScrollIv);_dndScrollIv=null;
+  if(!dir)return;
+  _dndScrollIv=setInterval(()=>window.scrollBy(0,dir*32),14);
+});
+document.getElementById('artistPhotoInput').addEventListener('change',function(){
+  if(!this.files[0]||!_curPhotoArtist)return;
+  const artist=_curPhotoArtist;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const dataUrl=e.target.result;
+    localStorage.setItem('artist_photo_'+artist,dataUrl);
+    IMG_CACHE[artist]=dataUrl;
+    document.querySelectorAll(`.artist-avatar[data-artist="${CSS.escape(artist)}"]`).forEach(el=>applyPhoto(el,dataUrl));
+  };
+  reader.readAsDataURL(this.files[0]);
+  this.value='';_curPhotoArtist=null;
+});
+function togglePlaylistBlock(rowEl){
+  var block=rowEl.closest?rowEl.closest('.playlist-block'):rowEl.parentElement;
+  if(!block)return;
+  block.dataset.open=block.dataset.open==='true'?'false':'true';
+}
+</script>
+<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">הוסף לפלייליסט</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">שנה שם</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">🗑️</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
+function _plLoad(){try{return JSON.parse(localStorage.getItem('kpl')||'[]');}catch(e){return[];}}
+function _plSave(l){localStorage.setItem('kpl',JSON.stringify(l));}
+function _plId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
+window._plSong=null;
+function openPlPicker(song){
+  window._plSong=song;
+  var pls=_plLoad(),sid=song?(song.v||song.mp4):null,inQ=sid?isInQueue(sid):false;
+  var html='<div class="pl-pick-item'+(inQ?' checked':'')+'" onclick="plPickQueue()"><span class="pl-pick-check">'+(inQ?'\u2713':'')+'<\/span>▶ פלייליסט זמני<\/div>';
+  if(pls.length)html+='<div class="pl-pick-sep"><\/div>';
+  pls.forEach(function(pl){
+    var has=sid?pl.songs.some(function(s){return(s.v||s.mp4)===sid;}):false;
+    html+='<div class="pl-pick-item'+(has?' checked':'')+'" onclick="plPickAdd(\''+pl.id+'\')">'
+      +'<span class="pl-pick-check">'+(has?'\u2713':'')+'<\/span>'+pl.name+'<\/div>';
+  });
+  document.getElementById('plPickerList').innerHTML=html;
+  document.getElementById('plPickerOverlay').classList.add('open');
+}
+function closePlPicker(){document.getElementById('plPickerOverlay').classList.remove('open');}
+function plPickQueue(){var song=window._plSong;if(song)toggleAddSong(song.v||song.mp4);closePlPicker();var _qEl=document.getElementById('queuePanel');if(_qEl&&_qEl.classList.contains('open'))openQueuePanel();}
+function plPickAdd(plId){
+  var song=window._plSong;if(!song)return;
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
+  var sid=song.v||song.mp4,idx=pl.songs.findIndex(function(s){return(s.v||s.mp4)===sid;});
+  if(idx>=0)pl.songs.splice(idx,1);else pl.songs.push(song);
+  _plSave(pls);closePlPicker();
+  if(document.getElementById('plPanel').classList.contains('open'))_plRenderList();
+}
+function plNewFromPicker(){
+  var name=prompt('שם הפלייליסט:','');if(!name||!name.trim())return;
+  var pls=_plLoad(),song=window._plSong;
+  pls.push({id:_plId(),name:name.trim(),songs:song?[song]:[],created:Date.now()});
+  _plSave(pls);closePlPicker();
+  if(document.getElementById('plPanel').classList.contains('open'))_plRenderList();
+}
+// openPlPanel / closePlPanel defined below
+function plBackToList(){document.getElementById('plDetailView').style.display='none';document.getElementById('plListView').style.display='flex';}
+function _plRenderList(){
+  var pls=_plLoad(),c=document.getElementById('plList');
+  var qn=(typeof queue!=='undefined'?queue.length:0);
+  var html='<div class="pl-list-item" onclick="closePlPanel();openQueuePanel()"><div class="pl-list-icon" style="background:linear-gradient(135deg,#FF7043,#E64A19)">\u23F1<\/div><div class="pl-list-info"><div class="pl-list-name">פלייליסט זמני<\/div><div class="pl-list-sub">'+qn+' שירים<\/div><\/div><\/div>';
+  html+='<div class="pl-new-row" onclick="plCreateNew()"><span style="font-size:22px">+<\/span> פלייליסט חדש<\/div>';
+  if(!pls.length){html+='<div class="pl-empty">אין פלייליסטים עדיין<br><span style="font-size:13px;color:#444">הוסף שירים דרך כפתור +<\/span><\/div>';}
+  else{pls.forEach(function(pl){html+='<div class="pl-list-item" onclick="plOpenDetail(\''+pl.id+'\')">'
+    +'<div class="pl-list-icon">\uD83C\uDFB5<\/div>'
+    +'<div class="pl-list-info"><div class="pl-list-name">'+pl.name+'<\/div>'
+    +'<div class="pl-list-sub">'+pl.songs.length+' שירים<\/div><\/div><\/div>';});}
+  c.innerHTML=html;
+}
+function plCreateNew(){
+  var name=prompt('שם הפלייליסט:','');if(!name||!name.trim())return;
+  var pls=_plLoad();
+  pls.push({id:_plId(),name:name.trim(),songs:[],created:Date.now()});
+  _plSave(pls);_plRenderList();
+}
+function plOpenDetail(plId){
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
+  document.getElementById('plDetailName').textContent=pl.name;
+  document.getElementById('plDetailView').dataset.plId=plId;
+  document.getElementById('plListView').style.display='none';
+  document.getElementById('plDetailView').style.display='flex';
+  _plRenderDetail(pl);
+}
+function _plRenderDetail(pl){
+  var c=document.getElementById('plDetailSongs');
+  if(!pl.songs.length){c.innerHTML='<div class="pl-empty">הפלייליסט ריק<br><span style="font-size:13px;color:#444">הוסף שירים דרך כפתור +<\/span><\/div>';return;}
+  var html='';
+  pl.songs.forEach(function(s,i){
+    html+='<div class="pl-song-row">'
+      +'<button class="pl-song-play" onclick="plPlayFrom(\''+pl.id+'\','+i+')">&#9654;<\/button>'
+      +'<div class="pl-song-info" onclick="plPlayFrom(\''+pl.id+'\','+i+')"><div class="pl-song-title">'+s.s+'<\/div><div class="pl-song-sub">'+s.a+'<\/div><\/div>'
+      +'<button class="pl-song-del" onclick="plRemoveSong(\''+pl.id+'\','+i+')">\u2715<\/button><\/div>';
+  });
+  c.innerHTML=html;
+}
+function plPlayFrom(plId,idx){
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});
+  if(!pl||!pl.songs.length)return;
+  var i=idx||0;openModal(pl.songs[i],pl.songs,i);closePlPanel();
+}
+function plPlayAll(){var plId=document.getElementById('plDetailView').dataset.plId;plPlayFrom(plId,0);}
+function plRemoveSong(plId,idx){
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
+  pl.songs.splice(idx,1);_plSave(pls);_plRenderDetail(pl);
+}
+function plDelete(){
+  var plId=document.getElementById('plDetailView').dataset.plId,pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});
+  if(!pl)return;
+  if(!confirm('למחוק את "'+pl.name+'"?'))return;
+  _plSave(pls.filter(function(p){return p.id!==plId;}));plBackToList();_plRenderList();
+}
+function plRename(){
+  var plId=document.getElementById('plDetailView').dataset.plId,pls=_plLoad(),pl=pls.find(function(p){return p.id===plId;});if(!pl)return;
+  var name=prompt('שם חדש:',pl.name);if(!name||!name.trim())return;
+  pl.name=name.trim();_plSave(pls);document.getElementById('plDetailName').textContent=pl.name;_plRenderList();
+}
+function renderQueueTabs(){
+  var tabs=document.getElementById('queueTabs');if(!tabs)return;
+  var pls=_plLoad(),act=window._activeQueueTab||'temp';
+  var isMin=document.getElementById('queuePanel')&&document.getElementById('queuePanel').classList.contains('minimized');
+  var h='<div class="q-tab'+(act==='temp'?' active':'')+'" onclick="switchQueueTab(\'temp\',this)">פלייליסט זמני<\/div>';
+  pls.forEach(function(pl){
+    h+='<div class="q-tab'+(act===pl.id?' active':'')+'" onclick="switchQueueTab(\''+pl.id+'\',this)">'+pl.name+'<\/div>';
+  });
+  h+='<div style="flex:1;min-width:6px"></div>';
+  h+='<button class="q-act-btn q-naka" onclick="clearQueuePanel()">נקה<\/button>';
+  h+='<button class="q-play-circle" onclick="(window._activeQueueTab===\'temp\'?playQueue():plPlayFrom(window._activeQueueTab,0));closeQueuePanel()">&#9654;<\/button>';
+  h+='<button class="q-act-btn" onclick="toggleQueueMinimize()">'+(isMin?'&#9650;':'&#9660;')+'<\/button>';
+  h+='<button class="q-act-btn" onclick="closeQueuePanel()">&#x2715;<\/button>';
+  tabs.innerHTML=h;
+}
+function clearQueuePanel(){
+  clearQueue();
+  var l=document.getElementById('queuePanelList');
+  if(l)l.innerHTML='<div style="padding:24px;text-align:center;color:#666">הרשימה ריקה<\/div>';
+  renderQueueTabs();
+}
+function toggleQueueMinimize(){
+  var p=document.getElementById('queuePanel');if(!p)return;
+  p.classList.toggle('minimized');
+  renderQueueTabs();
+}
+function addSongToQueueOpen(song){
+  if(!song)return;
+  var id=song.v||song.mp4;
+  if(!isInQueue(id))toggleAddSong(id);
+  var p=document.getElementById('queuePanel');if(p)p.classList.remove('minimized');
+  openQueuePanel();
+}
+function switchQueueTab(id,el){
+  window._activeQueueTab=id;
+  document.querySelectorAll('.q-tab').forEach(function(t){t.classList.remove('active');});
+  if(el)el.classList.add('active');
+  var list=document.getElementById('queuePanelList');if(!list)return;
+  if(id==='temp'){var qp=document.getElementById('queuePanel');if(qp)openQueuePanel();return;}
+  var pls=_plLoad(),pl=pls.find(function(p){return p.id===id;});
+  if(!pl)return;
+  if(!pl.songs.length){list.innerHTML='<div style="padding:20px;text-align:center;color:#888;">פלייליסט ריק<\/div>';return;}
+  list.innerHTML=pl.songs.map(function(s,i){return '<div class="q-item" style="cursor:pointer;border-bottom:1px solid rgba(255,255,255,.06);" onclick="plPlayFrom(\''+pl.id+'\','+i+');closeQueuePanel()">'
++'<span class="qi-num">'+(i+1)+'<\/span>'+(s.v?'<div class="qi-thumb" style="background-image:url(https://i.ytimg.com/vi/'+s.v+'/mqdefault.jpg)"><\/div>':'<div class="qi-thumb" style="background:#2a2a2a;display:flex;align-items:center;justify-content:center;font-size:16px">&#9835;<\/div>')+'<div class="qi-info"><div class="qi-name">'+s.s+'<\/div><div class="qi-artist">'+s.a+'<\/div><\/div><\/div>';}).join('');
+}
+
+// ── NAMED PLAYLISTS ──
+const PL_KEY='karaoke_playlists';
+function loadPlaylists(){try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}}
+function savePlaylists(pls){try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}}
+function removeSongFromPl(plId,vid){var pls=loadPlaylists();var pl=pls.find(function(p){return p.id===plId;});if(!pl)return;pl.songs=pl.songs.filter(function(s){return getSongKey(s)!==vid;});savePlaylists(pls);if(document.getElementById('plPanel').classList.contains('open'))renderPlPanel();render(document.getElementById('q').value||'');}
+
+// ── PLAYLIST SIDE PANEL ──
+var _plCtxId=null,_plDndId=null;
+function openPlPanel(){
+  exitTheaterIfNeeded();
+  document.getElementById('plPanel').classList.add('open');
+  renderPlPanel();
+}
+function closePlPanel(){document.getElementById('plPanel').classList.remove('open');closePlCtx();}
+function closePlPanelAndPlayer(){
+  closePlPanel();
+  document.getElementById('playerPanel').classList.remove('open');
+  document.body.classList.remove('playing','theater');
+  document.body.style.overflow='';
+  hideFloatPlayer();
+  if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
+  var v=document.getElementById('mp4Player');if(v)v.pause();
+  document.body.classList.remove('has-song');
+  requestAnimationFrame(setTopH);
+}
+function playVidFromPl(plId, vid){
+  var pls=loadPlaylists();
+  var pl=pls.find(function(p){return p.id===plId;});
+  if(!pl||!pl.songs.length)return;
+  var idx=pl.songs.findIndex(function(s){return (s.v||s.mp4)===vid;});
+  if(idx<0)idx=0;
+  openModal(pl.songs[idx],pl.songs,idx);
+}
+
+function renderPlPanel(){
+  var pls=loadPlaylists();
+  var body=document.getElementById('plPanelBody');
+  if(!pls.length){body.innerHTML='<div style="text-align:center;color:#888;padding:40px 16px;font-size:13px;">אין פלייליסטים עדיין<br><br>לחץ "+ פלייליסט חדש" להתחיל</div>';return;}
+  var _openIds={};body.querySelectorAll('.pl-item[data-pl-id]').forEach(function(el){if(el.dataset.open==='true')_openIds[el.dataset.plId]=true;});
+  body.innerHTML=pls.map(function(pl){
+    var cnt=(pl.songs||[]).length;
+    var songs=(pl.songs||[]).map(function(s,si){
+      var vid=s.v||s.mp4;
+      return '<div class="pl-song-row" draggable="true"'
+        +' ondragstart="songDndStart(event,\''+pl.id+'\','+si+')"'
+        +' ondragover="songDndOver(event,\''+pl.id+'\','+si+')"'
+        +' ondrop="songDndDrop(event,\''+pl.id+'\','+si+')"'
+        +' ondragleave="songDndLeave(event)">'
+        +'<span class="pl-song-drag" title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
+        +'<div class="pl-song-info" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" style="cursor:pointer;flex:1;min-width:0"><div class="pl-song-name">'+esc(s.s)+'</div><div class="pl-song-artist">'+esc(s.a)+'</div></div>'
+        +'<button class="pl-song-play'+(s.mp4?' mp4':'')+'" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="'+(s.mp4?'#fff':'#121212')+'" width="10" height="12"><polygon points="0,0 12,7 0,14"/></svg></button>'
+        +(s.v?'<a class="btn-yt pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="פתח ביוטיוב" onclick="event.stopPropagation()">'+YT_ICO+'</a>':'')
+        +'<button class="pl-song-del" onclick="event.stopPropagation();removeSongFromPl(\''+pl.id+'\',\''+vid+'\')" title="הסר">✕</button>'
+        +'</div>';
+    }).join('');
+    return '<div class="pl-item" data-pl-id="'+pl.id+'" data-open="false"'
+      +' ondragover="plDndOver(event,\''+pl.id+'\')" ondrop="plDndDrop(event,\''+pl.id+'\')" ondragleave="plDndLeave(event)">'
+      +'<div class="pl-item-hdr" onclick="togglePlItem(this)">'
+      +'<span class="pl-item-drag" draggable="true" ondragstart="plDndStart(event,\''+pl.id+'\')" onclick="event.stopPropagation()" title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
+      +'<div class="pl-item-icon">♫</div>'
+      +'<div class="pl-item-info"><div class="pl-item-name">'+esc(pl.name)+'</div><div class="pl-item-count">'+cnt+(cnt===1?' שיר':' שירים')+'</div></div>'
+      +'<button class="pl-item-menu-btn" onclick="event.stopPropagation();openPlCtx(event,\''+pl.id+'\')" title="אפשרויות">⋮</button>'
+      +'<span class="pl-item-chev">▾</span>'
+      +'</div>'
+      +(cnt?'<div class="pl-item-songs">'+songs+'</div>':'')
+      +'</div>';
+  }).join('');
+  body.querySelectorAll('.pl-item[data-pl-id]').forEach(function(el){if(_openIds[el.dataset.plId])el.dataset.open='true';});
+}
+function togglePlItem(hdrEl){var item=hdrEl.closest('.pl-item');item.dataset.open=item.dataset.open==='true'?'false':'true';}
+function openPlCtx(e,plId){
+  _plCtxId=plId;
+  var menu=document.getElementById('plCtxMenu');
+  menu.style.left='';menu.style.right='';
+  var btn=e.currentTarget;
+  var rect=btn.getBoundingClientRect();
+  var menuW=150,y=rect.bottom+4;
+  var x=rect.left-menuW+rect.width;
+  if(x<4)x=4;
+  if(x+menuW>window.innerWidth-4)x=window.innerWidth-menuW-4;
+  menu.style.top=y+'px';menu.style.left=x+'px';
+  menu.classList.add('open');
+  setTimeout(function(){document.addEventListener('click',closePlCtx,{once:true});},10);
+}
+function closePlCtx(){document.getElementById('plCtxMenu').classList.remove('open');_plCtxId=null;}
+function plCtxRename(){
+  var id=_plCtxId;
+  closePlCtx();
+  var pls=loadPlaylists();
+  var pl=pls.find(function(p){return p.id===id;});if(!pl)return;
+  var nameEl=document.querySelector('.pl-item[data-pl-id="'+id+'"] .pl-item-name');
+  if(!nameEl)return;
+  var orig=pl.name;
+  var inp=document.createElement('input');
+  inp.type='text';inp.value=orig;
+  inp.style.cssText='font-weight:700;font-size:13px;color:#0F0F0F;border:1px solid #ccc;border-radius:6px;padding:2px 6px;outline:none;background:#fff;width:100%;font-family:Arial,sans-serif;direction:rtl;';
+  nameEl.innerHTML='';nameEl.appendChild(inp);
+  inp.focus();inp.select();
+  function save(){
+    var v=inp.value.trim();
+    if(v&&v!==orig){pl.name=v;savePlaylists(pls);refreshAddBtns();}
+    renderPlPanel();
+  }
+  inp.addEventListener('keydown',function(e){if(e.key==='Enter')inp.blur();if(e.key==='Escape'){inp.value=orig;inp.blur();}});
+  inp.addEventListener('blur',save,{once:true});
+}
+function plCtxDelete(){
+  var id=_plCtxId;
+  var pls=loadPlaylists();var pl=pls.find(function(p){return p.id===id;});if(!pl)return;
+  if(!confirm('למחוק את "'+pl.name+'"?'))return;
+  savePlaylists(pls.filter(function(p){return p.id!==id;}));renderPlPanel();refreshAddBtns();
+}
+function plPanelCreate(){
+  var name=prompt('שם הפלייליסט החדש:');
+  if(!name||!name.trim())return;
+  var pls=loadPlaylists();
+  pls.push({id:'pl_'+Date.now(),name:name.trim(),songs:[]});
+  savePlaylists(pls);renderPlPanel();
+}
+var _songDndPlId=null,_songDndIdx=null;
+function songDndStart(e,plId,idx){_songDndPlId=plId;_songDndIdx=idx;e.dataTransfer.effectAllowed='move';e.stopPropagation();}
+function songDndOver(e,plId,idx){if(_songDndPlId!==plId||_songDndIdx===idx)return;e.preventDefault();e.stopPropagation();document.querySelectorAll('.pl-song-row').forEach(function(el){el.classList.remove('dnd-over');});e.currentTarget.classList.add('dnd-over');}
+function songDndLeave(e){e.currentTarget.classList.remove('dnd-over');}
+function songDndDrop(e,plId,idx){
+  e.preventDefault();e.stopPropagation();
+  document.querySelectorAll('.pl-song-row').forEach(function(el){el.classList.remove('dnd-over');});
+  if(_songDndPlId!==plId||_songDndIdx===null||_songDndIdx===idx){_songDndIdx=null;_songDndPlId=null;return;}
+  var pls=loadPlaylists();
+  var pl=pls.find(function(p){return p.id===plId;});
+  if(!pl){_songDndIdx=null;_songDndPlId=null;return;}
+  var moved=pl.songs.splice(_songDndIdx,1)[0];pl.songs.splice(idx,0,moved);
+  savePlaylists(pls);renderPlPanel();_songDndIdx=null;_songDndPlId=null;
+}
+function plDndStart(e,plId){_plDndId=plId;e.dataTransfer.effectAllowed='move';}
+function plDndOver(e,plId){if(_plDndId===plId||_songDndIdx!==null)return;e.preventDefault();e.stopPropagation();document.querySelectorAll('.pl-item').forEach(function(el){el.classList.remove('dnd-over');});e.currentTarget.classList.add('dnd-over');}
+function plDndLeave(e){e.currentTarget.classList.remove('dnd-over');}
+function plDndDrop(e,targetId){
+  e.preventDefault();
+  document.querySelectorAll('.pl-item').forEach(function(el){el.classList.remove('dnd-over');});
+  if(!_plDndId||_plDndId===targetId){_plDndId=null;return;}
+  var pls=loadPlaylists();
+  var fi=pls.findIndex(function(p){return p.id===_plDndId;}),ti=pls.findIndex(function(p){return p.id===targetId;});
+  if(fi<0||ti<0){_plDndId=null;return;}
+  var moved=pls.splice(fi,1)[0];pls.splice(ti,0,moved);
+  savePlaylists(pls);renderPlPanel();_plDndId=null;
+}
+function getSongKey(s){return s?(s.v||s.mp4||''):''}
+function isInAnyPlaylist(song){if(!song)return false;const k=getSongKey(song);return loadPlaylists().some(pl=>pl.songs.some(s=>getSongKey(s)===k));}
+function isInPlaylist(plId,song){if(!song)return false;const k=getSongKey(song);const pl=loadPlaylists().find(p=>p.id===plId);return pl?pl.songs.some(s=>getSongKey(s)===k):false;}
+function toggleSongInPlaylist(plId,song){
+  if(!song)return;
+  const k=getSongKey(song);
+  const pls=loadPlaylists();
+  const pl=pls.find(p=>p.id===plId);
+  if(!pl)return;
+  const idx=pl.songs.findIndex(s=>getSongKey(s)===k);
+  if(idx>=0)pl.songs.splice(idx,1);
+  else pl.songs.push({v:song.v,s:song.s,a:song.a,mp4:song.mp4||undefined});
+  savePlaylists(pls);
+  refreshAddBtns();
+  if(document.getElementById('plPanel').classList.contains('open'))renderPlPanel();
+}
+function createPlaylist(name){
+  if(!name.trim())return null;
+  const pls=loadPlaylists();
+  const id='pl_'+Date.now();
+  pls.push({id,name:name.trim(),songs:[]});
+  savePlaylists(pls);
+  return id;
+}
+
+function showToast(msg){const t=document.getElementById('karaokToast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(t._tmr);t._tmr=setTimeout(()=>t.classList.remove('show'),3000);}
+function handlePlItemClick(el){
+  const plId=el.dataset.plid;
+  const pls=loadPlaylists();
+  const pl=pls.find(p=>p.id===plId);
+  if(!pl||!currentSong)return;
+  const wasIn=isInPlaylist(plId,currentSong);
+  toggleSongInPlaylist(plId,currentSong);
+  showToast(wasIn?'הוסר מ״'+pl.name+'״':'נוסף ל״'+pl.name+'״');
+  renderPlPopup();
+  updateModalAddBtn();
+}
+function renderPlPopup(){
+  const pls=loadPlaylists();
+  const list=document.getElementById('plPopupList');
+  const song=currentSong;
+  const BON='<svg width="18" height="18" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
+  const BOFF='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="2"><path d="M17 3H7c-1.1 0-2 .9-2 2v16l7-3 7 3V5c0-1.1-.9-2-2-2z"/></svg>';
+  if(!pls.length){list.innerHTML='<div style="padding:10px 16px;font-size:12px;color:#888;">אין עדיין פלייליסטים</div>';return;}
+  list.innerHTML=pls.map(pl=>{
+    const inPl=isInPlaylist(pl.id,song);
+    return '<div class="playlist-popup-item" data-plid="'+pl.id+'" onclick="handlePlItemClick(this)">'+
+      (inPl?BON:BOFF)+'<span class="pl-name">'+esc(pl.name)+'</span></div>';
+  }).join('');
+}
+
+function showPlaylistPopupForSong(e,vid){
+  if(e)e.stopPropagation();
+  var song=ALL.find(function(s){return (s.v||s.mp4)===vid;});
+  if(!song)return;
+  currentSong=song;
+  window._plScrollY=window.scrollY;
+  var popup=document.getElementById('playlistPopup');
+  var btn=e.currentTarget||e.target;
+  var rect=btn.getBoundingClientRect();
+  popup.style.top=(rect.bottom+8)+'px';
+  popup.style.bottom='auto';
+  popup.style.right=Math.max(8,Math.min(window.innerWidth-rect.right,window.innerWidth-248))+'px';
+  renderPlPopup();
+  popup.classList.add('open');
+  setTimeout(function(){document.addEventListener('click',closePlPopupOutside);},50);
+}
+function showPlaylistPopup(e){
+  if(e)e.stopPropagation();
+  if(!currentSong)return;
+  const popup=document.getElementById('playlistPopup');
+  const btn=document.getElementById('modalAddBtn');
+  const rect=btn.getBoundingClientRect();
+  popup.style.top=(rect.bottom+8)+'px';
+  popup.style.bottom='auto';
+  popup.style.right=Math.max(8,Math.min(window.innerWidth-rect.right,window.innerWidth-248))+'px';
+  renderPlPopup();
+  popup.classList.add('open');
+  setTimeout(()=>document.addEventListener('click',closePlPopupOutside),50);
+}
+function closePlPopupOutside(e){
+  const popup=document.getElementById('playlistPopup');
+  if(!popup.contains(e.target)&&e.target.id!=='modalAddBtn'){closePlaylistPopup();}
+}
+function closePlaylistPopup(){
+  document.getElementById('playlistPopup').classList.remove('open');
+  const f=document.getElementById('newPlForm');if(f)f.classList.remove('open');
+  const inp=document.getElementById('newPlInp');if(inp)inp.value='';
+  document.removeEventListener('click',closePlPopupOutside);
+}
+
+function submitNewPlaylist(){
+  const inp=document.getElementById('newPlInp');
+  const name=inp.value.trim();
+  if(!name)return;
+  const id=createPlaylist(name);
+  if(id&&currentSong)toggleSongInPlaylist(id,currentSong);
+  updateModalAddBtn();
+  inp.value='';
+  if(window.innerWidth<=767){var _sy=window._plScrollY||0;inp.blur();if(window.visualViewport){var _vvh=window.visualViewport;var _fn=function(){document.documentElement.scrollLeft=0;document.body.scrollLeft=0;window.scrollTo(0,_sy);_vvh.removeEventListener('resize',_fn);};_vvh.addEventListener('resize',_fn);}else{setTimeout(function(){document.documentElement.scrollLeft=0;document.body.scrollLeft=0;window.scrollTo(0,_sy);},400);}}
+  closePlaylistPopup();
+}
+
+// Prevent admin toolbar vertical scroll on iOS (allow horizontal for scroll-snap)
+document.addEventListener('DOMContentLoaded',function(){
+  var tb=document.getElementById('admToolbar');
+  if(!tb)return;
+  var sx=0,sy=0;
+  tb.addEventListener('touchstart',function(e){sx=e.touches[0].clientX;sy=e.touches[0].clientY;},{passive:true});
+  tb.addEventListener('touchmove',function(e){
+    var dx=Math.abs(e.touches[0].clientX-sx),dy=Math.abs(e.touches[0].clientY-sy);
+    if(dy>dx)e.preventDefault();
+  },{passive:false});
+});
+</script><div id="playlistPopup" class="playlist-popup"><div class="playlist-popup-title"><span>באיזה פלייליסט לשמור?</span><button class="playlist-popup-close" onclick="document.getElementById('playlistPopup').classList.remove('open')">✕</button></div><div id="plPopupList"></div><div class="playlist-popup-new" onclick="document.getElementById('newPlForm').classList.toggle('open')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F0F0F" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>פלייליסט חדש</span></div><div class="new-pl-form" id="newPlForm"><input id="newPlInp" class="new-pl-inp" placeholder="שם הפלייליסט" onkeydown="if(event.key==='Enter')submitNewPlaylist()"><button class="new-pl-ok" onclick="submitNewPlaylist()">יצירה</button></div></div>
+<div id="karaokToast" class="karaoke-toast"></div>
+</body>
+</html>
