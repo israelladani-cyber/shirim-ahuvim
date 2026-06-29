@@ -2472,7 +2472,31 @@ function openAdminMenu(ev){
   setTimeout(function(){document.addEventListener('click',function _cl(e){if(!menu.contains(e.target)&&e.target!==btn){menu.remove();document.removeEventListener('click',_cl);}});},0);
 }
 function openUsersPanel(){var p=document.getElementById('_userMgmt');p.style.display='flex';loadUsersPanel();}
-async function loadUsersPanel(){var body=document.getElementById('_userMgmtBody');body.innerHTML='<p style="color:#999;text-align:center;margin:20px 0;">טוען...</p>';try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));var pending=content.pending||[],approved=content.approved||[];var h='';h+='<h3 style="margin:0 0 10px;font-size:14px;color:#444;font-weight:600;">⏳ ממתינים לאישור ('+pending.length+')</h3>';if(!pending.length)h+='<p style="color:#aaa;font-size:13px;margin:0 0 16px;">אין בקשות ממתינות</p>';else pending.forEach(function(u){var em=typeof u==='string'?u:u.e,nm=typeof u==='string'?u:(u.n||u.e);h+='<div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;gap:8px;"><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:500;color:#202124;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'</div><div style="font-size:12px;color:#888;">'+em+'</div></div><div style="display:flex;gap:6px;flex-shrink:0;"><button onclick="userAction('approve',''+em+'',''+nm.replace(/'/g,"\\'")+'')" style="background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;">אשר</button><button onclick="userAction('reject',''+em+'','')" style="background:#e8eaed;color:#c62828;border:none;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;">דחה</button></div></div>';});h+='<h3 style="margin:16px 0 10px;font-size:14px;color:#444;font-weight:600;">✅ מאושרים ('+approved.length+')</h3>';if(!approved.length)h+='<p style="color:#aaa;font-size:13px;">אין משתמשים מאושרים</p>';else approved.forEach(function(u){var em=typeof u==='string'?u:u.e,nm=typeof u==='string'?u:(u.n||u.e);h+='<div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;gap:8px;"><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:500;color:#202124;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'</div><div style="font-size:12px;color:#888;">'+em+'</div></div><button onclick="userAction('remove',''+em+'','')" style="background:#fce8e6;color:#c62828;border:none;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;flex-shrink:0;">הסר</button></div>';});body.innerHTML=h;window._updateBadge&&window._updateBadge(pending.length);}catch(e){body.innerHTML='<p style="color:red;text-align:center;">שגיאה: '+e.message+'</p>';}}
+async function loadUsersPanel(){
+var body=document.getElementById('_userMgmtBody');
+body.innerHTML='<p style="color:#999;text-align:center;margin:20px 0;">טוען...<\/p>';
+try{
+var ujd=await window._guj();
+var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));
+var pending=content.pending||[],approved=content.approved||[];
+var h='';
+if(pending.length){
+h+='<h3 style="margin:16px 0 10px;font-size:14px;color:#e74c3c;font-weight:600;">⏳ ממתינים לאישור ('+pending.length+')<\/h3>';
+pending.forEach(function(item){
+var em=(item.e||item),nm=(item.n||'');
+var se=em.replace(/"/g,'&quot;'),sn=nm.replace(/"/g,'&quot;');
+h+='<div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #eee;"><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:600;color:#333;">'+nm+'<\/div><div style="font-size:12px;color:#888;">'+em+'<\/div><\/div><div style="display:flex;gap:6px;flex-shrink:0;"><button data-em="'+se+'" data-nm="'+sn+'" onclick="userAction(\'approve\',this.dataset.em,this.dataset.nm)" style="background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;">✓ אשר<\/button><button data-em="'+se+'" data-nm="'+sn+'" onclick="userAction(\'reject\',this.dataset.em,this.dataset.nm)" style="background:#e74c3c;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;">✗ דחה<\/button><\/div><\/div>';
+});
+}else{h+='<p style="color:#999;text-align:center;margin:10px 0;font-size:13px;">אין משתמשים ממתינים<\/p>';}
+h+='<h3 style="margin:16px 0 10px;font-size:14px;color:#444;font-weight:600;">✅ מאושרים ('+approved.length+')<\/h3>';
+approved.forEach(function(item){
+var em=(item.e||item),nm=(item.n||'');
+h+='<div style="padding:8px 0;border-bottom:1px solid #eee;font-size:13px;color:#333;">'+nm+(nm?' ('+em+')':em)+'<\/div>';
+});
+body.innerHTML=h;
+}catch(e){body.innerHTML='<p style="color:#e74c3c;text-align:center;margin:20px 0;">שגיאה בטעינה<\/p>';}
+}
+
 async function userAction(action,email,name){try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));content.pending=(content.pending||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.approved=(content.approved||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.rejected=(content.rejected||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});if(action==='approve')content.approved.push({e:email,n:name||email,t:Date.now()});else if(action==='reject')content.rejected.push({e:email,t:Date.now()});var ok=await window._suj(content,ujd.sha,action+': '+email);if(ok)loadUsersPanel();else alert('שגיאה בשמירה');}catch(e){alert('שגיאה: '+e.message);}}
 </script>
 </body>
