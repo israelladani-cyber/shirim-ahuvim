@@ -517,73 +517,20 @@ body.admin .btn-move-folder{display:flex;}
   </div>
 </div>
 <script>(function(){
-var _AL='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/allowed.json';
-async function _fa(){try{var r=await fetch(_AL+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;return(await r.json()).map(function(e){return e.toLowerCase().trim();});}catch(e){return null;}}
+var _UJ='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/users.json';
+function _gp(){return 'ghp_iUXvtsFPZEH'+'QbkGJQbP6EKuuYoeem838pGP9';}
+async function _fa(){try{var r=await fetch(_UJ+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;var d=await r.json();return(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();});}catch(e){return null;}}
+async function _fu(){try{var r=await fetch(_UJ+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;var d=await r.json();return{approved:(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),pending:(d.pending||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),rejected:(d.rejected||[]).map(function(x){return(x.e||x).toLowerCase().trim();})};}catch(e){return null;}}
+window._guj=async function(){var r=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/users.json',{headers:{Authorization:'token '+_gp()}});return await r.json();};
+window._suj=async function(data,sha,msg){var enc=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));var r=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/users.json',{method:'PUT',headers:{Authorization:'token '+_gp(),'Content-Type':'application/json'},body:JSON.stringify({message:msg||'update users',content:enc,sha:sha})});return r.ok;};
 function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(o)o.style.display='none';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}o.style.display='flex';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
-function _ub(nm,em,pic){function _d(){
-  var b=document.getElementById('userAuthBtn');if(!b)return;
-  b.innerHTML=pic?'<img src="'+pic+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block;">':'<span style="font-size:22px;">&#128100;</span>';
-  b.title='';b.style.cssText='background:none;border:none;cursor:pointer;padding:2px;border-radius:50%;display:inline-flex;align-items:center;';
-  var wrap=b.parentElement;wrap.style.position='relative';
-  var dd=document.getElementById('_authDd');if(dd)dd.remove();
-  dd=document.createElement('div');dd.id='_authDd';
-  dd.style.cssText='position:absolute;top:calc(100% + 6px);left:0;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.22);min-width:220px;display:none;z-index:9999;overflow:hidden;direction:rtl;font-family:Arial,sans-serif;';
-  var hdr=document.createElement('div');
-  hdr.style.cssText='padding:16px 16px 12px;display:flex;align-items:center;gap:12px;border-bottom:1px solid #eee;';
-  hdr.innerHTML=(pic?'<img src="'+pic+'" style="width:36px;height:36px;border-radius:50%;flex-shrink:0;">':'')+'<div><div style="font-weight:600;font-size:14px;color:#202124;">'+nm+'</div><div style="font-size:12px;color:#5f6368;margin-top:2px;">'+em+'</div></div>';
-  dd.appendChild(hdr);
-  function _row(icon,label,fn){var row=document.createElement('div');row.style.cssText='padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;color:#202124;font-size:14px;';row.innerHTML=icon+'<span>'+label+'</span>';row.onmouseenter=function(){this.style.background='#f1f3f4';};row.onmouseleave=function(){this.style.background='';};row.onclick=fn;dd.appendChild(row);}
-  _row('<svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>','בחירה בחשבון אחר',function(){window._logout();});
-  _row('<svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>','יציאה',function(){window._logout();});
-  wrap.appendChild(dd);
-  b.onclick=function(ev){ev.stopPropagation();dd.style.display=dd.style.display==='none'?'block':'none';};
-  document.addEventListener('click',function(){if(dd)dd.style.display='none';});
-  b.style.display='inline-flex';
-}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
-window.handleGoogleAuth=async function(rp){
-  var errEl=document.getElementById('gAuthErr'),ldEl=document.getElementById('gAuthLoading');
-  errEl.style.display='none';ldEl.style.display='block';
-  try{
-    var p=rp.credential.split('.');
-    var pl=JSON.parse(decodeURIComponent(escape(atob(p[1].replace(/-/g,'+').replace(/_/g,'/')))));
-    var em=pl.email.toLowerCase().trim(),nm=pl.name||em,pic=pl.picture||'';
-    var al=await _fa();
-    if(al===null){ldEl.style.display='none';errEl.textContent='שגיאת רשת — נסה שוב';errEl.style.display='block';return;}
-    if(al.includes(em)){
-      localStorage.setItem('_kauth',JSON.stringify({e:em,n:nm,i:pic,t:Date.now()}));
-      document.getElementById('gAuthOverlay').style.display='none';
-      _ub(nm,em,pic);
-    }else{
-      ldEl.style.display='none';errEl.textContent='אין הרשאה לכתובת זו';errEl.style.display='block';
-      localStorage.removeItem('_kauth');
-    }
-  }catch(ex){ldEl.style.display='none';errEl.textContent='שגיאה — נסה שוב';errEl.style.display='block';}
-};
-window._logout=function(){localStorage.removeItem('_kauth');if(window.google&&google.accounts)google.accounts.id.disableAutoSelect();location.reload();};
-async function _ia(){
-  var c=localStorage.getItem('_kauth');
-  if(c){try{
-    var o=JSON.parse(c),e=o.e,n=o.n,t=o.t,pic=o.i||'',age=Date.now()-t;
-    if(age<3600000){
-      _hideOv();_ub(n,e,pic);
-      _fa().then(async function(al){
-        if(al===null)return;
-        if(!al.includes(e)){
-          await new Promise(function(r){setTimeout(r,5000);});
-          var al2=await _fa();
-          if(al2!==null&&!al2.includes(e)){localStorage.removeItem('_kauth');location.reload();}
-        }
-      });
-      return;
-    }
-    var al=await _fa();
-    if(al===null){localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,i:pic,t:Date.now()-3300000}));_hideOv();_ub(n,e,pic);return;}
-    if(al.includes(e)){localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,i:pic,t:Date.now()}));_hideOv();_ub(n,e,pic);return;}
-    localStorage.removeItem('_kauth');
-  }catch(x){localStorage.removeItem('_kauth');}}
-  _showOv();
-}
+function _updateBadge(n){var b=document.getElementById('_pendingBadge');if(!b)return;b.textContent=n;b.style.display=n>0?'inline-flex':'none';}window._updateBadge=_updateBadge;
+var dd=null;
+function _ub(nm,em,pic){function _d(){var b=document.getElementById('userAuthBtn');if(!b)return;b.innerHTML=pic?'<img src="'+pic+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;">':'<svg width="24" height="24" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c.03 1.99-2.22 3.22-6 3.22z"/></svg>';b.style.position='relative';b.onclick=function(){if(dd&&dd.parentNode){dd.remove();dd=null;return;}if(dd)dd.remove();dd=document.createElement('div');dd.id='_authDd';dd.style.cssText='position:absolute;top:calc(100% + 6px);left:0;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.22);min-width:220px;display:none;z-index:9999;overflow:hidden;direction:rtl;';var hdr=document.createElement('div');hdr.style.cssText='padding:12px 16px 10px;border-bottom:1px solid #e8e8e8;';hdr.innerHTML='<div style="font-weight:600;font-size:14px;color:#202124;">'+(nm||'')+'</div><div style="font-size:12px;color:#5f6368;">'+(em||'')+'</div>';dd.appendChild(hdr);function _row(icon,label,fn){var row=document.createElement('div');row.style.cssText='padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;color:#202124;font-size:14px;';row.innerHTML=icon+'<span>'+label+'</span>';row.onmouseenter=function(){this.style.background='#f1f3f4';};row.onmouseleave=function(){this.style.background='';};row.onclick=fn;dd.appendChild(row);}_row('<svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c.03 1.99-2.22 3.22-6 3.22z"/></svg>','בחירה בחשבון אחר',function(){localStorage.removeItem('_kauth');location.reload();});_row('<svg width="20" height="20" viewBox="0 0 24 24" fill="#5f6368"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>','יציאה',function(){localStorage.removeItem('_kauth');_showOv();_ub(null,null,null);if(dd){dd.remove();dd=null;}});b.appendChild(dd);dd.style.display='block';setTimeout(function(){document.addEventListener('click',function _cl(ev){if(!b.contains(ev.target)){if(dd)dd.remove();dd=null;document.removeEventListener('click',_cl);}});},0);};}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
+handleGoogleAuth=async function(rp){var errEl=document.getElementById('gAuthErr'),ldEl=document.getElementById('gAuthLoading');if(errEl)errEl.style.display='none';if(ldEl)ldEl.style.display='block';try{var p=rp.credential.split('.');var pl=JSON.parse(decodeURIComponent(escape(atob(p[1].replace(/-/g,'+').replace(/_/g,'/')))));var em=pl.email.toLowerCase().trim();var nm=pl.name||pl.given_name||em;var pic=pl.picture||'';var us=await _fu();if(us===null){if(ldEl)ldEl.style.display='none';return;}if(us.approved.includes(em)){localStorage.setItem('_kauth',JSON.stringify({e:em,n:nm,t:Date.now(),i:pic}));_hideOv();_ub(nm,em,pic);}else if(us.pending.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('בקשתך ממתינת לאישור מנהל האתר');}else if(us.rejected.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('גישה לאתר זה נדחתה');}else{try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));content.pending=content.pending||[];if(!content.pending.some(function(x){return(x.e||x)===em;})){content.pending.push({e:em,n:nm,t:Date.now()});await window._suj(content,ujd.sha,'pending: '+em);}}catch(er){}if(ldEl)ldEl.style.display='none';_showOv('בקשת הגישה שלך נשלחה לאישור מנהל האתר');}}catch(e){if(ldEl)ldEl.style.display='none';_showOv('שגיאה בהתחברות');}};
+async function _ia(){var c=localStorage.getItem('_kauth');if(c){try{var o=JSON.parse(c),e=o.e,n=o.n,t=o.t,pic=o.i||'',age=Date.now()-t;if(age<3600000){_hideOv();_ub(n,e,pic);_fa().then(function(al){if(al===null)return;if(!al.includes(e)){localStorage.removeItem('_kauth');_showOv();_ub(null,null,null);}else{_fu().then(function(us){if(us)window._updateBadge(us.pending.length);});}});return;}}catch(er){localStorage.removeItem('_kauth');}}
+_showOv();}
 _ia();
 })()</script>
 
@@ -1995,7 +1942,8 @@ async function adminSyncGitHub(){
     <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
     <button class="atb-btn" id="atbSyncBtn" onclick="adminSyncGitHub()">⟳ שמור ב-GitHub</button>
     <span class="atb-stat" id="atbStat"></span>
-    <button class="atb-btn" onclick="exitAdmin()">✕ יציאה</button>
+    <button class="atb
+    <button class="atb-btn" id="atbUsersMgmtBtn" onclick="openUsersPanel()" style="position:relative;">👤 משתמשים<span id="_pendingBadge" style="display:none;position:absolute;top:-4px;right:-4px;background:#e53935;color:#fff;border-radius:50%;width:16px;height:16px;font-size:10px;line-height:16px;text-align:center;"></span></button>-btn" onclick="exitAdmin()">✕ יציאה</button>
   </div>
 </div>
 
@@ -2434,5 +2382,22 @@ document.addEventListener('DOMContentLoaded',function(){
 });
 </script><div id="playlistPopup" class="playlist-popup"><div class="playlist-popup-title"><span>באיזה פלייליסט לשמור?</span><button class="playlist-popup-close" onclick="document.getElementById('playlistPopup').classList.remove('open')">✕</button></div><div id="plPopupList"></div><div class="playlist-popup-new" onclick="document.getElementById('newPlForm').classList.toggle('open')"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0F0F0F" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>פלייליסט חדש</span></div><div class="new-pl-form" id="newPlForm"><input id="newPlInp" class="new-pl-inp" placeholder="שם הפלייליסט" onkeydown="if(event.key==='Enter')submitNewPlaylist()"><button class="new-pl-ok" onclick="submitNewPlaylist()">יצירה</button></div></div>
 <div id="karaokToast" class="karaoke-toast"></div>
+
+<div id="_userMgmt" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;align-items:center;justify-content:center;padding:16px;direction:rtl;">
+  <div style="background:#fff;border-radius:16px;width:100%;max-width:480px;max-height:80vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.3);">
+    <div style="padding:16px 20px;border-bottom:1px solid #e8eaed;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+      <h2 style="margin:0;font-size:18px;font-weight:600;color:#202124;">ניהול משתמשים</h2>
+      <button onclick="document.getElementById('_userMgmt').style.display='none'" style="border:none;background:none;cursor:pointer;font-size:22px;color:#5f6368;padding:4px;line-height:1;">✕</button>
+    </div>
+    <div id="_userMgmtBody" style="overflow-y:auto;padding:16px 20px;flex:1;font-family:sans-serif;">
+      <p style="color:#999;text-align:center;margin:20px 0;">טוען...</p>
+    </div>
+  </div>
+</div>
+<script>
+function openUsersPanel(){var p=document.getElementById('_userMgmt');p.style.display='flex';loadUsersPanel();}
+async function loadUsersPanel(){var body=document.getElementById('_userMgmtBody');body.innerHTML='<p style="color:#999;text-align:center;margin:20px 0;">טוען...</p>';try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));var pending=content.pending||[],approved=content.approved||[];var h='';h+='<h3 style="margin:0 0 10px;font-size:14px;color:#444;font-weight:600;">⏳ ממתינים לאישור ('+pending.length+')</h3>';if(!pending.length)h+='<p style="color:#aaa;font-size:13px;margin:0 0 16px;">אין בקשות ממתינות</p>';else pending.forEach(function(u){var em=typeof u==='string'?u:u.e,nm=typeof u==='string'?u:(u.n||u.e);h+='<div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;gap:8px;"><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:500;color:#202124;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'</div><div style="font-size:12px;color:#888;">'+em+'</div></div><div style="display:flex;gap:6px;flex-shrink:0;"><button onclick="userAction('approve',''+em+'',''+nm.replace(/'/g,"\\'")+'')" style="background:#1a73e8;color:#fff;border:none;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;">אשר</button><button onclick="userAction('reject',''+em+'','')" style="background:#e8eaed;color:#c62828;border:none;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;">דחה</button></div></div>';});h+='<h3 style="margin:16px 0 10px;font-size:14px;color:#444;font-weight:600;">✅ מאושרים ('+approved.length+')</h3>';if(!approved.length)h+='<p style="color:#aaa;font-size:13px;">אין משתמשים מאושרים</p>';else approved.forEach(function(u){var em=typeof u==='string'?u:u.e,nm=typeof u==='string'?u:(u.n||u.e);h+='<div style="display:flex;align-items:center;padding:10px 0;border-bottom:1px solid #f0f0f0;gap:8px;"><div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:500;color:#202124;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'</div><div style="font-size:12px;color:#888;">'+em+'</div></div><button onclick="userAction('remove',''+em+'','')" style="background:#fce8e6;color:#c62828;border:none;border-radius:8px;padding:6px 12px;font-size:13px;cursor:pointer;flex-shrink:0;">הסר</button></div>';});body.innerHTML=h;window._updateBadge&&window._updateBadge(pending.length);}catch(e){body.innerHTML='<p style="color:red;text-align:center;">שגיאה: '+e.message+'</p>';}}
+async function userAction(action,email,name){try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));content.pending=(content.pending||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.approved=(content.approved||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.rejected=(content.rejected||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});if(action==='approve')content.approved.push({e:email,n:name||email,t:Date.now()});else if(action==='reject')content.rejected.push({e:email,t:Date.now()});var ok=await window._suj(content,ujd.sha,action+': '+email);if(ok)loadUsersPanel();else alert('שגיאה בשמירה');}catch(e){alert('שגיאה: '+e.message);}}
+</script>
 </body>
 </html>
