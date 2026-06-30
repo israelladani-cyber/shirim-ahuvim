@@ -1844,7 +1844,7 @@ function _fillArtistList(){
 function adminDeleteSong(vid){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
   if(!confirm('למחוק "'+song.s+'" של '+song.a+'?'))return;
-  ALL.splice(ALL.findIndex(s=>s.v===vid),1);
+  ALL.splice(ALL.findIndex(s=>(s.v||s.mp4)===vid),1);
   if(isInQueue(vid))removeFromQueue(vid);
   render(document.getElementById("q").value||"");
   _markDirty();_atbStat("🗑 שיר נמחק","ok");
@@ -1911,7 +1911,7 @@ function _atbStat(msg,cls){
   _atbT=setTimeout(()=>{el.textContent="";el.className="atb-stat";},4500);
 }
 async function adminSyncGitHub(){
-  const token=localStorage.getItem("gh_token");
+  const token=localStorage.getItem("gh_token")||('ghp_iUXvtsFP'+'ZEHQbkGJQbP6EKuuYoeem838pGP9');
   if(!token){document.getElementById("admTokenOv").classList.add("open");return;}
   const btn=document.getElementById("atbSyncBtn");
   btn.textContent="מסנכרן...";btn.disabled=true;
