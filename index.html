@@ -146,7 +146,7 @@ body.admin .artist-avatar:hover::after{display:flex;}
 
 /* LAYOUT */
 :root{--top-h:120px;--adm-h:0px;}
-html,body{height:100%;overflow:hidden;}
+html,body{height:100%;overflow:hidden;background:#fff;}
 .page-body{display:flex;height:calc(100dvh - var(--top-h) - var(--adm-h));overflow:hidden;}
 .list-panel{flex:1;min-width:0;overflow-y:auto;height:100%;}
 .pl-panel.open{height:100%;}
@@ -233,7 +233,7 @@ body.theater .panel-theater-btn{color:#FF0000;}
   .yt-search{min-width:80px!important;flex:1 1 80px!important;}
 
   .adm-overlay{align-items:flex-start!important;padding-top:80px!important;}
-  body.admin{position:fixed!important;width:100%!important;display:flex!important;flex-direction:column!important;height:100dvh!important;overflow:hidden!important;background:#fff!important;padding-top:env(safe-area-inset-top)!important;}
+  body.admin{display:flex!important;flex-direction:column!important;background:#fff!important;--adm-h:40px;}
   body.admin.playing .top{display:none!important;}
   body.admin.playing .page-body{flex-direction:column!important;overflow:hidden!important;min-height:0!important;height:0!important;}
   body.admin.playing .player-panel{display:flex!important;position:static!important;flex:1 1 0!important;min-height:0!important;width:100%!important;inset:auto!important;}
