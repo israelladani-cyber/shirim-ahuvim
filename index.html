@@ -2488,7 +2488,7 @@ function openAdminMenu(ev){
   document.body.appendChild(menu);
   setTimeout(function(){document.addEventListener('click',function _cl(e){if(!menu.contains(e.target)&&e.target!==btn){menu.remove();document.removeEventListener('click',_cl);}});},0);
 }
-functionfunction openUsersPanel(){var ov=document.getElementById('_umCodeOv');ov.classList.add('open');document.getElementById('_umCodePin').value='';document.getElementById('_umCodeErr').textContent='';setTimeout(function(){document.getElementById('_umCodePin').focus();},80);}
+function openUsersPanel(){var ov=document.getElementById('_umCodeOv');ov.classList.add('open');document.getElementById('_umCodePin').value='';document.getElementById('_umCodeErr').textContent='';setTimeout(function(){document.getElementById('_umCodePin').focus();},80);}
 async function doUMLogin(){
 const pin=document.getElementById('_umCodePin').value;if(!pin)return;
 const hv=await _sha256(pin);
