@@ -233,9 +233,10 @@ body.theater .panel-theater-btn{color:#FF0000;}
   .yt-search{min-width:80px!important;flex:1 1 80px!important;}
 
   .adm-overlay{align-items:flex-start!important;padding-top:80px!important;}
-  body.admin{display:flex!important;flex-direction:column!important;background:#fff!important;--adm-h:40px;}
+  body.admin{display:flex!important;flex-direction:column!important;background:#fff!important;}
+  body.admin .page-body{flex:1!important;min-height:0!important;height:auto!important;}
   body.admin.playing .top{display:none!important;}
-  body.admin.playing .page-body{flex-direction:column!important;overflow:hidden!important;min-height:0!important;height:0!important;}
+  body.admin.playing .page-body{flex:none!important;flex-direction:column!important;overflow:hidden!important;min-height:0!important;height:0!important;}
   body.admin.playing .player-panel{display:flex!important;position:static!important;flex:1 1 0!important;min-height:0!important;width:100%!important;inset:auto!important;}
   body.admin.playing .pl-panel{display:none!important;}
   body.admin.playing .list-panel{display:none!important;}
