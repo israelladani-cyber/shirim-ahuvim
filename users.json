@@ -1,11 +1,6 @@
 {
   "approved": [
-    "israel.ladani@gmail.com",
-    {
-      "e": "sahar.ladani@gmail.com",
-      "n": "Sahar Ladani",
-      "t": 1782823430010
-    }
+    "israel.ladani@gmail.com"
   ],
   "pending": [],
   "rejected": [
@@ -14,5 +9,10 @@
       "t": 1782850596708
     }
   ],
-  "frozen": []
+  "frozen": [
+    {
+      "e": "sahar.ladani@gmail.com",
+      "n": "Sahar Ladani"
+    }
+  ]
 }
