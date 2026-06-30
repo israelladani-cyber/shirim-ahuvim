@@ -2513,6 +2513,15 @@ var avt=function(n,e){var i=(n?n.charCodeAt(0):e.charCodeAt(0))%pal.length;var l
 var sec=function(ic,tx,cn){return '<div style="padding:10px 16px 8px;background:#F9F9F9;border-bottom:1px solid #E5E5E5;display:flex;align-items:center;gap:8px;"><span style="font-size:14px;">'+ic+'<\/span><span style="font-size:13px;font-weight:700;color:#0F0F0F;">'+tx+'<\/span><span style="background:#E5E5E5;color:#606060;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-right:auto;">'+cn+'<\/span><\/div>';};
 var rw=function(av,nm,em,bt){return '<div style="display:flex;align-items:center;padding:10px 16px;gap:10px;border-bottom:1px solid #F2F2F2;">'+av+'<div style="flex:1;min-width:0;text-align:right;overflow:hidden;"><div style="font-size:14px;font-weight:600;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'<\/div><div style="font-size:12px;color:#606060;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+em+'<\/div><\/div>'+(bt||'')+'<\/div>';};
 var btw=function(lbl,act,se,sn,st){return '<button data-em="'+se+'" data-nm="'+sn+'" data-action="'+act+'" onclick="userAction(this.dataset.action,this.dataset.em,this.dataset.nm)" style="'+st+'">'+lbl+'<\/button>';};
+h+=sec('✅','מאושרים',approved.length);
+approved.forEach(function(item){
+var em=(item.e||item),nm=(item.n||'');
+var se=em.replace(/"/g,'&quot;'),sn=nm.replace(/"/g,'&quot;');
+var isAdm=em.toLowerCase()==='israel.ladani@gmail.com';
+if(isAdm){return;}
+else{h+=rw(avt(nm,em),nm||em,em,'<div style="display:flex;gap:4px;flex-shrink:0;">'+btw('הקפא','freeze',se,sn,'background:#FFF8F0;color:#E65100;border:1px solid #FFCC80;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+btw('מחק','delete',se,sn,'background:#FFF0F0;color:#CC0000;border:1px solid #FECACA;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+'<\/div>');}
+});
+if(frozen&&frozen.length){
 h+=sec('⏳','ממתינים לאישור',pending.length);
 if(!pending.length)h+='<p style="color:#999;text-align:center;padding:16px;font-size:13px;margin:0;">אין ממתינים<\/p>';
 pending.forEach(function(item){
@@ -2520,15 +2529,6 @@ var em=(item.e||item),nm=(item.n||'');
 var se=em.replace(/"/g,'&quot;'),sn=nm.replace(/"/g,'&quot;');
 h+=rw(avt(nm,em),nm||em,em,'<div style="display:flex;gap:4px;flex-shrink:0;">'+btw('✓ אשר','approve',se,sn,'background:#2CA55E;color:#fff;border:none;border-radius:18px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;')+btw('✕ דחה','reject',se,sn,'background:#FFF0F0;color:#CC0000;border:1px solid #FECACA;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+'<\/div>');
 });
-h+=sec('✅','מאושרים',approved.length);
-approved.forEach(function(item){
-var em=(item.e||item),nm=(item.n||'');
-var se=em.replace(/"/g,'&quot;'),sn=nm.replace(/"/g,'&quot;');
-var isAdm=em.toLowerCase()==='israel.ladani@gmail.com';
-if(isAdm){h+=rw(avt(nm,em),(nm||em)+' <span style="background:#EBF5FF;color:#0066CC;border-radius:4px;padding:1px 5px;font-size:10px;">מנהל<\/span>',em,'');}
-else{h+=rw(avt(nm,em),nm||em,em,'<div style="display:flex;gap:4px;flex-shrink:0;">'+btw('הקפא','freeze',se,sn,'background:#FFF8F0;color:#E65100;border:1px solid #FFCC80;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+btw('מחק','delete',se,sn,'background:#FFF0F0;color:#CC0000;border:1px solid #FECACA;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+'<\/div>');}
-});
-if(frozen&&frozen.length){
 h+=sec('🔒','מוקפאים',frozen.length);
 frozen.forEach(function(item){
 var em=(typeof item==='string'?item:(item.e||'')),nm=(typeof item==='string'?'':(item.n||''));
@@ -2539,7 +2539,7 @@ h+=rw(avt(nm,em),nm||em,em,'<div style="flex-shrink:0;">'+btw('שחרר','unfree
 body.innerHTML=h;
 }catch(e){body.innerHTML='<p style="color:#CC0000;text-align:center;padding:20px;font-size:13px;">שגיאה בטעינת נתונים<\/p>';}
 }
-async function userAction(action,email,name){var _cm={'delete':'מחיקת ','freeze':'הקפאת ','unfreeze':'שחרור מקיפאון '};if(_cm[action]!==undefined&&!confirm(_cm[action]+name+' — האם אתה בטוח?'))return;try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));content.pending=(content.pending||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.approved=(content.approved||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.rejected=(content.rejected||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.frozen=(content.frozen||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});if(action==='unfreeze'){var ok2=await window._suj(content,ujd.sha,'unfreeze: '+email);if(ok2)loadUsersPanel();return;}if(action==='approve')content.approved.push({e:email,n:name||email,t:Date.now()});else if(action==='reject')content.rejected.push({e:email,t:Date.now()});else if(action==='freeze')content.frozen.push({e:email,n:name});var ok=await window._suj(content,ujd.sha,action+': '+email);if(ok)loadUsersPanel();else alert('שגיאה בשמירה');}catch(e){alert('שגיאה: '+e.message);}}
+async function userAction(action,email,name){var _cm={'delete':'מחיקת ','freeze':'הקפאת ','unfreeze':'שחרור מקיפאון '};if(_cm[action]!==undefined&&!confirm(_cm[action]+name+' — האם אתה בטוח?'))return;try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));content.pending=(content.pending||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.approved=(content.approved||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.rejected=(content.rejected||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.frozen=(content.frozen||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});if(action==='unfreeze'){content.approved.push({e:email,n:name||email,t:Date.now()});var ok2=await window._suj(content,ujd.sha,'unfreeze: '+email);if(ok2)loadUsersPanel();return;}if(action==='approve')content.approved.push({e:email,n:name||email,t:Date.now()});else if(action==='reject')content.rejected.push({e:email,t:Date.now()});else if(action==='freeze')content.frozen.push({e:email,n:name});var ok=await window._suj(content,ujd.sha,action+': '+email);if(ok)loadUsersPanel();else alert('שגיאה בשמירה');}catch(e){alert('שגיאה: '+e.message);}}
 </script>
 </body>
 </html>
