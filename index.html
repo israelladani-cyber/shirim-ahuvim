@@ -2514,14 +2514,16 @@ var sec=function(ic,tx,cn){return '<div style="padding:10px 16px 8px;background:
 var rw=function(av,nm,em,bt){return '<div style="display:flex;align-items:center;padding:10px 16px;gap:10px;border-bottom:1px solid #F2F2F2;">'+av+'<div style="flex:1;min-width:0;text-align:right;overflow:hidden;"><div style="font-size:14px;font-weight:600;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'<\/div><div style="font-size:12px;color:#606060;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+em+'<\/div><\/div>'+(bt||'')+'<\/div>';};
 var btw=function(lbl,act,se,sn,st){return '<button data-em="'+se+'" data-nm="'+sn+'" data-action="'+act+'" onclick="userAction(this.dataset.action,this.dataset.em,this.dataset.nm)" style="'+st+'">'+lbl+'<\/button>';};
 h+=sec('✅','מאושרים',approved.length);
+var shownApproved=0;
 approved.forEach(function(item){
 var em=(item.e||item),nm=(item.n||'');
 var se=em.replace(/"/g,'&quot;'),sn=nm.replace(/"/g,'&quot;');
 var isAdm=em.toLowerCase()==='israel.ladani@gmail.com';
 if(isAdm){return;}
-else{h+=rw(avt(nm,em),nm||em,em,'<div style="display:flex;gap:4px;flex-shrink:0;">'+btw('הקפא','freeze',se,sn,'background:#FFF8F0;color:#E65100;border:1px solid #FFCC80;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+btw('מחק','delete',se,sn,'background:#FFF0F0;color:#CC0000;border:1px solid #FECACA;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+'<\/div>');}
+shownApproved++;
+h+=rw(avt(nm,em),nm||em,em,'<div style="display:flex;gap:4px;flex-shrink:0;">'+btw('הקפא','freeze',se,sn,'background:#FFF8F0;color:#E65100;border:1px solid #FFCC80;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+btw('מחק','delete',se,sn,'background:#FFF0F0;color:#CC0000;border:1px solid #FECACA;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+'<\/div>');
 });
-if(frozen&&frozen.length){
+if(!shownApproved)h+='<p style="color:#999;text-align:center;padding:16px;font-size:13px;margin:0;">אין משתמשים מאושרים<\/p>';
 h+=sec('⏳','ממתינים לאישור',pending.length);
 if(!pending.length)h+='<p style="color:#999;text-align:center;padding:16px;font-size:13px;margin:0;">אין ממתינים<\/p>';
 pending.forEach(function(item){
@@ -2530,16 +2532,24 @@ var se=em.replace(/"/g,'&quot;'),sn=nm.replace(/"/g,'&quot;');
 h+=rw(avt(nm,em),nm||em,em,'<div style="display:flex;gap:4px;flex-shrink:0;">'+btw('✓ אשר','approve',se,sn,'background:#2CA55E;color:#fff;border:none;border-radius:18px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;')+btw('✕ דחה','reject',se,sn,'background:#FFF0F0;color:#CC0000;border:1px solid #FECACA;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+'<\/div>');
 });
 h+=sec('🔒','מוקפאים',frozen.length);
+if(!frozen.length)h+='<p style="color:#999;text-align:center;padding:16px;font-size:13px;margin:0;">אין מוקפאים<\/p>';
 frozen.forEach(function(item){
 var em=(typeof item==='string'?item:(item.e||'')),nm=(typeof item==='string'?'':(item.n||''));
 var se=em.replace(/"/g,'&quot;'),sn=nm.replace(/"/g,'&quot;');
 h+=rw(avt(nm,em),nm||em,em,'<div style="flex-shrink:0;">'+btw('שחרר','unfreeze',se,sn,'background:#2CA55E;color:#fff;border:none;border-radius:18px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;')+'<\/div>');
 });
-}
+var rejected=content.rejected||[];
+h+=sec('🚫','נדחו',rejected.length);
+if(!rejected.length)h+='<p style="color:#999;text-align:center;padding:16px;font-size:13px;margin:0;">אין דחויים<\/p>';
+rejected.forEach(function(item){
+var em=(typeof item==='string'?item:(item.e||'')),nm=(typeof item==='string'?'':(item.n||''));
+var se=em.replace(/"/g,'&quot;'),sn=nm.replace(/"/g,'&quot;');
+h+=rw(avt(nm,em),nm||em,em,'<div style="flex-shrink:0;">'+btw('שחזר','unreject',se,sn,'background:#2CA55E;color:#fff;border:none;border-radius:18px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;')+'<\/div>');
+});
 body.innerHTML=h;
 }catch(e){body.innerHTML='<p style="color:#CC0000;text-align:center;padding:20px;font-size:13px;">שגיאה בטעינת נתונים<\/p>';}
 }
-async function userAction(action,email,name){var _cm={'delete':'מחיקת ','freeze':'הקפאת ','unfreeze':'שחרור מקיפאון '};if(_cm[action]!==undefined&&!confirm(_cm[action]+name+' — האם אתה בטוח?'))return;try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));content.pending=(content.pending||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.approved=(content.approved||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.rejected=(content.rejected||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.frozen=(content.frozen||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});if(action==='unfreeze'){content.approved.push({e:email,n:name||email,t:Date.now()});var ok2=await window._suj(content,ujd.sha,'unfreeze: '+email);if(ok2)loadUsersPanel();return;}if(action==='approve')content.approved.push({e:email,n:name||email,t:Date.now()});else if(action==='reject')content.rejected.push({e:email,t:Date.now()});else if(action==='freeze')content.frozen.push({e:email,n:name});var ok=await window._suj(content,ujd.sha,action+': '+email);if(ok)loadUsersPanel();else alert('שגיאה בשמירה');}catch(e){alert('שגיאה: '+e.message);}}
+async function userAction(action,email,name){var _cm={'delete':'מחיקת ','freeze':'הקפאת ','unfreeze':'שחרור מקיפאון '};if(_cm[action]!==undefined&&!confirm(_cm[action]+name+' — האם אתה בטוח?'))return;try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));content.pending=(content.pending||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.approved=(content.approved||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.rejected=(content.rejected||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});content.frozen=(content.frozen||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});if(action==='unfreeze'){content.approved.push({e:email,n:name||email,t:Date.now()});var ok2=await window._suj(content,ujd.sha,'unfreeze: '+email);if(ok2)loadUsersPanel();return;}if(action==='unreject'){content.pending.push({e:email,n:name||email,t:Date.now()});var ok3=await window._suj(content,ujd.sha,'unreject: '+email);if(ok3)loadUsersPanel();return;}if(action==='approve')content.approved.push({e:email,n:name||email,t:Date.now()});else if(action==='reject')content.rejected.push({e:email,t:Date.now()});else if(action==='freeze')content.frozen.push({e:email,n:name});var ok=await window._suj(content,ujd.sha,action+': '+email);if(ok)loadUsersPanel();else alert('שגיאה בשמירה');}catch(e){alert('שגיאה: '+e.message);}}
 </script>
 </body>
 </html>
