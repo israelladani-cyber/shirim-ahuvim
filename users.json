@@ -12,7 +12,13 @@
       "t": 1782947509448
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.recheck.1782947643561@example.com",
+      "n": "Recheck Test",
+      "t": 1782947644151
+    }
+  ],
   "rejected": [],
   "frozen": []
 }
