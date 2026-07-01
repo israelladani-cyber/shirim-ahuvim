@@ -14,11 +14,5 @@
   ],
   "pending": [],
   "rejected": [],
-  "frozen": [
-    {
-      "e": "zzz.flicker.final.1782948528301@example.com",
-      "n": "Flicker Final",
-      "t": 1782948593904
-    }
-  ]
+  "frozen": []
 }
