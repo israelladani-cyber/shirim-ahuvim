@@ -520,6 +520,12 @@ body.admin .btn-move-folder{display:flex;}
 </div>
 <script>(function(){
 var _UJ='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/users.json';
+try{
+if(!localStorage.getItem('_kIdent')){
+var _oa=localStorage.getItem('_kauth');
+if(_oa){var _o=JSON.parse(_oa);if(_o&&_o.e){localStorage.setItem('_kIdent',JSON.stringify({e:_o.e,n:_o.n,i:_o.i||''}));}}
+}
+}catch(_e){}
 function _gp(){return 'ghp_iUXvtsFPZEH'+'QbkGJQbP6EKuuYoeem838pGP9';}
 async function _fa(){try{var r=await fetch(_UJ+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;var d=await r.json();return(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();});}catch(e){return null;}}
 async function _fu(){try{var r=await fetch(_UJ+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;var d=await r.json();return{approved:(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),pending:(d.pending||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),rejected:(d.rejected||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),frozen:(d.frozen||[]).map(function(x){return(x.e||x).toLowerCase().trim();})};}catch(e){return null;}}
