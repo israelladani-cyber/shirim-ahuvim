@@ -522,7 +522,7 @@ body.admin .btn-move-folder{display:flex;}
 var _UJ='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/users.json';
 function _gp(){return 'ghp_iUXvtsFPZEH'+'QbkGJQbP6EKuuYoeem838pGP9';}
 async function _fa(){try{var r=await fetch(_UJ+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;var d=await r.json();return(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();});}catch(e){return null;}}
-async function _fu(){try{var r=await fetch(_UJ+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;var d=await r.json();return{approved:(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),pending:(d.pending||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),rejected:(d.rejected||[]).map(function(x){return(x.e||x).toLowerCase().trim();})};}catch(e){return null;}}
+async function _fu(){try{var r=await fetch(_UJ+'?v='+Date.now(),{cache:'no-store'});if(!r.ok)return null;var d=await r.json();return{approved:(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),pending:(d.pending||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),rejected:(d.rejected||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),frozen:(d.frozen||[]).map(function(x){return(x.e||x).toLowerCase().trim();})};}catch(e){return null;}}
 window._guj=async function(){var r=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/users.json',{headers:{Authorization:'token '+_gp()}});return await r.json();};
 window._suj=async function(data,sha,msg){var enc=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));var r=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/users.json',{method:'PUT',headers:{Authorization:'token '+_gp(),'Content-Type':'application/json'},body:JSON.stringify({message:msg||'update users',content:enc,sha:sha})});return {ok:r.ok,status:r.status};};
 function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(o)o.style.display='none';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
@@ -2498,12 +2498,9 @@ document.getElementById('_umCodeOv').classList.remove('open');
 var p=document.getElementById('_userMgmt');p.style.display='flex';
 loadUsersPanel();
 }
-async function loadUsersPanel(){
+var _umContent=null,_umSha=null;
+function renderUsersPanel(content){
 var body=document.getElementById('_userMgmtBody');
-body.innerHTML='<p style="color:#999;text-align:center;margin:20px 0;">טוען...</p>';
-try{
-var ujd=await window._guj();
-var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));
 var pending=content.pending||[];
 var approved=content.approved||[];
 var frozen=content.frozen||[];
@@ -2547,21 +2544,18 @@ var se=em.replace(/"/g,'&quot;'),sn=nm.replace(/"/g,'&quot;');
 h+=rw(avt(nm,em),nm||em,em,'<div style="display:flex;gap:4px;flex-shrink:0;">'+btw('אשר','approve',se,sn,'background:#2CA55E;color:#fff;border:none;border-radius:18px;padding:5px 12px;font-size:12px;font-weight:600;cursor:pointer;')+btw('מחק','delete',se,sn,'background:#FFF0F0;color:#CC0000;border:1px solid #FECACA;border-radius:18px;padding:5px 12px;font-size:12px;cursor:pointer;')+'<\/div>');
 });
 body.innerHTML=h;
-}catch(e){body.innerHTML='<p style="color:#CC0000;text-align:center;padding:20px;font-size:13px;">שגיאה בטעינת נתונים<\/p>';}
 }
-async function userAction(action,email,name,btnEl){
-var _cm={'delete':'מחיקת ','freeze':'הקפאת '};
-if(_cm[action]!==undefined&&!confirm(_cm[action]+name+' — האם אתה בטוח?'))return;
+async function loadUsersPanel(){
 var body=document.getElementById('_userMgmtBody');
-var btns=body?body.querySelectorAll('button[data-em]'):[];
-btns.forEach(function(b){b.disabled=true;b.style.opacity='.5';});
-if(btnEl){btnEl.textContent='⏳ שומר...';btnEl.style.opacity='1';}
-var ok=false,lastErr=null,attempt=0;
-while(attempt<4&&!ok){
-attempt++;
+body.innerHTML='<p style="color:#999;text-align:center;margin:20px 0;">טוען...</p>';
 try{
 var ujd=await window._guj();
 var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));
+_umContent=content;_umSha=ujd.sha;
+renderUsersPanel(content);
+}catch(e){body.innerHTML='<p style="color:#CC0000;text-align:center;padding:20px;font-size:13px;">שגיאה בטעינת נתונים<\/p>';}
+}
+function _applyAction(content,action,email,name){
 content.pending=(content.pending||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});
 content.approved=(content.approved||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});
 content.rejected=(content.rejected||[]).filter(function(x){return(typeof x==='string'?x:x.e)!==email;});
@@ -2569,14 +2563,33 @@ content.frozen=(content.frozen||[]).filter(function(x){return(typeof x==='string
 if(action==='approve')content.approved.push({e:email,n:name||email,t:Date.now()});
 else if(action==='reject')content.rejected.push({e:email,n:name||email,t:Date.now()});
 else if(action==='freeze')content.frozen.push({e:email,n:name||email,t:Date.now()});
-var res=await window._suj(content,ujd.sha,action+': '+email);
-if(res.ok){ok=true;}
-else if(res.status===409){await new Promise(function(r){setTimeout(r,300*attempt);});}
+return content;
+}
+async function userAction(action,email,name,btnEl){
+var _cm={'delete':'מחיקת ','freeze':'הקפאת '};
+if(_cm[action]!==undefined&&!confirm(_cm[action]+name+' — האם אתה בטוח?'))return;
+// OPTIMISTIC: render the end-state instantly using cached data, before any network call
+var optimistic=_umContent?JSON.parse(JSON.stringify(_umContent)):null;
+if(optimistic){_applyAction(optimistic,action,email,name);renderUsersPanel(optimistic);}
+var body=document.getElementById('_userMgmtBody');
+var btns=body?body.querySelectorAll('button[data-em]'):[];
+btns.forEach(function(b){b.disabled=true;b.style.opacity='.5';});
+var ok=false,lastErr=null,attempt=0,sha=_umSha;
+while(attempt<4&&!ok){
+attempt++;
+try{
+var content;
+if(attempt===1&&_umContent&&sha){content=JSON.parse(JSON.stringify(_umContent));}
+else{var ujd=await window._guj();content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));sha=ujd.sha;}
+_applyAction(content,action,email,name);
+var res=await window._suj(content,sha,action+': '+email);
+if(res.ok){ok=true;_umContent=content;}
+else if(res.status===409){sha=null;await new Promise(function(r){setTimeout(r,300*attempt);});}
 else{lastErr='status '+res.status;break;}
 }catch(e){lastErr=e.message;}
 }
-if(ok)loadUsersPanel();
-else{alert('שגיאה בשמירה, נסה שוב'+(lastErr?(' ('+lastErr+')'):''));loadUsersPanel();}
+if(!ok){alert('שגיאה בשמירה, נסה שוב'+(lastErr?(' ('+lastErr+')'):''));}
+loadUsersPanel();
 }
 </script>
 </body>
