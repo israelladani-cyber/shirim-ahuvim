@@ -579,8 +579,8 @@ b.onclick=function(ev){
   var sep=document.createElement('div');sep.style.cssText='border-top:1px solid #e5e5e5;margin:4px 0;';_dd.appendChild(sep);
 
   /* ── Account section ── */
-  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c-.03 1.99-2.22 3.22-6 3.22z"/></svg>','בחירה בחשבון אחר',function(){localStorage.removeItem('_kauth');location.reload();});
-  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5a2 2 0 00-2 2v4h2V5h14v14H5v-4H3v4a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z"/></svg>','יציאה',function(){localStorage.removeItem('_kauth');_showOv();_ub(null,null,null);});
+  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c-.03 1.99-2.22 3.22-6 3.22z"/></svg>','בחירה בחשבון אחר',function(){localStorage.removeItem('_kauth');localStorage.removeItem('_kIdent');if(window.google&&google.accounts&&google.accounts.id)google.accounts.id.disableAutoSelect();location.reload();});
+  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5a2 2 0 00-2 2v4h2V5h14v14H5v-4H3v4a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z"/></svg>','יציאה',function(){localStorage.removeItem('_kauth');localStorage.removeItem('_kIdent');if(window.google&&google.accounts&&google.accounts.id)google.accounts.id.disableAutoSelect();_showOv();_ub(null,null,null);});
 
   document.body.appendChild(_dd);
   setTimeout(function(){
