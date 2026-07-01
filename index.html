@@ -591,7 +591,7 @@ var _oa=localStorage.getItem('_kauth');
 if(_oa){var _o=JSON.parse(_oa);if(_o&&_o.e){localStorage.setItem('_kIdent',JSON.stringify({e:_o.e,n:_o.n,i:_o.i||''}));}}
 }
 }catch(_e){}
-var WORKER_BASE='https://karaoke-users-api.israel-ladani.workers.dev';
+window.WORKER_BASE='https://karaoke-users-api.israel-ladani.workers.dev';
 async function _fa(){try{var r=await fetch(WORKER_BASE+'/status');if(!r.ok)return null;var d=await r.json();return(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();});}catch(e){return null;}}
 async function _fu(){try{var r=await fetch(WORKER_BASE+'/status');if(!r.ok)return null;var d=await r.json();return{approved:(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),pending:(d.pending||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),rejected:(d.rejected||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),frozen:(d.frozen||[]).map(function(x){return(x.e||x).toLowerCase().trim();})};}catch(e){return null;}}
 window._registerUser=async function(email,name){try{var r=await fetch(WORKER_BASE+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,name:name})});return r.ok;}catch(e){return false;}};
