@@ -7,7 +7,13 @@
       "t": 1782897805583
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.e2e.verify.deleteme@example.com",
+      "n": "E2E Test DeleteMe",
+      "t": 1782944632100
+    }
+  ],
   "rejected": [],
   "frozen": [
     {
