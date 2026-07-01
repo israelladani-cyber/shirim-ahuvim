@@ -2621,8 +2621,7 @@ else if(res.status===409){sha=null;await new Promise(function(r){setTimeout(r,30
 else{lastErr='status '+res.status;break;}
 }catch(e){lastErr=e.message;}
 }
-if(!ok){alert('שגיאה בשמירה, נסה שוב'+(lastErr?(' ('+lastErr+')'):''));}
-loadUsersPanel();
+if(ok){_umSha=null;renderUsersPanel(_umContent);}else{alert('שגיאה בשמירה, נסה שוב'+(lastErr?(' ('+lastErr+')'):''));loadUsersPanel();}
 }
 </script>
 </body>
