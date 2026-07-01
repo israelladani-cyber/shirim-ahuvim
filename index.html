@@ -519,6 +519,8 @@ body.admin .btn-move-folder{display:flex;}
   </div>
 </div>
 <script>(function(){
+function _showOv(msg){var _ov=document.getElementById('gAuthOverlay');if(_ov)_ov.style.display='flex';var _e=document.getElementById('gAuthErr');if(_e){_e.textContent=msg;_e.style.display='block';}}
+function _hideOv(){var _ov=document.getElementById('gAuthOverlay');if(_ov)_ov.style.display='none';}
 var _UJ='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/users.json';
 try{
 if(!localStorage.getItem('_kIdent')){
