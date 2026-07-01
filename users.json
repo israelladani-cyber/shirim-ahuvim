@@ -14,11 +14,5 @@
   ],
   "pending": [],
   "rejected": [],
-  "frozen": [
-    {
-      "e": "zzz.uicheck.1782949299418@example.com",
-      "n": "UI Check",
-      "t": 1782949324577
-    }
-  ]
+  "frozen": []
 }
