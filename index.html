@@ -2603,6 +2603,7 @@ else if(action==='reject')content.rejected.push({e:email,n:name||email,t:Date.no
 else if(action==='freeze')content.frozen.push({e:email,n:name||email,t:Date.now()});
 return content;
 }
+async function _silentRefreshUsersPanel(){try{var r=await fetch(WORKER_BASE+'/status');var content=await r.json();_umContent=content;_umSha=null;renderUsersPanel(content);}catch(e){}}
 async function userAction(action,email,name,btnEl){
 var _cm={'delete':'מחיקת ','freeze':'הקפאת '};
 if(_cm[action]!==undefined&&!confirm(_cm[action]+name+' — האם אתה בטוח?'))return;
@@ -2613,7 +2614,7 @@ var body=document.getElementById('_userMgmtBody');
 var btns=body?body.querySelectorAll('button[data-em]'):[];
 btns.forEach(function(b){b.disabled=true;b.style.opacity='.5';});
 var res=await window._adminAction(window._umPin,action,email,name);
-if(res.ok){loadUsersPanel();}else{alert('שגיאה בשמירה, נסה שוב'+(res.error?(' ('+res.error+')'):''));loadUsersPanel();}
+if(res.ok){_silentRefreshUsersPanel();}else{alert('שגיאה בשמירה, נסה שוב'+(res.error?(' ('+res.error+')'):''));_silentRefreshUsersPanel();}
 }
 </script>
 </body>
