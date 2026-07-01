@@ -12,7 +12,13 @@
       "t": 1782945535259
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.e2e.fade.test.deleteme@example.com",
+      "n": "Fade Test",
+      "t": 1782945862481
+    }
+  ],
   "rejected": [],
   "frozen": []
 }
