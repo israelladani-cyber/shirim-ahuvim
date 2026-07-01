@@ -12,7 +12,13 @@
       "t": 1782948783421
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.uicheck.1782949299418@example.com",
+      "n": "UI Check",
+      "t": 1782949300019
+    }
+  ],
   "rejected": [],
   "frozen": []
 }
