@@ -535,7 +535,7 @@ handleGoogleAuth=async function(rp){var errEl=document.getElementById('gAuthErr'
 await window._registerUser(em,nm);
 if(ldEl)ldEl.style.display='none';
 _showOv('בקשת הגישה שלך נשלחה לאישור מנהל האתר');
-}}}catch(e){if(ldEl)ldEl.style.display='none';_showOv('שגיאה בהתחברות');}};
+}}catch(e){if(ldEl)ldEl.style.display='none';_showOv('שגיאה בהתחברות');}};
 async function _checkStatus(){
 var ic=localStorage.getItem('_kIdent');
 if(!ic)return;
