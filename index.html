@@ -519,8 +519,71 @@ body.admin .btn-move-folder{display:flex;}
   </div>
 </div>
 <script>(function(){
-function _showOv(msg){var _ov=document.getElementById('gAuthOverlay');if(_ov)_ov.style.display='flex';var _e=document.getElementById('gAuthErr');if(_e){_e.textContent=msg;_e.style.display='block';}}
-function _hideOv(){var _ov=document.getElementById('gAuthOverlay');if(_ov)_ov.style.display='none';}
+function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(o)o.style.display='none';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
+function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}o.style.display='flex';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
+function _updateBadge(n){var b=document.getElementById('_pendingBadge');if(!b)return;b.textContent=n;b.style.display=n>0?'inline-flex':'none';}window._updateBadge=_updateBadge;
+var dd=null;
+function _ub(nm,em,pic){function _d(){
+var b=document.getElementById('userAuthBtn');if(!b)return;
+if(!nm){b.style.display='none';return;}
+b.style.display='block';b.style.padding='0';b.style.background='none';b.style.border='none';b.style.cursor='pointer';
+b.innerHTML=pic
+  ?'<img src="'+pic+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block;">'
+  :'<div style="width:32px;height:32px;border-radius:50%;background:#065fd4;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:14px;">'+(nm?nm[0].toUpperCase():'?')+'</div>';
+b.style.position='relative';
+var _dd=null;
+b.onclick=function(ev){
+  ev.stopPropagation();
+  var ex=document.getElementById('_authDd');
+  if(ex){ex.remove();_dd=null;return;}
+  _dd=document.createElement('div');
+  _dd.id='_authDd';
+  _dd.style.cssText='position:fixed;background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.2);width:280px;z-index:99999;overflow:hidden;direction:rtl;font-family:Roboto,Arial,sans-serif;';
+  var rect=b.getBoundingClientRect();
+  _dd.style.top=(rect.bottom+8)+'px';
+  var _mw=280,_rp=window.innerWidth-rect.right;_rp=Math.max(8,Math.min(_rp,window.innerWidth-_mw-8));_dd.style.right=_rp+'px';
+
+  /* ── Header ── */
+  var hdr=document.createElement('div');
+  hdr.style.cssText='display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid #e5e5e5;';
+  hdr.innerHTML=(pic
+    ?'<img src="'+pic+'" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;">'
+    :'<div style="width:40px;height:40px;border-radius:50%;background:#065fd4;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:18px;flex-shrink:0;">'+(nm?nm[0].toUpperCase():'?')+'</div>'
+  )+'<div style="min-width:0;"><div style="font-size:14px;font-weight:500;color:#0f0f0f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'</div><div style="font-size:12px;color:#606060;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+em+'</div></div>';
+  _dd.appendChild(hdr);
+
+  /* ── Row helper ── */
+  function _row(svgOrEmoji,label,fn){
+    var row=document.createElement('div');
+    row.style.cssText='display:flex;align-items:center;gap:16px;padding:10px 16px;cursor:pointer;font-size:14px;color:#0f0f0f;';
+    row.innerHTML='<span style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;">'+svgOrEmoji+'</span><span>'+label+'</span>';
+    row.onmouseenter=function(){this.style.background='#f2f2f2';};
+    row.onmouseleave=function(){this.style.background='';};
+    row.onclick=function(){_dd.remove();_dd=null;fn();};
+    _dd.appendChild(row);
+  }
+
+  /* ── Admin section ── */
+  if(em&&em.toLowerCase()==='israel.ladani@gmail.com'){
+  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>','ניהול משתמשים',function(){if(typeof openUsersPanel==='function')openUsersPanel();});
+  }
+  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>','עריכת שירים',function(){if(typeof openAdminLogin==='function')openAdminLogin();});
+
+  /* ── Divider ── */
+  var sep=document.createElement('div');sep.style.cssText='border-top:1px solid #e5e5e5;margin:4px 0;';_dd.appendChild(sep);
+
+  /* ── Account section ── */
+  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c-.03 1.99-2.22 3.22-6 3.22z"/></svg>','בחירה בחשבון אחר',function(){localStorage.removeItem('_kauth');localStorage.removeItem('_kIdent');if(window.google&&google.accounts&&google.accounts.id)google.accounts.id.disableAutoSelect();location.reload();});
+  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5a2 2 0 00-2 2v4h2V5h14v14H5v-4H3v4a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z"/></svg>','יציאה',function(){localStorage.removeItem('_kauth');localStorage.removeItem('_kIdent');if(window.google&&google.accounts&&google.accounts.id)google.accounts.id.disableAutoSelect();_showOv();_ub(null,null,null);});
+
+  document.body.appendChild(_dd);
+  setTimeout(function(){
+    document.addEventListener('click',function _cl(e){
+      if(_dd&&!b.contains(e.target)&&!_dd.contains(e.target)){_dd.remove();_dd=null;document.removeEventListener('click',_cl);}
+    });
+  },0);
+};
+}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 var _UJ='https://raw.githubusercontent.com/israelladani-cyber/shirim-ahuvim/main/users.json';
 try{
 if(!localStorage.getItem('_kIdent')){
