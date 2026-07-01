@@ -501,7 +501,7 @@ body.admin .btn-move-folder{display:flex;}
 <body>
 
 <!-- ── GOOGLE AUTH ── -->
-<div id="gAuthOverlay" style="position:fixed;inset:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;z-index:99999;overflow:hidden;">
+<div id="gAuthOverlay" style="position:fixed;inset:0;width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;background:#fff;z-index:99999;overflow:hidden;;transition:opacity .25s ease">
   <div id="g_id_onload" data-client_id="978399961472-9jmveopmp6dngajq8767tl34k3eo81ak.apps.googleusercontent.com" data-callback="handleGoogleAuth" data-auto_select="true" data-use_fedcm_for_prompt="false"></div>
   <div style="display:flex;flex-direction:column;align-items:center;gap:32px;text-align:center;">
     <img src="logo 8.svg" style="width:min(450px,42vw);height:auto;object-fit:contain;transform:scaleX(2.25);transform-origin:center;">
@@ -519,8 +519,8 @@ body.admin .btn-move-folder{display:flex;}
   </div>
 </div>
 <script>(function(){
-function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(o)o.style.display='none';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
-function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}o.style.display='flex';}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
+function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;if(o.style.display==='none')return;o.style.opacity='0';setTimeout(function(){o.style.display='none';},260);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
+function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}if(o.style.display!=='flex'){o.style.opacity='0';o.style.display='flex';requestAnimationFrame(function(){requestAnimationFrame(function(){o.style.opacity='1';});});}else{o.style.opacity='1';}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 function _updateBadge(n){var b=document.getElementById('_pendingBadge');if(!b)return;b.textContent=n;b.style.display=n>0?'inline-flex':'none';}window._updateBadge=_updateBadge;
 var dd=null;
 function _ub(nm,em,pic){function _d(){
