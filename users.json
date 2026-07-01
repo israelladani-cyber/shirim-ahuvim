@@ -14,5 +14,7 @@
   ],
   "pending": [],
   "rejected": [],
-  "frozen": []
+  "frozen": [
+    "zzz.test.freeze.probe@example.com"
+  ]
 }
