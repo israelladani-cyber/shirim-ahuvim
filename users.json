@@ -2,7 +2,13 @@
   "approved": [
     "israel.ladani@gmail.com"
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "sahar.ladani@gmail.com",
+      "n": "Sahar Ladani",
+      "t": 1782885858691
+    }
+  ],
   "rejected": [
     {
       "e": "yael.diconsiglio@gmail.com",
