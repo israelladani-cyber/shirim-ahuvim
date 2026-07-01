@@ -17,7 +17,13 @@
       "t": 1782948044476
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.flicker.retest.1782948484317@example.com",
+      "n": "Flicker Retest",
+      "t": 1782948484938
+    }
+  ],
   "rejected": [],
   "frozen": []
 }
