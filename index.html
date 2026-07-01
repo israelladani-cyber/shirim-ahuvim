@@ -590,10 +590,43 @@ b.onclick=function(ev){
   },0);
 };
 }if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
-handleGoogleAuth=async function(rp){var errEl=document.getElementById('gAuthErr'),ldEl=document.getElementById('gAuthLoading');if(errEl)errEl.style.display='none';if(ldEl)ldEl.style.display='block';try{var p=rp.credential.split('.');var pl=JSON.parse(decodeURIComponent(escape(atob(p[1].replace(/-/g,'+').replace(/_/g,'/')))));var em=pl.email.toLowerCase().trim();var nm=pl.name||pl.given_name||em;var pic=pl.picture||'';var us=await _fu();if(us===null){if(ldEl)ldEl.style.display='none';return;}if(us.frozen&&(us.frozen.includes(em)||us.frozen.some(function(x){return(x.e||x)===em;}))){if(ldEl)ldEl.style.display='none';_showOv('החשבון שלך הוקפא. פנה למנהל.');return;}if(us.approved.includes(em)){localStorage.setItem('_kauth',JSON.stringify({e:em,n:nm,t:Date.now(),i:pic}));_hideOv();_ub(nm,em,pic);}else if(us.pending.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('בקשתך ממתינת לאישור מנהל האתר');}else if(us.rejected.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('גישה לאתר זה נדחתה');}else{try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));content.pending=content.pending||[];if(!content.pending.some(function(x){return(x.e||x)===em;})){content.pending.push({e:em,n:nm,t:Date.now()});await window._suj(content,ujd.sha,'pending: '+em);}}catch(er){}if(ldEl)ldEl.style.display='none';_showOv('בקשת הגישה שלך נשלחה לאישור מנהל האתר');}}catch(e){if(ldEl)ldEl.style.display='none';_showOv('שגיאה בהתחברות');}};
-async function _ia(){var c=localStorage.getItem('_kauth');if(c){try{var o=JSON.parse(c),e=o.e,n=o.n,t=o.t,pic=o.i||'',age=Date.now()-t;if(age<3600000){_hideOv();_ub(n,e,pic);_fa().then(function(al){if(al===null)return;if(!al.includes(e)){localStorage.removeItem('_kauth');_showOv();_ub(null,null,null);}else{_fu().then(function(us){if(us)window._updateBadge(us.pending.length);});}});return;}}catch(er){localStorage.removeItem('_kauth');}}
-_showOv();}
+handleGoogleAuth=async function(rp){var errEl=document.getElementById('gAuthErr'),ldEl=document.getElementById('gAuthLoading');if(errEl)errEl.style.display='none';if(ldEl)ldEl.style.display='block';try{var p=rp.credential.split('.');var pl=JSON.parse(decodeURIComponent(escape(atob(p[1].replace(/-/g,'+').replace(/_/g,'/')))));var em=pl.email.toLowerCase().trim();var nm=pl.name||pl.given_name||em;var pic=pl.picture||'';localStorage.setItem('_kIdent',JSON.stringify({e:em,n:nm,i:pic}));var us=await _fu();if(us===null){if(ldEl)ldEl.style.display='none';return;}if(us.frozen&&(us.frozen.includes(em)||us.frozen.some(function(x){return(x.e||x)===em;}))){if(ldEl)ldEl.style.display='none';_showOv('החשבון שלך הוקפא. פנה למנהל.');return;}if(us.approved.includes(em)){localStorage.setItem('_kauth',JSON.stringify({e:em,n:nm,t:Date.now(),i:pic}));_hideOv();_ub(nm,em,pic);}else if(us.pending.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('בקשתך ממתינת לאישור מנהל האתר');}else if(us.rejected.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('גישה לאתר זה נדחתה');}else{try{var ujd=await window._guj();var content=JSON.parse(atob(ujd.content.replace(/\n/g,'')));content.pending=content.pending||[];if(!content.pending.some(function(x){return(x.e||x)===em;})){content.pending.push({e:em,n:nm,t:Date.now()});await window._suj(content,ujd.sha,'pending: '+em);}}catch(er){}if(ldEl)ldEl.style.display='none';_showOv('בקשת הגישה שלך נשלחה לאישור מנהל האתר');}}catch(e){if(ldEl)ldEl.style.display='none';_showOv('שגיאה בהתחברות');}};
+async function _checkStatus(){
+var ic=localStorage.getItem('_kIdent');
+if(!ic)return;
+var id;try{id=JSON.parse(ic);}catch(er){return;}
+var e=id.e,n=id.n,pic=id.i||'';
+var us=await _fu();
+if(us===null)return;
+if(us.approved.includes(e)){
+localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,t:Date.now(),i:pic}));
+_hideOv();_ub(n,e,pic);
+window._updateBadge(us.pending.length);
+}else if(us.frozen.includes(e)){
+localStorage.removeItem('_kauth');
+_ub(null,null,null);
+_showOv('החשבון שלך הוקפא. פנה למנהל.');
+}else if(us.pending.includes(e)){
+localStorage.removeItem('_kauth');
+_ub(null,null,null);
+_showOv('בקשתך ממתינת לאישור מנהל האתר');
+}else if(us.rejected.includes(e)){
+localStorage.removeItem('_kauth');
+_ub(null,null,null);
+_showOv('גישה לאתר זה נדחתה');
+}else{
+localStorage.removeItem('_kauth');
+localStorage.removeItem('_kIdent');
+_ub(null,null,null);
+_showOv();
+}
+}
+function _ia(){
+if(!localStorage.getItem('_kIdent'))_showOv();
+_checkStatus();
+}
 _ia();
+setInterval(_checkStatus,20000);
 })()</script>
 
 <div class="top">
