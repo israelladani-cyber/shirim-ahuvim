@@ -12,7 +12,13 @@
       "t": 1782933903235
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.worker.test@example.com",
+      "n": "Worker Test",
+      "t": 1782937592645
+    }
+  ],
   "rejected": [],
   "frozen": []
 }
