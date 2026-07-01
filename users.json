@@ -14,11 +14,5 @@
   ],
   "pending": [],
   "rejected": [],
-  "frozen": [
-    {
-      "e": "zzz.recheck.1782947643561@example.com",
-      "n": "Recheck Test",
-      "t": 1782947700461
-    }
-  ]
+  "frozen": []
 }
