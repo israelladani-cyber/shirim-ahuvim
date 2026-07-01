@@ -1,13 +1,13 @@
 {
   "approved": [
-    "israel.ladani@gmail.com"
-  ],
-  "pending": [
+    "israel.ladani@gmail.com",
     {
       "e": "sahar.ladani@gmail.com",
       "n": "Sahar Ladani",
-      "t": 1782885858691
-    },
+      "t": 1782897805583
+    }
+  ],
+  "pending": [
     {
       "e": "yael.diconsiglio@gmail.com",
       "n": "Yael Diconsiglio",
