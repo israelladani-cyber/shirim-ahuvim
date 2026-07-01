@@ -508,7 +508,7 @@ body.admin .btn-move-folder{display:flex;}
     <div style="font-size:18.2px;color:#777;font-family:Arial,sans-serif;">&#1499;&#1504;&#1497;&#1505;&#1492; &#1506;&#1501; &#1495;&#1513;&#1489;&#1493;&#1503; Google</div>
     <div class="g_id_signin" data-type="icon" data-shape="circle" data-theme="outline" data-size="large" style="transform:scale(1.3);transform-origin:center;"></div>
     
-    <div id="gAuthErr" style="display:none;color:#c00;font-size:13px;font-family:Arial,sans-serif;"></div>
+    <div id="gAuthErr" style="display:none;color:#c00;font-size:16.9px;font-family:Arial,sans-serif;"></div>
     <div id="gAuthLoading" style="display:none;color:#888;font-size:13px;font-family:Arial,sans-serif;">&#1502;&#1488;&#1502;&#1514;&#1489;&#1512;...</div>
   </div>
 </div>
@@ -2545,7 +2545,7 @@ var frozen=content.frozen||[];
 var h='';
 var pal=['#CC0000','#1565C0','#2E7D32','#6A1B9A','#E65100','#00695C','#0277BD','#558B2F'];
 var avt=function(n,e){var i=(n?n.charCodeAt(0):e.charCodeAt(0))%pal.length;var l=(n&&n.length?n[0]:e[0]).toUpperCase();return '<div style="width:38px;height:38px;border-radius:50%;background:'+pal[i]+';color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;flex-shrink:0;">'+l+'<\/div>';};
-var sec=function(ic,tx,cn){return '<div style="padding:10px 16px 8px;background:#F9F9F9;border-bottom:1px solid #E5E5E5;display:flex;align-items:center;gap:8px;"><span style="font-size:14px;">'+ic+'<\/span><span style="font-size:13px;font-weight:700;color:#0F0F0F;">'+tx+'<\/span><span style="background:#E5E5E5;color:#606060;border-radius:10px;padding:1px 8px;font-size:11px;font-weight:600;margin-right:auto;">'+cn+'<\/span><\/div>';};
+var sec=function(ic,tx,cn){return '<div style="padding:10px 16px 8px;background:#F9F9F9;border-bottom:1px solid #E5E5E5;display:flex;align-items:center;gap:8px;"><span style="font-size:14px;">'+ic+'<\/span><span style="font-size:13px;font-weight:700;color:#0F0F0F;">'+tx+'<\/span><\/div>';};
 var rw=function(av,nm,em,bt){return '<div style="display:flex;align-items:center;padding:10px 16px;gap:10px;border-bottom:1px solid #F2F2F2;">'+av+'<div style="flex:1;min-width:0;text-align:right;overflow:hidden;"><div style="font-size:14px;font-weight:600;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'<\/div><div style="font-size:12px;color:#606060;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+em+'<\/div><\/div>'+(bt||'')+'<\/div>';};
 var btw=function(lbl,act,se,sn,st){return '<button data-em="'+se+'" data-nm="'+sn+'" data-action="'+act+'" onclick="userAction(this.dataset.action,this.dataset.em,this.dataset.nm,this)" style="'+st+'">'+lbl+'<\/button>';};
 h+=sec('✅','מאושרים',approved.length);
