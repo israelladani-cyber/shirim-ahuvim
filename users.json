@@ -5,15 +5,14 @@
       "e": "sahar.ladani@gmail.com",
       "n": "Sahar Ladani",
       "t": 1782897805583
-    }
-  ],
-  "pending": [
+    },
     {
       "e": "zzz.e2e.verify.deleteme@example.com",
       "n": "E2E Test DeleteMe",
-      "t": 1782944632100
+      "t": 1782944656837
     }
   ],
+  "pending": [],
   "rejected": [],
   "frozen": [
     {
