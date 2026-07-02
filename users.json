@@ -12,7 +12,13 @@
       "t": 1782955510847
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.livetest2.1782955897688@test.com",
+      "n": "LiveTest2",
+      "t": 1782955898319
+    }
+  ],
   "rejected": [],
   "frozen": [
     {
