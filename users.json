@@ -12,7 +12,13 @@
       "t": 1782950215831
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.msgsize.1782950505790@example.com",
+      "n": "Msg Size Test",
+      "t": 1782950506391
+    }
+  ],
   "rejected": [],
   "frozen": []
 }
