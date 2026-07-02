@@ -1642,7 +1642,7 @@ document.addEventListener('keydown',e=>{
 
 // ── ADMIN MODE ──
 const _ADM_HASH='213f367b1af015a79e0b0cf92a3d4084e6bd5fbc3fbb4364881b05854bf86924';
-let _admMode=false,_admDirty=false,_atbT=null;
+let _admMode=false,_admDirty=false,_atbT=null,_atbErrShown=false;
 
 async function _sha256(s){
   const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(s));
@@ -1665,7 +1665,26 @@ async function doAdmLogin(){
   if(!localStorage.getItem('gh_token'))document.getElementById('admTokenOv').classList.add('open');
 }
 function exitAdmin(){
-  if(_admDirty&&!confirm('יש שינויים שלא נשמרו ב-GitHub. לצאת בכל זאת?'))return;
+  var art=document.getElementById('atbArtist'),sng=document.getElementById('atbSong'),url=document.getElementById('atbUrl');
+  if(art&&sng&&url&&art.value.trim()&&sng.value.trim()&&url.value.trim()&&!_atbErrShown){
+    document.getElementById('exitUnsavedOv').classList.add('open');
+    return;
+  }
+  _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
+  render(document.getElementById('q').value||'');
+}
+function _exitUnsavedSave(){
+  document.getElementById('exitUnsavedOv').classList.remove('open');
+  adminAddSong();
+  _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
+  render(document.getElementById('q').value||'');
+}
+function _exitUnsavedDiscard(){
+  document.getElementById('exitUnsavedOv').classList.remove('open');
+  document.getElementById('atbArtist').value='';
+  document.getElementById('atbSong').value='';
+  document.getElementById('atbUrl').value='';
+  _atbErrShown=false;
   _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
   render(document.getElementById('q').value||'');
 }
@@ -1951,6 +1970,7 @@ function _markDirty(){
   if(b){b.style.outline="2px solid #f0a500";b.title="יש שינויים שלא נשמרו";}
 }
 function _atbStat(msg,cls){
+  _atbErrShown=(cls==='err');
   clearTimeout(_atbT);const el=document.getElementById("atbStat");if(!el)return;
   el.textContent=msg;el.className="atb-stat"+(cls?" "+cls:"");
   _atbT=setTimeout(()=>{el.textContent="";el.className="atb-stat";},4500);
@@ -2030,6 +2050,17 @@ async function adminSyncGitHub(){
     <div class="adm-row">
       <button class="adm-btn sec" onclick="document.getElementById('admTokenOv').classList.remove('open')">ביטול</button>
       <button class="adm-btn" onclick="saveAdmToken()">שמור</button>
+    </div>
+  </div>
+</div>
+
+<div class="adm-overlay" id="exitUnsavedOv">
+  <div class="adm-box">
+    <div class="adm-title">⚠️ שינויים לא נשמרו</div>
+    <p style="font-size:13px;color:#ccc;margin:0 0 10px;">הזנת שיר חדש אך לא לחצת "הוסף". מה לעשות?</p>
+    <div class="adm-row">
+      <button class="adm-btn" onclick="_exitUnsavedSave()">צא ושמור</button>
+      <button class="adm-btn sec" onclick="_exitUnsavedDiscard()">צא בלי לשמור</button>
     </div>
   </div>
 </div>
