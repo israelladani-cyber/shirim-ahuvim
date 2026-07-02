@@ -16,11 +16,6 @@
   "rejected": [],
   "frozen": [
     {
-      "e": "zzz.livetest.1782955794957@test.com",
-      "n": "LiveTestUser",
-      "t": 1782955823051
-    },
-    {
       "e": "zzz.livetest2.1782955897688@test.com",
       "n": "LiveTest2",
       "t": 1782955909852
