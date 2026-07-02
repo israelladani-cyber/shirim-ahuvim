@@ -1673,20 +1673,22 @@ function exitAdmin(){
   _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
   render(document.getElementById('q').value||'');
 }
+function _exitUnsavedCancel(){
+  document.getElementById("exitUnsavedOv").classList.remove("open");
+}
 function _exitUnsavedSave(){
-  document.getElementById('exitUnsavedOv').classList.remove('open');
-  adminAddSong();
-  _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
-  render(document.getElementById('q').value||'');
+  document.getElementById("exitUnsavedOv").classList.remove("open");
+  _admMode=false;_admDirty=false;document.body.classList.remove("admin","del-mode");
+  render(document.getElementById("q").value||"");
 }
 function _exitUnsavedDiscard(){
-  document.getElementById('exitUnsavedOv').classList.remove('open');
-  document.getElementById('atbArtist').value='';
-  document.getElementById('atbSong').value='';
-  document.getElementById('atbUrl').value='';
+  document.getElementById("exitUnsavedOv").classList.remove("open");
+  document.getElementById("atbArtist").value="";
+  document.getElementById("atbSong").value="";
+  document.getElementById("atbUrl").value="";
   _atbErrShown=false;
-  _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
-  render(document.getElementById('q').value||'');
+  _admMode=false;_admDirty=false;document.body.classList.remove("admin","del-mode");
+  render(document.getElementById("q").value||"");
 }
 // ── DRAG & DROP ──
 let _dndType=null,_dndVid=null,_dndQueueVid=null,_dndScrollDir=0,_dndScrollIv=null;
@@ -2050,9 +2052,10 @@ async function adminSyncGitHub(){
 </div>
 
 <div class="adm-overlay" id="exitUnsavedOv">
-  <div class="adm-box">
+  <div class="adm-box" style="position:relative;">
+    <button onclick="_exitUnsavedCancel()" style="position:absolute;top:10px;left:10px;background:none;border:none;font-size:18px;line-height:1;cursor:pointer;color:#606060;padding:4px;">✕</button>
     <div class="adm-title">⚠️ שינויים לא נשמרו</div>
-    <p style="font-size:13px;color:#ccc;margin:0 0 10px;">הזנת שיר חדש אך לא לחצת "הוסף". מה לעשות?</p>
+    <p style="font-size:13px;color:#606060;margin:0 0 10px;">הזנת שיר חדש אך לא לחצת "הוסף". מה לעשות?</p>
     <div class="adm-row">
       <button class="adm-btn" onclick="_exitUnsavedSave()">צא ושמור</button>
       <button class="adm-btn sec" onclick="_exitUnsavedDiscard()">צא בלי לשמור</button>
