@@ -5,14 +5,15 @@
       "e": "sahar.ladani@gmail.com",
       "n": "Sahar Ladani",
       "t": 1782897805583
-    },
-    {
-      "e": "yael.diconsiglio@gmail.com",
-      "n": "Yael Di Consiglio",
-      "t": 1782956346388
     }
   ],
   "pending": [],
   "rejected": [],
-  "frozen": []
+  "frozen": [
+    {
+      "e": "yael.diconsiglio@gmail.com",
+      "n": "Yael Di Consiglio",
+      "t": 1782957033764
+    }
+  ]
 }
