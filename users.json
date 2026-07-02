@@ -16,11 +16,6 @@
   "rejected": [],
   "frozen": [
     {
-      "e": "zzz.livetest2.1782955897688@test.com",
-      "n": "LiveTest2",
-      "t": 1782955909852
-    },
-    {
       "e": "zzz.timing.1782955994065@test.com",
       "n": "TimingTest",
       "t": 1782956003957
