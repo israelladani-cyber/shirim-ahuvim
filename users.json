@@ -15,11 +15,6 @@
   "pending": [],
   "rejected": [
     {
-      "e": "zzz.pair3a.1782953759155@test.com",
-      "n": "PairTest",
-      "t": 1782954243374
-    },
-    {
       "e": "zzz.pair4b.1782953761332@test.com",
       "n": "PairTest",
       "t": 1782954245430
