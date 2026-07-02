@@ -10,15 +10,14 @@
       "e": "yael.diconsiglio@gmail.com",
       "n": "Yael Di Consiglio",
       "t": 1782955510847
-    }
-  ],
-  "pending": [
+    },
     {
       "e": "zzz.verifyfix.1782956097693@test.com",
       "n": "VerifyFix",
-      "t": 1782956098277
+      "t": 1782956099555
     }
   ],
+  "pending": [],
   "rejected": [],
   "frozen": [
     {
