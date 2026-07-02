@@ -2603,7 +2603,7 @@ else if(action==='reject')content.rejected.push({e:email,n:name||email,t:Date.no
 else if(action==='freeze')content.frozen.push({e:email,n:name||email,t:Date.now()});
 return content;
 }
-async function _silentRefreshUsersPanel(){try{var r=await fetch(WORKER_BASE+'/status');var content=await r.json();_umContent=content;_umSha=null;renderUsersPanel(content);}catch(e){}}
+async function _silentRefreshUsersPanel(expectEmail,expectAction){try{function refl(content){if(!expectEmail)return true;var tgt={approve:'approved',unfreeze:'approved',reject:'rejected',freeze:'frozen'}[expectAction];if(expectAction==='delete'){return!['approved','pending','rejected','frozen'].some(function(k){return(content[k]||[]).some(function(x){return(x.e||x)===expectEmail;});});}if(!tgt)return true;return(content[tgt]||[]).some(function(x){return(x.e||x)===expectEmail;});}var content;for(var i=0;i<6;i++){var r=await fetch(WORKER_BASE+'/status');content=await r.json();if(refl(content))break;await new Promise(function(res){setTimeout(res,350);});}_umContent=content;_umSha=null;renderUsersPanel(content);}catch(e){}}
 async function userAction(action,email,name,btnEl){
 var _cm={'delete':'מחיקת ','freeze':'הקפאת '};
 if(_cm[action]!==undefined&&!confirm(_cm[action]+name+' — האם אתה בטוח?'))return;
@@ -2614,7 +2614,7 @@ var body=document.getElementById('_userMgmtBody');
 var btns=body?body.querySelectorAll('button[data-em]'):[];
 btns.forEach(function(b){b.disabled=true;b.style.opacity='.5';});
 var res=await window._adminAction(window._umPin,action,email,name);
-if(res.ok){_silentRefreshUsersPanel();}else{alert('שגיאה בשמירה, נסה שוב'+(res.error?(' ('+res.error+')'):''));_silentRefreshUsersPanel();}
+if(res.ok){_silentRefreshUsersPanel(email,action);}else{alert('שגיאה בשמירה, נסה שוב'+(res.error?(' ('+res.error+')'):''));_silentRefreshUsersPanel();}
 }
 </script>
 </body>
