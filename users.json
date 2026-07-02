@@ -16,11 +16,6 @@
   "rejected": [],
   "frozen": [
     {
-      "e": "zzz.realfreeze_2.1782956705455@test.com",
-      "n": "RF",
-      "t": 1782956711460
-    },
-    {
       "e": "zzz.realfreeze_3.1782956717461@test.com",
       "n": "RF",
       "t": 1782956724319
