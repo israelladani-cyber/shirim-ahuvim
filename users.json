@@ -22,6 +22,11 @@
       "e": "zzz.v2burst1.1782954814482@test.com",
       "n": "V2Burst",
       "t": 1782954816271
+    },
+    {
+      "e": "zzz.v2burst7.1782954814482@test.com",
+      "n": "V2Burst",
+      "t": 1782954817674
     }
   ],
   "rejected": [],
