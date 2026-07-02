@@ -25,15 +25,14 @@
       "e": "zzz.stress2.1782950928415@example.com",
       "n": "Stress 2",
       "t": 1782950929516
-    }
-  ],
-  "pending": [
+    },
     {
       "e": "zzz.stress3.1782950929923@example.com",
       "n": "Stress 3",
-      "t": 1782950930545
+      "t": 1782950931522
     }
   ],
+  "pending": [],
   "rejected": [],
   "frozen": []
 }
