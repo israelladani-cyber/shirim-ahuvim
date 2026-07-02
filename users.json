@@ -12,13 +12,7 @@
       "t": 1782950732638
     }
   ],
-  "pending": [
-    {
-      "e": "zzz.pair4a.1782953761332@test.com",
-      "n": "PairTest",
-      "t": 1782953764169
-    }
-  ],
+  "pending": [],
   "rejected": [
     {
       "e": "zzz.stress1.1782953725012@test.com",
@@ -84,6 +78,11 @@
       "e": "zzz.pair4b.1782953761332@test.com",
       "n": "PairTest",
       "t": 1782954245430
+    },
+    {
+      "e": "zzz.pair4a.1782953761332@test.com",
+      "n": "PairTest",
+      "t": 1782954247306
     }
   ],
   "frozen": []
