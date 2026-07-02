@@ -12,7 +12,13 @@
       "t": 1782950732638
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.stress0.1782950924770@example.com",
+      "n": "Stress 0",
+      "t": 1782950925359
+    }
+  ],
   "rejected": [],
   "frozen": []
 }
