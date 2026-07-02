@@ -606,8 +606,7 @@ var us=await _fu();
 if(us===null)return;
 if(us.approved.includes(e)){
 localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,t:Date.now(),i:pic}));
-_hideOv();_ub(n,e,pic);
-window._updateBadge(us.pending.length);
+if(localStorage.getItem('_medTok')){_hideOv();}else{_showOv();}_ub(n,e,pic);window._updateBadge(us.pending.length);
 }else if(us.frozen.includes(e)){
 localStorage.removeItem('_kauth');
 _ub(null,null,null);
