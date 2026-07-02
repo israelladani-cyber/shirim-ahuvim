@@ -14,11 +14,5 @@
   ],
   "pending": [],
   "rejected": [],
-  "frozen": [
-    {
-      "e": "zzz.verifyfix2_3.1782956133150@test.com",
-      "n": "VF2",
-      "t": 1782956137283
-    }
-  ]
+  "frozen": []
 }
