@@ -1662,7 +1662,7 @@ async function doAdmLogin(){
   document.getElementById('admLoginOv').classList.remove('open');
   _admMode=true;document.body.classList.add('admin');
   _fillArtistList();const _openSt={};document.querySelectorAll('.artist-block').forEach(b=>{_openSt[b.dataset.vid]=b.dataset.open;});render(document.getElementById('q').value||'');document.querySelectorAll('.artist-block').forEach(b=>{if(_openSt[b.dataset.vid])b.dataset.open=_openSt[b.dataset.vid];});
-  if(!localStorage.getItem('gh_token'))document.getElementById('admTokenOv').classList.add('open');
+  window._admPin=pin;
 }
 function exitAdmin(){
   var art=document.getElementById('atbArtist'),sng=document.getElementById('atbSong'),url=document.getElementById('atbUrl');
@@ -1975,14 +1975,13 @@ function _atbStat(msg,cls){
   el.textContent=msg;el.className="atb-stat"+(cls?" "+cls:"");
   _atbT=setTimeout(()=>{el.textContent="";el.className="atb-stat";},4500);
 }
+async function _ghProxy(method,path,body){return fetch(WORKER_BASE+"/gh-proxy",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({pin:window._admPin,method:method,path:path,body:body})});}
 async function adminSyncGitHub(){
-  const token=localStorage.getItem("gh_token");
-  if(!token){document.getElementById("admTokenOv").classList.add("open");return;}
+  if(!window._admPin){alert("יש להתחבר מחדש כמנהל");return;}
   const btn=document.getElementById("atbSyncBtn")||{textContent:"",disabled:false,style:{outline:""},title:""};
   btn.textContent="מסנכרן...";btn.disabled=true;
   try{
-    const r=await fetch("https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html",
-      {headers:{"Authorization":"Bearer "+token,"Accept":"application/vnd.github.v3+json"}});
+    const r=await _ghProxy("GET","/contents/index.html");
     if(!r.ok)throw new Error("GitHub API שגיאה: "+r.status);
     const d=await r.json();
     const raw=decodeURIComponent(escape(atob(d.content.replace(/\n/g,""))));
@@ -1995,9 +1994,9 @@ async function adminSyncGitHub(){
         const _n=_k.replace('artist_photo_',''),_u=localStorage.getItem(_k);
         if(_u&&_u.startsWith('data:')){
           const _ext=_u.startsWith('data:image/webp')?'webp':'jpg',_b64=_u.split(',')[1];
-          const _chk=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/photos/'+encodeURIComponent(_n+'.'+_ext),{headers:{'Authorization':'Bearer '+token}});
+          const _chk=await _ghProxy('GET','/contents/photos/'+encodeURIComponent(_n+'.'+_ext));
           const _cj=await _chk.json();const _pb={message:'תמונת '+_n,content:_b64};if(_cj.sha)_pb.sha=_cj.sha;
-          const _pr=await fetch('https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/photos/'+encodeURIComponent(_n+'.'+_ext),{method:'PUT',headers:{'Authorization':'Bearer '+token,'Content-Type':'application/json'},body:JSON.stringify(_pb)});
+          const _pr=await _ghProxy('PUT','/contents/photos/'+encodeURIComponent(_n+'.'+_ext),_pb);
           const _pj=await _pr.json();
           if(_pj.content&&_pj.content.download_url){CUSTOM_PHOTOS[_n]=_pj.content.download_url;localStorage.setItem('artist_photo_'+_n,_pj.content.download_url);}
         }else if(_u&&_u.startsWith('http')){CUSTOM_PHOTOS[_n]=_u;}
@@ -2006,11 +2005,7 @@ async function adminSyncGitHub(){
     newHtml=newHtml.replace(/const CUSTOM_PHOTOS=\{[\s\S]*?\};/,newCustomPhotos);
     if(newHtml===raw)throw new Error("לא ניתן לאתר את מערך השירים בקובץ");
     const enc=btoa(unescape(encodeURIComponent(newHtml)));
-    const put=await fetch("https://api.github.com/repos/israelladani-cyber/shirim-ahuvim/contents/index.html",{
-      method:"PUT",
-      headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
-      body:JSON.stringify({message:"עדכון שירים דרך פאנל ניהול",content:enc,sha:d.sha})
-    });
+    const put=await _ghProxy("PUT","/contents/index.html",{message:"עדכון שירים דרך פאנל ניהול",content:enc,sha:d.sha});
     if(!put.ok){const e=await put.json();throw new Error(e.message||"שגיאה "+put.status);}
     _admDirty=false;
     btn.style.outline="none";btn.title="";
