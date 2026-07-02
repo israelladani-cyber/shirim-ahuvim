@@ -15,11 +15,6 @@
   "pending": [],
   "rejected": [
     {
-      "e": "zzz.stress3.1782953725012@test.com",
-      "n": "StressTest",
-      "t": 1782954220456
-    },
-    {
       "e": "zzz.stress5.1782953725012@test.com",
       "n": "StressTest",
       "t": 1782954222369
