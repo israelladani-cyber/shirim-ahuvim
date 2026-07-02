@@ -14,11 +14,6 @@
   ],
   "pending": [
     {
-      "e": "zzz.pair3b.1782953759155@test.com",
-      "n": "PairTest",
-      "t": 1782953759692
-    },
-    {
       "e": "zzz.pair3a.1782953759155@test.com",
       "n": "PairTest",
       "t": 1782953760945
@@ -84,6 +79,11 @@
       "e": "zzz.pair2b.1782953756898@test.com",
       "n": "PairTest",
       "t": 1782954239808
+    },
+    {
+      "e": "zzz.pair3b.1782953759155@test.com",
+      "n": "PairTest",
+      "t": 1782954241581
     }
   ],
   "frozen": []
