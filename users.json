@@ -16,11 +16,6 @@
   "rejected": [],
   "frozen": [
     {
-      "e": "zzz.verifyfix.1782956097693@test.com",
-      "n": "VerifyFix",
-      "t": 1782956103571
-    },
-    {
       "e": "zzz.verifyfix2_0.1782956114986@test.com",
       "n": "VF2",
       "t": 1782956121381
