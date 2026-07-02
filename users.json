@@ -45,11 +45,6 @@
       "e": "zzz.realtest_3.1782956657458@test.com",
       "n": "RT",
       "t": 1782956659361
-    },
-    {
-      "e": "zzz.realfreeze_0.1782956681718@test.com",
-      "n": "RF",
-      "t": 1782956683347
     }
   ],
   "pending": [
@@ -60,5 +55,11 @@
     }
   ],
   "rejected": [],
-  "frozen": []
+  "frozen": [
+    {
+      "e": "zzz.realfreeze_0.1782956681718@test.com",
+      "n": "RF",
+      "t": 1782956687268
+    }
+  ]
 }
