@@ -12,7 +12,13 @@
       "t": 1782955510847
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "zzz.verifyfix2_2.1782956129703@test.com",
+      "n": "VF2",
+      "t": 1782956130332
+    }
+  ],
   "rejected": [],
   "frozen": [
     {
