@@ -15,15 +15,14 @@
       "e": "zzz.approvetest_0.1782956400445@test.com",
       "n": "ApproveTest",
       "t": 1782956401993
-    }
-  ],
-  "pending": [
+    },
     {
       "e": "zzz.approvetest_1.1782956402883@test.com",
       "n": "ApproveTest",
-      "t": 1782956403409
+      "t": 1782956406306
     }
   ],
+  "pending": [],
   "rejected": [],
   "frozen": []
 }
