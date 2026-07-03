@@ -1654,8 +1654,8 @@ function openAdminLogin(){
   document.getElementById('admPinErr').textContent='';
   setTimeout(()=>document.getElementById('admPin').focus(),80);
 }
-window._enterAdminModeAuto=function(){if(!window._medTok){alert('יש להתחבר מחדש עם גוגל');return;}window._admPin=window._medTok;_admMode=true;document.body.classList.add('admin');_fillArtistList();const _openSt={};document.querySelectorAll('.artist-block').forEach(b=>{_openSt[b.dataset.vid]=b.dataset.open;});render(document.getElementById('q').value||'');document.querySelectorAll('.artist-block').forEach(b=>{if(_openSt[b.dataset.vid])b.dataset.open=_openSt[b.dataset.vid];});}
-window._enterUsersPanelAuto=function(){if(!window._medTok){alert('יש להתחבר מחדש עם גוגל');return;}window._umPin=window._medTok;var p=document.getElementById('_userMgmt');p.style.display='flex';loadUsersPanel();}
+window._enterAdminModeAuto=function(){var _mt=localStorage.getItem('_medTok');if(!_mt){alert('יש להתחבר מחדש עם גוגל');return;}window._admPin=_mt;_admMode=true;document.body.classList.add('admin');_fillArtistList();const _openSt={};document.querySelectorAll('.artist-block').forEach(b=>{_openSt[b.dataset.vid]=b.dataset.open;});render(document.getElementById('q').value||'');document.querySelectorAll('.artist-block').forEach(b=>{if(_openSt[b.dataset.vid])b.dataset.open=_openSt[b.dataset.vid];});}
+window._enterUsersPanelAuto=function(){var _mt=localStorage.getItem('_medTok');if(!_mt){alert('יש להתחבר מחדש עם גוגל');return;}window._umPin=_mt;var p=document.getElementById('_userMgmt');p.style.display='flex';loadUsersPanel();}
 async function doAdmLogin(){
   const pin=document.getElementById('admPin').value;if(!pin)return;
   const h=await _sha256(pin);
