@@ -19,16 +19,17 @@
   ],
   "pending": [
     {
-      "e": "telegram-test-9231@example.com",
-      "n": "בדיקת התראה",
-      "t": 1783080540045
-    },
-    {
       "e": "telegram-test-1783080914757@example.com",
       "n": "בדיקת התראה 2",
       "t": 1783080914957
     }
   ],
-  "rejected": [],
+  "rejected": [
+    {
+      "e": "telegram-test-9231@example.com",
+      "n": "בדיקת התראה",
+      "t": 1783081036377
+    }
+  ],
   "frozen": []
 }
