@@ -525,7 +525,7 @@ b.style.display='block';b.style.padding='0';b.style.background='none';b.style.bo
 b.innerHTML=pic
   ?'<img src="'+pic+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block;">'
   :'<div style="width:32px;height:32px;border-radius:50%;background:#065fd4;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:14px;">'+(nm?nm[0].toUpperCase():'?')+'</div>';
-b.style.position='relative';
+b.style.position='relative';b.insertAdjacentHTML('beforeend','<span id=\"_pendingBadge\" style=\"display:none;position:absolute;top:-2px;right:-2px;background:#e53935;color:#fff;border-radius:50%;min-width:16px;height:16px;font-size:10px;line-height:16px;text-align:center;padding:0 2px;font-weight:700;pointer-events:none;box-shadow:0 0 0 2px #fff;\"></span>');
 var _dd=null;
 b.onclick=function(ev){
   ev.stopPropagation();
@@ -606,7 +606,7 @@ var us=await _fu();
 if(us===null)return;
 if(us.approved.includes(e)){
 localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,t:Date.now(),i:pic}));
-if(window._medTokValid()){_hideOv();}else{_showOv();}_ub(n,e,pic);window._updateBadge(us.pending.length);
+if(window._medTokValid()){_hideOv();}else{_showOv();}_ub(n,e,pic);window._updateBadge(e==='israel.ladani@gmail.com'?us.pending.length:0);
 }else if(us.frozen.includes(e)){
 localStorage.removeItem('_kauth');
 _ub(null,null,null);
