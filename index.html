@@ -1014,9 +1014,10 @@ async function mobilePiP(){
       return;
     }catch(e){console.log('Document PiP not available:',e);}
   }
-  // Fallback: custom draggable float player
-  showFloatPlayer();
+  // No custom float fallback: rely on the OS/browser's own native video
+  // Picture-in-Picture instead (user-triggered via the video player's own PiP control).
 }
+
 function closePanelOrAll(){
   // X button in player: close player only, keep playlist open
   document.getElementById('playerPanel').classList.remove('open');
