@@ -516,16 +516,16 @@ body.admin .btn-move-folder{display:flex;}
 <script>(function(){
 function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;if(o.style.display==='none')return;o.style.opacity='0';setTimeout(function(){o.style.display='none';},260);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}if(o.style.display!=='flex'){o.style.opacity='0';o.style.display='flex';requestAnimationFrame(function(){requestAnimationFrame(function(){o.style.opacity='1';});});}else{o.style.opacity='1';}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
-function _updateBadge(n){var b=document.getElementById('_pendingBadge');if(!b)return;b.textContent=n;b.style.display=n>0?'inline-flex':'none';}window._updateBadge=_updateBadge;
+function _updateBadge(items){window._notifItems=items||[];var n=window._notifItems.length;var b=document.getElementById('_notifBadge');if(b){b.textContent=n;b.style.display=n>0?'flex':'none';}if(document.getElementById('_notifPanel')&&typeof window._renderNotifList==='function')window._renderNotifList();}window._updateBadge=_updateBadge;window._toggleNotifPanel=function(btn){var ex=document.getElementById('_notifPanel');if(ex){ex.remove();return;}var panel=document.createElement('div');panel.id='_notifPanel';panel.style.cssText='position:fixed;background:#fff;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.2);width:300px;z-index:99999;overflow:hidden;direction:rtl;font-family:Roboto,Arial,sans-serif;max-height:70vh;overflow-y:auto;';var rect=btn.getBoundingClientRect();panel.style.top=(rect.bottom+8)+'px';var mw=300,rp=window.innerWidth-rect.right;rp=Math.max(8,Math.min(rp,window.innerWidth-mw-8));panel.style.right=rp+'px';var hdr=document.createElement('div');hdr.style.cssText='padding:14px 16px;border-bottom:1px solid #e5e5e5;font-weight:700;font-size:15px;';hdr.textContent='עדכונים';panel.appendChild(hdr);var body=document.createElement('div');body.id='_notifPanelBody';panel.appendChild(body);document.body.appendChild(panel);window._renderNotifList();setTimeout(function(){document.addEventListener('click',function _out(ev){if(!panel.contains(ev.target)&&ev.target!==btn&&!btn.contains(ev.target)){panel.remove();document.removeEventListener('click',_out);}});},0);};window._renderNotifList=function(){var body=document.getElementById('_notifPanelBody');if(!body)return;body.innerHTML='';var items=window._notifItems||[];if(items.length===0){var empty=document.createElement('div');empty.style.cssText='padding:24px 16px;text-align:center;color:#888;font-size:13px;';empty.textContent='אין עדכונים חדשים';body.appendChild(empty);return;}items.forEach(function(it){var row=document.createElement('div');row.style.cssText='display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid #f2f2f2;cursor:pointer;font-size:13px;';row.innerHTML='<span style="width:20px;height:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;">🔔</span><span>'+it.text+'</span>';row.onmouseenter=function(){this.style.background='#f8f8f8';};row.onmouseleave=function(){this.style.background='';};row.onclick=function(){var p=document.getElementById('_notifPanel');if(p)p.remove();if(typeof it.action==='function')it.action();};body.appendChild(row);});};
 var dd=null;
 function _ub(nm,em,pic){function _d(){
 var b=document.getElementById('userAuthBtn');if(!b)return;
-if(!nm){b.style.display='none';return;}
-b.style.display='block';b.style.padding='0';b.style.background='none';b.style.border='none';b.style.cursor='pointer';
+if(!nm){b.style.display='none';var _nb0=document.getElementById('_notifBtn');if(_nb0)_nb0.style.display='none';return;}
+b.style.display='block';var _nb1=document.getElementById('_notifBtn');if(_nb1)_nb1.style.display='inline-flex';b.style.padding='0';b.style.background='none';b.style.border='none';b.style.cursor='pointer';
 b.innerHTML=pic
   ?'<img src="'+pic+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block;">'
   :'<div style="width:32px;height:32px;border-radius:50%;background:#065fd4;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:14px;">'+(nm?nm[0].toUpperCase():'?')+'</div>';
-b.style.position='relative';b.insertAdjacentHTML('beforeend','<span id=\"_pendingBadge\" style=\"display:none;position:absolute;top:-2px;right:-2px;background:#e53935;color:#fff;border-radius:50%;min-width:16px;height:16px;font-size:10px;line-height:16px;text-align:center;padding:0 2px;font-weight:700;pointer-events:none;box-shadow:0 0 0 2px #fff;\"></span>');
+b.style.position='relative';
 var _dd=null;
 b.onclick=function(ev){
   ev.stopPropagation();
@@ -606,7 +606,7 @@ var us=await _fu();
 if(us===null)return;
 if(us.approved.includes(e)){
 localStorage.setItem('_kauth',JSON.stringify({e:e,n:n,t:Date.now(),i:pic}));
-if(window._medTokValid()){_hideOv();}else{_showOv();}_ub(n,e,pic);window._updateBadge(e==='israel.ladani@gmail.com'?us.pending.length:0);
+if(window._medTokValid()){_hideOv();}else{_showOv();}_ub(n,e,pic);window._updateBadge(e==='israel.ladani@gmail.com'?(us.pending||[]).map(function(p){return{text:'בקשת הצטרפות ממתינה: '+(p.n||p.e),action:function(){if(typeof _enterUsersPanelAuto==='function')_enterUsersPanelAuto();}};}):[]);
 }else if(us.frozen.includes(e)){
 localStorage.removeItem('_kauth');
 _ub(null,null,null);
@@ -663,7 +663,7 @@ setInterval(_checkStatus,3000);
         <span class="btn-label">פלייליסטים</span>
       </button>
       <button class="admin-lock" id="admMenuBtn" onclick="openAdminMenu(event)" title="מצב מנהל" style="display:none;">🔐</button>
-      <button class="admin-lock" id="userAuthBtn" onclick="_logout()" style="display:none;font-size:11px;font-weight:600;color:#0F0F0F;background:#fff;border:1px solid #E5E5E5;border-radius:20px;padding:4px 12px;cursor:pointer;direction:rtl;white-space:nowrap;"></button>
+      <button class="admin-lock" id="_notifBtn" onclick="window._toggleNotifPanel(this)" title="עדכונים" style="display:none;position:relative;background:none;border:none;cursor:pointer;padding:6px;align-items:center;justify-content:center;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg><span id="_notifBadge" style="display:none;position:absolute;top:2px;right:2px;background:#e53935;color:#fff;border-radius:50%;min-width:16px;height:16px;font-size:10px;line-height:16px;text-align:center;padding:0 2px;font-weight:700;pointer-events:none;box-shadow:0 0 0 2px #fff;"></span></button><button class="admin-lock" id="userAuthBtn" onclick="_logout()" style="display:none;font-size:11px;font-weight:600;color:#0F0F0F;background:#fff;border:1px solid #E5E5E5;border-radius:20px;padding:4px 12px;cursor:pointer;direction:rtl;white-space:nowrap;"></button>
     </div>
   </div>
 </div>
