@@ -753,7 +753,7 @@ setInterval(_checkStatus,3000);
     <div class="mini-song" id="miniSong">—</div>
     <div class="mini-artist" id="miniArtist">—</div>
   </div>
-  <button class="mini-ctrl" id="miniPlayBtn" title="נגן/עצור" onclick="event.stopPropagation();miniPlayPause()">⏸</button>
+  <button class="mini-ctrl" id="miniPlayBtn" title="נגן/עצור" onclick="event.stopPropagation();miniPlayPause()"><svg width="18" height="18" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
   <button class="mini-ctrl" title="סגור" onclick="event.stopPropagation();if(ytPlayer&&playerReady)ytPlayer.pauseVideo();var _v=document.getElementById('mp4Player');if(_v)_v.pause();hideFloatPlayer();_miniBarSavedState=null;document.body.classList.remove('has-song','playing','theater');clearSession();">&#x2715;</button>
 </div>
 
@@ -805,7 +805,7 @@ function onYouTubeIframeAPIReady(){
       onStateChange:(e)=>{
         if(e.data===YT.PlayerState.ENDED)modalNav(1);
         const playing=e.data===YT.PlayerState.PLAYING;
-        const b=document.getElementById('miniPlayBtn');if(b)b.textContent=playing?'⏸':'▶';
+        const b=document.getElementById('miniPlayBtn');if(b)b.innerHTML=playing?MINI_PAUSE:MINI_PLAY;
         const pb=document.getElementById('pipPlayBtn');if(pb)pb.textContent=playing?'⏸':'▶';
         if('mediaSession' in navigator)navigator.mediaSession.playbackState=playing?'playing':(e.data===YT.PlayerState.PAUSED?'paused':'none');
       },
@@ -878,6 +878,8 @@ const LIKE_PATH='M13.17 0.56 L12.61 0.28 L11.50 0.00 L10.83 0.06 L10.50 0.33 L8.
 const FAV_ON='<svg width="16" height="17" viewBox="0 0 22.33 24" fill-rule="evenodd"><path fill="#ffffff" d="'+LIKE_PATH+'"/></svg>';
 const FAV_OFF='<svg width="16" height="17" viewBox="0 0 22.33 24" fill-rule="evenodd"><path fill="#000000" d="'+LIKE_PATH+'"/></svg>';
 const LIKE_HEADER='<svg width="22" height="24" viewBox="0 0 22.33 24" fill-rule="evenodd"><path fill="#0F0F0F" d="'+LIKE_PATH+'"/></svg>';
+const MINI_PLAY='<svg width="18" height="18" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M8 5v14l11-7z"/></svg>';
+const MINI_PAUSE='<svg width="18" height="18" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>';
 
 
 function _favLoad(){try{return JSON.parse(localStorage.getItem('kfav')||'[]');}catch(e){return [];}}
@@ -1009,7 +1011,7 @@ function openModal(song,songList,idx,startSeconds){
     }
   }
   if(song.mp4){if(ytPlayer&&playerReady)ytPlayer.pauseVideo();var _m=document.getElementById('mp4Player');document.getElementById('yt-player').style.display='none';_m.style.display='block';_m.src=_mediaUrl(song.mp4);_m.currentTime=start;_m.play().catch(()=>{});}else{document.getElementById('yt-player').style.display='';var _m2=document.getElementById('mp4Player');if(_m2){_m2.style.display='none';_m2.pause();_m2.src='';}if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);else setTimeout(()=>{if(ytPlayer&&playerReady)_loadOrSeek(song.v,start);},500);}
-  document.getElementById('miniPlayBtn').textContent='⏸';
+  document.getElementById('miniPlayBtn').innerHTML=MINI_PAUSE;
   updateModalNav();
   updateModalAddBtn();
   saveSession(song);
@@ -1207,8 +1209,8 @@ function clearSession(){
 function miniPlayPause(){
   var _mp4e=document.getElementById('mp4Player');
   if(currentSong&&currentSong.mp4&&_mp4e){
-    if(_mp4e.paused){_mp4e.play().catch(()=>{});document.getElementById('miniPlayBtn').textContent='⏸';}
-    else{_mp4e.pause();document.getElementById('miniPlayBtn').textContent='▶';}
+    if(_mp4e.paused){_mp4e.play().catch(()=>{});document.getElementById('miniPlayBtn').innerHTML=MINI_PAUSE;}
+    else{_mp4e.pause();document.getElementById('miniPlayBtn').innerHTML=MINI_PLAY;}
     return;
   }
   if(!ytPlayer||!playerReady)return;
