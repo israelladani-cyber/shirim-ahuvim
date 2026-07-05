@@ -126,7 +126,7 @@ body.admin .artist-avatar:hover::after{display:flex;}
 .pl-item-info{flex:1;min-width:0;}
 .pl-item-name{font-weight:700;font-size:14px;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .pl-item-count{font-size:12px;color:#888;margin-top:2px;}
-.pl-item-menu-btn{background:none;border:none;cursor:pointer;color:#666;padding:4px 6px;border-radius:6px;font-size:16px;flex-shrink:0;line-height:1;}
+.pl-item-menu-btn{background:none;border:none;cursor:pointer;color:#666;padding:4px 6px;border-radius:6px;font-size:16px;flex-shrink:0;line-height:1;}.pl-item-shuffle-btn{background:none;border:none;cursor:pointer;color:#666;padding:4px 6px;border-radius:6px;flex-shrink:0;line-height:1;display:flex;align-items:center;}.pl-item-shuffle-btn:hover{background:rgba(0,0,0,.06);}
 .pl-item-menu-btn:hover{background:#E5E5E5;}
 .pl-item-chev{font-size:24px;color:#666;transition:transform .2s;flex-shrink:0;line-height:1;}
 .pl-item-drag{cursor:grab;color:#bbb;padding:0 5px;flex-shrink:0;display:flex;align-items:center;user-select:none;}
@@ -829,7 +829,7 @@ const YT_ICO=`<svg viewBox="0 0 24 17" width="18" height="13" xmlns="http://www.
 // ── QUEUE ──
 let queue=[], ytPlayer=null, playerReady=false, _pipWin=null;
 // currentSong: what's open in modal right now
-let currentSong=null, currentSongList=[], currentSongIdx=0, shuffleOn=false;
+let currentSong=null, currentSongList=[], currentSongIdx=0, shuffleOn=false, plShuffleActive=false;
 
 function onYouTubeIframeAPIReady(){
   ytPlayer=new YT.Player('yt-player',{
@@ -983,6 +983,7 @@ function pinDndDrop(e,key,idx){
 }
 
 function playVid(vid){
+  plShuffleActive=false;
   (function(){var lp=document.querySelector('.list-panel');if(!lp){window._listScrollPos=0;window._listAnchorVid=null;return;}window._listScrollPos=lp.scrollTop;var pT=lp.getBoundingClientRect().top;var cands=lp.querySelectorAll('.artist-block[data-vid],tr[data-vid]');var av=null,at=null,ao=0;for(var ri=0;ri<cands.length;ri++){var rc=cands[ri].getBoundingClientRect();if(rc.bottom>pT){av=cands[ri].getAttribute('data-vid');at=cands[ri].tagName;ao=rc.top-pT;break;}}window._listAnchorVid=av;window._listAnchorTag=at;window._listAnchorOffset=ao;})();
   if(document.getElementById('plPanel').classList.contains('open'))closePlPanel();
   const song=ALL.find(s=>(s.v||s.mp4)===vid);
@@ -1283,7 +1284,7 @@ function miniPlayPause(){
 }
 function modalNav(dir){
   var next;
-  if(shuffleOn&&dir===1&&currentSongList.length>1){
+  if((shuffleOn||plShuffleActive)&&dir===1&&currentSongList.length>1){
     do{next=Math.floor(Math.random()*currentSongList.length);}while(next===currentSongIdx);
   }else{
     next=currentSongIdx+dir;
@@ -2474,11 +2475,20 @@ function closePlPanelAndPlayer(){
   requestAnimationFrame(setTopH);
 }
 function playVidFromPl(plId, vid){
+  plShuffleActive=false;
   var pls=loadPlaylists();
   var pl=pls.find(function(p){return p.id===plId;});
   if(!pl||!pl.songs.length)return;
   var idx=pl.songs.findIndex(function(s){return (s.v||s.mp4)===vid;});
   if(idx<0)idx=0;
+  openModal(pl.songs[idx],pl.songs,idx);
+}
+function shufflePlayPlaylist(plId){
+  var pls=loadPlaylists();
+  var pl=pls.find(function(p){return p.id===plId;});
+  if(!pl||!pl.songs.length)return;
+  plShuffleActive=true;
+  var idx=pl.songs.length>1?Math.floor(Math.random()*pl.songs.length):0;
   openModal(pl.songs[idx],pl.songs,idx);
 }
 
@@ -2499,6 +2509,7 @@ function renderPlPanel(){
         +'<span class="pl-song-drag" title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
         +'<div class="pl-song-info" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" style="cursor:pointer;flex:1;min-width:0"><div class="pl-song-name">'+esc(s.s)+'</div><div class="pl-song-artist">'+esc(s.a)+'</div></div>'
         +'<button class="pl-song-play'+(s.mp4?' mp4':'')+'" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="'+(s.mp4?'#fff':'#121212')+'" width="10" height="12"><polygon points="0,0 12,7 0,14"/></svg></button>'
+        +'<button class="btn-fav'+(isFavorite(vid)?' active':'')+'" onclick="event.stopPropagation();toggleFavorite(\''+vid+'\');renderPlPanel();" title="מועדפים">'+(isFavorite(vid)?FAV_ON:FAV_OFF)+'</button>'
         +(s.v?'<a class="btn-yt pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="פתח ביוטיוב" onclick="event.stopPropagation()">'+YT_ICO+'</a>':'<span class="pl-song-yt" style="width:28px;flex-shrink:0;display:inline-flex;"></span>')
         +'<button class="pl-song-del" onclick="event.stopPropagation();removeSongFromPl(\''+pl.id+'\',\''+vid+'\')" title="הסר">✕</button>'
         +'</div>';
@@ -2509,6 +2520,7 @@ function renderPlPanel(){
       +'<span class="pl-item-drag" draggable="true" ondragstart="plDndStart(event,\''+pl.id+'\')" onclick="event.stopPropagation()" title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
       +'<div class="pl-item-icon">♫</div>'
       +'<div class="pl-item-info"><div class="pl-item-name">'+esc(pl.name)+'</div><div class="pl-item-count">'+cnt+(cnt===1?' שיר':' שירים')+'</div></div>'
+      +'<button class="pl-item-shuffle-btn" onclick="event.stopPropagation();shufflePlayPlaylist(\''+pl.id+'\')" title="נגן באקראי"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M16.293 1.293a1 1 0 00-.001 1.415L18.585 5H17.21a7 7 0 00-5.823 3.118L6.95 14.774A5 5 0 012.79 17H2a1 1 0 000 2h.79a7 7 0 005.822-3.117l4.438-6.656A5 5 0 0117.21 7h1.376l-2.293 2.293a1 1 0 001.414 1.414L22.414 6l-4.707-4.707a1 1 0 00-1.414 0ZM2.789 5H2a1 1 0 000 2h.79a5 5 0 014.159 2.227l.647.97 1.202-1.802-.185-.277A7 7 0 002.789 5Zm13.504 8.293a1 1 0 00-.001 1.414L18.585 17H17.21a5 5 0 01-4.16-2.226l-.648-.972-1.202 1.803.186.278A7 7 0 0017.21 19h1.376l-2.293 2.294-.068.076a1 1 0 001.406 1.406l.076-.07L22.414 18l-4.707-4.707a1 1 0 00-1.414 0Z"/></svg></button>'
       +'<button class="pl-item-menu-btn" onclick="event.stopPropagation();openPlCtx(event,\''+pl.id+'\')" title="אפשרויות">⋮</button>'
       +'<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
       +'</div>'
