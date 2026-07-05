@@ -198,8 +198,7 @@ body.theater .panel-theater-btn{color:#FF0000;}
   /* Compact song list in sidebar */
   body.playing .songs-table td{padding:6px 8px;font-size:13px;}
   body.playing .song-artist-sub{font-size:11px;}
-  body.playing .btn-add{height:26px;padding:0 7px;}
-  .btn-add{padding:0 10px;}
+  body.playing .btn-add{width:26px;height:26px;padding:0;}
   body.playing .btn-yt{width:22px;height:16px;}
   body.playing .song-actions{gap:3px;}
   body.playing .btn-play{width:24px;height:24px;}
@@ -913,11 +912,13 @@ function _recentAdd(song){
 function renderPinnedSection(id,label,icon,songs,storeKey){
   if(!songs||!songs.length)return '';
   var rows='';
+  var _pls=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return [];}})();
   var DRAG_ICON='<svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>';
   songs.forEach(function(r,i){
     var vid=r.v||r.mp4;
     var fav=isFavorite(vid);
-    rows+='<tr data-vid="'+vid+'" draggable="true" ondragstart="pinDndStart(event,\''+storeKey+'\','+i+')" ondragover="pinDndOver(event,\''+storeKey+'\','+i+')" ondrop="pinDndDrop(event,\''+storeKey+'\','+i+')" ondragleave="pinDndLeave(event)"><td onclick="playVid(\''+vid+'\')" style="cursor:pointer"><div>'+esc(r.s)+'</div><div class="song-artist-sub">'+esc(r.a)+'</div></td><td class="td-actions"><div class="song-actions"><button class="drag-handle-song" draggable="true" ondragstart="pinDndStart(event,\''+storeKey+'\','+i+')" ondragend="event.stopPropagation()" onclick="event.stopPropagation()" title="גרור לשינוי סדר">'+DRAG_ICON+'</button><button class="btn-play" onclick="event.stopPropagation();playVid(\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg></button><button class="btn-fav'+(fav?' active':'')+'" onclick="event.stopPropagation();toggleFavorite(\''+vid+'\')" title="'+(fav?'הסר ממועדפים':'הוסף למועדפים')+'">'+(fav?FAV_ON:FAV_OFF)+'</button></div></td></tr>';
+    var inQ=_pls.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===vid;});});
+    rows+='<tr data-vid="'+vid+'" draggable="true" ondragstart="pinDndStart(event,\''+storeKey+'\','+i+')" ondragover="pinDndOver(event,\''+storeKey+'\','+i+')" ondrop="pinDndDrop(event,\''+storeKey+'\','+i+')" ondragleave="pinDndLeave(event)"><td onclick="playVid(\''+vid+'\')" style="cursor:pointer"><div>'+esc(r.s)+'</div><div class="song-artist-sub">'+esc(r.a)+'</div></td><td class="td-actions"><div class="song-actions"><button class="drag-handle-song" draggable="true" ondragstart="pinDndStart(event,\''+storeKey+'\','+i+')" ondragend="event.stopPropagation()" onclick="event.stopPropagation()" title="גרור לשינוי סדר">'+DRAG_ICON+'</button><button class="btn-play" onclick="event.stopPropagation();playVid(\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg></button><button class="btn-add'+(inQ?' in-playlist':'')+'" data-vid="'+vid+'" title="'+(inQ?'הסר מהפלייליסט':'הוסף לפלייליסט')+'" onclick="event.stopPropagation();showPlaylistPopupForSong(event,\''+vid+'\')">'+(inQ?'<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>')+'</button><button class="btn-fav'+(fav?' active':'')+'" onclick="event.stopPropagation();toggleFavorite(\''+vid+'\')" title="'+(fav?'הסר ממועדפים':'הוסף למועדפים')+'">'+(fav?FAV_ON:FAV_OFF)+'</button>'+(r.mp4?'<span style="width:28px;flex-shrink:0;display:inline-flex;"></span>':'<a class="btn-yt" href="https://www.youtube.com/watch?v='+vid+'" target="_blank" title="פתח ביוטיוב">'+YT_ICO+'</a>')+'</div></td></tr>';
   });
   return '<div class="artist-block" data-open="false" data-vid="'+id+'"><div class="artist-header" onclick="toggleArtist(this)"><div class="artist-avatar" style="background:#F2F2F2;display:flex;align-items:center;justify-content:center;font-size:24px;">'+icon+'</div><span class="artist-name-text">'+label+'</span><span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div class="songs-wrap"><table class="songs-table"><tbody>'+rows+'</tbody></table></div></div>';
 }
@@ -2408,7 +2409,7 @@ function renderPlPanel(){
         +'<span class="pl-song-drag" title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>'
         +'<div class="pl-song-info" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" style="cursor:pointer;flex:1;min-width:0"><div class="pl-song-name">'+esc(s.s)+'</div><div class="pl-song-artist">'+esc(s.a)+'</div></div>'
         +'<button class="pl-song-play'+(s.mp4?' mp4':'')+'" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="'+(s.mp4?'#fff':'#121212')+'" width="10" height="12"><polygon points="0,0 12,7 0,14"/></svg></button>'
-        +(s.v?'<a class="btn-yt pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="פתח ביוטיוב" onclick="event.stopPropagation()">'+YT_ICO+'</a>':'')
+        +(s.v?'<a class="btn-yt pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="פתח ביוטיוב" onclick="event.stopPropagation()">'+YT_ICO+'</a>':'<span class="pl-song-yt" style="width:28px;flex-shrink:0;display:inline-flex;"></span>')
         +'<button class="pl-song-del" onclick="event.stopPropagation();removeSongFromPl(\''+pl.id+'\',\''+vid+'\')" title="הסר">✕</button>'
         +'</div>';
     }).join('');
