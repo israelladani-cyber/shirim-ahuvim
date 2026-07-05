@@ -179,6 +179,7 @@ body.playing .content{max-width:none;margin:0;}
 .panel-close{background:none;border:none;color:#333;cursor:pointer;font-size:20px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}.panel-close:hover{background:#e0e0e0;}
 .panel-minimize-btn{background:none;border:none;color:#333;cursor:pointer;font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;line-height:1;}
 .panel-minimize-btn:hover{background:#e0e0e0;}
+.panel-shuffle-btn{background:none;border:none;color:#333;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}.panel-shuffle-btn:hover{background:#e0e0e0;}.panel-shuffle-btn.active{color:#FF0000;}
 .panel-pip-btn{display:none!important;}
 .panel-float-btn,.panel-theater-btn{display:none;background:none;border:none;color:#333;cursor:pointer;width:30px;height:30px;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
 .panel-float-btn:hover,.panel-theater-btn:hover{background:#e0e0e0;}
@@ -719,7 +720,8 @@ setInterval(_checkStatus,3000);
           הקודם
         </button>
         <div class="modal-queue-info" id="modalQueueInfo"></div>
-        <button class="modal-add-btn" id="modalAddBtn" onclick="showPlaylistPopup(event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> שמור</button>
+        <button class="modal-add-btn" id="modalAddBtn" onclick="showPlaylistPopup(event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
+        <button class="btn-fav" id="modalFavBtn" title="מועדפים" onclick="if(currentSong){toggleFavorite(currentSong.v||currentSong.mp4);updateModalFavBtn();}"></button>
         <button class="modal-nav-btn" id="btnNext" onclick="modalNav(1)">
           הבא
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
@@ -727,6 +729,9 @@ setInterval(_checkStatus,3000);
       </div>
       <!-- Theater mode (desktop) -->
       <div class="panel-win-btns">
+      <button class="panel-shuffle-btn" id="shuffleBtn" onclick="toggleShuffle()" title="נגן אקראי">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+      </button>
       <button class="panel-theater-btn" id="theaterBtn" onclick="toggleTheater()" title="מצב קולנוע">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/></svg>
       </button>
@@ -812,7 +817,7 @@ const YT_ICO=`<svg viewBox="0 0 24 17" width="18" height="13" xmlns="http://www.
 // ── QUEUE ──
 let queue=[], ytPlayer=null, playerReady=false, _pipWin=null;
 // currentSong: what's open in modal right now
-let currentSong=null, currentSongList=[], currentSongIdx=0;
+let currentSong=null, currentSongList=[], currentSongIdx=0, shuffleOn=false;
 
 function onYouTubeIframeAPIReady(){
   ytPlayer=new YT.Player('yt-player',{
@@ -1015,6 +1020,7 @@ function openModal(song,songList,idx,startSeconds){
     requestAnimationFrame(setTopH);
     updateModalNav();
     updateModalAddBtn();
+    updateModalFavBtn();
     // No DOM move happened — iframe never left panel-slot — just ensure video is playing
     const st=ytPlayer.getPlayerState();
     if(st!==YT.PlayerState.PLAYING&&st!==YT.PlayerState.BUFFERING)ytPlayer.playVideo();
@@ -1050,6 +1056,7 @@ function openModal(song,songList,idx,startSeconds){
   document.getElementById('miniPlayBtn').innerHTML=MINI_PAUSE;
   updateModalNav();
   updateModalAddBtn();
+  updateModalFavBtn();
   saveSession(song);
   setupMediaSession(song);
 }
@@ -1263,7 +1270,12 @@ function miniPlayPause(){
   // Button text updated via onStateChange
 }
 function modalNav(dir){
-  const next=currentSongIdx+dir;
+  var next;
+  if(shuffleOn&&dir===1&&currentSongList.length>1){
+    do{next=Math.floor(Math.random()*currentSongList.length);}while(next===currentSongIdx);
+  }else{
+    next=currentSongIdx+dir;
+  }
   if(next<0||next>=currentSongList.length)return;
   currentSongIdx=next;
   currentSong=currentSongList[next];
@@ -1275,6 +1287,7 @@ function modalNav(dir){
   if(currentSong.mp4){var _nm=document.getElementById('mp4Player');document.getElementById('yt-player').style.display='none';_nm.style.display='block';_nm.src=_mediaUrl(currentSong.mp4);_nm.play().catch(()=>{});}else{document.getElementById('yt-player').style.display='';var _nm2=document.getElementById('mp4Player');if(_nm2){_nm2.style.display='none';_nm2.pause();_nm2.src='';}if(ytPlayer&&playerReady)ytPlayer.loadVideoById(currentSong.v);}
   updateModalNav();
   updateModalAddBtn();
+  updateModalFavBtn();
   saveSession(currentSong);
 }
 function updateModalNav(){
@@ -1288,7 +1301,21 @@ function updateModalAddBtn(){
   const btn=document.getElementById('modalAddBtn');
   const inQ=isInQueue(currentSong.v||currentSong.mp4);
   btn.className='modal-add-btn'+(inQ?' in-queue':'');
-  btn.innerHTML=inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> נשמר':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg> שמור';
+  btn.innerHTML=inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
+}
+function updateModalFavBtn(){
+  if(!currentSong)return;
+  var btn=document.getElementById('modalFavBtn');
+  if(!btn)return;
+  var fvid=currentSong.v||currentSong.mp4;
+  var fav=isFavorite(fvid);
+  btn.className='btn-fav'+(fav?' active':'');
+  btn.innerHTML=fav?FAV_ON:FAV_OFF;
+}
+function toggleShuffle(){
+  shuffleOn=!shuffleOn;
+  var btn=document.getElementById('shuffleBtn');
+  if(btn)btn.classList.toggle('active',shuffleOn);
 }
 function toggleCurrentInQueue(){
   if(!currentSong)return;
