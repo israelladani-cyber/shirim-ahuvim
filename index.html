@@ -780,9 +780,9 @@ setInterval(_checkStatus,3000);
     <span class="float-bar-song" id="floatSong"></span>
     <button class="fbar-btn" id="floatFavBtn" onclick="if(currentSong){toggleFavorite(currentSong.v||currentSong.mp4);showFloatPlayer();}" title="מועדפים"></button>
     <button class="fbar-btn" id="floatAddBtn" onclick="if(currentSong)showPlaylistPopupForSong(event,currentSong.v||currentSong.mp4)" title="הוסף לפלייליסט"></button>
-    <button class="fbar-btn" id="pipPlayBtn" onclick="pipPlayPause()" title="נגן/עצור">▶</button>
-    <button class="fbar-btn" onclick="expandFloat()" title="הגדל">⤢</button>
-    <button class="fbar-btn" onclick="closeFloat()" title="סגור">✕</button>
+    <button class="fbar-btn" id="pipPlayBtn" onclick="pipPlayPause()" title="נגן/עצור"><svg width="21.6" height="21.6" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M8 5v14l11-7z"/></svg></button>
+    <button class="fbar-btn" onclick="expandFloat()" title="הגדל"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg></button>
+    <button class="fbar-btn" onclick="closeFloat()" title="סגור"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
   </div>
 </div>
 
@@ -812,7 +812,7 @@ function onYouTubeIframeAPIReady(){
         if(e.data===YT.PlayerState.ENDED)modalNav(1);
         const playing=e.data===YT.PlayerState.PLAYING;
         const b=document.getElementById('miniPlayBtn');if(b)b.innerHTML=playing?MINI_PAUSE:MINI_PLAY;
-        const pb=document.getElementById('pipPlayBtn');if(pb)pb.textContent=playing?'⏸':'▶';
+        const pb=document.getElementById('pipPlayBtn');if(pb)pb.innerHTML=playing?MINI_PAUSE:MINI_PLAY;
         if('mediaSession' in navigator)navigator.mediaSession.playbackState=playing?'playing':(e.data===YT.PlayerState.PAUSED?'paused':'none');
       },
       onError:(e)=>{
@@ -1297,7 +1297,7 @@ function showFloatPlayer(){
   }
   // Play/pause button state
   const pb=document.getElementById('pipPlayBtn');
-  if(pb&&ytPlayer&&playerReady)pb.textContent=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?'⏸':'▶';
+  if(pb&&ytPlayer&&playerReady)pb.innerHTML=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?MINI_PAUSE:MINI_PLAY;
   document.body.classList.add('float-playing');
   const pw=window.innerWidth<768?185:340;
   // On desktop: reset any drag overrides so CSS default position kicks in
