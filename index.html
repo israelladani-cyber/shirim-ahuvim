@@ -188,7 +188,8 @@ body.theater .panel-theater-btn{color:#FF0000;}
 .panel-video{position:relative;flex:1;min-height:0;background:#000;}
 .panel-video iframe{position:absolute;inset:0;width:100%;height:100%;}
 .panel-footer{display:none;}.panel-nav-group{display:flex;align-items:center;gap:6px;flex-shrink:0;}
-.modal-nav-btn{background:#F2F2F2;border:none;color:#0F0F0F;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;gap:5px;}
+.modal-nav-btn{background:#F2F2F2;border:none;color:#0F0F0F;border-radius:18px;height:36px;padding:0 16px;font-size:14px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;gap:5px;}
+.modal-nav-btn:hover{background:rgba(0,0,0,.07);}
 .modal-nav-btn:hover{background:#F2F2F2;color:#0F0F0F;}
 .modal-nav-btn:disabled{opacity:.35;cursor:default;}
 .modal-queue-info{flex:1;text-align:center;font-size:12px;color:#0F0F0F;}
@@ -720,7 +721,7 @@ setInterval(_checkStatus,3000);
           הקודם
         </button>
         <div class="modal-queue-info" id="modalQueueInfo"></div>
-        <button class="modal-add-btn" id="modalAddBtn" onclick="showPlaylistPopup(event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
+        <button class="btn-add" id="modalAddBtn" onclick="showPlaylistPopup(event)"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></button>
         <button class="btn-fav" id="modalFavBtn" title="מועדפים" onclick="if(currentSong){toggleFavorite(currentSong.v||currentSong.mp4);updateModalFavBtn();}"></button>
         <button class="modal-nav-btn" id="btnNext" onclick="modalNav(1)">
           הבא
@@ -1300,7 +1301,7 @@ function updateModalAddBtn(){
   if(!currentSong)return;
   const btn=document.getElementById('modalAddBtn');
   const inQ=isInQueue(currentSong.v||currentSong.mp4);
-  btn.className='modal-add-btn'+(inQ?' in-queue':'');
+  btn.className='btn-add'+(inQ?' in-playlist':'');
   btn.innerHTML=inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
 }
 function updateModalFavBtn(){
