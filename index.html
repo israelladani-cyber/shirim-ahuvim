@@ -935,6 +935,7 @@ function pinDndDrop(e,key,idx){
 }
 
 function playVid(vid){
+  window._listScrollPos=(document.querySelector('.list-panel')||{}).scrollTop||0;
   const song=ALL.find(s=>(s.v||s.mp4)===vid);
   if(!song)return;
   const songList=ALL.filter(s=>s.a===song.a);
@@ -1196,6 +1197,7 @@ function minimizeToMiniBar(){
 }
 function closeModal(){
   document.body.classList.remove('playing');
+  var _lp=document.querySelector('.list-panel');if(_lp)_lp.scrollTop=window._listScrollPos||0;
   document.getElementById('playerPanel').classList.remove('open');
   document.body.style.overflow='';
   requestAnimationFrame(setTopH);
