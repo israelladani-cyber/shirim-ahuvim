@@ -935,7 +935,7 @@ function pinDndDrop(e,key,idx){
 }
 
 function playVid(vid){
-  (function(){var lp=document.querySelector('.list-panel');if(!lp){window._listScrollPos=0;window._listAnchorVid=null;return;}window._listScrollPos=lp.scrollTop;var pT=lp.getBoundingClientRect().top;var rows=lp.querySelectorAll('tr[data-vid]');var av=null,ao=0;for(var ri=0;ri<rows.length;ri++){var rc=rows[ri].getBoundingClientRect();if(rc.bottom>pT){av=rows[ri].getAttribute('data-vid');ao=rc.top-pT;break;}}window._listAnchorVid=av;window._listAnchorOffset=ao;})();
+  (function(){var lp=document.querySelector('.list-panel');if(!lp){window._listScrollPos=0;window._listAnchorVid=null;return;}window._listScrollPos=lp.scrollTop;var pT=lp.getBoundingClientRect().top;var cands=lp.querySelectorAll('.artist-block[data-vid],tr[data-vid]');var av=null,at=null,ao=0;for(var ri=0;ri<cands.length;ri++){var rc=cands[ri].getBoundingClientRect();if(rc.bottom>pT){av=cands[ri].getAttribute('data-vid');at=cands[ri].tagName;ao=rc.top-pT;break;}}window._listAnchorVid=av;window._listAnchorTag=at;window._listAnchorOffset=ao;})();
   const song=ALL.find(s=>(s.v||s.mp4)===vid);
   if(!song)return;
   const songList=ALL.filter(s=>s.a===song.a);
@@ -1197,7 +1197,7 @@ function minimizeToMiniBar(){
 }
 function closeModal(){
   document.body.classList.remove('playing');
-  (function(){var lp=document.querySelector('.list-panel');if(!lp)return;var done=false;if(window._listAnchorVid){var rows=lp.querySelectorAll('tr[data-vid]');var row=null;for(var ri=0;ri<rows.length;ri++){if(rows[ri].getAttribute('data-vid')===window._listAnchorVid){row=rows[ri];break;}}if(row){var pT=lp.getBoundingClientRect().top;var rT=row.getBoundingClientRect().top;lp.scrollTop+=(rT-pT)-(window._listAnchorOffset||0);done=true;}}if(!done)lp.scrollTop=window._listScrollPos||0;})();
+  (function(){var lp=document.querySelector('.list-panel');if(!lp)return;var done=false;if(window._listAnchorVid){var cands=lp.querySelectorAll('.artist-block[data-vid],tr[data-vid]');var el=null;for(var ri=0;ri<cands.length;ri++){if(cands[ri].getAttribute('data-vid')===window._listAnchorVid&&cands[ri].tagName===window._listAnchorTag){el=cands[ri];break;}}if(el){var pT=lp.getBoundingClientRect().top;var rT=el.getBoundingClientRect().top;lp.scrollTop+=(rT-pT)-(window._listAnchorOffset||0);done=true;}}if(!done)lp.scrollTop=window._listScrollPos||0;})();
   document.getElementById('playerPanel').classList.remove('open');
   document.body.style.overflow='';
   requestAnimationFrame(setTopH);
