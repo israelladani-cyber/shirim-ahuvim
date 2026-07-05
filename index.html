@@ -761,7 +761,7 @@ setInterval(_checkStatus,3000);
   <button class="mini-ctrl" id="miniAddBtn" title="הוסף לפלייליסט" onclick="event.stopPropagation();if(currentSong)showPlaylistPopupForSong(event,currentSong.v||currentSong.mp4)"></button>
   <button class="mini-ctrl" id="miniPlayBtn" title="נגן/עצור" onclick="event.stopPropagation();miniPlayPause()"><svg width="21.6" height="21.6" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg></button>
   <button class="mini-ctrl" title="עבור לחלון צף" onclick="event.stopPropagation();minimizeToFloat()"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"></rect><rect x="13" y="13" width="8" height="5" rx="1" fill="currentColor" stroke="none"></rect></svg></button>
-  <button class="mini-ctrl" title="סגור" onclick="event.stopPropagation();if(ytPlayer&&playerReady)ytPlayer.pauseVideo();var _v=document.getElementById('mp4Player');if(_v)_v.pause();hideFloatPlayer();_miniBarSavedState=null;document.body.classList.remove('has-song','playing','theater');clearSession();">&#x2715;</button>
+  <button class="mini-ctrl" title="סגור" onclick="event.stopPropagation();if(ytPlayer&&playerReady)ytPlayer.pauseVideo();var _v=document.getElementById('mp4Player');if(_v)_v.pause();hideFloatPlayer();_miniBarSavedState=null;document.body.classList.remove('has-song','playing','theater');clearSession();_restoreListScroll();">&#x2715;</button>
 </div>
 
 <div class="pl-ctx-menu" id="plCtxMenu">
@@ -1125,6 +1125,7 @@ function closePanelOrAll(){
 function minimizeToFloat(){
   if(window.innerWidth<768){mobilePiP();return;}
   document.body.classList.remove('playing');
+  _restoreListScroll();
   document.body.classList.remove('theater');
   document.getElementById('playerPanel').classList.remove('open');
   document.body.style.overflow='';
@@ -1219,9 +1220,10 @@ function minimizeToMiniBar(){
   }
   requestAnimationFrame(setTopH);
 }
+function _restoreListScroll(){var lp=document.querySelector('.list-panel');if(!lp)return;var done=false;if(window._listAnchorVid){var cands=lp.querySelectorAll('.artist-block[data-vid],tr[data-vid]');var el=null;for(var ri=0;ri<cands.length;ri++){if(cands[ri].getAttribute('data-vid')===window._listAnchorVid&&cands[ri].tagName===window._listAnchorTag){el=cands[ri];break;}}if(el){var pT=lp.getBoundingClientRect().top;var rT=el.getBoundingClientRect().top;lp.scrollTop+=(rT-pT)-(window._listAnchorOffset||0);done=true;}}if(!done)lp.scrollTop=window._listScrollPos||0;}
 function closeModal(){
   document.body.classList.remove('playing');
-  (function(){var lp=document.querySelector('.list-panel');if(!lp)return;var done=false;if(window._listAnchorVid){var cands=lp.querySelectorAll('.artist-block[data-vid],tr[data-vid]');var el=null;for(var ri=0;ri<cands.length;ri++){if(cands[ri].getAttribute('data-vid')===window._listAnchorVid&&cands[ri].tagName===window._listAnchorTag){el=cands[ri];break;}}if(el){var pT=lp.getBoundingClientRect().top;var rT=el.getBoundingClientRect().top;lp.scrollTop+=(rT-pT)-(window._listAnchorOffset||0);done=true;}}if(!done)lp.scrollTop=window._listScrollPos||0;})();
+  _restoreListScroll();
   document.getElementById('playerPanel').classList.remove('open');
   document.body.style.overflow='';
   requestAnimationFrame(setTopH);
@@ -1362,6 +1364,7 @@ function closeFloat(){
   hideFloatPlayer();
   if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
   document.body.classList.remove('has-song');
+  _restoreListScroll();
 }
 
 function expandFloat(){
