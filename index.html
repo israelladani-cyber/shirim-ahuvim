@@ -71,6 +71,9 @@ body.admin .artist-avatar:hover::after{display:flex;}
 .artist-name-text{font-size:17px;font-weight:700;flex:1;color:#0F0F0F;}
 .chevron{color:#0F0F0F;transition:transform .25s;display:flex;align-items:center;}
 .artist-block[data-open="false"] .chevron{transform:rotate(-90deg);}
+.pl-item[data-open="false"] .chevron{transform:rotate(-90deg);}
+.songs-table tr.dnd-over{background:#EEF2FF;}
+
 .songs-wrap{overflow:hidden;}
 .artist-block[data-open="false"] .songs-wrap{display:none;}
 
@@ -870,8 +873,9 @@ if(window.visualViewport){window.visualViewport.addEventListener('resize',setRea
 setTopH();
 setRealVH();
 
-const FAV_ON='<svg width="16" height="16" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z"/></svg>';
-const FAV_OFF='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="1.6"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z"/></svg>';
+const FAV_ON='<svg width="14" height="14" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z"/></svg>';
+const FAV_OFF='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z"/></svg>';
+
 function _favLoad(){try{return JSON.parse(localStorage.getItem('kfav')||'[]');}catch(e){return [];}}
 function _favSave(list){try{localStorage.setItem('kfav',JSON.stringify(list));}catch(e){}}
 function isFavorite(vid){return _favLoad().some(function(s){return (s.v||s.mp4)===vid;});}
@@ -894,16 +898,33 @@ function _recentAdd(song){
   if(list.length>20)list=list.slice(0,20);
   _recentSave(list);
 }
-function renderPinnedSection(id,label,icon,songs){
+function renderPinnedSection(id,label,icon,songs,storeKey){
   if(!songs||!songs.length)return '';
   var rows='';
-  songs.forEach(function(r){
+  var DRAG_ICON='<svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>';
+  songs.forEach(function(r,i){
     var vid=r.v||r.mp4;
     var fav=isFavorite(vid);
-    rows+='<tr data-vid="'+vid+'"><td onclick="playVid(\''+vid+'\')" style="cursor:pointer"><div>'+esc(r.s)+'</div><div class="song-artist-sub">'+esc(r.a)+'</div></td><td class="td-actions"><div class="song-actions"><button class="btn-play" onclick="event.stopPropagation();playVid(\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg></button><button class="btn-fav'+(fav?' active':'')+'" onclick="event.stopPropagation();toggleFavorite(\''+vid+'\')" title="'+(fav?'הסר ממועדפים':'הוסף למועדפים')+'">'+(fav?FAV_ON:FAV_OFF)+'</button></div></td></tr>';
+    rows+='<tr data-vid="'+vid+'" draggable="true" ondragstart="pinDndStart(event,\''+storeKey+'\','+i+')" ondragover="pinDndOver(event,\''+storeKey+'\','+i+')" ondrop="pinDndDrop(event,\''+storeKey+'\','+i+')" ondragleave="pinDndLeave(event)"><td onclick="playVid(\''+vid+'\')" style="cursor:pointer"><div>'+esc(r.s)+'</div><div class="song-artist-sub">'+esc(r.a)+'</div></td><td class="td-actions"><div class="song-actions"><button class="drag-handle-song" draggable="true" ondragstart="pinDndStart(event,\''+storeKey+'\','+i+')" ondragend="event.stopPropagation()" onclick="event.stopPropagation()" title="גרור לשינוי סדר">'+DRAG_ICON+'</button><button class="btn-play" onclick="event.stopPropagation();playVid(\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg></button><button class="btn-fav'+(fav?' active':'')+'" onclick="event.stopPropagation();toggleFavorite(\''+vid+'\')" title="'+(fav?'הסר ממועדפים':'הוסף למועדפים')+'">'+(fav?FAV_ON:FAV_OFF)+'</button></div></td></tr>';
   });
   return '<div class="artist-block" data-open="false" data-vid="'+id+'"><div class="artist-header" onclick="toggleArtist(this)"><div class="artist-avatar" style="background:#F2F2F2;display:flex;align-items:center;justify-content:center;font-size:16px;">'+icon+'</div><span class="artist-name-text">'+label+'</span><span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div class="songs-wrap"><table class="songs-table"><tbody>'+rows+'</tbody></table></div></div>';
 }
+var _pinDndKey=null,_pinDndIdx=null;
+function pinDndStart(e,key,idx){_pinDndKey=key;_pinDndIdx=idx;e.dataTransfer.effectAllowed='move';e.stopPropagation();}
+function pinDndOver(e,key,idx){if(_pinDndKey!==key||_pinDndIdx===idx)return;e.preventDefault();e.stopPropagation();document.querySelectorAll('.songs-table tr[data-vid]').forEach(function(el){el.classList.remove('dnd-over');});e.currentTarget.classList.add('dnd-over');}
+function pinDndLeave(e){e.currentTarget.classList.remove('dnd-over');}
+function pinDndDrop(e,key,idx){
+  e.preventDefault();e.stopPropagation();
+  document.querySelectorAll('.songs-table tr[data-vid]').forEach(function(el){el.classList.remove('dnd-over');});
+  if(_pinDndKey!==key||_pinDndIdx===null||_pinDndIdx===idx){_pinDndIdx=null;_pinDndKey=null;return;}
+  var list=key==='kfav'?_favLoad():_recentLoad();
+  var moved=list.splice(_pinDndIdx,1)[0];
+  list.splice(idx,0,moved);
+  if(key==='kfav'){_favSave(list);}else{_recentSave(list);}
+  _pinDndIdx=null;_pinDndKey=null;
+  render(document.getElementById('q')?document.getElementById('q').value:'');
+}
+
 function playVid(vid){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);
   if(!song)return;
@@ -1524,7 +1545,7 @@ function render(term){
     g[r.a].push(r);
   });
   let h='';
-  var _pinnedHtml=q?'':(renderPinnedSection('__recent__','🕐 נוגן לאחרונה','🕐',_recentLoad())+renderPinnedSection('__fav__','❤ מועדפים','❤',_favLoad()));
+  var _pinnedHtml=q?'':(renderPinnedSection('__recent__','נוגן לאחרונה','🕐',_recentLoad(),'krecent')+renderPinnedSection('__fav__','מועדפים',FAV_ON,_favLoad(),'kfav'));
   if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
   var _plsForBtns=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
   for(const a of ord){
@@ -2382,7 +2403,7 @@ function renderPlPanel(){
       +'<div class="pl-item-icon">♫</div>'
       +'<div class="pl-item-info"><div class="pl-item-name">'+esc(pl.name)+'</div><div class="pl-item-count">'+cnt+(cnt===1?' שיר':' שירים')+'</div></div>'
       +'<button class="pl-item-menu-btn" onclick="event.stopPropagation();openPlCtx(event,\''+pl.id+'\')" title="אפשרויות">⋮</button>'
-      +'<span class="pl-item-chev">▾</span>'
+      +'<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>'
       +'</div>'
       +(cnt?'<div class="pl-item-songs">'+songs+'</div>':'')
       +'</div>';
