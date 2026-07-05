@@ -870,6 +870,8 @@ if(window.visualViewport){window.visualViewport.addEventListener('resize',setRea
 setTopH();
 setRealVH();
 
+const FAV_ON='<svg width="16" height="16" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z"/></svg>';
+const FAV_OFF='<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#606060" stroke-width="1.6"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z"/></svg>';
 function _favLoad(){try{return JSON.parse(localStorage.getItem('kfav')||'[]');}catch(e){return [];}}
 function _favSave(list){try{localStorage.setItem('kfav',JSON.stringify(list));}catch(e){}}
 function isFavorite(vid){return _favLoad().some(function(s){return (s.v||s.mp4)===vid;});}
@@ -898,7 +900,7 @@ function renderPinnedSection(id,label,icon,songs){
   songs.forEach(function(r){
     var vid=r.v||r.mp4;
     var fav=isFavorite(vid);
-    rows+='<tr data-vid="'+vid+'"><td onclick="playVid(\''+vid+'\')" style="cursor:pointer"><div>'+esc(r.s)+'</div><div class="song-artist-sub">'+esc(r.a)+'</div></td><td class="td-actions"><div class="song-actions"><button class="btn-play" onclick="event.stopPropagation();playVid(\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg></button><button class="btn-fav'+(fav?' active':'')+'" onclick="event.stopPropagation();toggleFavorite(\''+vid+'\')" title="'+(fav?'הסר ממועדפים':'הוסף למועדפים')+'">'+(fav?'❤':'🤍')+'</button></div></td></tr>';
+    rows+='<tr data-vid="'+vid+'"><td onclick="playVid(\''+vid+'\')" style="cursor:pointer"><div>'+esc(r.s)+'</div><div class="song-artist-sub">'+esc(r.a)+'</div></td><td class="td-actions"><div class="song-actions"><button class="btn-play" onclick="event.stopPropagation();playVid(\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg></button><button class="btn-fav'+(fav?' active':'')+'" onclick="event.stopPropagation();toggleFavorite(\''+vid+'\')" title="'+(fav?'הסר ממועדפים':'הוסף למועדפים')+'">'+(fav?FAV_ON:FAV_OFF)+'</button></div></td></tr>';
   });
   return '<div class="artist-block" data-open="false" data-vid="'+id+'"><div class="artist-header" onclick="toggleArtist(this)"><div class="artist-avatar" style="background:#F2F2F2;display:flex;align-items:center;justify-content:center;font-size:16px;">'+icon+'</div><span class="artist-name-text">'+label+'</span><span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div><div class="songs-wrap"><table class="songs-table"><tbody>'+rows+'</tbody></table></div></div>';
 }
@@ -1560,7 +1562,7 @@ function render(term){
             <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
-            <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'}</button><button class="btn-fav${isFavorite(r.v||r.mp4)?' active':''}" data-vid="${r.v||r.mp4}" title="${isFavorite(r.v||r.mp4)?'הסר ממועדפים':'הוסף למועדפים'}" onclick="event.stopPropagation();toggleFavorite('${r.v||r.mp4}')">${isFavorite(r.v||r.mp4)?'❤':'🤍'}</button>
+            <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'}</button><button class="btn-fav${isFavorite(r.v||r.mp4)?' active':''}" data-vid="${r.v||r.mp4}" title="${isFavorite(r.v||r.mp4)?'הסר ממועדפים':'הוסף למועדפים'}" onclick="event.stopPropagation();toggleFavorite('${r.v||r.mp4}')">${isFavorite(r.v||r.mp4)?FAV_ON:FAV_OFF}</button>
             ${r.mp4?'<span style="width:28px;flex-shrink:0;display:inline-flex;"></span>':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
             <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
           </div>
