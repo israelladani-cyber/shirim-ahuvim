@@ -284,9 +284,9 @@ body.theater .panel-theater-btn{color:#FF0000;}
 .float-bar-song{flex:1;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;min-width:0;pointer-events:none;display:flex;flex-direction:column;justify-content:center;gap:1px;}
 .fbar-title{font-size:13px;line-height:1.25;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .fbar-artist{font-size:11px;line-height:1.2;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.fbar-btn{background:none;border:none;color:#888;cursor:pointer;font-size:15px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;flex-shrink:0;}
+.fbar-btn{background:none;border:none;color:#0F0F0F;cursor:pointer;font-size:15px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;flex-shrink:0;}
 .fbar-btn:hover,.fbar-btn:active{color:#0F0F0F;background:rgba(0,0,0,.12);}
-#pipPlayBtn{font-size:20px;color:#ddd;}
+#pipPlayBtn{font-size:20px;color:#0F0F0F;}
 body.float-playing .mini-bar{display:none!important;}
 @media(max-width:767px){
   .float-player{width:185px;}
@@ -778,6 +778,8 @@ setInterval(_checkStatus,3000);
   <div id="float-video-slot"></div>
   <div class="float-bar" id="floatBar">
     <span class="float-bar-song" id="floatSong"></span>
+    <button class="fbar-btn" id="floatFavBtn" onclick="if(currentSong){toggleFavorite(currentSong.v||currentSong.mp4);showFloatPlayer();}" title="מועדפים"></button>
+    <button class="fbar-btn" id="floatAddBtn" onclick="if(currentSong)showPlaylistPopupForSong(event,currentSong.v||currentSong.mp4)" title="הוסף לפלייליסט"></button>
     <button class="fbar-btn" id="pipPlayBtn" onclick="pipPlayPause()" title="נגן/עצור">▶</button>
     <button class="fbar-btn" onclick="expandFloat()" title="הגדל">⤢</button>
     <button class="fbar-btn" onclick="closeFloat()" title="סגור">✕</button>
@@ -1283,6 +1285,16 @@ function showFloatPlayer(){
   if(!fp||!currentSong)return;
   // Song label
   document.getElementById('floatSong').innerHTML='<span class="fbar-title">'+esc(currentSong.s)+'</span>'+(currentSong.a?'<span class="fbar-artist">'+esc(currentSong.a)+'</span>':'');
+  var _fvid=currentSong.v||currentSong.mp4;
+  var _favBtn=document.getElementById('floatFavBtn');
+  if(_favBtn){_favBtn.innerHTML=isFavorite(_fvid)?FAV_ON:FAV_OFF;_favBtn.title=isFavorite(_fvid)?'הסר ממועדפים':'הוסף למועדפים';}
+  var _addBtn=document.getElementById('floatAddBtn');
+  if(_addBtn){
+    var _pls2=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return [];}})();
+    var _inQ2=_pls2.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===_fvid;});});
+    _addBtn.innerHTML=_inQ2?'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
+    _addBtn.title=_inQ2?'הסר מהפלייליסט':'הוסף לפלייליסט';
+  }
   // Play/pause button state
   const pb=document.getElementById('pipPlayBtn');
   if(pb&&ytPlayer&&playerReady)pb.textContent=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?'⏸':'▶';
@@ -1353,7 +1365,7 @@ function pipPlayPause(){
 function _snapToCorner(fp){
   const vw=window.innerWidth,vh=window.innerHeight;
   const r=fp.getBoundingClientRect();
-  const m=12, bm=window.innerWidth<768?76:120;
+  const m=12, bm=window.innerWidth<768?76:56;
   const topH=(document.querySelector('.top')||{}).offsetHeight||0;
   const topM=topH+m;
   const isDesk=window.innerWidth>=768&&document.body.classList.contains('float-playing');
