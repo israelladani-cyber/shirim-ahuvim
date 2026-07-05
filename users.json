@@ -17,7 +17,13 @@
       "t": 1783219470344
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "srayax.ben.david@gmail.com",
+      "n": "Sraya Ben-David",
+      "t": 1783220423833
+    }
+  ],
   "rejected": [],
   "frozen": []
 }
