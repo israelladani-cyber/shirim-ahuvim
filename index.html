@@ -1351,6 +1351,12 @@ function _syncShuffleUI(){
     var b=document.getElementById(id);
     if(b)b.classList.toggle('active',active);
   });
+  if(currentPlId){
+    var listActive=plShuffleIds.has(currentPlId);
+    document.querySelectorAll('[data-pl-id="'+currentPlId+'"] .pl-item-shuffle-btn, [data-vid="'+currentPlId+'"] .pl-item-shuffle-btn').forEach(function(b){
+      b.classList.toggle('active',listActive);
+    });
+  }
 }
 function toggleCurrentInQueue(){
   if(!currentSong)return;
