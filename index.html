@@ -1055,6 +1055,7 @@ async function mobilePiP(){
   document.getElementById('playerPanel').classList.remove('open');
   document.body.classList.remove('playing');
   document.body.style.overflow='';
+  _restoreListScroll();
   if(!currentSong)return;
   // Try native Document Picture-in-Picture (Chrome 116+ desktop / Edge 116+)
   if('documentPictureInPicture' in window){
@@ -1122,6 +1123,7 @@ function closePanelOrAll(){
   if(ytPlayer&&playerReady)ytPlayer.pauseVideo();
   var _mp4cl=document.getElementById('mp4Player');if(_mp4cl){_mp4cl.pause();}
   document.body.classList.remove('has-song');
+  _restoreListScroll();
 }
 function minimizeToFloat(){
   if(window.innerWidth<768){mobilePiP();return;}
@@ -1194,6 +1196,7 @@ function minimizePlayerOnly(){
   document.body.classList.remove('playing','theater');
   document.body.style.overflow='';
   hideFloatPlayer();
+  _restoreListScroll();
   requestAnimationFrame(setTopH);
 }
 function minimizeToMiniBar(){
@@ -1213,6 +1216,7 @@ function minimizeToMiniBar(){
     document.body.classList.remove('playing','theater');
     document.body.style.overflow='';
     hideFloatPlayer();
+    _restoreListScroll();
   }else{
     // No player — save only playlist state, FAB with "הפלייליסטים שלי"
     _fabPlState={plHTML:plBody?plBody.innerHTML:'',plScroll:plBody?plBody.scrollTop:0};
