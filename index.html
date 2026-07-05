@@ -282,7 +282,9 @@ body.theater .panel-theater-btn{color:#FF0000;}
 /* bottom bar — this is the drag handle; video above is fully interactive */
 .float-bar{display:flex;align-items:center;background:#FFFFFF;padding:6px 8px 6px 12px;gap:4px;cursor:grab;touch-action:none;flex-shrink:0;border-top:1px solid #E5E5E5;}
 .float-bar.grabbing{cursor:grabbing;}
-.float-bar-song{flex:1;font-size:13px;color:#bbb;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;min-width:0;pointer-events:none;line-height:1.3;}
+.float-bar-song{flex:1;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;direction:rtl;min-width:0;pointer-events:none;display:flex;flex-direction:column;justify-content:center;gap:1px;}
+.fbar-title{font-size:13px;line-height:1.25;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.fbar-artist{font-size:11px;line-height:1.2;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .fbar-btn{background:none;border:none;color:#888;cursor:pointer;font-size:15px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:color .12s,background .12s;flex-shrink:0;}
 .fbar-btn:hover,.fbar-btn:active{color:#0F0F0F;background:rgba(0,0,0,.12);}
 #pipPlayBtn{font-size:20px;color:#ddd;}
@@ -292,7 +294,8 @@ body.float-playing .mini-bar{display:none!important;}
   #float-video-slot{height:104px;}
   body.float-playing{padding-bottom:16px;}
   .float-bar{padding:4px 5px 4px 8px;gap:2px;}
-  .float-bar-song{font-size:10px;}
+  .fbar-title{font-size:10px;}
+  .fbar-artist{font-size:9px;}
   .fbar-btn{width:26px;height:26px;font-size:12px;}
   #pipPlayBtn{font-size:15px;}
 }
@@ -1278,7 +1281,7 @@ function showFloatPlayer(){
   const fp=document.getElementById('floatPlayer');
   if(!fp||!currentSong)return;
   // Song label
-  document.getElementById('floatSong').textContent=currentSong.s+(currentSong.a?' – '+currentSong.a:'');
+  document.getElementById('floatSong').innerHTML='<span class="fbar-title">'+esc(currentSong.s)+'</span>'+(currentSong.a?'<span class="fbar-artist">'+esc(currentSong.a)+'</span>':'');
   // Play/pause button state
   const pb=document.getElementById('pipPlayBtn');
   if(pb&&ytPlayer&&playerReady)pb.textContent=ytPlayer.getPlayerState()===YT.PlayerState.PLAYING?'⏸':'▶';
@@ -1349,7 +1352,9 @@ function pipPlayPause(){
 function _snapToCorner(fp){
   const vw=window.innerWidth,vh=window.innerHeight;
   const r=fp.getBoundingClientRect();
-  const m=12, bm=window.innerWidth<768?76:80;
+  const m=12, bm=window.innerWidth<768?76:120;
+  const topH=(document.querySelector('.top')||{}).offsetHeight||0;
+  const topM=topH+m;
   const isDesk=window.innerWidth>=768&&document.body.classList.contains('float-playing');
   const panel=isDesk?document.getElementById('playerPanel'):null;
   const ph=panel?panel.offsetHeight:192;
@@ -1361,7 +1366,7 @@ function _snapToCorner(fp){
   fp.classList.add('pip-snap');
   if(isDesk&&panel){
     const nx=goLeft?m:vw-340-m;
-    const ny=goTop?m:vh-ph-r.height-bm;
+    const ny=goTop?topM:vh-ph-r.height-bm;
     panel.classList.add('pip-snap');
     panel.style.setProperty('left',nx+'px','important');
     panel.style.setProperty('top',ny+'px','important');
@@ -1372,7 +1377,7 @@ function _snapToCorner(fp){
     setTimeout(()=>{fp.classList.remove('pip-snap');panel.classList.remove('pip-snap');},280);
   }else{
     fp.style.left=(goLeft?m:vw-r.width-m)+'px';
-    fp.style.top=(goTop?m:vh-r.height-bm)+'px';
+    fp.style.top=(goTop?topM:vh-r.height-bm)+'px';
     fp.style.right='auto'; fp.style.bottom='auto';
     setTimeout(()=>fp.classList.remove('pip-snap'),280);
   }
