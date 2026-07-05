@@ -959,6 +959,7 @@ function pinDndDrop(e,key,idx){
 
 function playVid(vid){
   (function(){var lp=document.querySelector('.list-panel');if(!lp){window._listScrollPos=0;window._listAnchorVid=null;return;}window._listScrollPos=lp.scrollTop;var pT=lp.getBoundingClientRect().top;var cands=lp.querySelectorAll('.artist-block[data-vid],tr[data-vid]');var av=null,at=null,ao=0;for(var ri=0;ri<cands.length;ri++){var rc=cands[ri].getBoundingClientRect();if(rc.bottom>pT){av=cands[ri].getAttribute('data-vid');at=cands[ri].tagName;ao=rc.top-pT;break;}}window._listAnchorVid=av;window._listAnchorTag=at;window._listAnchorOffset=ao;})();
+  if(document.getElementById('plPanel').classList.contains('open'))closePlPanel();
   const song=ALL.find(s=>(s.v||s.mp4)===vid);
   if(!song)return;
   const songList=ALL.filter(s=>s.a===song.a);
