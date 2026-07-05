@@ -99,7 +99,7 @@ body.admin .artist-avatar:hover::after{display:flex;}
 .song-actions{display:flex;align-items:center;gap:5px;justify-content:flex-end;}
 
 /* ACTION BUTTONS */
-.btn-play{width:30px;height:30px;border-radius:50%;background:#FFFFFF;border:1px solid #E5E5E5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .15s,border-color .15s;padding-right:1px;}.btn-play.mp4{background:#0D47A1!important;border-color:#0B3C89!important;}.btn-play.mp4 svg polygon{fill:#fff!important;}
+.btn-play{width:30px;height:30px;border-radius:50%;background:#FFFFFF;border:1px solid #E5E5E5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s,background .15s,border-color .15s;padding-right:1px;}.btn-play.mp4{background:#072F5F!important;border-color:#052447!important;}.btn-play.mp4 svg polygon{fill:#fff!important;}
 .btn-play:hover{transform:scale(1.1);background:#e8e8e8;}
 .btn-play svg{width:12px;height:14px;}
 .btn-add{width:32px;height:32px;border-radius:50%;background:none;border:1.5px solid transparent;color:#0F0F0F;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;line-height:1;transition:all .15s;}
@@ -147,8 +147,8 @@ body.admin .artist-avatar:hover::after{display:flex;}
 .pl-song-artist{font-size:12px;color:#888;margin-top:1px;}
 .pl-song-play{width:30px;height:30px;border-radius:50%;background:#FFFFFF;border:1px solid #E5E5E5;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding-right:1px;transition:transform .15s,background .15s,border-color .15s;}
 .pl-song-play:hover{transform:scale(1.1);background:#e8e8e8;}
-.pl-song-play.mp4{background:#0D47A1;border-color:#0B3C89;}
-.pl-song-play.mp4:hover{background:#0B3C89;transform:scale(1.1);}
+.pl-song-play.mp4{background:#072F5F;border-color:#052447;}
+.pl-song-play.mp4:hover{background:#052447;transform:scale(1.1);}
 .pl-song-del{width:22px;height:22px;border-radius:50%;background:none;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;color:#aaa;}
 .pl-song-del:hover{background:#F2F2F2;color:#e00;}
 .pl-song-yt{flex-shrink:0;}
@@ -2645,6 +2645,20 @@ function renderPlPopup(){
   }).join('');
 }
 
+function _positionPlPopupSide(popup,floatRect,btnRect){
+  var pw=popup.offsetWidth||248,ph=popup.offsetHeight||300;
+  var goLeft=(floatRect.left+floatRect.width/2)>(window.innerWidth/2);
+  if(goLeft){
+    popup.style.left='auto';
+    popup.style.right=Math.max(8,Math.min(window.innerWidth-floatRect.left+8,window.innerWidth-pw-8))+'px';
+  }else{
+    popup.style.right='auto';
+    popup.style.left=Math.max(8,Math.min(floatRect.right+8,window.innerWidth-pw-8))+'px';
+  }
+  var top=Math.max(8,Math.min(btnRect.top,window.innerHeight-ph-8));
+  popup.style.top=top+'px';
+  popup.style.bottom='auto';
+}
 function showPlaylistPopupForSong(e,vid){
   if(e)e.stopPropagation();
   var song=ALL.find(function(s){return (s.v||s.mp4)===vid;});
@@ -2656,7 +2670,12 @@ function showPlaylistPopupForSong(e,vid){
   var rect=btn.getBoundingClientRect();
   renderPlPopup();
   popup.classList.add('open');
-  _positionPlPopup(popup,rect);
+  var fp=document.getElementById('floatPlayer');
+  if(fp&&fp.contains(btn)){
+    _positionPlPopupSide(popup,fp.getBoundingClientRect(),rect);
+  }else{
+    _positionPlPopup(popup,rect);
+  }
   setTimeout(function(){document.addEventListener('click',closePlPopupOutside);},50);
 }
 function _positionPlPopup(popup,rect){
