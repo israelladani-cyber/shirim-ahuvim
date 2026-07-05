@@ -829,7 +829,7 @@ const YT_ICO=`<svg viewBox="0 0 24 17" width="18" height="13" xmlns="http://www.
 // ── QUEUE ──
 let queue=[], ytPlayer=null, playerReady=false, _pipWin=null;
 // currentSong: what's open in modal right now
-let currentSong=null, currentSongList=[], currentSongIdx=0, shuffleOn=false, plShuffleIds=new Set(), currentPlId=null;
+let currentSong=null, currentSongList=[], currentSongIdx=0, shuffleOn=false, plShuffleIds=new Set(), currentPlId=null, _shuffleHist=[];
 
 function onYouTubeIframeAPIReady(){
   ytPlayer=new YT.Player('yt-player',{
@@ -1040,7 +1040,7 @@ function openModal(song,songList,idx,startSeconds){
     return;
   }
   hideFloatPlayer();
-  currentSong=song;currentSongList=songList;currentSongIdx=idx; _recentAdd(song);
+  currentSong=song;currentSongList=songList;currentSongIdx=idx;_shuffleHist=[]; _recentAdd(song);
   document.getElementById('panelSong').textContent=song.s;
   document.getElementById('panelArtist').textContent=song.a;
   document.getElementById('miniSong').textContent=song.s;
@@ -1284,8 +1284,12 @@ function miniPlayPause(){
 }
 function modalNav(dir){
   var next;
-  if((shuffleOn||(currentPlId&&plShuffleIds.has(currentPlId)))&&dir===1&&currentSongList.length>1){
+  var _shufActive=shuffleOn||(currentPlId&&plShuffleIds.has(currentPlId));
+  if(_shufActive&&dir===1&&currentSongList.length>1){
+    _shuffleHist.push(currentSongIdx);
     do{next=Math.floor(Math.random()*currentSongList.length);}while(next===currentSongIdx);
+  }else if(_shufActive&&dir===-1&&_shuffleHist.length){
+    next=_shuffleHist.pop();
   }else{
     next=currentSongIdx+dir;
   }
@@ -1329,6 +1333,7 @@ function updateModalFavBtn(){
 }
 function toggleShuffle(){
   shuffleOn=!shuffleOn;
+  _shuffleHist=[];
   ['shuffleBtn','miniShuffleBtn','floatShuffleBtn'].forEach(function(id){
     var b=document.getElementById(id);
     if(b)b.classList.toggle('active',shuffleOn);
@@ -2485,6 +2490,7 @@ function playVidFromPl(plId, vid){
 }
 function togglePlaylistShuffle(plId){
   if(plShuffleIds.has(plId))plShuffleIds.delete(plId);else plShuffleIds.add(plId);
+  _shuffleHist=[];
   renderPlPanel();
 }
 
