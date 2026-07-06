@@ -402,7 +402,7 @@ body.admin{--adm-h:58px;}
 select.atb-artist-sel{cursor:pointer;padding-left:4px;}
 .atb-inp[id="atbUrl"]{flex:1;min-width:100px;}
 /* Buttons match site toolbar-btn style */
-.atb-btn{display:flex;align-items:center;gap:6px;background:#F2F2F2;border:none;color:#0F0F0F;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;}
+.atb-btn{display:flex;align-items:center;justify-content:center;gap:6px;background:#F2F2F2;border:none;color:#0F0F0F;border-radius:18px;height:36px;padding:0 16px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s,color .15s;font-family:Arial,sans-serif;white-space:nowrap;flex-shrink:0;}
 .atb-btn:hover{background:rgba(0,0,0,.07);color:#0F0F0F;}
 .atb-btn:disabled{opacity:.5;cursor:default;}
 .atb-btn.green{background:#FF0000;color:#000;font-weight:700;}
@@ -1940,6 +1940,11 @@ async function doAdmLogin(){
   _fillArtistList();const _openSt={};document.querySelectorAll('.artist-block').forEach(b=>{_openSt[b.dataset.vid]=b.dataset.open;});render(document.getElementById('q').value||'');document.querySelectorAll('.artist-block').forEach(b=>{if(_openSt[b.dataset.vid])b.dataset.open=_openSt[b.dataset.vid];});
   window._admPin=pin;
 }
+function atbClear(){
+  document.getElementById('atbSong').value='';
+  document.getElementById('atbUrl').value='';
+  document.getElementById('atbArtist').value='';
+}
 function exitAdmin(){
   var art=document.getElementById('atbArtist'),sng=document.getElementById('atbSong'),url=document.getElementById('atbUrl');
   if(art&&sng&&url&&art.value.trim()&&sng.value.trim()&&url.value.trim()&&!_atbErrShown){
@@ -2348,6 +2353,7 @@ async function adminSyncGitHub(){
     </select>
     <input class="atb-inp" id="atbSong" placeholder="שם שיר" autocomplete="off">
     <input class="atb-inp" id="atbUrl" placeholder="קישור YouTube" autocomplete="off">
+    <button class="atb-btn" onclick="atbClear()">נקה</button>
   </div>
   <div class="atb-actions-row">
     <button class="atb-btn green" onclick="adminAddSong()">+ הוסף שיר</button>
@@ -2608,7 +2614,7 @@ function renderPlPanel(){
         +'<div class="pl-song-info" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" style="cursor:pointer;flex:1;min-width:0"><div class="pl-song-name">'+esc(s.s)+'</div><div class="pl-song-artist">'+esc(s.a)+'</div></div>'
         +'<button class="pl-song-play'+(s.mp4?' mp4':'')+'" onclick="playVidFromPl(\''+pl.id+'\',\''+vid+'\')" title="נגן"><svg viewBox="0 0 12 14" fill="'+(s.mp4?'#fff':'#121212')+'" width="10" height="12"><polygon points="0,0 12,7 0,14"/></svg></button>'
         +'<button class="btn-fav'+(isFavorite(vid)?' active':'')+'" onclick="event.stopPropagation();toggleFavorite(\''+vid+'\');renderPlPanel();" title="מועדפים">'+(isFavorite(vid)?FAV_ON:FAV_OFF)+'</button>'
-        +(s.v?'<a class="btn-yt pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="פתח ביוטיוב" onclick="event.stopPropagation()">'+YT_ICO+'</a>':'<span class="pl-song-yt" style="width:28px;flex-shrink:0;display:inline-flex;"></span>')
+        +(s.v?'<a class="btn-yt pl-song-yt" href="https://www.youtube.com/watch?v='+s.v+'" target="_blank" rel="noopener" title="פתח ביוטיוב" onclick="event.stopPropagation()">'+YT_ICO+'</a>':'<span class="btn-yt pl-song-yt" style="background:none;opacity:0;pointer-events:none"></span>')
         +'<button class="pl-song-del" onclick="event.stopPropagation();removeSongFromPl(\''+pl.id+'\',\''+vid+'\')" title="הסר">✕</button>'
         +'</div>';
     }).join('');
