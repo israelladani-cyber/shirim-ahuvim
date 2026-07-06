@@ -791,7 +791,7 @@ setInterval(_checkStatus,3000);
 </div>
 
 <div class="pl-ctx-menu" id="plCtxMenu">
-  <div class="pl-ctx-item" onclick="plCtxRename()">✏️ שנה שם</div>
+  <div class="pl-ctx-item" onclick="plCtxRename()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>שנה שם</div>
   <div class="pl-ctx-item danger" onclick="plCtxDelete()">🗑 מחק</div>
 </div>
 
@@ -1750,7 +1750,7 @@ function render(term){
           ondragend="_dndEnd(event)"
           onclick="event.stopPropagation()"
           title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>`;
-    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה">✏️</button>`;
+    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>`;
     h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="מחק תיקייה">🗑</button>`;
     h+=`</div>`;
     h+=`</div><div class="songs-wrap"><table class="songs-table">`;
@@ -1766,7 +1766,7 @@ function render(term){
               ondragend="_dndEnd(event)"
               onclick="event.stopPropagation()"
               title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
-            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v||r.mp4}')" title="שנה שם שיר">✏️</button>
+            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v||r.mp4}')" title="שנה שם שיר"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
             <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v||r.mp4}',this)" title="העבר לתיקייה אחרת">📂</button>
             <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
