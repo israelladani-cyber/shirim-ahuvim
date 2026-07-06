@@ -224,6 +224,7 @@ body.theater .panel-theater-btn{color:#FF0000;}
 
 /* MOBILE: overlay + mini bar */
 @media(max-width:767px){
+  html,body{position:fixed!important;top:0!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;}
   .player-panel{position:fixed;inset:0;z-index:300;flex-direction:column;background:#FFFFFF;border:none;}
   .panel-header{flex-wrap:wrap!important;padding:5px 10px!important;}
   .panel-song-info{flex:1 1 100%!important;min-width:0!important;}
@@ -912,6 +913,7 @@ window.addEventListener('resize',()=>{setTopH();setRealVH();setAdmH();if(window.
 if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{setRealVH();setAdmH();});window.visualViewport.addEventListener('scroll',setRealVH);}
 function _setupAdmObserver(){var _admToolbarEl=document.getElementById('admToolbar');if(_admToolbarEl&&'ResizeObserver' in window){new ResizeObserver(setAdmH).observe(_admToolbarEl);}}
 if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',_setupAdmObserver);}else{_setupAdmObserver();}
+document.addEventListener('focusin',function(e){if(e.target&&e.target.closest&&e.target.closest('.adm-toolbar')){setTimeout(function(){window.scrollTo(0,0);document.documentElement.scrollTop=0;document.body.scrollTop=0;},60);}});
 setTopH();
 setRealVH();
 setAdmH();
