@@ -910,7 +910,8 @@ function setTopH(){document.documentElement.style.setProperty('--top-h',document
 function setAdmH(){var el=document.getElementById('admToolbar');var h=(el&&getComputedStyle(el).display!=='none')?el.offsetHeight:0;document.documentElement.style.setProperty('--adm-h',h+'px');}
 window.addEventListener('resize',()=>{setTopH();setRealVH();setAdmH();if(window.innerWidth>=768){document.getElementById('playerPanel').classList.remove('open');document.body.style.overflow='';}});
 if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{setRealVH();setAdmH();});window.visualViewport.addEventListener('scroll',setRealVH);}
-if('ResizeObserver' in window){var _admToolbarEl=document.getElementById('admToolbar');if(_admToolbarEl)new ResizeObserver(setAdmH).observe(_admToolbarEl);}
+function _setupAdmObserver(){var _admToolbarEl=document.getElementById('admToolbar');if(_admToolbarEl&&'ResizeObserver' in window){new ResizeObserver(setAdmH).observe(_admToolbarEl);}}
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',_setupAdmObserver);}else{_setupAdmObserver();}
 setTopH();
 setRealVH();
 setAdmH();
