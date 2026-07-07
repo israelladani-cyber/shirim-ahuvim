@@ -1729,9 +1729,9 @@ async function loadImages(){
   await Promise.all(promises);
 }
 
-function render(term){
+function render(term,forceQOpen){
   closeeFolderPicker();
-  const _prevOpen={};const _prevScroll=window.scrollY;document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{_prevOpen[b.dataset.vid]=b.dataset.open;});
+  if(!forceQOpen)const _prevOpen={};const _prevScroll=window.scrollY;document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{_prevOpen[b.dataset.vid]=b.dataset.open;});
   const q=(term||'').trim().toLowerCase();
   const g={};const ord=[];
   ALL.forEach(r=>{
@@ -1795,7 +1795,7 @@ function render(term){
   updateToggleBtn();
   loadImages();
 }
-function clearSearch(){const i=document.getElementById('q');i.value='';document.getElementById('clr').classList.remove('visible');render('');}window._startVoiceSearch=function(btn){var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('הדפדפן לא תומך בחיפוש קולי');return;}if(window._voiceListening){if(window._voiceRec){try{window._voiceRec.abort();}catch(e){}}return;}var rec=new SR();window._voiceRec=rec;rec.lang='he-IL';rec.interimResults=false;rec.maxAlternatives=1;window._voiceListening=true;var svg=btn.querySelector('svg');btn.style.background='#ea4335';if(svg)svg.setAttribute('fill','#fff');rec.onresult=function(ev){var transcript=ev.results[0][0].transcript;var inp=document.getElementById('q');inp.value=transcript;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();};rec.onerror=function(){};rec.onend=function(){window._voiceListening=false;window._voiceRec=null;btn.style.background='#F2F2F2';if(svg)svg.setAttribute('fill','#0F0F0F');};try{rec.start();}catch(e){window._voiceListening=false;}};
+function clearSearch(){const i=document.getElementById('q');i.value='';document.getElementById('clr').classList.remove('visible');render('',true);}window._startVoiceSearch=function(btn){var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('הדפדפן לא תומך בחיפוש קולי');return;}if(window._voiceListening){if(window._voiceRec){try{window._voiceRec.abort();}catch(e){}}return;}var rec=new SR();window._voiceRec=rec;rec.lang='he-IL';rec.interimResults=false;rec.maxAlternatives=1;window._voiceListening=true;var svg=btn.querySelector('svg');btn.style.background='#ea4335';if(svg)svg.setAttribute('fill','#fff');rec.onresult=function(ev){var transcript=ev.results[0][0].transcript;var inp=document.getElementById('q');inp.value=transcript;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();};rec.onerror=function(){};rec.onend=function(){window._voiceListening=false;window._voiceRec=null;btn.style.background='#F2F2F2';if(svg)svg.setAttribute('fill','#0F0F0F');};try{rec.start();}catch(e){window._voiceListening=false;}};
 
 // ── SEARCH HISTORY ──
 const HIST_KEY='karaoke_hist';
@@ -1907,7 +1907,7 @@ loadSession();
 render('');document.getElementById('q').focus();
 document.getElementById('q').addEventListener('input',e=>{
   const v=e.target.value;
-  render(v);
+  render(v,true);
   document.getElementById('clr').classList.toggle('visible',v.length>0);
   if(v.length>0)hideSearchHistory();else showSearchHistory();
 });
