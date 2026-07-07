@@ -1967,6 +1967,7 @@ function _exitUnsavedCancel(){
 }
 function _exitUnsavedSave(){
   document.getElementById("exitUnsavedOv").classList.remove("open");
+  adminAddSong();
   _admMode=false;_admDirty=false;document.body.classList.remove("admin","del-mode");
   render(document.getElementById("q").value||"");
 }
