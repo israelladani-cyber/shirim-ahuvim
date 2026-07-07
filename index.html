@@ -2243,6 +2243,7 @@ function adminAddSong(){
   document.getElementById("atbArtist").value="";
   document.getElementById("atbSong").focus();
   render(document.getElementById("q").value||"");
+  document.querySelectorAll('.artist-block').forEach(b=>{const av=b.querySelector('.artist-avatar[data-artist]');if(av&&av.dataset.artist===artist)b.dataset.open='true';});
   _markDirty();_atbStat("✓ שיר נוסף","ok");
   adminSyncGitHub();
 }
