@@ -1731,7 +1731,7 @@ async function loadImages(){
 
 function render(term,forceQOpen){
   closeeFolderPicker();
-  if(!forceQOpen)const _prevOpen={};const _prevScroll=window.scrollY;document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{_prevOpen[b.dataset.vid]=b.dataset.open;});
+  const _prevOpen={};const _prevScroll=window.scrollY;document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{_prevOpen[b.dataset.vid]=b.dataset.open;});
   const q=(term||'').trim().toLowerCase();
   const g={};const ord=[];
   ALL.forEach(r=>{
@@ -1790,7 +1790,7 @@ function render(term,forceQOpen){
   }
   h=_pinnedHtml+h;
   document.getElementById('content').innerHTML=h;
-  document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{if(_prevOpen[b.dataset.vid]!==undefined)b.dataset.open=_prevOpen[b.dataset.vid];});
+  if(!forceQOpen)document.querySelectorAll('.artist-block[data-vid]').forEach(b=>{if(_prevOpen[b.dataset.vid]!==undefined)b.dataset.open=_prevOpen[b.dataset.vid];});
   window.scrollTo(0,_prevScroll);
   updateToggleBtn();
   loadImages();
