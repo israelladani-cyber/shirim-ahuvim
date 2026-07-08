@@ -1959,6 +1959,7 @@ function exitAdmin(){
     document.getElementById('exitUnsavedOv').classList.add('open');
     return;
   }
+  if(art)art.value='';if(sng)sng.value='';if(url)url.value='';_atbErrShown=false;
   _admMode=false;_admDirty=false;document.body.classList.remove('admin','del-mode');
   render(document.getElementById('q').value||'');
 }
