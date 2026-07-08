@@ -2246,6 +2246,8 @@ function adminAddSong(){
   if(_qVal&&!artist.toLowerCase().includes(_qVal.trim().toLowerCase())&&!song.toLowerCase().includes(_qVal.trim().toLowerCase()))_renderTerm="";
   render(_renderTerm);
   document.querySelectorAll('.artist-block').forEach(b=>{const av=b.querySelector('.artist-avatar[data-artist]');if(av&&av.dataset.artist===artist)b.dataset.open='true';});
+  const _newRow=document.querySelector('tr[data-vid="'+(entry.v||entry.mp4)+'"]');
+  if(_newRow&&_newRow.scrollIntoView)_newRow.scrollIntoView({block:'center',behavior:'smooth'});
   _markDirty();_atbStat("✓ שיר נוסף","ok");
   adminSyncGitHub();
 }
