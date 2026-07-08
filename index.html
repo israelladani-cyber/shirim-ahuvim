@@ -2242,7 +2242,9 @@ function adminAddSong(){
   _fillArtistList();
   document.getElementById("atbArtist").value="";
   document.getElementById("atbSong").focus();
-  render(document.getElementById("q").value||"");
+  let _qVal=document.getElementById("q").value||"";let _renderTerm=_qVal;
+  if(_qVal&&!artist.toLowerCase().includes(_qVal.trim().toLowerCase())&&!song.toLowerCase().includes(_qVal.trim().toLowerCase()))_renderTerm="";
+  render(_renderTerm);
   document.querySelectorAll('.artist-block').forEach(b=>{const av=b.querySelector('.artist-avatar[data-artist]');if(av&&av.dataset.artist===artist)b.dataset.open='true';});
   _markDirty();_atbStat("✓ שיר נוסף","ok");
   adminSyncGitHub();
