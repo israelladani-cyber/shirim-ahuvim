@@ -22,7 +22,13 @@
       "t": 1783220534666
     }
   ],
-  "pending": [],
+  "pending": [
+    {
+      "e": "elior.yaakov@gmail.com",
+      "n": "Elior Yaakov",
+      "t": 1783541464870
+    }
+  ],
   "rejected": [],
   "frozen": []
 }
