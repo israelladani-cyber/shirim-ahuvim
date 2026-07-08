@@ -20,15 +20,14 @@
       "e": "srayax.ben.david@gmail.com",
       "n": "Sraya Ben-David",
       "t": 1783220534666
-    }
-  ],
-  "pending": [
+    },
     {
       "e": "elior.yaakov@gmail.com",
       "n": "Elior Yaakov",
-      "t": 1783541464870
+      "t": 1783541476372
     }
   ],
+  "pending": [],
   "rejected": [],
   "frozen": []
 }
