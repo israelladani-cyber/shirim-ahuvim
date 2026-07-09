@@ -88,8 +88,8 @@ body.admin .artist-avatar:hover::after{display:flex;}
 /* SONGS TABLE */
 .songs-table{width:100%;border-collapse:collapse;}
 .songs-table tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
-tr.now-playing{background:#E5E5E5;}
-.pl-song-row.now-playing{background:#E5E5E5;}
+tr.now-playing{background:#ECE9DF;}
+.pl-song-row.now-playing{background:#ECE9DF;}
 .songs-table tr:last-child{border-bottom:none;}
 .songs-table tr:hover{background:rgba(0,0,0,.05);}
 .songs-table td{padding:10px 14px;font-size:15px;color:#0F0F0F;vertical-align:middle;}
@@ -979,7 +979,7 @@ function _recentAdd(song){
 }
 function renderPinnedSection(id,label,icon,songs,storeKey){
   if(!songs||!songs.length)return '';
-  var _playFn=(id==='__fav__'?'playVidFromFav':'playVid');
+  var _playFn=(id==='__fav__'?'playVidFromFav':(id==='__recent__'?'playVidFromRecent':'playVid'));
   var rows='';
   var _pls=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return [];}})();
   var DRAG_ICON='<svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>';
@@ -1709,7 +1709,17 @@ function _syncNowPlayingHighlight(){
   if(!currentSong)return;
   var vid=currentSong.v||currentSong.mp4;
   if(!vid)return;
-  document.querySelectorAll('tr[data-vid="'+CSS.escape(vid)+'"],.pl-song-row[data-vid="'+CSS.escape(vid)+'"]').forEach(function(el){el.classList.add('now-playing');});
+  var sel;
+  if(currentPlId==='__fav__'){
+    sel='.artist-block[data-vid="__fav__"] tr[data-vid="'+CSS.escape(vid)+'"]';
+  }else if(currentPlId==='__recent__'){
+    sel='.artist-block[data-vid="__recent__"] tr[data-vid="'+CSS.escape(vid)+'"]';
+  }else if(currentPlId){
+    sel='.pl-item[data-pl-id="'+CSS.escape(currentPlId)+'"] .pl-song-row[data-vid="'+CSS.escape(vid)+'"]';
+  }else{
+    sel='.artist-block:not([data-vid="__fav__"]):not([data-vid="__recent__"]) tr[data-vid="'+CSS.escape(vid)+'"]';
+  }
+  document.querySelectorAll(sel).forEach(function(el){el.classList.add('now-playing');});
 }
 function hl(t,q){if(!q)return esc(t);return esc(t).replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
 
@@ -2750,6 +2760,17 @@ function playVidFromFav(vid){
   var song=favs[idx];
   if(!song)return;
   openModal(song,favs,idx);
+}
+function playVidFromRecent(vid){
+  currentPlId='__recent__';
+  _syncShuffleUI();
+  _syncRepeatUI();
+  var recents=_recentLoad();
+  var idx=recents.findIndex(function(s){return (s.v||s.mp4)===vid;});
+  if(idx<0)idx=0;
+  var song=recents[idx];
+  if(!song)return;
+  openModal(song,recents,idx);
 }
 function toggleFavShuffle(){
   if(plShuffleIds.has('__fav__'))plShuffleIds.delete('__fav__');else plShuffleIds.add('__fav__');
