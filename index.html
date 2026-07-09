@@ -1913,7 +1913,7 @@ function resumeOrOpen(){
 setInterval(()=>{if(currentSong&&ytPlayer&&playerReady&&ytPlayer.getPlayerState()==YT.PlayerState.PLAYING)saveSession(currentSong);},5000);
 
 loadSession();
-render('');document.getElementById('q').focus();
+render('');
 document.getElementById('q').addEventListener('input',e=>{
   const v=e.target.value;
   render(v,true);
