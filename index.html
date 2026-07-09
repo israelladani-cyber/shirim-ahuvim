@@ -1464,14 +1464,12 @@ function adminClickAvatar(name,ev){
 }
 function _capRowsAfterOpen(wrap,rowSel){
 if(!wrap)return;
-requestAnimationFrame(function(){
 var rows=wrap.querySelectorAll(rowSel);
 if(rows.length<=4){wrap.style.maxHeight='';return;}
 var h=0;
 for(var i=0;i<4;i++){h+=rows[i].getBoundingClientRect().height;}
 wrap.style.maxHeight=Math.ceil(h)+'px';
 wrap.style.overflowY='auto';
-});
 }
 
 function toggleArtist(h){const b=h.closest('.artist-block');b.dataset.open=b.dataset.open==='false'?'true':'false';updateToggleBtn();
