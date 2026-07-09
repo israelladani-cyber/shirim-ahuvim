@@ -233,7 +233,7 @@ body.theater .panel-theater-btn{color:#FF0000;}
   .panel-song-info{flex:1 1 100%!important;min-width:0!important;}
   .panel-song-name{font-size:16px!important;}
   .panel-artist-name{font-size:13px!important;}
-  .panel-nav-group{display:flex!important;align-items:center!important;gap:4px!important;}.panel-win-btns{gap:0px!important;}.panel-win-btns .panel-shuffle-btn,.panel-win-btns .panel-minimize-btn,.panel-win-btns .panel-close{width:24px!important;height:24px!important;}.panel-win-btns .panel-close{font-size:16px!important;}.panel-win-btns .panel-close{width:36px!important;height:36px!important;font-size:24px!important;}.panel-win-btns .panel-minimize-btn{font-size:14px!important;}
+  .panel-nav-group{display:flex!important;align-items:center!important;gap:4px!important;}.panel-win-btns{gap:0px!important;}.panel-win-btns .panel-shuffle-btn,.panel-win-btns .panel-minimize-btn,.panel-win-btns .panel-close{width:24px!important;height:24px!important;}.panel-win-btns .panel-close{font-size:16px!important;}.panel-win-btns .panel-close{font-size:20px!important;}.panel-win-btns .panel-minimize-btn{font-size:14px!important;}
   .panel-nav-group .modal-queue-info{font-size:11px!important;}
   .modal-nav-btn{font-size:14px!important;}
   .modal-add-btn{font-size:14px!important;}
@@ -806,8 +806,8 @@ setInterval(_checkStatus,3000);
 </div>
 
 <div class="pl-ctx-menu" id="plCtxMenu">
-  <div class="pl-ctx-item" onclick="plCtxRename()"><svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>שנה שם</div>
-  <div class="pl-ctx-item danger" onclick="plCtxDelete()">🗑 מחק</div>
+  <div class="pl-ctx-item" onclick="plCtxRename()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><line x1="15" y1="5" x2="19" y2="9"/></svg>שנה שם</div>
+  <div class="pl-ctx-item danger" onclick="plCtxDelete()"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg> מחק</div>
 </div>
 
 <!-- QUEUE PANEL -->
@@ -1771,8 +1771,8 @@ function render(term,forceQOpen){
           ondragend="_dndEnd(event)"
           onclick="event.stopPropagation()"
           title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></span>`;
-    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>`;
-    h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="מחק תיקייה">🗑</button>`;
+    h+=`<button class="btn-artist-ctrl" onclick="event.stopPropagation();adminRenameArtist('${vid}')" title="שנה שם תיקייה"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><line x1="15" y1="5" x2="19" y2="9"/></svg></button>`;
+    h+=`<button class="btn-artist-ctrl btn-del-folder" onclick="event.stopPropagation();adminDeleteArtist('${vid}')" title="מחק תיקייה"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>`;
     h+=`</div>`;
     h+=`</div><div class="songs-wrap"><table class="songs-table">`;
     g[a].forEach((r,i)=>{
@@ -1787,14 +1787,14 @@ function render(term,forceQOpen){
               ondragend="_dndEnd(event)"
               onclick="event.stopPropagation()"
               title="גרור לשינוי סדר"><svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg></button>
-            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v||r.mp4}')" title="שנה שם שיר"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04a1 1 0 000-1.41l-2.34-2.34a1 1 0 00-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg></button>
+            <button class="btn-song-ctrl" onclick="event.stopPropagation();adminRenameSong('${r.v||r.mp4}')" title="שנה שם שיר"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z"/><line x1="15" y1="5" x2="19" y2="9"/></svg></button>
             <button class="btn-move-folder" onclick="event.stopPropagation();adminMoveSongToFolder('${r.v||r.mp4}',this)" title="העבר לתיקייה אחרת"><svg width="18" height="14" viewBox="0 0 100 79.9" fill="currentColor"><path fill-rule="evenodd" d="M1.3 2.6 0 74.1 2.6 78.4 81.3 79.7 84.7 78 99.8 30.1 97.6 24.6 85.6 23.7 84.8 14.2 80 10.2 38.1 10.2 28.5 0 5.9 0Z M19.4 28.7 94.6 28.1 95.4 29.6 81.5 74.7 6.5 75.2 5.5 73.9Z M4.4 61.4 4.4 6.3 5.7 4.6 27 4.4 36.8 14.6 79.3 14.6 80.6 15.7 80.6 23.7 17.4 24.4 15 27.5Z"/></svg></button>
             <button class="btn-play${r.mp4?' mp4':''}" onclick="event.stopPropagation();playVid('${r.v||r.mp4}')" title="נגן">
               <svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg>
             </button>
             <button class="btn-add${inQ?' in-playlist':''}" data-vid="${r.v||r.mp4}" title="${inQ?'הסר מהפלייליסט':'הוסף לפלייליסט'}" onclick="event.stopPropagation();showPlaylistPopupForSong(event,'${r.v||r.mp4}')">${inQ?'<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>'}</button><button class="btn-fav${isFavorite(r.v||r.mp4)?' active':''}" data-vid="${r.v||r.mp4}" title="${isFavorite(r.v||r.mp4)?'הסר ממועדפים':'הוסף למועדפים'}" onclick="event.stopPropagation();toggleFavorite('${r.v||r.mp4}')">${isFavorite(r.v||r.mp4)?FAV_ON:FAV_OFF}</button>
             ${r.mp4?'<span class="btn-yt" style="background:none;opacity:0;pointer-events:none"></span>':`<a class="btn-yt" href="https://www.youtube.com/watch?v=${r.v}" target="_blank" title="פתח ביוטיוב">${YT_ICO}</a>`}
-            <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר">🗑</button>
+            <button class="btn-del" onclick="event.stopPropagation();adminDeleteSong('${r.v||r.mp4}')" title="מחק שיר"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button>
           </div>
         </td>
       </tr>`;
@@ -2505,7 +2505,7 @@ async function adminSyncGitHub(){
   </div>
   <div class="atb-actions-row">
     <button class="atb-btn green" onclick="adminAddSong()">+ הוסף שיר</button>
-    <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()">🗑 מחיקה</button>
+    <button class="atb-btn warn" id="atbDelModeBtn" onclick="toggleDelMode()"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg> מחיקה</button>
     <span class="atb-stat" id="atbStat"></span>
     <button class="atb-btn" onclick="exitAdmin()">✕ יציאה</button>
   </div>
@@ -2544,7 +2544,7 @@ function togglePlaylistBlock(rowEl){
   block.dataset.open=block.dataset.open==='true'?'false':'true';
 }
 </script>
-<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">הוסף לפלייליסט</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">שנה שם</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()">🗑️</button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
+<div id="plPickerOverlay"><div class="pl-picker-bg" onclick="closePlPicker()"></div><div id="plPicker"><div class="pl-picker-title">הוסף לפלייליסט</div><div id="plPickerList"></div><div class="pl-pick-sep"></div><div class="pl-pick-new" onclick="plNewFromPicker()"><span>+</span> פלייליסט חדש</div></div></div><div id="plPanel"><div id="plListView" style="display:flex;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="closePlPanel()">✕</button><div class="pl-ph-title">הפלייליסטים שלי</div></div><div class="pl-body" id="plList"></div></div><div id="plDetailView" style="display:none;flex-direction:column;height:100%;"><div class="pl-ph"><button class="pl-ph-back" onclick="plBackToList()">←</button><div class="pl-ph-title" id="plDetailName"></div><div class="pl-ph-actions"><button class="pl-btn pri" onclick="plPlayAll()">▶ נגן הכל</button><button class="pl-btn" onclick="plRename()">שנה שם</button><button class="pl-btn" style="color:#f88;" onclick="plDelete()"><svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:middle"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></button></div></div><div class="pl-body" id="plDetailSongs"></div></div></div><script>
 function _plLoad(){try{return JSON.parse(localStorage.getItem('kpl')||'[]');}catch(e){return[];}}
 function _plSave(l){localStorage.setItem('kpl',JSON.stringify(l));}
 function _plId(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7);}
