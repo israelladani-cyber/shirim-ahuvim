@@ -1023,9 +1023,15 @@ function playVid(vid){
   const idx=songList.findIndex(s=>(s.v||s.mp4)===vid);
   openModal(song,songList,idx);
   setTimeout(()=>{
+    if(window._autoOpenArtist&&window._autoOpenArtist!==song.a){
+      const prevEl=document.querySelector('.artist-avatar[data-artist="'+CSS.escape(window._autoOpenArtist)+'"]');
+      const prevBlk=prevEl?prevEl.closest('.artist-block'):null;
+      if(prevBlk)prevBlk.dataset.open='false';
+    }
     const artistEl=document.querySelector('.artist-avatar[data-artist="'+CSS.escape(song.a)+'"]');
     const blk=artistEl?artistEl.closest('.artist-block'):null;
     if(blk){blk.dataset.open='true';blk.scrollIntoView({behavior:'smooth',block:'nearest'});}
+    window._autoOpenArtist=song.a;
   },150);
 }
 
