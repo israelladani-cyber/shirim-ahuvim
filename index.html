@@ -84,8 +84,8 @@ body.admin .artist-avatar:hover::after{display:flex;}
 
 .songs-wrap{overflow:hidden;}
 .artist-block[data-open="false"] .songs-wrap{display:none;}
-.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:209px;overflow-y:auto;}
-@media(max-width:767px){.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:150px;}}
+.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:212px;overflow-y:auto;}
+@media(max-width:767px){.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:212px;}}
 
 /* SONGS TABLE */
 .songs-table{width:100%;border-collapse:collapse;}
@@ -142,7 +142,7 @@ tr.now-playing{background:#ECE9DF;}
 .pl-song-row{display:flex;align-items:center;gap:4px;padding:5px 10px;border-bottom:1px solid #F5F5F5;}
 .pl-song-row.dnd-over{background:#EEF2FF;}
 .pl-item[data-open="true"] .pl-item-chev{transform:rotate(180deg);}
-.pl-item-songs{display:none;background:#F2F2F2;max-height:269px;overflow-y:auto;}
+.pl-item-songs{display:none;background:#F2F2F2;max-height:272px;overflow-y:auto;}
 .pl-item[data-open="true"] .pl-item-songs{display:block;}
 .pl-song-row{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;border-top:1px solid #E5E5E5;}
 .pl-song-row:hover{background:#E5E5E5;}
@@ -3022,7 +3022,8 @@ function showPlaylistPopupForSong(e,vid){
   setTimeout(function(){document.addEventListener('click',closePlPopupOutside);},50);
 }
 function _positionPlPopup(popup,rect){
-  popup.style.right=Math.max(8,Math.min(window.innerWidth-rect.right,window.innerWidth-248))+'px';
+  var _w=popup.offsetWidth||248;
+popup.style.right=Math.max(8,Math.min(window.innerWidth-rect.right,window.innerWidth-_w-8))+'px';
   var popupH=popup.offsetHeight||300;
   if(rect.bottom+8+popupH>window.innerHeight && rect.top-8-popupH>0){
     popup.style.bottom=(window.innerHeight-rect.top+8)+'px';
