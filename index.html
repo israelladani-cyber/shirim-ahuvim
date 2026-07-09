@@ -1462,7 +1462,21 @@ function adminClickAvatar(name,ev){
   _curPhotoArtist=name;
   const inp=document.getElementById('artistPhotoInput');inp.value='';inp.click();
 }
-function toggleArtist(h){const b=h.closest('.artist-block');b.dataset.open=b.dataset.open==='false'?'true':'false';updateToggleBtn();}
+function _capRowsAfterOpen(wrap,rowSel){
+if(!wrap)return;
+requestAnimationFrame(function(){
+var rows=wrap.querySelectorAll(rowSel);
+if(rows.length<=4){wrap.style.maxHeight='';return;}
+var h=0;
+for(var i=0;i<4;i++){h+=rows[i].getBoundingClientRect().height;}
+wrap.style.maxHeight=Math.ceil(h)+'px';
+wrap.style.overflowY='auto';
+});
+}
+
+function toggleArtist(h){const b=h.closest('.artist-block');b.dataset.open=b.dataset.open==='false'?'true':'false';updateToggleBtn();
+if(b.dataset.open==='true'){var _vid=b.dataset.vid;if(_vid==='__fav__'||_vid==='__recent__'){_capRowsAfterOpen(b.querySelector('.songs-wrap'),'.songs-table tr');}}
+}
 // ── FLOAT PLAYER / PiP ──
 let _pipDrag=false,_pipOX=0,_pipOY=0,_pipSX=0,_pipSY=0,_pipMoved=false;
 
@@ -2837,7 +2851,9 @@ function renderPlPanel(){
   body.querySelectorAll('.pl-item[data-pl-id]').forEach(function(el){if(_openIds[el.dataset.plId])el.dataset.open='true';});
   _syncNowPlayingHighlight();
 }
-function togglePlItem(hdrEl){var item=hdrEl.closest('.pl-item');item.dataset.open=item.dataset.open==='true'?'false':'true';}
+function togglePlItem(hdrEl){var item=hdrEl.closest('.pl-item');item.dataset.open=item.dataset.open==='true'?'false':'true';
+if(item.dataset.open==='true'){_capRowsAfterOpen(item.querySelector('.pl-item-songs'),'.pl-song-row');}
+}
 function openPlCtx(e,plId){
   _plCtxId=plId;
   var menu=document.getElementById('plCtxMenu');
