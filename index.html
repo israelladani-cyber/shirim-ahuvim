@@ -2065,7 +2065,7 @@ function _dndSongStart(e,vid){
   _dndType='song';_dndVid=vid;
   e.dataTransfer.effectAllowed='move';
   e.dataTransfer.setData('text/plain',vid);
-  setTimeout(()=>{const el=document.querySelector(`tr[data-vid="${vid}"]`);if(el)el.style.opacity='.4';},0);
+  setTimeout(()=>{const el=(e.currentTarget&&e.currentTarget.closest)?e.currentTarget.closest('tr'):null;const el2=el||document.querySelector(`tr[data-vid="${vid}"]`);if(el2)el2.style.opacity='.4';},0);
 }
 function _dndArtistOver(e,targetVid){
   if(_dndType!=='artist'||_dndVid===targetVid)return;
@@ -2080,7 +2080,7 @@ function _dndSongOver(e,targetVid){
   if(!src||!tgt||src.a!==tgt.a)return;
   e.preventDefault();e.dataTransfer.dropEffect='move';
   document.querySelectorAll('tr[data-vid]').forEach(r=>r.classList.remove('drag-over-above','drag-over-below'));
-  const el=document.querySelector(`tr[data-vid="${targetVid}"]`);
+  const el=e.currentTarget&&e.currentTarget.tagName==='TR'?e.currentTarget:document.querySelector(`tr[data-vid="${targetVid}"]`);
   if(el){const r=el.getBoundingClientRect();el.classList.add(e.clientY<r.top+r.height/2?'drag-over-above':'drag-over-below');}
 }
 function _dndLeave(e){
@@ -2107,7 +2107,7 @@ function _dndSongDrop(e,targetVid){
   const src=ALL.find(s=>(s.v||s.mp4)===_dndVid),tgt=ALL.find(s=>(s.v||s.mp4)===targetVid);
   if(!src||!tgt||src.a!==tgt.a)return;
   e.preventDefault();
-  const tgtEl=document.querySelector(`tr[data-vid="${targetVid}"]`);
+  const tgtEl=e.currentTarget&&e.currentTarget.tagName==='TR'?e.currentTarget:document.querySelector(`tr[data-vid="${targetVid}"]`);
   const after=tgtEl&&tgtEl.classList.contains('drag-over-below');
   const si=ALL.indexOf(src);ALL.splice(si,1);
   const ti=ALL.indexOf(tgt);ALL.splice(after?ti+1:ti,0,src);
