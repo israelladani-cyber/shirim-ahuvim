@@ -2111,7 +2111,7 @@ function _dndSongDrop(e,targetVid){
   const after=tgtEl&&tgtEl.classList.contains('drag-over-below');
   const si=ALL.indexOf(src);ALL.splice(si,1);
   const ti=ALL.indexOf(tgt);ALL.splice(after?ti+1:ti,0,src);
-  _markDirty();_dndCleanup();render(document.getElementById('q').value||'');
+  _markDirty();_dndCleanup();render(document.getElementById('q').value||'');document.querySelectorAll('.artist-block').forEach(function(b){var av=b.querySelector('.artist-avatar[data-artist]');if(av&&av.dataset.artist===src.a)b.dataset.open='true';});
 }
 function _dndEnd(e){_dndCleanup();}
 function _dndCleanup(){
