@@ -176,7 +176,8 @@ body.playing .content{max-width:none;margin:0;}
 .panel-win-btns{flex:1;display:flex;align-items:center;justify-content:flex-end;gap:2px;}
 .panel-song-name{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#0F0F0F;}
 .panel-artist-name{font-size:11px;color:#0F0F0F;margin-top:1px;}
-.panel-close{background:none;border:none;color:#333;cursor:pointer;font-size:20px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}.panel-close:hover{background:#e0e0e0;}
+.panel-close{background:none;border:none;color:#333;cursor:pointer;font-size:20px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}
+@media(max-width:767px){.panel-close{font-size:24px;width:36px;height:36px;}}.panel-close:hover{background:#e0e0e0;}
 .panel-minimize-btn{background:none;border:none;color:#333;cursor:pointer;font-size:18px;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;line-height:1;}
 .panel-minimize-btn:hover{background:#e0e0e0;}
 .panel-shuffle-btn{background:none;border:none;color:#333;cursor:pointer;width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s,color .15s;flex-shrink:0;}.panel-shuffle-btn:hover{background:#e0e0e0;}.panel-shuffle-btn.active{color:#FF0000;}
@@ -417,12 +418,14 @@ body.admin.del-mode .atb-btn.warn{background:#ff5a5a;color:#0F0F0F;}
 /* Delete button per song row */
 .btn-del{width:28px;height:28px;border-radius:50%;background:none;border:1.5px solid transparent;color:#909090;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;line-height:1;transition:all .15s;}
 @media(min-width:768px){.btn-del{font-size:16px;}.btn-artist-ctrl.btn-del-folder{font-size:16px;}}
+@media(max-width:767px){.btn-del{width:20px;height:20px;font-size:9px;}.btn-artist-ctrl.btn-del-folder{width:22px;height:22px;font-size:9px;}}
 body.admin.del-mode .btn-del{display:flex;}
 .btn-del:hover{background:#ff5a5a;border-color:#ff5a5a;color:#0F0F0F;}
 body.admin{padding-bottom:env(safe-area-inset-bottom);}
 
 @media(max-width:767px){body.admin{padding-bottom:env(safe-area-inset-bottom);}.atb-inp[id="atbArtist"],.atb-inp[id="atbSong"]{width:90px;}}
   @media(max-width:767px){.song-actions{gap:2px;}.songs-table td.td-actions{padding:10px 4px;}body.admin.del-mode .songs-table td:not(.td-actions)>div{max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}}
+@media(max-width:767px){body.admin.del-mode .artist-name-text{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}}
 /* Drag handles */
 .drag-handle{cursor:grab;color:#606060;font-size:15px;padding:2px 6px;user-select:none;display:none;line-height:1;flex-shrink:0;transition:color .15s;}
 body.admin .drag-handle{display:inline-flex;align-items:center;}
@@ -536,6 +539,7 @@ body.admin .btn-move-folder{display:flex;}
 .karaoke-toast.show{pointer-events:auto;}
 .toast-undo-btn{background:none;border:none;color:#6CB4FF;font-size:13px;font-weight:700;cursor:pointer;padding:0;font-family:Arial,sans-serif;text-decoration:underline;flex-shrink:0;}.karaoke-toast.show{transform:translateX(0);}
 @media(min-width:768px){.karaoke-toast{top:auto;bottom:calc(var(--adm-h,58px) + 16px);font-size:15px;padding:13px 18px;}.toast-undo-btn{font-size:15px;}}
+@media(max-width:767px){.karaoke-toast{top:auto;bottom:calc(var(--adm-h,58px) + 16px);font-size:15px;padding:13px 18px;}.toast-undo-btn{font-size:15px;}}
 @media(max-width:768px){.pl-panel{border:none!important;}.pl-panel:not(.open){display:none!important;}body.playing .list-panel{flex:0 0 0!important;width:0!important;min-width:0!important;display:none!important;}body.playing .player-panel{flex:1!important;max-width:100vw!important;}}
 
 .btn-fav{width:32px;height:32px;border-radius:50%;background:none;border:1.5px solid transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;line-height:1;transition:all .15s;}
