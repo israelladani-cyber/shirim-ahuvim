@@ -1030,7 +1030,11 @@ function playVid(vid){
     }
     const artistEl=document.querySelector('.artist-avatar[data-artist="'+CSS.escape(song.a)+'"]');
     const blk=artistEl?artistEl.closest('.artist-block'):null;
-    if(blk){blk.dataset.open='true';blk.scrollIntoView({behavior:'smooth',block:'nearest'});}
+    if(blk){
+      blk.dataset.open='true';
+      const rowEl=blk.querySelector('tr[data-vid="'+CSS.escape(vid)+'"]');
+      (rowEl||blk).scrollIntoView({behavior:'smooth',block:'center'});
+    }
     window._autoOpenArtist=song.a;
   },150);
 }
@@ -1348,6 +1352,20 @@ function modalNav(dir){
   updateModalAddBtn();
   updateModalFavBtn();
   saveSession(currentSong);
+  if(window._autoOpenArtist&&window._autoOpenArtist!==currentSong.a){
+    const prevElN=document.querySelector('.artist-avatar[data-artist="'+CSS.escape(window._autoOpenArtist)+'"]');
+    const prevBlkN=prevElN?prevElN.closest('.artist-block'):null;
+    if(prevBlkN)prevBlkN.dataset.open='false';
+  }
+  const _vidNav=currentSong.v||currentSong.mp4;
+  const artistElNav=document.querySelector('.artist-avatar[data-artist="'+CSS.escape(currentSong.a)+'"]');
+  const blkNav=artistElNav?artistElNav.closest('.artist-block'):null;
+  if(blkNav){
+    blkNav.dataset.open='true';
+    const rowElNav=blkNav.querySelector('tr[data-vid="'+CSS.escape(_vidNav)+'"]');
+    (rowElNav||blkNav).scrollIntoView({behavior:'smooth',block:'center'});
+  }
+  window._autoOpenArtist=currentSong.a;
 }
 function updateModalNav(){
   document.getElementById('btnPrev').disabled=currentSongIdx<=0;
