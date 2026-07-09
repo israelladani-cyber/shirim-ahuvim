@@ -84,8 +84,8 @@ body.admin .artist-avatar:hover::after{display:flex;}
 
 .songs-wrap{overflow:hidden;}
 .artist-block[data-open="false"] .songs-wrap{display:none;}
-.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:212px;overflow-y:auto;}
-@media(max-width:767px){.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:212px;}}
+.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:209px;overflow-y:auto;}
+@media(max-width:767px){.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:150px;}}
 
 /* SONGS TABLE */
 .songs-table{width:100%;border-collapse:collapse;}
@@ -142,7 +142,7 @@ tr.now-playing{background:#ECE9DF;}
 .pl-song-row{display:flex;align-items:center;gap:4px;padding:5px 10px;border-bottom:1px solid #F5F5F5;}
 .pl-song-row.dnd-over{background:#EEF2FF;}
 .pl-item[data-open="true"] .pl-item-chev{transform:rotate(180deg);}
-.pl-item-songs{display:none;background:#F2F2F2;max-height:272px;overflow-y:auto;}
+.pl-item-songs{display:none;background:#F2F2F2;max-height:269px;overflow-y:auto;}
 .pl-item[data-open="true"] .pl-item-songs{display:block;}
 .pl-song-row{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;border-top:1px solid #E5E5E5;}
 .pl-song-row:hover{background:#E5E5E5;}
@@ -1973,8 +1973,8 @@ function openAdminLogin(){
   document.getElementById('admPinErr').textContent='';
   setTimeout(()=>document.getElementById('admPin').focus(),80);
 }
-window._enterAdminModeAuto=function(){openAdminLogin();}
-window._enterUsersPanelAuto=function(){openUsersPanel();}
+window._enterAdminModeAuto=function(){var _mt=localStorage.getItem('_medTok');if(!_mt){alert('יש להתחבר מחדש עם גוגל');return;}window._admPin=_mt;_admMode=true;document.body.classList.add('admin');_fillArtistList();const _openSt={};document.querySelectorAll('.artist-block').forEach(b=>{_openSt[b.dataset.vid]=b.dataset.open;});render(document.getElementById('q').value||'');document.querySelectorAll('.artist-block').forEach(b=>{if(_openSt[b.dataset.vid])b.dataset.open=_openSt[b.dataset.vid];});}
+window._enterUsersPanelAuto=function(){var _mt=localStorage.getItem('_medTok');if(!_mt){alert('יש להתחבר מחדש עם גוגל');return;}window._umPin=_mt;var p=document.getElementById('_userMgmt');p.style.display='flex';loadUsersPanel();}
 async function doAdmLogin(){
   const pin=document.getElementById('admPin').value;if(!pin)return;
   const h=await _sha256(pin);
@@ -2270,7 +2270,6 @@ function applyMoveSongToFolder(vid,newArtist){
   song.a=newArtist;
   _markDirty();_atbStat('✓ שיר הועבר ל'+newArtist,'ok');
   render(document.getElementById('q').value||'');
-adminSyncGitHub();
 }
 function adminMoveSongNewFolder(vid){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
@@ -2293,7 +2292,6 @@ function adminMoveSongNewFolder(vid){
     }
     _markDirty();_atbStat('✓ תיקייה חדשה נוצרה: '+newName,'ok');
     render(document.getElementById('q').value||'');
-adminSyncGitHub();
   },'');
 }
 
