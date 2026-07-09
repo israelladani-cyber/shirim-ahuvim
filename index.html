@@ -88,6 +88,8 @@ body.admin .artist-avatar:hover::after{display:flex;}
 /* SONGS TABLE */
 .songs-table{width:100%;border-collapse:collapse;}
 .songs-table tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .1s;}
+tr.now-playing{background:#E5E5E5;}
+.pl-song-row.now-playing{background:#E5E5E5;}
 .songs-table tr:last-child{border-bottom:none;}
 .songs-table tr:hover{background:rgba(0,0,0,.05);}
 .songs-table td{padding:10px 14px;font-size:15px;color:#0F0F0F;vertical-align:middle;}
@@ -1066,7 +1068,7 @@ function openModal(song,songList,idx,startSeconds){
     return;
   }
   hideFloatPlayer();
-  currentSong=song;currentSongList=songList;currentSongIdx=idx;_shuffleHist=[]; _recentAdd(song);
+  currentSong=song;currentSongList=songList;currentSongIdx=idx;_shuffleHist=[]; _recentAdd(song);_syncNowPlayingHighlight();
   document.getElementById('panelSong').textContent=song.s;
   document.getElementById('panelArtist').textContent=song.a;
   document.getElementById('miniSong').textContent=song.s;
@@ -1292,6 +1294,7 @@ function closeModal(){
 }
 function clearSession(){
   currentSong=null;
+  _syncNowPlayingHighlight();
   document.body.classList.remove('has-song');
   try{localStorage.removeItem('karaokeSession');}catch(e){}
 }
@@ -1325,6 +1328,7 @@ function modalNav(dir){
   if(next<0||next>=currentSongList.length)return;
   currentSongIdx=next;
   currentSong=currentSongList[next];
+  _syncNowPlayingHighlight();
   document.getElementById('panelSong').textContent=currentSong.s;
   document.getElementById('panelArtist').textContent=currentSong.a;
   document.getElementById('miniSong').textContent=currentSong.s;
@@ -1700,6 +1704,13 @@ function exitTheaterIfNeeded(){if(document.body.classList.contains('theater')){d
 function expandAll(){exitTheaterIfNeeded();if(document.body.classList.contains('playing')){closePlPanel();setTimeout(()=>document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true'),320);}else{document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='true');}}
 function collapseAll(){exitTheaterIfNeeded();if(document.body.classList.contains('playing')){closePlPanel();setTimeout(()=>document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false'),320);}else{document.querySelectorAll('.artist-block').forEach(b=>b.dataset.open='false');}}
 function updateToggleBtn(){}
+function _syncNowPlayingHighlight(){
+  document.querySelectorAll('.now-playing').forEach(function(el){el.classList.remove('now-playing');});
+  if(!currentSong)return;
+  var vid=currentSong.v||currentSong.mp4;
+  if(!vid)return;
+  document.querySelectorAll('tr[data-vid="'+CSS.escape(vid)+'"],.pl-song-row[data-vid="'+CSS.escape(vid)+'"]').forEach(function(el){el.classList.add('now-playing');});
+}
 function hl(t,q){if(!q)return esc(t);return esc(t).replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}
 
 async function fetchArtistImg(name){
@@ -1807,6 +1818,7 @@ function render(term,forceQOpen){
   window.scrollTo(0,_prevScroll);
   updateToggleBtn();
   loadImages();
+  _syncNowPlayingHighlight();
 }
 function clearSearch(){const i=document.getElementById('q');i.value='';document.getElementById('clr').classList.remove('visible');render('',true);}window._startVoiceSearch=function(btn){var SR=window.SpeechRecognition||window.webkitSpeechRecognition;if(!SR){alert('הדפדפן לא תומך בחיפוש קולי');return;}if(window._voiceListening){if(window._voiceRec){try{window._voiceRec.abort();}catch(e){}}return;}var rec=new SR();window._voiceRec=rec;rec.lang='he-IL';rec.interimResults=false;rec.maxAlternatives=1;window._voiceListening=true;var svg=btn.querySelector('svg');btn.style.background='#ea4335';if(svg)svg.setAttribute('fill','#fff');rec.onresult=function(ev){var transcript=ev.results[0][0].transcript;var inp=document.getElementById('q');inp.value=transcript;inp.dispatchEvent(new Event('input',{bubbles:true}));inp.focus();};rec.onerror=function(){};rec.onend=function(){window._voiceListening=false;window._voiceRec=null;btn.style.background='#F2F2F2';if(svg)svg.setAttribute('fill','#0F0F0F');};try{rec.start();}catch(e){window._voiceListening=false;}};
 
@@ -1865,7 +1877,7 @@ function loadSession(){
   try{
     const d=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');
     if(!d)return;
-    currentSong={v:d.v,s:d.s,a:d.a};
+    currentSong={v:d.v,s:d.s,a:d.a};_syncNowPlayingHighlight();
     // Don't set has-song on page load — home state is always clean (no mini bar)
     const mini=document.getElementById('miniSong');
     const miniA=document.getElementById('miniArtist');
@@ -2755,7 +2767,7 @@ function renderPlPanel(){
     var cnt=(pl.songs||[]).length;
     var songs=(pl.songs||[]).map(function(s,si){
       var vid=s.v||s.mp4;
-      return '<div class="pl-song-row" draggable="true"'
+      return '<div class="pl-song-row" data-vid="'+vid+'" draggable="true"'
         +' ondragstart="songDndStart(event,\''+pl.id+'\','+si+')"'
         +' ondragover="songDndOver(event,\''+pl.id+'\','+si+')"'
         +' ondrop="songDndDrop(event,\''+pl.id+'\','+si+')"'
@@ -2782,6 +2794,7 @@ function renderPlPanel(){
       +'</div>';
   }).join('');
   body.querySelectorAll('.pl-item[data-pl-id]').forEach(function(el){if(_openIds[el.dataset.plId])el.dataset.open='true';});
+  _syncNowPlayingHighlight();
 }
 function togglePlItem(hdrEl){var item=hdrEl.closest('.pl-item');item.dataset.open=item.dataset.open==='true'?'false':'true';}
 function openPlCtx(e,plId){
