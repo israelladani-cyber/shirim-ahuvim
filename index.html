@@ -84,7 +84,7 @@ body.admin .artist-avatar:hover::after{display:flex;}
 
 .songs-wrap{overflow:hidden;}
 .artist-block[data-open="false"] .songs-wrap{display:none;}
-.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:212px;overflow-y:auto;}
+.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:209px;overflow-y:auto;}
 @media(max-width:767px){.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:150px;}}
 
 /* SONGS TABLE */
@@ -142,7 +142,7 @@ tr.now-playing{background:#ECE9DF;}
 .pl-song-row{display:flex;align-items:center;gap:4px;padding:5px 10px;border-bottom:1px solid #F5F5F5;}
 .pl-song-row.dnd-over{background:#EEF2FF;}
 .pl-item[data-open="true"] .pl-item-chev{transform:rotate(180deg);}
-.pl-item-songs{display:none;background:#F2F2F2;max-height:272px;overflow-y:auto;}
+.pl-item-songs{display:none;background:#F2F2F2;max-height:269px;overflow-y:auto;}
 .pl-item[data-open="true"] .pl-item-songs{display:block;}
 .pl-song-row{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;border-top:1px solid #E5E5E5;}
 .pl-song-row:hover{background:#E5E5E5;}
@@ -2273,9 +2273,26 @@ function applyMoveSongToFolder(vid,newArtist){
 }
 function adminMoveSongNewFolder(vid){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
-  const name=prompt('שם התיקייה החדשה:','');
-  if(!name||!name.trim())return;
-  applyMoveSongToFolder(vid,name.trim());
+  customPrompt('תיקייה חדשה','שם התיקייה החדשה:',function(name){
+    if(!name||!name.trim())return;
+    const newName=name.trim();
+    const song2=ALL.find(s=>(s.v||s.mp4)===vid);if(!song2)return;
+    var order=[],seen={};
+    ALL.forEach(function(s){if(!seen[s.a]){seen[s.a]=true;order.push(s.a);}});
+    var anchor=null;
+    for(var i=0;i<order.length;i++){if(order[i]!==song2.a&&newName.localeCompare(order[i],'he')<0){anchor=order[i];break;}}
+    var idx=ALL.indexOf(song2);
+    ALL.splice(idx,1);
+    song2.a=newName;
+    if(anchor){
+      var anchorIdx=ALL.findIndex(function(s){return s.a===anchor;});
+      ALL.splice(anchorIdx,0,song2);
+    }else{
+      ALL.push(song2);
+    }
+    _markDirty();_atbStat('✓ תיקייה חדשה נוצרה: '+newName,'ok');
+    render(document.getElementById('q').value||'');
+  },'');
 }
 
 // ── SONG MANAGEMENT ──
