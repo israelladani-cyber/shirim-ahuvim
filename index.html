@@ -1337,7 +1337,7 @@ function modalNav(dir){
   document.getElementById('miniSong').textContent=currentSong.s;
   document.getElementById('miniArtist').textContent=currentSong.a;
   document.getElementById('miniThumb').style.backgroundImage=currentSong.mp4?'none':`url('https://i.ytimg.com/vi/${currentSong.v}/mqdefault.jpg')`;
-  if(currentSong.mp4){var _nm=document.getElementById('mp4Player');document.getElementById('yt-player').style.display='none';_nm.style.display='block';_nm.src=_mediaUrl(currentSong.mp4);_nm.play().catch(()=>{});}else{document.getElementById('yt-player').style.display='';var _nm2=document.getElementById('mp4Player');if(_nm2){_nm2.style.display='none';_nm2.pause();_nm2.src='';}if(ytPlayer&&playerReady)ytPlayer.loadVideoById(currentSong.v);}
+  if(currentSong.mp4){var _nm=document.getElementById('mp4Player');var _wasYtActive2=false;if(ytPlayer&&playerReady){try{var _st1=ytPlayer.getPlayerState();_wasYtActive2=(_st1===YT.PlayerState.PLAYING||_st1===YT.PlayerState.BUFFERING);}catch(e){}ytPlayer.pauseVideo();}document.getElementById('yt-player').style.display='none';_nm.style.display='block';_nm.pause();var _startNm=function(){_nm.src=_mediaUrl(currentSong.mp4);_nm.play().catch(()=>{});};if(_wasYtActive2){setTimeout(_startNm,150);}else{_startNm();}}else{document.getElementById('yt-player').style.display='';var _nm2=document.getElementById('mp4Player');if(_nm2){_nm2.style.display='none';_nm2.pause();_nm2.src='';}if(ytPlayer&&playerReady)ytPlayer.loadVideoById(currentSong.v);}
   updateModalNav();
   updateModalAddBtn();
   updateModalFavBtn();
