@@ -84,6 +84,8 @@ body.admin .artist-avatar:hover::after{display:flex;}
 
 .songs-wrap{overflow:hidden;}
 .artist-block[data-open="false"] .songs-wrap{display:none;}
+.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:200px;overflow-y:auto;}
+@media(max-width:767px){.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:150px;}}
 
 /* SONGS TABLE */
 .songs-table{width:100%;border-collapse:collapse;}
