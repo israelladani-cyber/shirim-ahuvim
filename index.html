@@ -2158,13 +2158,24 @@ function _rebuildFromGroups(ord,groups){ALL.length=0;ord.forEach(a=>groups[a].fo
 
 function adminRenameArtist(vid){
   const old=_artistOf(vid);if(!old)return;
-  const neu=prompt('שם חדש לתיקייה:',old);
-  if(!neu||neu===old)return;
-  const exists=_artistOrder().includes(neu)&&neu!==old;
-  if(exists&&!confirm(`תיקייה "${neu}" כבר קיימת. למזג את השירים?`))return;
-  ALL.forEach(s=>{if(s.a===old)s.a=neu;});
-  _markDirty();_atbStat('✏️ תיקייה שונה שם','ok');render(document.getElementById('q').value||'');
-  adminSyncGitHub();
+  customPrompt('שינוי שם תיקייה','שם חדש לתיקייה:',function(neu){
+    if(!neu||!neu.trim()||neu.trim()===old)return;
+    neu=neu.trim();
+    function doRename(){
+      ALL.forEach(function(s){if(s.a===old)s.a=neu;});
+      _markDirty();_atbStat('✏️ תיקייה שונה שם','ok');render(document.getElementById('q').value||'');
+      adminSyncGitHub();
+    }
+    const exists=_artistOrder().includes(neu)&&neu!==old;
+    if(exists){
+      customConfirm('מיזוג תיקיות','תיקייה "'+neu+'" כבר קיימת. למזג את השירים?','מזג').then(function(ok){
+        if(!ok)return;
+        doRename();
+      });
+    }else{
+      doRename();
+    }
+  },old);
 }
 function adminDeleteArtist(vid){
   const name=_artistOf(vid);if(!name)return;
