@@ -1211,7 +1211,7 @@ function goHome(){
   const inp=document.getElementById('q');if(inp){inp.value='';}
   document.getElementById('clr')?.classList.remove('visible');
   render('');
-  window.scrollTo({top:0,behavior:'smooth'});var _lpHome=document.querySelector('.list-panel');if(_lpHome)_lpHome.scrollTop=0;
+  window.scrollTo({top:0,behavior:'smooth'});var _lpHome=document.querySelector('.list-panel');if(_lpHome)_lpHome.scrollTo({top:0,behavior:'smooth'});
   requestAnimationFrame(setTopH);
 }
 var _miniBarSavedState=null;
