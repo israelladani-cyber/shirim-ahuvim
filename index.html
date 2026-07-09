@@ -2279,10 +2279,16 @@ function closeeFolderPicker(){
   document.removeEventListener('click',closeeFolderPicker);
 }
 function applyMoveSongToFolder(vid,newArtist){
-  const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song||song.a===newArtist)return;
-  song.a=newArtist;
-  _markDirty();_atbStat('✓ שיר הועבר ל'+newArtist,'ok');
-  render(document.getElementById('q').value||'');
+const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song||song.a===newArtist)return;
+const idx=ALL.indexOf(song);
+ALL.splice(idx,1);
+song.a=newArtist;
+let insertIdx=ALL.findIndex(function(s){return s.a===newArtist;});
+if(insertIdx===-1)insertIdx=ALL.length;
+ALL.splice(insertIdx,0,song);
+_markDirty();_atbStat('✓ שיר הועבר ל'+newArtist,'ok');
+render(document.getElementById('q').value||'');
+adminSyncGitHub();
 }
 function adminMoveSongNewFolder(vid){
   const song=ALL.find(s=>(s.v||s.mp4)===vid);if(!song)return;
@@ -2305,6 +2311,7 @@ function adminMoveSongNewFolder(vid){
     }
     _markDirty();_atbStat('✓ תיקייה חדשה נוצרה: '+newName,'ok');
     render(document.getElementById('q').value||'');
+adminSyncGitHub();
   },'');
 }
 
