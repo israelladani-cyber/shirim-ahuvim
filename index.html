@@ -2890,7 +2890,7 @@ function showUndoToast(msg,undoFn){
   t.appendChild(btn);
   t.classList.add('show');
   clearTimeout(t._tmr);
-  t._tmr=setTimeout(()=>t.classList.remove('show'),5000);
+  t._tmr=setTimeout(()=>t.classList.remove('show'),8000);
 }
 function handlePlItemClick(el){
   const plId=el.dataset.plid;
