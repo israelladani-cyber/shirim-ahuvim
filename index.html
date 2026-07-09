@@ -1211,7 +1211,7 @@ function goHome(){
   const inp=document.getElementById('q');if(inp){inp.value='';}
   document.getElementById('clr')?.classList.remove('visible');
   render('');
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});var _lpHome=document.querySelector('.list-panel');if(_lpHome)_lpHome.scrollTop=0;
   requestAnimationFrame(setTopH);
 }
 var _miniBarSavedState=null;
@@ -2174,11 +2174,11 @@ function adminDeleteArtist(vid){
     const snapshot=ALL.slice();
     for(let i=ALL.length-1;i>=0;i--){if(ALL[i].a===name){if(isInQueue(ALL[i].v))removeFromQueue(ALL[i].v);ALL.splice(i,1);}}
     _markDirty();_atbStat('🗑 תיקייה נמחקה','ok');render(document.getElementById('q').value||'');
-    adminSyncGitHub();
     showUndoToast('🗑 תיקייה נמחקה', function(){
       ALL.length=0; ALL.push.apply(ALL, snapshot);
       render(document.getElementById('q').value||'');
       _markDirty();
+    }, function(){
       adminSyncGitHub();
     });
   });
@@ -2299,12 +2299,12 @@ function adminDeleteSong(vid){
     render(document.getElementById("q").value||"");
     _keepArtistOpen();
     _markDirty();
-    adminSyncGitHub();
     showUndoToast("🗑 שיר נמחק", function(){
       ALL.splice(Math.min(idx,ALL.length),0,removed);
       render(document.getElementById("q").value||"");
       _keepArtistOpen();
       _markDirty();
+    }, function(){
       adminSyncGitHub();
     });
   });
@@ -2871,7 +2871,7 @@ function createPlaylist(name){
 }
 
 function showToast(msg){const t=document.getElementById('karaokToast');if(!t)return;t.textContent=msg;t.classList.add('show');clearTimeout(t._tmr);t._tmr=setTimeout(()=>t.classList.remove('show'),3000);}
-function showUndoToast(msg,undoFn){
+function showUndoToast(msg,undoFn,expireFn){
   const t=document.getElementById('karaokToast');
   if(!t)return;
   t.textContent='';
@@ -2890,7 +2890,10 @@ function showUndoToast(msg,undoFn){
   t.appendChild(btn);
   t.classList.add('show');
   clearTimeout(t._tmr);
-  t._tmr=setTimeout(()=>t.classList.remove('show'),8000);
+  t._tmr=setTimeout(function(){
+    t.classList.remove('show');
+    if(expireFn)expireFn();
+  },8000);
 }
 function handlePlItemClick(el){
   const plId=el.dataset.plid;
