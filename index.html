@@ -86,6 +86,7 @@ body.admin .artist-avatar:hover::after{display:flex;}
 .artist-block[data-open="false"] .songs-wrap{display:none;}
 .artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:212px;overflow-y:auto;}
 @media(max-width:767px){.artist-block[data-vid="__fav__"] .songs-wrap,.artist-block[data-vid="__recent__"] .songs-wrap{max-height:212px;}}
+body.playing .artist-block[data-vid="__fav__"] .songs-wrap,body.playing .artist-block[data-vid="__recent__"] .songs-wrap{max-height:168px;}
 
 /* SONGS TABLE */
 .songs-table{width:100%;border-collapse:collapse;}
