@@ -416,7 +416,7 @@ body.admin.del-mode .atb-btn.warn{background:#ff5a5a;color:#0F0F0F;}
 .atb-stat.ok{color:#FF0000;}.atb-stat.err{color:#ff5a5a;}
 /* Delete button per song row */
 .btn-del{width:28px;height:28px;border-radius:50%;background:none;border:1.5px solid transparent;color:#909090;cursor:pointer;display:none;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;line-height:1;transition:all .15s;}
-@media(min-width:768px){.btn-del{font-size:16px;}}
+@media(min-width:768px){.btn-del{font-size:16px;}.btn-del-folder{font-size:16px;}}
 body.admin.del-mode .btn-del{display:flex;}
 .btn-del:hover{background:#ff5a5a;border-color:#ff5a5a;color:#0F0F0F;}
 body.admin{padding-bottom:env(safe-area-inset-bottom);}
@@ -2169,9 +2169,19 @@ function adminRenameArtist(vid){
 function adminDeleteArtist(vid){
   const name=_artistOf(vid);if(!name)return;
   const cnt=ALL.filter(s=>s.a===name).length;
-  if(!confirm(`למחוק את התיקייה "${name}" עם ${cnt} שירים?`))return;
-  for(let i=ALL.length-1;i>=0;i--){if(ALL[i].a===name){if(isInQueue(ALL[i].v))removeFromQueue(ALL[i].v);ALL.splice(i,1);}}
-  _markDirty();_atbStat('🗑 תיקייה נמחקה','ok');render(document.getElementById('q').value||'');
+  customConfirm('⚠️ מחיקת תיקייה','למחוק את התיקייה "'+name+'" עם '+cnt+' שירים?','מחק').then(function(ok){
+    if(!ok)return;
+    const snapshot=ALL.slice();
+    for(let i=ALL.length-1;i>=0;i--){if(ALL[i].a===name){if(isInQueue(ALL[i].v))removeFromQueue(ALL[i].v);ALL.splice(i,1);}}
+    _markDirty();_atbStat('🗑 תיקייה נמחקה','ok');render(document.getElementById('q').value||'');
+    adminSyncGitHub();
+    showUndoToast('🗑 תיקייה נמחקה', function(){
+      ALL.length=0; ALL.push.apply(ALL, snapshot);
+      render(document.getElementById('q').value||'');
+      _markDirty();
+      adminSyncGitHub();
+    });
+  });
 }
 function adminMoveArtistUp(vid){
   const name=_artistOf(vid);if(!name)return;
@@ -2273,6 +2283,13 @@ function _fillArtistList(){
 }
 function adminDeleteSong(vid){
   const song = ALL.find(s=>(s.v||s.mp4)===vid); if(!song)return;
+  const artist = song.a;
+  function _keepArtistOpen(){
+    document.querySelectorAll('.artist-block').forEach(function(b){
+      const av=b.querySelector('.artist-avatar[data-artist]');
+      if(av&&av.dataset.artist===artist)b.dataset.open='true';
+    });
+  }
   customConfirm('⚠️ מחיקת שיר','למחוק "'+song.s+'" של '+song.a+'?','מחק').then(function(ok){
     if(!ok)return;
     const idx = ALL.findIndex(s=>(s.v||s.mp4)===vid);
@@ -2280,11 +2297,13 @@ function adminDeleteSong(vid){
     const removed = ALL.splice(idx,1)[0];
     if(isInQueue(vid))removeFromQueue(vid);
     render(document.getElementById("q").value||"");
+    _keepArtistOpen();
     _markDirty();
     adminSyncGitHub();
     showUndoToast("🗑 שיר נמחק", function(){
       ALL.splice(Math.min(idx,ALL.length),0,removed);
       render(document.getElementById("q").value||"");
+      _keepArtistOpen();
       _markDirty();
       adminSyncGitHub();
     });
