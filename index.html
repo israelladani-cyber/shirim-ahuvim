@@ -829,11 +829,11 @@ document.addEventListener('keydown', function(e){
 });
 
 (function(){
-  function tryAutoJoin(){
+  function _showJoinPrompt(code){var b=document.createElement('div');b.id='_joinPrompt';b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.3);';b.innerHTML='<span>הצטרפת לחדר '+code+' - הקש כדי להתחיל האזנה משותפת</span><button style="background:#e33;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;white-space:nowrap;">הצטרף</button>';b.querySelector('button').onclick=function(){b.remove();_roomStart(code);};document.body.appendChild(b);}function tryAutoJoin(){
     try{
       var params = new URLSearchParams(location.search);
       var joinCode = params.get('join');
-      if(joinCode && /^\d{4}$/.test(joinCode)){ _roomStart(joinCode); return; }
+      if(joinCode && /^\d{4}$/.test(joinCode)){ _showJoinPrompt(joinCode); return; }
       var saved = localStorage.getItem('karaoke_room_code');
       if(saved && /^\d{4}$/.test(saved)){ _roomStart(saved); }
     }catch(e){}
