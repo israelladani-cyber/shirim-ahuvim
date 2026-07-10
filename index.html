@@ -705,15 +705,20 @@ async function _roomTick(){
   try{
     var r = await fetch(WORKER_BASE+'/room/'+code+'/state', {cache:'no-store'});
     var j = await r.json();
-    if(j.ok && j.state && j.updatedAt && j.updatedAt > window._room.lastAppliedAt && (Date.now()-window._room.lastLocalWriteAt>1200)){
-      window._room.lastAppliedAt = j.updatedAt;
-      _roomApplyRemote(j.state);
+    if(j.ok && j.state && (Date.now()-window._room.lastLocalWriteAt>1200)){
+      var local = _roomLocalState();
+      var vidMismatch = (!local || local.vid !== j.state.vid);
+      var isNewer = (j.updatedAt && j.updatedAt > window._room.lastAppliedAt);
+      if(vidMismatch || isNewer){
+        if(j.updatedAt) window._room.lastAppliedAt = j.updatedAt;
+        _roomApplyRemote(j.state);
+      }
     }
   }catch(e){}
-  var local = _roomLocalState();
-  if(local){
+  var local2 = _roomLocalState();
+  if(local2){
     try{
-      await fetch(WORKER_BASE+'/room/'+code+'/state', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({state:local})});
+      await fetch(WORKER_BASE+'/room/'+code+'/state', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({state:local2})});
       window._room.lastLocalWriteAt = Date.now();
     }catch(e){}
   }
@@ -826,7 +831,14 @@ document.addEventListener('keydown', function(e){
       if(saved && /^\d{4}$/.test(saved)){ _roomStart(saved); }
     }catch(e){}
   }
-  setTimeout(tryAutoJoin, 1000);
+  var _readyTries=0;
+  function _waitReadyThenJoin(){
+    _readyTries++;
+    var ready = (typeof ALL!=='undefined' && ALL && ALL.length>0 && typeof playVid==='function');
+    if(ready || _readyTries>40){ tryAutoJoin(); }
+    else{ setTimeout(_waitReadyThenJoin, 250); }
+  }
+  setTimeout(_waitReadyThenJoin, 400);
 })();
 
 async function _fa(){try{var r=await fetch(WORKER_BASE+'/status');if(!r.ok)return null;var d=await r.json();return(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();});}catch(e){return null;}}
