@@ -690,7 +690,7 @@ function _roomSeekAndSet(state){
 
 function _roomApplyRemote(state){
   if(!state || !state.vid) return;
-  var local = _roomLocalState();
+  var remoteKey = JSON.stringify({vid:j.state.vid, paused:j.state.paused});
   if(!local || local.vid !== state.vid){
     if(typeof playVid==='function') playVid(state.vid);
     setTimeout(function(){ _roomSeekAndSet(state); }, 900);
@@ -705,21 +705,21 @@ async function _roomTick(){
   try{
     var r = await fetch(WORKER_BASE+'/room/'+code+'/state', {cache:'no-store'});
     var j = await r.json();
-    var __remoteStr = (j.ok && j.state) ? JSON.stringify(j.state) : null; if(j.ok && j.state && __remoteStr !== window._room.lastPushed){
-      var local = _roomLocalState();
-      var vidMismatch = (!local || local.vid !== j.state.vid);
+    if(j.ok && j.state){
+      var remoteKey = JSON.stringify({vid:j.state.vid, paused:j.state.paused});
+      var changed = (remoteKey !== window._room.lastPushed);
       var isNewer = (j.updatedAt && j.updatedAt > window._room.lastAppliedAt);
-      if(vidMismatch || isNewer){
+      if(changed){
         if(j.updatedAt) window._room.lastAppliedAt = j.updatedAt;
-        _roomApplyRemote(j.state);
+        window._room.lastPushed = remoteKey; _roomApplyRemote(j.state); return;
       }
     }
   }catch(e){}
   var local2 = _roomLocalState();
-  if(local2){
+  var __localKey = local2 ? JSON.stringify({vid:local2.vid, paused:local2.paused}) : null; if(local2 && __localKey !== window._room.lastPushed){
     try{
       await fetch(WORKER_BASE+'/room/'+code+'/state', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({state:local2})});
-      window._room.lastLocalWriteAt = Date.now(); window._room.lastPushed = JSON.stringify(local2);
+      window._room.lastLocalWriteAt = Date.now(); window._room.lastPushed = __localKey;
     }catch(e){}
   }
 }
