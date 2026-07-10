@@ -602,6 +602,7 @@ b.onclick=function(ev){
     :'<div style="width:40px;height:40px;border-radius:50%;background:#065fd4;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:18px;flex-shrink:0;">'+(nm?nm[0].toUpperCase():'?')+'</div>'
   )+'<div style="min-width:0;"><div style="font-size:14px;font-weight:500;color:#0f0f0f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'</div><div style="font-size:12px;color:#606060;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+em+'</div></div>';
   _dd.appendChild(hdr);_row('<svg height="20" viewBox="0 0 24 24" width="20" focusable="false" style="fill:#606060"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>','התראות'+((window._notifItems&&window._notifItems.length)?(' ('+window._notifItems.length+')'):''),function(){window._toggleNotifPanel(document.getElementById('userAuthBtn'));});
+      _row('<svg height="20" viewBox="0 0 24 24" width="20" focusable="false" style="fill:#606060"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>','האזנה משותפת',function(){window._toggleRoomPanel();});
 
   /* ── Row helper ── */
   function _row(svgOrEmoji,label,fn){
@@ -643,6 +644,191 @@ if(_oa){var _o=JSON.parse(_oa);if(_o&&_o.e){localStorage.setItem('_kIdent',JSON.
 }
 }catch(_e){}
 window.WORKER_BASE='https://karaoke-users-api.israel-ladani.workers.dev';
+
+/* ==== Shared listening room (client) ==== */
+window._room = { code: null, lastLocalWriteAt: 0, lastAppliedAt: 0, timer: null };
+
+function _roomLocalState(){
+  if(typeof currentSong==='undefined' || !currentSong) return null;
+  var vid = currentSong.v || currentSong.mp4;
+  if(!vid) return null;
+  var paused, time;
+  if(currentSong.mp4){
+    var el = document.getElementById('mp4Player');
+    paused = el ? el.paused : true;
+    time = el ? el.currentTime : 0;
+  } else {
+    try{
+      paused = (typeof ytPlayer!=='undefined' && ytPlayer && ytPlayer.getPlayerState) ? (ytPlayer.getPlayerState()!==1) : true;
+      time = (typeof ytPlayer!=='undefined' && ytPlayer && ytPlayer.getCurrentTime) ? ytPlayer.getCurrentTime() : 0;
+    }catch(e){ paused=true; time=0; }
+  }
+  return { vid: vid, paused: !!paused, time: time||0, s: currentSong.s, a: currentSong.a };
+}
+
+function _roomSeekAndSet(state){
+  if(typeof ALL==='undefined') return;
+  var song = ALL.find(function(s){ return (s.v||s.mp4)===state.vid; });
+  if(!song) return;
+  if(song.mp4){
+    var el = document.getElementById('mp4Player');
+    if(!el) return;
+    if(Math.abs((el.currentTime||0)-state.time)>1.5) el.currentTime = state.time;
+    if(state.paused && !el.paused) el.pause();
+    if(!state.paused && el.paused){ el.play().catch(function(){}); }
+  } else {
+    try{
+      if(typeof ytPlayer==='undefined' || !ytPlayer || !ytPlayer.getCurrentTime) return;
+      var cur = ytPlayer.getCurrentTime();
+      if(Math.abs(cur-state.time)>1.5) ytPlayer.seekTo(state.time, true);
+      var st = ytPlayer.getPlayerState();
+      if(state.paused && st===1) ytPlayer.pauseVideo();
+      if(!state.paused && st!==1) ytPlayer.playVideo();
+    }catch(e){}
+  }
+}
+
+function _roomApplyRemote(state){
+  if(!state || !state.vid) return;
+  var local = _roomLocalState();
+  if(!local || local.vid !== state.vid){
+    if(typeof playVid==='function') playVid(state.vid);
+    setTimeout(function(){ _roomSeekAndSet(state); }, 900);
+  } else {
+    _roomSeekAndSet(state);
+  }
+}
+
+async function _roomTick(){
+  if(!window._room.code) return;
+  var code = window._room.code;
+  try{
+    var r = await fetch(WORKER_BASE+'/room/'+code+'/state', {cache:'no-store'});
+    var j = await r.json();
+    if(j.ok && j.state && j.updatedAt && j.updatedAt > window._room.lastAppliedAt && (Date.now()-window._room.lastLocalWriteAt>1200)){
+      window._room.lastAppliedAt = j.updatedAt;
+      _roomApplyRemote(j.state);
+    }
+  }catch(e){}
+  var local = _roomLocalState();
+  if(local){
+    try{
+      await fetch(WORKER_BASE+'/room/'+code+'/state', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({state:local})});
+      window._room.lastLocalWriteAt = Date.now();
+    }catch(e){}
+  }
+}
+
+function _roomStart(code){
+  window._room.code = code;
+  try{ localStorage.setItem('karaoke_room_code', code); }catch(e){}
+  if(window._room.timer) clearInterval(window._room.timer);
+  window._room.timer = setInterval(_roomTick, 1500);
+  _roomTick();
+  _roomRenderPanel();
+}
+
+function _roomLeave(){
+  window._room.code = null;
+  if(window._room.timer) clearInterval(window._room.timer);
+  window._room.timer = null;
+  try{ localStorage.removeItem('karaoke_room_code'); }catch(e){}
+  _roomRenderPanel();
+}
+
+window._roomCreateAction = async function(){
+  var btn = document.getElementById('_roomCreateBtn');
+  if(btn){ btn.disabled = true; btn.textContent = 'יוצר...'; }
+  try{
+    var r = await fetch(WORKER_BASE+'/room/create', {method:'POST'});
+    var j = await r.json();
+    if(j.ok){ _roomStart(j.code); }
+    else { alert('שגיאה ביצירת חדר, נסה שוב'); }
+  }catch(e){ alert('שגיאה ביצירת חדר, נסה שוב'); }
+  if(btn){ btn.disabled=false; btn.textContent='צור חדר חדש'; }
+};
+
+window._roomJoinAction = function(){
+  var inp = document.getElementById('_roomJoinInput');
+  var code = inp ? inp.value.trim() : '';
+  if(!/^\d{4}$/.test(code)){
+    var err = document.getElementById('_roomJoinErr');
+    if(err) err.style.display='block';
+    return;
+  }
+  _roomStart(code);
+};
+
+window._roomLeaveAction = function(){ _roomLeave(); };
+
+function _roomRenderPanel(){
+  var box = document.getElementById('_roomBoxInner');
+  if(!box) return;
+  if(window._room.code){
+    var joinUrl = location.origin+location.pathname+'?join='+window._room.code;
+    var qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(joinUrl);
+    box.innerHTML = ''
+      +'<div class="adm-title">האזנה משותפת</div>'
+      +'<div style="text-align:center;margin-bottom:14px;">'
+      +'<div style="font-size:13px;color:#606060;margin-bottom:6px;">קוד החדר</div>'
+      +'<div style="font-size:32px;font-weight:700;letter-spacing:4px;">'+window._room.code+'</div>'
+      +'</div>'
+      +'<div style="display:flex;justify-content:center;margin-bottom:16px;">'
+      +'<img src="'+qrSrc+'" width="150" height="150" style="border-radius:8px;" alt="QR">'
+      +'</div>'
+      +'<div style="font-size:12px;color:#606060;text-align:center;margin-bottom:16px;">סרוק את הקוד או הזן אותו במכשיר השני כדי להצטרף לאותו שיר</div>'
+      +'<div class="adm-row"><button class="adm-btn sec" onclick="window._roomLeaveAction()">עזוב חדר</button></div>';
+  } else {
+    box.innerHTML = ''
+      +'<div class="adm-title">האזנה משותפת</div>'
+      +'<div style="font-size:13px;color:#606060;margin-bottom:16px;">צור חדר חדש או הצטרף לחדר קיים כדי לשמוע ולשלוט באותו שיר משני מכשירים</div>'
+      +'<div class="adm-row" style="margin-bottom:18px;"><button class="adm-btn" id="_roomCreateBtn" onclick="window._roomCreateAction()">צור חדר חדש</button></div>'
+      +'<div style="border-top:1px solid #eee;padding-top:16px;">'
+      +'<div style="font-size:13px;color:#606060;margin-bottom:8px;">או הזן קוד להצטרפות</div>'
+      +'<div style="display:flex;gap:8px;">'
+      +'<input id="_roomJoinInput" maxlength="4" placeholder="0000" style="flex:1;font-size:20px;text-align:center;letter-spacing:4px;padding:8px;border:1px solid #ccc;border-radius:8px;">'
+      +'<button class="adm-btn" onclick="window._roomJoinAction()">הצטרף</button>'
+      +'</div>'
+      +'<div class="adm-err" id="_roomJoinErr" style="display:none;">קוד לא תקין - יש להזין 4 ספרות</div>'
+      +'</div>';
+  }
+}
+
+window._toggleRoomPanel = function(){
+  var ov = document.getElementById('_roomOverlay');
+  if(!ov){
+    ov = document.createElement('div');
+    ov.id = '_roomOverlay';
+    ov.className = 'adm-overlay';
+    ov.innerHTML = '<div class="adm-box" id="_roomBoxInner"></div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function(e){ if(e.target===ov) ov.style.display='none'; });
+  }
+  var showing = ov.style.display==='flex';
+  if(showing){ ov.style.display='none'; }
+  else{ _roomRenderPanel(); ov.style.display='flex'; }
+};
+
+document.addEventListener('keydown', function(e){
+  if(e.key==='Escape'){
+    var ov=document.getElementById('_roomOverlay');
+    if(ov && ov.style.display==='flex') ov.style.display='none';
+  }
+});
+
+(function(){
+  function tryAutoJoin(){
+    try{
+      var params = new URLSearchParams(location.search);
+      var joinCode = params.get('join');
+      if(joinCode && /^\d{4}$/.test(joinCode)){ _roomStart(joinCode); return; }
+      var saved = localStorage.getItem('karaoke_room_code');
+      if(saved && /^\d{4}$/.test(saved)){ _roomStart(saved); }
+    }catch(e){}
+  }
+  setTimeout(tryAutoJoin, 1000);
+})();
+
 async function _fa(){try{var r=await fetch(WORKER_BASE+'/status');if(!r.ok)return null;var d=await r.json();return(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();});}catch(e){return null;}}
 async function _fu(){try{var r=await fetch(WORKER_BASE+'/status');if(!r.ok)return null;var d=await r.json();return{approved:(d.approved||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),pending:(d.pending||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),rejected:(d.rejected||[]).map(function(x){return(x.e||x).toLowerCase().trim();}),frozen:(d.frozen||[]).map(function(x){return(x.e||x).toLowerCase().trim();})};}catch(e){return null;}}
 window._mediaKey=function(u){try{var p=new URL(u);return decodeURIComponent(p.pathname.replace(/^\//,''));}catch(e){return u;}};window._mediaUrl=function(mp4){var tok=localStorage.getItem('_medTok')||'';return WORKER_BASE+'/media?key='+encodeURIComponent(_mediaKey(mp4))+'&tok='+encodeURIComponent(tok);};window._fetchMediaToken=async function(cred){try{var r=await fetch(WORKER_BASE+'/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:cred})});if(!r.ok)return;var d=await r.json();if(d.token){localStorage.setItem('_medTok',d.token);}}catch(e){}};window._medTokValid=function(){var t=localStorage.getItem('_medTok');if(!t)return false;var i=t.lastIndexOf('.');if(i<0)return false;try{var pb=t.slice(0,i).replace(/-/g,'+').replace(/_/g,'/');var pad=pb.length%4===0?'':'='.repeat(4-(pb.length%4));var payload=JSON.parse(atob(pb+pad));return !!(payload.x&&payload.x>Date.now());}catch(e){return false;}};
