@@ -690,8 +690,8 @@ function _roomSeekAndSet(state){
 
 function _roomApplyRemote(state){
   if(!state || !state.vid) return;
-  var remoteKey = JSON.stringify({vid:j.state.vid, paused:j.state.paused});
-  if(!local || local.vid !== state.vid){
+
+  var local = _roomLocalState(); if(!local || local.vid !== state.vid){
     if(typeof playVid==='function') playVid(state.vid);
     setTimeout(function(){ _roomSeekAndSet(state); }, 900);
   } else {
@@ -817,7 +817,7 @@ window._toggleRoomPanel = function(){
   } else {
     var box = document.getElementById('_roomBoxInner');
     box.innerHTML = '<div class="adm-title">האזנה משותפת</div><div style="text-align:center;padding:30px 0;color:#606060;font-size:14px;">יוצר חדר...</div>';
-    window._roomCreateAction();
+    _roomRenderPanel();
   }
 };
 
