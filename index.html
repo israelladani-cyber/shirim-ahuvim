@@ -646,7 +646,7 @@ if(_oa){var _o=JSON.parse(_oa);if(_o&&_o.e){localStorage.setItem('_kIdent',JSON.
 window.WORKER_BASE='https://karaoke-users-api.israel-ladani.workers.dev';
 
 /* ==== Shared listening room (client) ==== */
-window._room = { code: null, lastLocalWriteAt: 0, lastAppliedAt: 0, timer: null };
+window._room = { code: null, lastLocalWriteAt: 0, lastAppliedAt: 0, timer: null, lastPushed: null };
 
 function _roomLocalState(){
   if(typeof currentSong==='undefined' || !currentSong) return null;
@@ -705,7 +705,7 @@ async function _roomTick(){
   try{
     var r = await fetch(WORKER_BASE+'/room/'+code+'/state', {cache:'no-store'});
     var j = await r.json();
-    if(j.ok && j.state && (Date.now()-window._room.lastLocalWriteAt>1200)){
+    var __remoteStr = (j.ok && j.state) ? JSON.stringify(j.state) : null; if(j.ok && j.state && __remoteStr !== window._room.lastPushed){
       var local = _roomLocalState();
       var vidMismatch = (!local || local.vid !== j.state.vid);
       var isNewer = (j.updatedAt && j.updatedAt > window._room.lastAppliedAt);
@@ -719,7 +719,7 @@ async function _roomTick(){
   if(local2){
     try{
       await fetch(WORKER_BASE+'/room/'+code+'/state', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({state:local2})});
-      window._room.lastLocalWriteAt = Date.now();
+      window._room.lastLocalWriteAt = Date.now(); window._room.lastPushed = JSON.stringify(local2);
     }catch(e){}
   }
 }
