@@ -2432,6 +2432,7 @@ function adminAddSong(_forcedArtist){
   if(ALL.some(s=>s.v===vid)){_atbStat("שיר זה כבר קיים ברשימה","err");return;}
     entry={a:artist,s:song,v:vid};
   }
+  if(!entry.tempo){if(window._pendingTempo){entry.tempo=window._pendingTempo;window._pendingTempo=null;}else{window._promptTempoAndAdd(function(t){window._pendingTempo=t;adminAddSong(artist);});return;}}
   const lastIdx=ALL.reduce((li,s,i)=>s.a===artist?i:li,-1);
   if(lastIdx>=0){
     ALL.splice(lastIdx+1,0,entry);
@@ -2456,6 +2457,7 @@ function adminAddSong(_forcedArtist){
   _markDirty();_atbStat("✓ שיר נוסף","ok");
   adminSyncGitHub();
 }
+window._promptTempoAndAdd=function(cb){var ov=document.createElement('div');ov.className='adm-overlay';ov.style.display='flex';ov.innerHTML='<div class="adm-box"><div class="adm-title">סיווג קצב</div><div style="font-size:14px;color:#0F0F0F;margin-bottom:14px;">חובה לבחור סיווג קצב לשיר לפני הוספתו</div><div class="adm-err" id="_tempoDlgErr"></div><div class="adm-row"><button class="adm-btn" id="_tempoDlgFast">קצבי</button><button class="adm-btn sec" id="_tempoDlgSlow">שקט</button></div></div>';document.body.appendChild(ov);function blockClose(){document.getElementById('_tempoDlgErr').textContent='לא ניתן להוסיף שיר בלי לבחור סיווג';}ov.addEventListener('click',function(e){if(e.target===ov)blockClose();});function onKey(e){if(e.key==='Escape'){e.stopPropagation();blockClose();}}document.addEventListener('keydown',onKey,true);function finish(t){document.removeEventListener('keydown',onKey,true);ov.remove();cb(t);}document.getElementById('_tempoDlgFast').onclick=function(){finish('קצבי');};document.getElementById('_tempoDlgSlow').onclick=function(){finish('שקט');};};
 function adminSetPhoto(artist){
   const cur=CUSTOM_PHOTOS[artist]||localStorage.getItem('artist_photo_'+artist)||'';
   const url=prompt('כתובת תמונה לאמן "'+artist+'":\n(ריק = מחיקה)',cur);
