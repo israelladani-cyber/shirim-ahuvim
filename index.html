@@ -766,7 +766,7 @@ window._roomJoinAction = function(){
 
 window._roomLeaveAction = function(){ _roomLeave(); };
 
-function _roomRenderPanel(){
+function _roomRenderPanel(){_renderShareSongPanel();return;
   var box = document.getElementById('_roomBoxInner');
   if(!box) return;
   if(window._room.code){
@@ -799,7 +799,7 @@ function _roomRenderPanel(){
   }
 }
 
-window._toggleRoomPanel = function(){
+function _renderShareSongPanel(){var box=document.getElementById('_roomBoxInner');if(!box)return;if(typeof currentSong==='undefined'||!currentSong){box.innerHTML='<div class="adm-title">שיתוף שיר</div><div style="text-align:center;padding:30px 0;color:#606060;font-size:14px;">אין שיר מתנגן כרגע</div>';return;}var vid=currentSong.v||currentSong.mp4;var local=(typeof _roomLocalState==='function')?_roomLocalState():null;var t=(local&&local.time)?Math.floor(local.time):0;var shareUrl=location.origin+location.pathname+'?s='+encodeURIComponent(vid)+'&t='+t;var qrSrc='https://api.qrserver.com/v1/create-qr-code/?size=180x180&data='+encodeURIComponent(shareUrl);box.innerHTML=''+'<div class="adm-title">שיתוף שיר</div>'+'<div style="text-align:center;margin-bottom:14px;font-size:14px;color:#606060;">'+(currentSong.s||'')+'</div>'+'<div style="display:flex;justify-content:center;margin-bottom:16px;">'+'<img src="'+qrSrc+'" width="150" height="150" style="border-radius:8px;" alt="QR">'+'</div>'+'<div style="font-size:12px;color:#606060;text-align:center;margin-bottom:12px;">סרקו את הקוד כדי לפתוח את אותו שיר במכשיר השני</div>'+'<div class="adm-row"><button class="adm-btn" id="_shareCopyBtn">העתק קישור</button></div>';var cbtn=document.getElementById('_shareCopyBtn');if(cbtn)cbtn.onclick=function(){if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(shareUrl).then(function(){cbtn.textContent='הועתק!';setTimeout(function(){cbtn.textContent='העתק קישור';},1500);}).catch(function(){});}};}function _showSharedSongPrompt(vid,t){try{var song=(typeof ALL!=='undefined'&&ALL)?ALL.find(function(s){return(s.v||s.mp4)===vid;}):null;if(!song)return;var b=document.createElement('div');b.id='_sharePrompt';b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.3);';b.innerHTML='<span>שותף איתך השיר: '+(song.s||'')+' - הקש כדי לנגן</span><button style="background:#e33;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;white-space:nowrap;">נגן</button>';b.querySelector('button').onclick=function(){b.remove();if(typeof playVid==='function')playVid(vid);if(t&&typeof _roomSeekAndSet==='function'){setTimeout(function(){_roomSeekAndSet({vid:vid,time:t,paused:false});},900);}};document.body.appendChild(b);}catch(e){}}(function(){function tryOpenShared(){try{var params=new URLSearchParams(location.search);var s=params.get('s');var t=parseInt(params.get('t')||'0',10)||0;if(s){_showSharedSongPrompt(s,t);}}catch(e){}}var _sReadyTries=0;function _waitReadyThenShare(){_sReadyTries++;var ready=(typeof ALL!=='undefined'&&ALL&&ALL.length>0&&typeof playVid==='function');if(ready||_sReadyTries>40){tryOpenShared();}else{setTimeout(_waitReadyThenShare,250);}}setTimeout(_waitReadyThenShare,400);})();window._toggleRoomPanel = function(){
   var ov = document.getElementById('_roomOverlay');
   if(!ov){
     ov = document.createElement('div');
