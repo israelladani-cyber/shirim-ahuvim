@@ -659,7 +659,7 @@ try{
 }catch(e){}
 
 /* ==== Shared listening room (client) ==== */
-window._room = { code: null, lastLocalWriteAt: 0, lastAppliedAt: 0, timer: null, lastPushed: null, clientId: null, ref: null };
+window._room = { code: null, lastLocalWriteAt: 0, lastAppliedAt: 0, timer: null, lastPushed: null, clientId: null, ref: null, isHost: null, muted: false };
 
 function _roomLocalState(){
   if(typeof currentSong==='undefined' || !currentSong) return null;
@@ -679,6 +679,16 @@ function _roomLocalState(){
   return { vid: vid, paused: !!paused, time: time||0, s: currentSong.s, a: currentSong.a };
 }
 
+function _roomApplyMute(){
+  var m = !!window._room.muted;
+  try{ var el = document.getElementById('mp4Player'); if(el) el.muted = m; }catch(e){}
+  try{ if(typeof ytPlayer!=='undefined' && ytPlayer && ytPlayer.mute){ if(m) ytPlayer.mute(); else ytPlayer.unMute(); } }catch(e){}
+}
+window._roomToggleMute = function(){
+  window._room.muted = !window._room.muted;
+  _roomApplyMute();
+  _roomRenderPanel();
+};
 function _roomSeekAndSet(state){
   if(typeof ALL==='undefined') return;
   var song = ALL.find(function(s){ return (s.v||s.mp4)===state.vid; });
@@ -699,6 +709,7 @@ function _roomSeekAndSet(state){
       if(!state.paused && st!==1) ytPlayer.playVideo();
     }catch(e){}
   }
+  _roomApplyMute();
 }
 
 function _roomApplyRemote(state){
@@ -762,6 +773,8 @@ window._roomCreateAction = async function(){
     var local = _roomLocalState() || {vid:null,paused:true,time:0};
     var payload = { vid: local.vid||null, paused: !!local.paused, time: local.time||0, s: local.s||null, a: local.a||null, writer: window._room.clientId, updatedAt: Date.now() };
     await window._fbDb.ref('rooms/'+code).set(payload);
+    window._room.isHost = true;
+    window._room.muted = false;
     _roomStart(code);
   }catch(e){ alert('\u05e9\u05d2\u05d9\u05d0\u05d4 \u05d1\u05d9\u05e6\u05d9\u05e8\u05ea \u05d7\u05d3\u05e8, \u05e0\u05e1\u05d4 \u05e9\u05d5\u05d1'); }
   if(btn){ btn.disabled = false; btn.textContent = '\u05e6\u05d5\u05e8 \u05d7\u05d3\u05e8'; }
@@ -775,6 +788,8 @@ window._roomJoinAction = function(){
     if(err) err.style.display='block';
     return;
   }
+  window._room.isHost = false;
+  window._room.muted = true;
   _roomStart(code);
 };
 
@@ -796,6 +811,7 @@ function _roomRenderPanel(){
       +'<img src="'+qrSrc+'" width="150" height="150" style="border-radius:8px;" alt="QR">'
       +'</div>'
       +'<div style="font-size:12px;color:#606060;text-align:center;margin-bottom:16px;">סרוק את הקוד או הזן אותו במכשיר השני כדי להצטרף לאותו שיר</div>'
+      +'<div class="adm-row"><button class="adm-btn sec" onclick="window._roomToggleMute()">'+(window._room.muted?'מושתק - הקש להפעלת קול':'קול פעיל - הקש להשתקה')+'</button></div>'
       +'<div class="adm-row"><button class="adm-btn sec" onclick="window._roomLeaveAction()">עזוב חדר</button></div>';
   } else {
     box.innerHTML = ''
@@ -843,13 +859,13 @@ document.addEventListener('keydown', function(e){
 });
 
 (function(){
-  function _showJoinPrompt(code){var b=document.createElement('div');b.id='_joinPrompt';b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.3);';b.innerHTML='<span>הצטרפת לחדר '+code+' - הקש כדי להתחיל האזנה משותפת</span><button style="background:#e33;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;white-space:nowrap;">הצטרף</button>';b.querySelector('button').onclick=function(){b.remove();_roomStart(code);};document.body.appendChild(b);}function tryAutoJoin(){
+  function _showJoinPrompt(code){var b=document.createElement('div');b.id='_joinPrompt';b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.3);';b.innerHTML='<span>הצטרפת לחדר '+code+' - הקש כדי להתחיל האזנה משותפת</span><button style="background:#e33;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;white-space:nowrap;">הצטרף</button>';b.querySelector('button').onclick=function(){b.remove();window._room.isHost=false;window._room.muted=true;_roomStart(code);};document.body.appendChild(b);}function tryAutoJoin(){
     try{
       var params = new URLSearchParams(location.search);
       var joinCode = params.get('join');
       if(joinCode && /^\d{4}$/.test(joinCode)){ _showJoinPrompt(joinCode); return; }
       var saved = localStorage.getItem('karaoke_room_code');
-      if(saved && /^\d{4}$/.test(saved)){ _roomStart(saved); }
+      if(saved && /^\d{4}$/.test(saved)){ window._room.isHost=false; window._room.muted=true; _roomStart(saved); }
     }catch(e){}
   }
   var _readyTries=0;
