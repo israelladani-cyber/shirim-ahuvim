@@ -569,6 +569,8 @@ body.admin .btn-move-folder{display:flex;}
     <div id="gAuthLoading" style="display:none;color:#888;font-size:13px;font-family:Arial,sans-serif;">&#1502;&#1488;&#1502;&#1514;&#1489;&#1512;...</div>
   </div>
 </div>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-database-compat.js"></script>
 <script>(function(){
 function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;if(o.style.display==='none')return;o.style.opacity='0';setTimeout(function(){o.style.display='none';},260);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}if(o.style.display!=='flex'){o.style.opacity='0';o.style.display='flex';requestAnimationFrame(function(){requestAnimationFrame(function(){o.style.opacity='1';});});}else{o.style.opacity='1';}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
@@ -645,8 +647,19 @@ if(_oa){var _o=JSON.parse(_oa);if(_o&&_o.e){localStorage.setItem('_kIdent',JSON.
 }catch(_e){}
 window.WORKER_BASE='https://karaoke-users-api.israel-ladani.workers.dev';
 
+/* ==== Firebase (live room sync) ==== */
+try{
+  firebase.initializeApp({
+    apiKey: "AIzaSyBljPVkLoqbdw2HI9GWYCJE81mXz1JHxmw",
+    authDomain: "karaoke-sync-fe63b.firebaseapp.com",
+    databaseURL: "https://karaoke-sync-fe63b-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "karaoke-sync-fe63b"
+  });
+  window._fbDb = firebase.database();
+}catch(e){}
+
 /* ==== Shared listening room (client) ==== */
-window._room = { code: null, lastLocalWriteAt: 0, lastAppliedAt: 0, timer: null, lastPushed: null };
+window._room = { code: null, lastLocalWriteAt: 0, lastAppliedAt: 0, timer: null, lastPushed: null, clientId: null, ref: null };
 
 function _roomLocalState(){
   if(typeof currentSong==='undefined' || !currentSong) return null;
@@ -699,37 +712,34 @@ function _roomApplyRemote(state){
   }
 }
 
-async function _roomTick(){
-  if(!window._room.code) return;
-  var code = window._room.code;
-  try{
-    var r = await fetch(WORKER_BASE+'/room/'+code+'/state', {cache:'no-store'});
-    var j = await r.json();
-    if(j.ok && j.state){
-      var remoteKey = JSON.stringify({vid:j.state.vid, paused:j.state.paused});
-      var changed = (remoteKey !== window._room.lastPushed);
-      var isNewer = (j.updatedAt && j.updatedAt > window._room.lastAppliedAt);
-      if(changed){
-        if(j.updatedAt) window._room.lastAppliedAt = j.updatedAt;
-        window._room.lastPushed = remoteKey; _roomApplyRemote(j.state); return;
-      }
-    }
-  }catch(e){}
-  var local2 = _roomLocalState();
-  var __localKey = local2 ? JSON.stringify({vid:local2.vid, paused:local2.paused}) : null; if(local2 && __localKey !== window._room.lastPushed){
-    try{
-      await fetch(WORKER_BASE+'/room/'+code+'/state', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({state:local2})});
-      window._room.lastLocalWriteAt = Date.now(); window._room.lastPushed = __localKey;
-    }catch(e){}
-  }
+async function _roomPushIfChanged(){
+  if(!window._room.code || !window._room.ref) return;
+  var local = _roomLocalState();
+  if(!local) return;
+  var key = JSON.stringify({vid:local.vid, paused:local.paused});
+  if(key===window._room.lastPushed) return;
+  window._room.lastPushed = key;
+  var payload = { vid: local.vid||null, paused: !!local.paused, time: local.time||0, s: local.s||null, a: local.a||null, writer: window._room.clientId, updatedAt: Date.now() };
+  try{ window._room.ref.set(payload); }catch(e){}
 }
 
 function _roomStart(code){
   window._room.code = code;
+  if(!window._room.clientId) window._room.clientId = 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36);
   try{ localStorage.setItem('karaoke_room_code', code); }catch(e){}
   if(window._room.timer) clearInterval(window._room.timer);
-  window._room.timer = setInterval(_roomTick, 1500);
-  _roomTick();
+  if(window._room.ref){ try{ window._room.ref.off(); }catch(e){} }
+  if(window._fbDb){
+    window._room.ref = window._fbDb.ref('rooms/'+code);
+    window._room.ref.on('value', function(snap){
+      var data = snap.val();
+      if(!data || data.writer===window._room.clientId) return;
+      window._room.lastAppliedAt = data.updatedAt||Date.now();
+      window._room.lastPushed = JSON.stringify({vid:data.vid, paused:data.paused});
+      _roomApplyRemote(data);
+    });
+  }
+  window._room.timer = setInterval(_roomPushIfChanged, 1500);
   _roomRenderPanel();
 }
 
@@ -737,21 +747,25 @@ function _roomLeave(){
   window._room.code = null;
   if(window._room.timer) clearInterval(window._room.timer);
   window._room.timer = null;
+  if(window._room.ref){ try{ window._room.ref.off(); }catch(e){} window._room.ref = null; }
   try{ localStorage.removeItem('karaoke_room_code'); }catch(e){}
   _roomRenderPanel();
 }
 
 window._roomCreateAction = async function(){
   var btn = document.getElementById('_roomCreateBtn');
-  if(btn){ btn.disabled = true; btn.textContent = 'יוצר...'; }
+  if(btn){ btn.disabled = true; btn.textContent = '...'; }
   try{
-    var r = await fetch(WORKER_BASE+'/room/create', {method:'POST'});
-    var j = await r.json();
-    if(j.ok){ _roomStart(j.code); }
-    else { alert('שגיאה ביצירת חדר, נסה שוב'); }
-  }catch(e){ alert('שגיאה ביצירת חדר, נסה שוב'); }
-  if(btn){ btn.disabled=false; btn.textContent='צור חדר חדש'; }
-};
+    if(!window._fbDb) throw new Error('no-db');
+    var code = String(Math.floor(1000+Math.random()*9000));
+    if(!window._room.clientId) window._room.clientId = 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36);
+    var local = _roomLocalState() || {vid:null,paused:true,time:0};
+    var payload = { vid: local.vid||null, paused: !!local.paused, time: local.time||0, s: local.s||null, a: local.a||null, writer: window._room.clientId, updatedAt: Date.now() };
+    await window._fbDb.ref('rooms/'+code).set(payload);
+    _roomStart(code);
+  }catch(e){ alert('\u05e9\u05d2\u05d9\u05d0\u05d4 \u05d1\u05d9\u05e6\u05d9\u05e8\u05ea \u05d7\u05d3\u05e8, \u05e0\u05e1\u05d4 \u05e9\u05d5\u05d1'); }
+  if(btn){ btn.disabled = false; btn.textContent = '\u05e6\u05d5\u05e8 \u05d7\u05d3\u05e8'; }
+};;
 
 window._roomJoinAction = function(){
   var inp = document.getElementById('_roomJoinInput');
@@ -766,7 +780,7 @@ window._roomJoinAction = function(){
 
 window._roomLeaveAction = function(){ _roomLeave(); };
 
-function _roomRenderPanel(){_renderShareSongPanel();return;
+function _roomRenderPanel(){
   var box = document.getElementById('_roomBoxInner');
   if(!box) return;
   if(window._room.code){
