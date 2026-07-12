@@ -938,7 +938,7 @@ window._joinShowCodeEntry = function(){
     +'<div class="adm-row" style="margin-top:10px"><button class="adm-btn sec" onclick="window._joinRenderPanel()">ביטול</button></div>';
 };
 
-function _roomSendCtrl(paused){
+window._roomSendCtrl = function(paused){
   try{
     if(window._room && window._room.code && window._room.isHost===false && window._room.ref){
       window._fbDb.ref('roomsCtrl/'+window._room.code).set({paused: !!paused, clientId: window._room.clientId, ts: Date.now()});
@@ -1758,14 +1758,14 @@ function clearSession(){
 function miniPlayPause(){
   var _mp4e=document.getElementById('mp4Player');
   if(currentSong&&currentSong.mp4&&_mp4e){
-    if(_mp4e.paused){_mp4e.play().catch(()=>{});document.getElementById('miniPlayBtn').innerHTML=MINI_PAUSE;_roomSendCtrl(false);}
-    else{_mp4e.pause();document.getElementById('miniPlayBtn').innerHTML=MINI_PLAY;_roomSendCtrl(true);}
+    if(_mp4e.paused){_mp4e.play().catch(()=>{});document.getElementById('miniPlayBtn').innerHTML=MINI_PAUSE;window._roomSendCtrl(false);}
+    else{_mp4e.pause();document.getElementById('miniPlayBtn').innerHTML=MINI_PLAY;window._roomSendCtrl(true);}
     return;
   }
   if(!ytPlayer||!playerReady)return;
   const s=ytPlayer.getPlayerState();
-  if(s===YT.PlayerState.PLAYING||s===YT.PlayerState.BUFFERING){ytPlayer.pauseVideo();_roomSendCtrl(true);}
-  else{ytPlayer.playVideo();_roomSendCtrl(false);}
+  if(s===YT.PlayerState.PLAYING||s===YT.PlayerState.BUFFERING){ytPlayer.pauseVideo();window._roomSendCtrl(true);}
+  else{ytPlayer.playVideo();window._roomSendCtrl(false);}
   // Button text updated via onStateChange
 }
 function modalNav(dir){
