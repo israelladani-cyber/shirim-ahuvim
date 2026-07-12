@@ -874,12 +874,16 @@ window._roomJoinAction = function(){
 
 window._roomLeaveAction = function(){ _roomLeave(); };
 
-window._multiplayerOpenMenu = function(anchorBtn){
+window._multiplayerOpenMenu = function(anchorBtn, view){
   try{
     var existing = document.getElementById('_mpMenu');
-    if(existing){ existing.remove(); return; }
-    var btn = anchorBtn || document.getElementById('roomShareBtn');
+    if(existing){
+      if(!anchorBtn && !view){ existing.remove(); if(typeof window._qrStopScan==='function') window._qrStopScan(); return; }
+      existing.remove();
+    }
+    var btn = anchorBtn || window._mpAnchor || document.getElementById('roomShareBtn');
     if(!btn) return;
+    window._mpAnchor = btn;
     var menu = document.createElement('div');
     menu.id = '_mpMenu';
     menu.style.cssText = 'position:fixed;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);min-width:230px;z-index:10001;overflow:hidden;direction:rtl;';
@@ -896,11 +900,13 @@ window._multiplayerOpenMenu = function(anchorBtn){
       row.innerHTML = '<span>'+icon+'</span><span>'+label+'</span>';
       row.onmouseenter = function(){this.style.background='#f1f3f4';};
       row.onmouseleave = function(){this.style.background='';};
-      row.onclick = function(){ menu.remove(); document.removeEventListener('click',_cl); fn(); };
+      row.onclick = function(){ fn(); };
       menu.appendChild(row);
     }
-    if(window._room && window._room.code){
-      if(window._room.isHost){
+    function closeMenu(){ var m=document.getElementById('_mpMenu'); if(m){ m.remove(); } document.removeEventListener('click',_cl); }
+    var mode = view || (window._room && window._room.code ? 'connected' : 'main');
+    if(mode==='connected'){
+      if(window._room && window._room.isHost){
         var joinUrl = location.origin+location.pathname+'?join='+window._room.code;
         var qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(joinUrl);
         var info = document.createElement('div');
@@ -908,16 +914,47 @@ window._multiplayerOpenMenu = function(anchorBtn){
         info.innerHTML = '<div style="font-size:12px;color:#606060;margin-bottom:4px;">קוד החדר</div><div style="font-size:22px;font-weight:700;letter-spacing:3px;margin-bottom:8px;">'+window._room.code+'</div><img src="'+qrSrc+'" width="100" height="100" style="border-radius:8px;" alt="QR">';
         menu.appendChild(info);
       }
-      addOpt('🎵','חזור לנגן המשותף',function(){ window._multiplayerResume(); });
-      addOpt('🔄','החלף שליטה',function(){ window._roomTakeControl(); });
-      addOpt(window._room.muted?'🔇':'🔊', window._room.muted?'מושתק - הקש להפעלת קול':'קול פעיל - הקש להשתקה', function(){ window._roomToggleMute(); });
-      addOpt('🚪', window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ window._multiplayerLeave(); });
-    } else {
-      addOpt('➕','צור חדר חדש', function(){ window._roomCreateAction(); });
-      addOpt('🔗','הצטרף לחדר', function(){ window._joinTogglePanel(); });
+      addOpt('🎵','חזור לנגן המשותף',function(){ closeMenu(); window._multiplayerResume(); });
+      addOpt('🔄','החלף שליטה',function(){ closeMenu(); window._roomTakeControl(); });
+      addOpt(window._room.muted?'🔇':'🔊', window._room.muted?'מושתק - הקש להפעלת קול':'קול פעיל - הקש להשתקה', function(){ window._roomToggleMute(); window._multiplayerOpenMenu(btn,'connected'); });
+      addOpt('🚪', window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ closeMenu(); window._multiplayerLeave(); });
+      addOpt('↩','תפריט קודם', function(){ window._multiplayerOpenMenu(btn,'main'); });
+    } else if(mode==='main'){
+      addOpt('➕','צור חדר חדש', async function(){ await window._roomCreateAction(); window._multiplayerOpenMenu(btn,'connected'); });
+      addOpt('🔗','הצטרף לחדר', function(){ window._multiplayerOpenMenu(btn,'join'); });
+    } else if(mode==='join'){
+      addOpt('🔢','הזן קוד', function(){ window._multiplayerOpenMenu(btn,'join-code'); });
+      addOpt('📷','סרוק QR', function(){ window._multiplayerOpenMenu(btn,'join-scan'); });
+      addOpt('↩','חזרה', function(){ window._multiplayerOpenMenu(btn,'main'); });
+    } else if(mode==='join-code'){
+      var wrap = document.createElement('div');
+      wrap.style.cssText = 'padding:14px 18px;';
+      wrap.innerHTML = '<div style="font-size:13px;color:#606060;margin-bottom:8px;">הזן קוד בן 4 ספרות</div>'
+        +'<input id="_roomJoinInput" maxlength="4" style="width:100%;box-sizing:border-box;min-width:0;font-size:20px;letter-spacing:4px;text-align:center;padding:8px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;">'
+        +'<div id="_roomJoinErr" style="display:none;color:#c0392b;font-size:12px;margin-bottom:8px;">קוד לא תקין</div>';
+      menu.appendChild(wrap);
+      addOpt('✅','הצטרף', function(){
+        var inp = document.getElementById('_roomJoinInput');
+        var code = inp ? inp.value.trim() : '';
+        if(!/^\d{4}$/.test(code)){ var e=document.getElementById('_roomJoinErr'); if(e) e.style.display='block'; return; }
+        window._roomJoinAction();
+        window._multiplayerOpenMenu(btn,'connected');
+      });
+      addOpt('↩','חזרה', function(){ window._multiplayerOpenMenu(btn,'join'); });
+    } else if(mode==='join-scan'){
+      var swrap = document.createElement('div');
+      swrap.style.cssText = 'padding:14px 18px;';
+      swrap.innerHTML = '<div style="font-size:13px;color:#606060;margin-bottom:8px;">כווני מצלמה לקוד ה-QR</div>'
+        +'<div style="position:relative;width:100%;aspect-ratio:1/1;background:#000;border-radius:12px;overflow:hidden;">'
+        +'<video id="_qrVideo" autoplay playsinline muted style="width:100%;height:100%;object-fit:cover;"></video>'
+        +'</div>'
+        +'<div id="_qrScanErr" style="display:none;color:#c0392b;font-size:12px;margin-top:8px;">לא ניתן לגשת למצלמה</div>';
+      menu.appendChild(swrap);
+      addOpt('↩','חזרה', function(){ if(typeof window._qrStopScan==='function') window._qrStopScan(); window._multiplayerOpenMenu(btn,'join'); });
     }
     document.body.appendChild(menu);
-    function _cl(e){ if(!menu.contains(e.target) && e.target!==btn){ menu.remove(); document.removeEventListener('click',_cl); } }
+    if(mode==='join-scan' && typeof window._qrStartScan==='function'){ window._qrStartScan(); }
+    function _cl(e){ if(!menu.contains(e.target) && e.target!==btn){ closeMenu(); if(typeof window._qrStopScan==='function') window._qrStopScan(); } }
     setTimeout(function(){ document.addEventListener('click',_cl); },0);
   }catch(e){}
 };
@@ -1024,6 +1061,7 @@ window._qrScanTick = function(){
         _roomStart(code); window._roomJoinWatchdog();
         var jo = document.getElementById('_joinOverlay');
         if(jo) jo.style.display='none';
+        if(typeof window._multiplayerOpenMenu==='function' && window._mpAnchor){ window._multiplayerOpenMenu(window._mpAnchor,'connected'); }
         return;
       }
     }catch(e){}
