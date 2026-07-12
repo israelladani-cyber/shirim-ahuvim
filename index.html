@@ -712,11 +712,11 @@ function _roomSeekAndSet(state){
   if(typeof ALL==='undefined') return;
   var song = ALL.find(function(s){ return (s.v||s.mp4)===state.vid; });
   if(!song) return;
-  var _skipPause = !!(window._room.lastLocalCtrlAt && (Date.now()-window._room.lastLocalCtrlAt < 1200));
+  var _skipPause = !!(window._room.lastLocalCtrlAt && (Date.now()-window._room.lastLocalCtrlAt < 2200));
   if(song.mp4){
     var el = document.getElementById('mp4Player');
     if(!el) return;
-    if(Math.abs((el.currentTime||0)-state.time)>0.4) el.currentTime = state.time;
+    if(Math.abs((el.currentTime||0)-state.time)>1.2) el.currentTime = state.time;
     if(!_skipPause){
       window._roomSyncing=Date.now();
       if(state.paused && !el.paused) el.pause();
@@ -726,7 +726,7 @@ function _roomSeekAndSet(state){
     try{
       if(typeof ytPlayer==='undefined' || !ytPlayer || !ytPlayer.getCurrentTime) return;
       var cur = ytPlayer.getCurrentTime();
-      if(Math.abs(cur-state.time)>0.4) ytPlayer.seekTo(state.time, true);
+      if(Math.abs(cur-state.time)>1.2) ytPlayer.seekTo(state.time, true);
       var st = ytPlayer.getPlayerState();
       if(!_skipPause){
       window._roomSyncing=Date.now();
