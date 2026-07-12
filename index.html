@@ -696,20 +696,25 @@ function _roomSeekAndSet(state){
   if(typeof ALL==='undefined') return;
   var song = ALL.find(function(s){ return (s.v||s.mp4)===state.vid; });
   if(!song) return;
+  var _skipPause = !!(window._room.lastLocalCtrlAt && (Date.now()-window._room.lastLocalCtrlAt < 3000));
   if(song.mp4){
     var el = document.getElementById('mp4Player');
     if(!el) return;
     if(Math.abs((el.currentTime||0)-state.time)>1.5) el.currentTime = state.time;
-    if(state.paused && !el.paused) el.pause();
-    if(!state.paused && el.paused){ el.play().catch(function(){}); }
+    if(!_skipPause){
+      if(state.paused && !el.paused) el.pause();
+      if(!state.paused && el.paused){ el.play().catch(function(){}); }
+    }
   } else {
     try{
       if(typeof ytPlayer==='undefined' || !ytPlayer || !ytPlayer.getCurrentTime) return;
       var cur = ytPlayer.getCurrentTime();
       if(Math.abs(cur-state.time)>1.5) ytPlayer.seekTo(state.time, true);
       var st = ytPlayer.getPlayerState();
-      if(state.paused && st===1) ytPlayer.pauseVideo();
-      if(!state.paused && st!==1) ytPlayer.playVideo();
+      if(!_skipPause){
+        if(state.paused && st===1) ytPlayer.pauseVideo();
+        if(!state.paused && st!==1) ytPlayer.playVideo();
+      }
     }catch(e){}
   }
 
@@ -752,7 +757,7 @@ function _roomStart(code){
     window._room.ref = window._fbDb.ref('rooms/'+code);
     if(window._room.isHost){
       window._room.timer = setInterval(_roomPushIfChanged, 1500);
-      window._room.ctrlRef = window._room.ref.child('ctrl');
+      window._room.ctrlRef = window._fbDb.ref('roomsCtrl/'+code);
       window._room.ctrlRef.on('value', function(snap){
         var ctrl = snap.val();
         if(!ctrl || ctrl.clientId===window._room.clientId) return;
@@ -936,7 +941,8 @@ window._joinShowCodeEntry = function(){
 function _roomSendCtrl(paused){
   try{
     if(window._room && window._room.code && window._room.isHost===false && window._room.ref){
-      window._room.ref.child('ctrl').set({paused: !!paused, clientId: window._room.clientId, ts: Date.now()});
+      window._fbDb.ref('roomsCtrl/'+window._room.code).set({paused: !!paused, clientId: window._room.clientId, ts: Date.now()});
+      window._room.lastLocalCtrlAt = Date.now();
     }
   }catch(e){}
 }
