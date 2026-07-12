@@ -663,6 +663,21 @@ try{
 
 /* ==== Shared listening room (client) ==== */
 window._room = { code: null, lastLocalWriteAt: 0, lastAppliedAt: 0, timer: null, lastPushed: null, clientId: null, ref: null, isHost: null, muted: false };
+window._roomSyncing = 0;
+document.addEventListener('DOMContentLoaded', function(){
+  var _mp4rs = document.getElementById('mp4Player');
+  if(_mp4rs){
+    _mp4rs.addEventListener('pause', function(){ if(Date.now()-window._roomSyncing>300 && typeof window._roomSendCtrl==='function') window._roomSendCtrl(true); });
+    _mp4rs.addEventListener('play', function(){ if(Date.now()-window._roomSyncing>300 && typeof window._roomSendCtrl==='function') window._roomSendCtrl(false); });
+  }
+});
+if(document.readyState!=='loading'){
+  var _mp4rs2 = document.getElementById('mp4Player');
+  if(_mp4rs2){
+    _mp4rs2.addEventListener('pause', function(){ if(Date.now()-window._roomSyncing>300 && typeof window._roomSendCtrl==='function') window._roomSendCtrl(true); });
+    _mp4rs2.addEventListener('play', function(){ if(Date.now()-window._roomSyncing>300 && typeof window._roomSendCtrl==='function') window._roomSendCtrl(false); });
+  }
+}
 
 function _roomLocalState(){
   if(typeof currentSong==='undefined' || !currentSong) return null;
@@ -703,6 +718,7 @@ function _roomSeekAndSet(state){
     if(!el) return;
     if(Math.abs((el.currentTime||0)-state.time)>0.4) el.currentTime = state.time;
     if(!_skipPause){
+      window._roomSyncing=Date.now();
       if(state.paused && !el.paused) el.pause();
       if(!state.paused && el.paused){ el.play().catch(function(){}); }
     }
@@ -713,6 +729,7 @@ function _roomSeekAndSet(state){
       if(Math.abs(cur-state.time)>0.4) ytPlayer.seekTo(state.time, true);
       var st = ytPlayer.getPlayerState();
       if(!_skipPause){
+      window._roomSyncing=Date.now();
         if(state.paused && st===1) ytPlayer.pauseVideo();
         if(!state.paused && st!==1) ytPlayer.playVideo();
       }
@@ -726,7 +743,7 @@ function _roomApplyRemote(state){
   try{ _roomApplyMute(); }catch(e){}
   var local = _roomLocalState();
   if(!local || local.vid !== state.vid){
-    if(typeof playVid==='function') playVid(state.vid);
+    if(typeof window.playVid==='function') window.playVid(state.vid);
     try{ _roomApplyMute(); }catch(e){}
     setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} }, 60);
     setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} }, 300);
@@ -1301,6 +1318,7 @@ function onYouTubeIframeAPIReady(){
         const b=document.getElementById('miniPlayBtn');if(b)b.innerHTML=playing?MINI_PAUSE:MINI_PLAY;
         const pb=document.getElementById('pipPlayBtn');if(pb)pb.innerHTML=playing?MINI_PAUSE:MINI_PLAY;
         if('mediaSession' in navigator)navigator.mediaSession.playbackState=playing?'playing':(e.data===YT.PlayerState.PAUSED?'paused':'none');
+      if(Date.now()-window._roomSyncing>300 && typeof window._roomSendCtrl==='function'){ if(e.data===YT.PlayerState.PLAYING) window._roomSendCtrl(false); else if(e.data===YT.PlayerState.PAUSED) window._roomSendCtrl(true); }
       },
       onError:(e)=>{
         // YouTube error codes: 2=invalid ID, 5=HTML5 error, 100=not found, 101/150=embed not allowed
