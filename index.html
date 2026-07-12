@@ -876,6 +876,7 @@ window._roomLeaveAction = function(){ _roomLeave(); };
 
 window._multiplayerOpenMenu = function(anchorBtn, view){
   try{
+    if(window._mpCl){ try{ document.removeEventListener('click', window._mpCl); }catch(e){} window._mpCl = null; }
     var existing = document.getElementById('_mpMenu');
     if(existing){
       if(!anchorBtn && !view){ existing.remove(); if(typeof window._qrStopScan==='function') window._qrStopScan(); return; }
@@ -903,7 +904,7 @@ window._multiplayerOpenMenu = function(anchorBtn, view){
       row.onclick = function(){ fn(); };
       menu.appendChild(row);
     }
-    function closeMenu(){ var m=document.getElementById('_mpMenu'); if(m){ m.remove(); } document.removeEventListener('click',_cl); }
+    function closeMenu(){ var m=document.getElementById('_mpMenu'); if(m){ m.remove(); } if(window._mpCl){ document.removeEventListener('click', window._mpCl); window._mpCl=null; } }
     var mode = view || (window._room && window._room.code ? 'connected' : 'main');
     if(mode==='connected'){
       if(window._room && window._room.isHost){
@@ -955,6 +956,7 @@ window._multiplayerOpenMenu = function(anchorBtn, view){
     document.body.appendChild(menu);
     if(mode==='join-scan' && typeof window._qrStartScan==='function'){ window._qrStartScan(); }
     function _cl(e){ if(!menu.contains(e.target) && e.target!==btn){ closeMenu(); if(typeof window._qrStopScan==='function') window._qrStopScan(); } }
+    window._mpCl = _cl;
     setTimeout(function(){ document.addEventListener('click',_cl); },0);
   }catch(e){}
 };
