@@ -898,7 +898,7 @@ window._joinRenderConnectedPanel = function(){
     +'<div class="adm-title">מולטי-פלייר</div>'
     +'<div style="font-size:13px;color:#606060;margin-bottom:16px">מחובר/ת לחדר <b>'+code+'</b></div>'
     +'<div class="adm-row" style="margin-bottom:10px"><button class="adm-btn" onclick="window._multiplayerResume()">🎵 חזור למצב משותף</button></div>'
-    +(window._room && window._room.isHost ? '' : '<div class="adm-row" style="margin-bottom:10px"><button class="adm-btn" onclick="window._roomTakeControl()">🎮 קח שליטה</button></div>')
+    +'<div class="adm-row" style="margin-bottom:10px"><button class="adm-btn" onclick="window._roomTakeControl()">🔄 החלף שליטה</button></div>'
     +'<div class="adm-row"><button class="adm-btn sec" onclick="window._multiplayerLeave()">🚪 צא ממצב משותף</button></div>';
 };
 window._multiplayerResume = function(){
@@ -1035,8 +1035,7 @@ function _roomHandleHandoff(h){
     if(!h || !window._room || !window._room.code) return;
     if(h.ts===window._room.lastHandoffTs) return;
     window._room.lastHandoffTs = h.ts;
-    var iAmNewHost = (h.to===window._room.clientId);
-    if(iAmNewHost===window._room.isHost) return;
+    var iAmNewHost = !window._room.isHost;
     if(window._room.ctrlRef){ try{ window._room.ctrlRef.off(); }catch(e){} window._room.ctrlRef=null; }
     window._room.isHost = iAmNewHost;
     window._room.muted = !iAmNewHost;
@@ -1048,8 +1047,7 @@ function _roomHandleHandoff(h){
 window._roomTakeControl = function(){
   try{
     if(!window._room || !window._room.code || !window._room.ref) return;
-    if(window._room.isHost) return;
-    var payload = { to: window._room.clientId, from: window._room.clientId, ts: Date.now() };
+    var payload = { from: window._room.clientId, ts: Date.now() };
     window._room.ref.child('handoff').set(payload);
   }catch(e){}
 };
