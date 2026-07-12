@@ -606,7 +606,7 @@ b.onclick=function(ev){
     :'<div style="width:40px;height:40px;border-radius:50%;background:#065fd4;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:18px;flex-shrink:0;">'+(nm?nm[0].toUpperCase():'?')+'</div>'
   )+'<div style="min-width:0;"><div style="font-size:14px;font-weight:500;color:#0f0f0f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'</div><div style="font-size:12px;color:#606060;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+em+'</div></div>';
   _dd.appendChild(hdr);_row('<svg height="20" viewBox="0 0 24 24" width="20" focusable="false" style="fill:#606060"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>','התראות'+((window._notifItems&&window._notifItems.length)?(' ('+window._notifItems.length+')'):''),function(){window._toggleNotifPanel(document.getElementById('userAuthBtn'));});
-    _row('🔗','מולטי-פלייר',function(){ if(typeof window._joinTogglePanel==='function') window._joinTogglePanel(); });
+    _row('🔗','מולטי-פלייר',function(){ window._multiplayerOpenMenu(document.getElementById('userAuthBtn')); });
       
 
   /* ── Row helper ── */
@@ -630,7 +630,7 @@ b.onclick=function(ev){
   }
 
   /* ── Account section ── */
-  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c-.03 1.99-2.22 3.22-6 3.22z"/></svg>','בחירה בחשבון אחר',function(){localStorage.removeItem('_kauth');localStorage.removeItem('_kIdent');if(window.google&&google.accounts&&google.accounts.id)google.accounts.id.disableAutoSelect();location.reload();});
+  _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08s5.97 1.09 6 3.08c-.03 1.99-2.22 3.22-6 3.22z"/></svg>','בחירה בחשבון אחר',function(){if(!confirm('להחליף חשבון משתמש?')) return;localStorage.removeItem('_kauth');localStorage.removeItem('_kIdent');if(window.google&&google.accounts&&google.accounts.id)google.accounts.id.disableAutoSelect();location.reload();});
   _row('<svg height="24" viewBox="0 0 24 24" width="24" focusable="false" style="fill:#606060"><path d="M10.09 15.59L11.5 17l5-5-5-5-1.41 1.41L12.67 11H3v2h9.67l-2.58 2.59zM19 3H5a2 2 0 00-2 2v4h2V5h14v14H5v-4H3v4a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2z"/></svg>','יציאה',function(){localStorage.removeItem('_kauth');localStorage.removeItem('_kIdent');if(window.google&&google.accounts&&google.accounts.id)google.accounts.id.disableAutoSelect();_showOv();_ub(null,null,null);});
 
   document.body.appendChild(_dd);
@@ -874,6 +874,53 @@ window._roomJoinAction = function(){
 
 window._roomLeaveAction = function(){ _roomLeave(); };
 
+window._multiplayerOpenMenu = function(anchorBtn){
+  try{
+    var existing = document.getElementById('_mpMenu');
+    if(existing){ existing.remove(); return; }
+    var btn = anchorBtn || document.getElementById('roomShareBtn');
+    if(!btn) return;
+    var menu = document.createElement('div');
+    menu.id = '_mpMenu';
+    menu.style.cssText = 'position:fixed;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);min-width:230px;z-index:10001;overflow:hidden;direction:rtl;';
+    var rect = btn.getBoundingClientRect();
+    var top = rect.bottom+6;
+    var right = window.innerWidth-rect.right;
+    if(right<8) right=8;
+    if(right>window.innerWidth-238) right=window.innerWidth-238;
+    menu.style.top = top+'px';
+    menu.style.right = right+'px';
+    function addOpt(icon,label,fn){
+      var row = document.createElement('div');
+      row.style.cssText = 'padding:13px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;color:#202124;font-size:15px;white-space:nowrap;';
+      row.innerHTML = '<span>'+icon+'</span><span>'+label+'</span>';
+      row.onmouseenter = function(){this.style.background='#f1f3f4';};
+      row.onmouseleave = function(){this.style.background='';};
+      row.onclick = function(){ menu.remove(); document.removeEventListener('click',_cl); fn(); };
+      menu.appendChild(row);
+    }
+    if(window._room && window._room.code){
+      if(window._room.isHost){
+        var joinUrl = location.origin+location.pathname+'?join='+window._room.code;
+        var qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(joinUrl);
+        var info = document.createElement('div');
+        info.style.cssText = 'padding:14px 18px 10px;text-align:center;border-bottom:1px solid #eee;';
+        info.innerHTML = '<div style="font-size:12px;color:#606060;margin-bottom:4px;">קוד החדר</div><div style="font-size:22px;font-weight:700;letter-spacing:3px;margin-bottom:8px;">'+window._room.code+'</div><img src="'+qrSrc+'" width="100" height="100" style="border-radius:8px;" alt="QR">';
+        menu.appendChild(info);
+      }
+      addOpt('🎵','חזור לנגן המשותף',function(){ window._multiplayerResume(); });
+      addOpt('🔄','החלף שליטה',function(){ window._roomTakeControl(); });
+      addOpt(window._room.muted?'🔇':'🔊', window._room.muted?'מושתק - הקש להפעלת קול':'קול פעיל - הקש להשתקה', function(){ window._roomToggleMute(); });
+      addOpt('🚪', window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ window._multiplayerLeave(); });
+    } else {
+      addOpt('➕','צור חדר חדש', function(){ window._roomCreateAction(); });
+      addOpt('🔗','הצטרף לחדר', function(){ window._joinTogglePanel(); });
+    }
+    document.body.appendChild(menu);
+    function _cl(e){ if(!menu.contains(e.target) && e.target!==btn){ menu.remove(); document.removeEventListener('click',_cl); } }
+    setTimeout(function(){ document.addEventListener('click',_cl); },0);
+  }catch(e){}
+};
 window._joinTogglePanel = function(){
   var ov = document.getElementById('_joinOverlay');
   if(!ov){
@@ -1252,14 +1299,15 @@ setInterval(_checkStatus,3000);
       </div>
       <!-- Theater mode (desktop) -->
       <div class="panel-win-btns">
+      <button class="panel-shuffle-btn" id="roomShareBtn" onclick="window._multiplayerOpenMenu(this)" title="מולטי-פלייר">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+      </button>
       <button class="panel-shuffle-btn" id="shuffleBtn" onclick="toggleShuffle()" title="נגן אקראי">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M16.293 1.293a1 1 0 00-.001 1.415L18.585 5H17.21a7 7 0 00-5.823 3.118L6.95 14.774A5 5 0 012.79 17H2a1 1 0 000 2h.79a7 7 0 005.822-3.117l4.438-6.656A5 5 0 0117.21 7h1.376l-2.293 2.293a1 1 0 001.414 1.414L22.414 6l-4.707-4.707a1 1 0 00-1.414 0ZM2.789 5H2a1 1 0 000 2h.79a5 5 0 014.159 2.227l.647.97 1.202-1.802-.185-.277A7 7 0 002.789 5Zm13.504 8.293a1 1 0 00-.001 1.414L18.585 17H17.21a5 5 0 01-4.16-2.226l-.648-.972-1.202 1.803.186.278A7 7 0 0017.21 19h1.376l-2.293 2.294-.068.076a1 1 0 001.406 1.406l.076-.07L22.414 18l-4.707-4.707a1 1 0 00-1.414 0Z"/></svg>
       </button><button class="panel-shuffle-btn" id="repeatBtn" onclick="toggleRepeat()" title="השבתת הלופ">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M17.293 1.293a1 1 0 000 1.415L18.586 4H7a5 5 0 00-5 5v4a1 1 0 102 0V9a3 3 0 013-3h11.586l-1.293 1.293a1 1 0 001.414 1.415L22.414 5l-3.707-3.707a1 1 0 00-1.414 0ZM21 10a1 1 0 00-1 1v4a3 3 0 01-3 3H5.414l1.293-1.292a1.001 1.001 0 00-1.414-1.415L1.586 19l3.707 3.707a1 1 0 101.414-1.413L5.414 20H17a5 5 0 005-5v-4a1 1 0 00-1-1Z"/></svg>
       </button>
-      <button class="panel-shuffle-btn" id="roomShareBtn" onclick="window._toggleRoomPanel()" title="שתף האזנה משותפת">
-        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
-      </button>
+      
       <button class="panel-theater-btn" id="theaterBtn" onclick="toggleTheater()" title="מצב קולנוע">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="5" width="22" height="14" rx="2"/></svg>
       </button>
