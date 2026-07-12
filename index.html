@@ -571,6 +571,7 @@ body.admin .btn-move-folder{display:flex;}
 </div>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/12.15.0/firebase-database-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
 <script>(function(){
 function _hideOv(){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;if(o.style.display==='none')return;o.style.opacity='0';setTimeout(function(){o.style.display='none';},260);}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
 function _showOv(msg){function _d(){var o=document.getElementById('gAuthOverlay');if(!o)return;var er=document.getElementById('gAuthErr');if(er){if(msg){er.textContent=msg;er.style.display='block';}else er.style.display='none';}if(o.style.display!=='flex'){o.style.opacity='0';o.style.display='flex';requestAnimationFrame(function(){requestAnimationFrame(function(){o.style.opacity='1';});});}else{o.style.opacity='1';}}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_d,{once:true});else _d();}
@@ -690,6 +691,7 @@ window._roomToggleMute = function(){
   _roomRenderPanel();
 };
 function _roomSeekAndSet(state){
+  try{ _roomApplyMute(); }catch(e){}
   if(typeof ALL==='undefined') return;
   var song = ALL.find(function(s){ return (s.v||s.mp4)===state.vid; });
   if(!song) return;
@@ -709,13 +711,14 @@ function _roomSeekAndSet(state){
       if(!state.paused && st!==1) ytPlayer.playVideo();
     }catch(e){}
   }
-  _roomApplyMute();
+
 }
 
 function _roomApplyRemote(state){
   if(!state || !state.vid) return;
-
-  var local = _roomLocalState(); if(!local || local.vid !== state.vid){
+  try{ _roomApplyMute(); }catch(e){}
+  var local = _roomLocalState();
+  if(!local || local.vid !== state.vid){
     if(typeof playVid==='function') playVid(state.vid);
     setTimeout(function(){ _roomSeekAndSet(state); }, 900);
   } else {
@@ -728,7 +731,6 @@ async function _roomPushIfChanged(){
   var local = _roomLocalState();
   if(!local) return;
   var key = JSON.stringify({vid:local.vid, paused:local.paused});
-  if(key===window._room.lastPushed) return;
   window._room.lastPushed = key;
   var payload = { vid: local.vid||null, paused: !!local.paused, time: local.time||0, s: local.s||null, a: local.a||null, writer: window._room.clientId, updatedAt: Date.now() };
   try{ window._room.ref.set(payload); }catch(e){}
@@ -844,9 +846,44 @@ window._joinShowScanInfo = function(){
   if(!box) return;
   box.innerHTML = ''
     +'<div class="adm-title">סריקת QR</div>'
-    +'<div style="font-size:14px;color:#606060;margin-bottom:20px;line-height:1.6">פתח/י את מצלמת הטלפון הרגילה (לא דרך האתר) וכווני אותה לקוד ה-QR שמוצג במסך של מי שמשתף. לחיצה על הקישור שיופיע תפתח את הדף ותחבר אותך אוטומטית.</div>'
-    +'<div class="adm-row"><button class="adm-btn sec" onclick="_joinRenderPanel()">חזרה</button></div>';
+    +'<div style="font-size:13px;color:#606060;margin-bottom:16px">לחצו לפתיחת המצלמה וצילום קוד ה-QR שמוצג אצל מי שמשתף</div>'
+    +'<div class="adm-row" style="margin-bottom:10px"><label for="_qrCaptureInput" class="adm-btn" style="display:block;text-align:center;cursor:pointer">📷 פתח מצלמה</label><input type="file" accept="image/*" capture="environment" id="_qrCaptureInput" style="display:none"></div>'
+    +'<div class="adm-err" id="_qrScanErr" style="display:none">לא זוהה קוד QR בתמונה - נסה שוב</div>'
+    +'<div class="adm-row" style="margin-top:10px"><button class="adm-btn sec" onclick="_joinRenderPanel()">חזרה</button></div>';
+  var inp = document.getElementById('_qrCaptureInput');
+  if(inp) inp.onchange = window._qrHandleCapture;
 };
+
+window._qrHandleCapture = function(ev){
+  var file = ev.target.files && ev.target.files[0];
+  if(!file) return;
+  var err = document.getElementById('_qrScanErr');
+  if(err) err.style.display='none';
+  var url = URL.createObjectURL(file);
+  var img = new Image();
+  img.onload = function(){
+    try{
+      var canvas = document.createElement('canvas');
+      canvas.width = img.width; canvas.height = img.height;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img,0,0);
+      var imageData = ctx.getImageData(0,0,canvas.width,canvas.height);
+      var result = (typeof jsQR==='function') ? jsQR(imageData.data, imageData.width, imageData.height) : null;
+      URL.revokeObjectURL(url);
+      var m = result && result.data ? /[?&]join=(\d{4})/.exec(result.data) : null;
+      if(m){
+        var code = m[1];
+        window._room.isHost = false;
+        window._room.muted = true;
+        _roomStart(code);
+        var jo = document.getElementById('_joinOverlay');
+        if(jo) jo.style.display='none';
+      } else if(err){ err.style.display='block'; }
+    }catch(e){ URL.revokeObjectURL(url); if(err) err.style.display='block'; }
+  };
+  img.onerror = function(){ URL.revokeObjectURL(url); if(err) err.style.display='block'; };
+  img.src = url;
+};;
 
 window._joinShowCodeEntry = function(){
   var box = document.getElementById('_joinBoxInner');
@@ -1035,7 +1072,7 @@ setInterval(_checkStatus,3000);
         <span class="btn-label">פלייליסטים</span>
       </button>
       <button class="admin-lock" id="admMenuBtn" onclick="openAdminMenu(event)" title="מצב מנהל" style="display:none;">🔐</button>
-      <button class="admin-lock" id="_notifBtn" onclick="window._toggleNotifPanel(this)" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='none'" title="עדכונים" style="display:none;position:relative;background:none;border:none;cursor:pointer;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;transition:background .15s;"><svg width="24" height="24" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg><span id="_notifBadge" style="display:none;position:absolute;top:2px;right:2px;background:#FF0000;color:#fff;border-radius:50%;min-width:16px;height:16px;font-size:10px;line-height:16px;text-align:center;padding:0 2px;font-weight:700;pointer-events:none;box-shadow:0 0 0 2px #fff;"></span></button><button class="admin-lock" id="_joinEntryBtn" onclick="window._joinTogglePanel()" title="הצטרפות לחדר" style="background:none;border:none;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='none'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.07 0l1.93-1.93a5 5 0 00-7.07-7.07L10.5 5.5"/><path d="M14 11a5 5 0 00-7.07 0L5 12.93a5 5 0 007.07 7.07L13.5 18.5"/></svg></button><button class="admin-lock" id="userAuthBtn" onclick="_logout()" style="display:none;font-size:11px;font-weight:600;color:#0F0F0F;background:#fff;border:1px solid #E5E5E5;border-radius:20px;padding:4px 12px;cursor:pointer;direction:rtl;white-space:nowrap;"></button>
+      <button class="admin-lock" id="_notifBtn" onclick="window._toggleNotifPanel(this)" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='none'" title="עדכונים" style="display:none;position:relative;background:none;border:none;cursor:pointer;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;transition:background .15s;"><svg width="24" height="24" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg><span id="_notifBadge" style="display:none;position:absolute;top:2px;right:2px;background:#FF0000;color:#fff;border-radius:50%;min-width:16px;height:16px;font-size:10px;line-height:16px;text-align:center;padding:0 2px;font-weight:700;pointer-events:none;box-shadow:0 0 0 2px #fff;"></span></button><button class="admin-lock" id="userAuthBtn" onclick="_openUserMenu(event)" style="display:none;font-size:11px;font-weight:600;color:#0F0F0F;background:#fff;border:1px solid #E5E5E5;border-radius:20px;padding:4px 12px;cursor:pointer;direction:rtl;white-space:nowrap;"></button>
     </div>
   </div>
 </div>
@@ -3490,6 +3527,36 @@ document.addEventListener('DOMContentLoaded',function(){
   </div>
 </div>
 <script>
+
+function _openUserMenu(ev){
+  if(ev) ev.stopPropagation();
+  var existing = document.getElementById('_userMenu');
+  if(existing){ existing.remove(); return; }
+  var btn = document.getElementById('userAuthBtn');
+  var menu = document.createElement('div');
+  menu.id = '_userMenu';
+  menu.style.cssText = 'position:fixed;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);min-width:190px;z-index:10001;overflow:hidden;direction:rtl';
+  var rect = btn.getBoundingClientRect();
+  menu.style.top = (rect.bottom+6)+'px';
+  menu.style.right = (window.innerWidth-rect.right)+'px';
+  function addOpt(icon,label,fn){
+    var row = document.createElement('div');
+    row.style.cssText = 'padding:13px 18px;cursor:pointer;display:flex;align-items:center;gap:12px;color:#202124;font-size:15px;white-space:nowrap';
+    row.innerHTML = '<span>'+icon+'</span><span>'+label+'</span>';
+    row.onmouseover = function(){ this.style.background='#f5f5f5'; };
+    row.onmouseout = function(){ this.style.background=''; };
+    row.onclick = function(){ menu.remove(); fn(); };
+    menu.appendChild(row);
+  }
+  addOpt('🔗','הצטרפות לחדר',function(){ window._joinTogglePanel(); });
+  addOpt('🚪','התנתקות',function(){ _logout(); });
+  document.body.appendChild(menu);
+  setTimeout(function(){
+    document.addEventListener('click', function _cl(e){
+      if(!menu.contains(e.target) && e.target!==btn){ menu.remove(); document.removeEventListener('click', _cl); }
+    });
+  },0);
+}
 
 function openAdminMenu(ev){
   var existing=document.getElementById('_admMenu');
