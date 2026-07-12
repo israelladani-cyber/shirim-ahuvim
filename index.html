@@ -713,10 +713,12 @@ function _roomSeekAndSet(state){
   var song = ALL.find(function(s){ return (s.v||s.mp4)===state.vid; });
   if(!song) return;
   var _skipPause = !!(window._room.lastLocalCtrlAt && (Date.now()-window._room.lastLocalCtrlAt < 2200));
+  var _elapsed = state.updatedAt ? Math.min(3, Math.max(0,(Date.now()-state.updatedAt)/1000)) : 0;
+  var _ptime = state.paused ? state.time : (state.time + _elapsed);
   if(song.mp4){
     var el = document.getElementById('mp4Player');
     if(!el) return;
-    if(Math.abs((el.currentTime||0)-state.time)>1.2) el.currentTime = state.time;
+    if(Math.abs((el.currentTime||0)-_ptime)>2) el.currentTime = _ptime;
     if(!_skipPause){
       window._roomSyncing=Date.now();
       if(state.paused && !el.paused) el.pause();
@@ -726,7 +728,7 @@ function _roomSeekAndSet(state){
     try{
       if(typeof ytPlayer==='undefined' || !ytPlayer || !ytPlayer.getCurrentTime) return;
       var cur = ytPlayer.getCurrentTime();
-      if(Math.abs(cur-state.time)>1.2) ytPlayer.seekTo(state.time, true);
+      if(Math.abs(cur-_ptime)>2) ytPlayer.seekTo(_ptime, true);
       var st = ytPlayer.getPlayerState();
       if(!_skipPause){
       window._roomSyncing=Date.now();
@@ -790,7 +792,7 @@ function _roomStart(code){
   if(window._fbDb){
     window._room.ref = window._fbDb.ref('rooms/'+code);
     if(window._room.isHost){
-      window._room.timer = setInterval(_roomPushIfChanged, 400);
+      window._room.timer = setInterval(_roomPushIfChanged, 2000);
       window._room.ctrlRef = window._room.ref.child('ctrl');
       window._room.ctrlRef.on('value', function(snap){
         var ctrl = snap.val();
