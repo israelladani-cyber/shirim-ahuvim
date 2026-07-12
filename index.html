@@ -584,7 +584,8 @@ b.style.display='block';b.style.padding='0';b.style.background='none';b.style.bo
 b.innerHTML=pic
   ?'<img src="'+pic+'" style="width:32px;height:32px;border-radius:50%;object-fit:cover;display:block;">'
   :'<div style="width:32px;height:32px;border-radius:50%;background:#065fd4;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:14px;">'+(nm?nm[0].toUpperCase():'?')+'</div>';
-b.style.position='relative';var _nbA=document.getElementById('_notifBadgeAvatar');if(!_nbA){_nbA=document.createElement('span');_nbA.id='_notifBadgeAvatar';_nbA.style.cssText='display:none;position:absolute;top:0;left:0;width:9px;height:9px;border-radius:50%;background:#e53935;border:1.5px solid #fff;pointer-events:none;';b.appendChild(_nbA);}var _n0=(window._notifItems||[]).length;_nbA.style.display=_n0>0?'block':'none';
+b.style.position='relative';var _nbA=document.getElementById('_notifBadgeAvatar');if(!_nbA){_nbA=document.createElement('span');_nbA.id='_notifBadgeAvatar';_nbA.style.cssText='display:none;position:absolute;top:0;left:0;width:9px;height:9px;border-radius:50%;background:#e53935;border:1.5px solid #fff;pointer-events:none;';b.appendChild(_nbA);
+var _rd = document.getElementById('_roomDotAvatar');if(!_rd){_rd=document.createElement('span');_rd.id='_roomDotAvatar';_rd.style.cssText='display:none;position:absolute;bottom:0;left:0;width:9px;height:9px;border-radius:50%;background:#2ecc71;border:1.5px solid #fff;pointer-events:none';b.appendChild(_rd);}_rd.style.display=(window._room&&window._room.code)?'block':'none';}var _n0=(window._notifItems||[]).length;_nbA.style.display=_n0>0?'block':'none';
 var _dd=null;
 b.onclick=function(ev){
   ev.stopPropagation();
@@ -605,6 +606,7 @@ b.onclick=function(ev){
     :'<div style="width:40px;height:40px;border-radius:50%;background:#065fd4;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:600;font-size:18px;flex-shrink:0;">'+(nm?nm[0].toUpperCase():'?')+'</div>'
   )+'<div style="min-width:0;"><div style="font-size:14px;font-weight:500;color:#0f0f0f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+nm+'</div><div style="font-size:12px;color:#606060;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+em+'</div></div>';
   _dd.appendChild(hdr);_row('<svg height="20" viewBox="0 0 24 24" width="20" focusable="false" style="fill:#606060"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg>','התראות'+((window._notifItems&&window._notifItems.length)?(' ('+window._notifItems.length+')'):''),function(){window._toggleNotifPanel(document.getElementById('userAuthBtn'));});
+    if(window._room && window._room.code){ _row('🎵','חזרה לשיר המשותף',function(){ if(window._room && window._room.lastState && typeof _roomApplyRemote==='function') _roomApplyRemote(window._room.lastState); }); }
     _row('🔗','הצטרפות לחדר',function(){ if(typeof window._joinTogglePanel==='function') window._joinTogglePanel(); });
       
 
@@ -742,6 +744,7 @@ async function _roomPushIfChanged(){
   var key = JSON.stringify({vid:local.vid, paused:local.paused});
   window._room.lastPushed = key;
   var payload = { vid: local.vid||null, paused: !!local.paused, time: local.time||0, s: local.s||null, a: local.a||null, writer: window._room.clientId, updatedAt: Date.now() };
+  window._room.lastState = payload;
   try{ window._room.ref.set(payload); }catch(e){}
 }
 
@@ -776,6 +779,7 @@ function _roomStart(code){
         if(data.writer===window._room.clientId) return;
         window._room.lastAppliedAt = data.updatedAt||Date.now();
         window._room.lastPushed = JSON.stringify({vid:data.vid, paused:data.paused});
+        window._room.lastState = data;
         _roomApplyRemote(data);
       });
     }
@@ -962,45 +966,8 @@ function _roomApplyLocalPause(paused){
   }catch(e){}
 }
 function _roomUpdateBadge(){
-  var b = document.getElementById('_roomBadge');
-  if(window._room.code){
-    if(!b){
-      b = document.createElement('div');
-      b.id = '_roomBadge';
-      b.style.cssText = 'position:fixed;left:16px;bottom:16px;z-index:9998;background:#111;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)';
-      b.onclick = function(){ window._toggleRoomPanel(); };
-      document.body.appendChild(b);
-      if(!window._roomBadgeResizeBound){
-        window._roomBadgeResizeBound = true;
-        window.addEventListener('resize', _roomPositionBadge);
-        window.addEventListener('orientationchange', function(){ setTimeout(_roomPositionBadge, 300); });
-        try{ new MutationObserver(function(){ _roomPositionBadge(); }).observe(document.body, {attributes:true, attributeFilter:['class']}); }catch(e){}
-      }
-    }
-    b.textContent = '🔗 מחובר לחדר ' + window._room.code;
-    b.style.display = 'block';
-    _roomPositionBadge();
-  } else if(b){
-    b.style.display = 'none';
-    var slot0 = document.getElementById('_roomBadgeSlot');
-    if(slot0) slot0.style.display = 'none';
-  }
-}
-function _roomPositionBadge(){
-  var b = document.getElementById('_roomBadge');
-  if(!b) return;
-  var mobile = window.innerWidth < 768;
-  var playerOpen = document.body.classList.contains('playing');
-  var slot = document.getElementById('_roomBadgeSlot');
-  if(mobile && playerOpen && slot){
-    if(b.parentElement !== slot) slot.appendChild(b);
-    slot.style.cssText = 'display:flex;justify-content:center;flex:0 0 auto;background:#fff;padding:4px 0';
-    b.style.cssText = 'position:static;display:inline-block;background:#111;color:#fff;padding:6px 14px;border-radius:20px;font-size:12px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)';
-  } else {
-    if(b.parentElement !== document.body) document.body.appendChild(b);
-    if(slot) slot.style.display = 'none';
-    b.style.cssText = 'position:fixed;left:16px;bottom:16px;z-index:9998;background:#111;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)';
-  }
+  var dot = document.getElementById('_roomDotAvatar');
+  if(dot) dot.style.display = window._room.code ? 'block' : 'none';
 }
 function _roomHandleEnded(){
   try{ if(typeof showToast==='function') showToast('החדר הסתיים'); }catch(e){}
