@@ -721,6 +721,9 @@ function _roomApplyRemote(state){
   var local = _roomLocalState();
   if(!local || local.vid !== state.vid){
     if(typeof playVid==='function') playVid(state.vid);
+    try{ _roomApplyMute(); }catch(e){}
+    setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} }, 60);
+    setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} }, 300);
     setTimeout(function(){ _roomSeekAndSet(state); }, 900);
   } else {
     _roomSeekAndSet(state);
@@ -778,7 +781,8 @@ function _roomLeave(){
   window._room.ref = null;
   window._room.isHost = null;
   try{ localStorage.removeItem('karaoke_room_code'); }catch(e){}
-  _roomRenderPanel();
+  var ov = document.getElementById('_roomOverlay');
+  if(ov) ov.style.display = 'none';
   _roomUpdateBadge();
 }
 
@@ -829,10 +833,10 @@ window._joinTogglePanel = function(){
   var showing = ov.style.display==='flex';
   if(showing){ ov.style.display='none'; if(typeof window._qrStopScan==='function') window._qrStopScan(); return; }
   ov.style.display='flex';
-  _joinRenderPanel();
+  window._joinRenderPanel();
 };
 
-function _joinRenderPanel(){
+window._joinRenderPanel = function(){
   var box = document.getElementById('_joinBoxInner');
   if(!box) return;
   box.innerHTML = ''
@@ -840,7 +844,7 @@ function _joinRenderPanel(){
     +'<div style="font-size:13px;color:#606060;margin-bottom:16px">איך תרצה/י להתחבר?</div>'
     +'<div class="adm-row" style="margin-bottom:10px"><button class="adm-btn" onclick="window._joinShowScanInfo()">📷 סרוק QR</button></div>'
     +'<div class="adm-row"><button class="adm-btn" onclick="window._joinShowCodeEntry()">🔢 הצטרף עם קוד</button></div>';
-}
+};
 
 window._joinShowScanInfo = function(){
   var box = document.getElementById('_joinBoxInner');
@@ -850,7 +854,7 @@ window._joinShowScanInfo = function(){
     +'<div style="font-size:13px;color:#606060;margin-bottom:10px">כווני את המצלמה לקוד ה-QR שמוצג אצל מי שמשתף</div>'
     +'<div style="position:relative;width:100%;aspect-ratio:1/1;background:#000;border-radius:12px;overflow:hidden;margin-bottom:10px"><video id="_qrVideo" playsinline muted style="width:100%;height:100%;object-fit:cover"></video></div>'
     +'<div class="adm-err" id="_qrScanErr" style="display:none">לא ניתן לגשת למצלמה - יש לאשר הרשאת מצלמה ולנסות שוב</div>'
-    +'<div class="adm-row"><button class="adm-btn sec" onclick="window._qrStopScan();_joinRenderPanel()">ביטול</button></div>';
+    +'<div class="adm-row"><button class="adm-btn sec" onclick="window._qrStopScan();window._joinRenderPanel()">ביטול</button></div>';
   window._qrStartScan();
 };
 
@@ -917,7 +921,7 @@ window._joinShowCodeEntry = function(){
     +'<button class="adm-btn" style="flex:0 0 auto;min-width:0;padding:10px 14px" onclick="window._roomJoinAction()">הצטרף</button>'
     +'</div>'
     +'<div class="adm-err" id="_roomJoinErr" style="display:none">קוד לא תקין - יש להזין 4 ספרות</div>'
-    +'<div class="adm-row" style="margin-top:10px"><button class="adm-btn sec" onclick="_joinRenderPanel()">חזרה</button></div>';
+    +'<div class="adm-row" style="margin-top:10px"><button class="adm-btn sec" onclick="window._joinRenderPanel()">ביטול</button></div>';
 };
 
 function _roomUpdateBadge(){
