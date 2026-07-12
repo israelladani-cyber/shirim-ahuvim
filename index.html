@@ -792,7 +792,7 @@ function _roomStart(code){
   if(window._fbDb){
     window._room.ref = window._fbDb.ref('rooms/'+code);
     if(window._room.isHost){
-      window._room.timer = setInterval(_roomPushIfChanged, 2000);
+      window._room.timer = setInterval(_roomPushIfChanged, 1000);
       window._room.ctrlRef = window._room.ref.child('ctrl');
       window._room.ctrlRef.on('value', function(snap){
         var ctrl = snap.val();
