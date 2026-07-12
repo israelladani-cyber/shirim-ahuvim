@@ -789,8 +789,11 @@ function _roomStart(code){
   if(window._room.timer) clearInterval(window._room.timer);
   window._room.timer = null;
   if(window._room.ref){ try{ window._room.ref.off(); }catch(e){} }
+  if(window._room.handoffRef){ try{ window._room.handoffRef.off(); }catch(e){} }
   if(window._fbDb){
     window._room.ref = window._fbDb.ref('rooms/'+code);
+    window._room.handoffRef = window._room.ref.child('handoff');
+    window._room.handoffRef.on('value', function(snap){ try{ _roomHandleHandoff(snap.val()); }catch(e){} });
     if(window._room.isHost){
       window._room.timer = setInterval(_roomPushIfChanged, 1000);
       window._room.ctrlRef = window._room.ref.child('ctrl');
@@ -895,6 +898,7 @@ window._joinRenderConnectedPanel = function(){
     +'<div class="adm-title">מולטי-פלייר</div>'
     +'<div style="font-size:13px;color:#606060;margin-bottom:16px">מחובר/ת לחדר <b>'+code+'</b></div>'
     +'<div class="adm-row" style="margin-bottom:10px"><button class="adm-btn" onclick="window._multiplayerResume()">🎵 חזור למצב משותף</button></div>'
+    +(window._room && window._room.isHost ? '' : '<div class="adm-row" style="margin-bottom:10px"><button class="adm-btn" onclick="window._roomTakeControl()">🎮 קח שליטה</button></div>')
     +'<div class="adm-row"><button class="adm-btn sec" onclick="window._multiplayerLeave()">🚪 צא ממצב משותף</button></div>';
 };
 window._multiplayerResume = function(){
@@ -1026,6 +1030,29 @@ function _roomApplyLocalPause(paused){
     if(!paused && !isPlaying) ytPlayer.playVideo();
   }catch(e){}
 }
+function _roomHandleHandoff(h){
+  try{
+    if(!h || !window._room || !window._room.code) return;
+    if(h.ts===window._room.lastHandoffTs) return;
+    window._room.lastHandoffTs = h.ts;
+    var iAmNewHost = (h.to===window._room.clientId);
+    if(iAmNewHost===window._room.isHost) return;
+    if(window._room.ctrlRef){ try{ window._room.ctrlRef.off(); }catch(e){} window._room.ctrlRef=null; }
+    window._room.isHost = iAmNewHost;
+    window._room.muted = !iAmNewHost;
+    try{ _roomApplyMute(); }catch(e){}
+    _roomStart(window._room.code);
+    try{ if(typeof showToast==='function') showToast(iAmNewHost ? 'קיבלת שליטה על הנגן' : 'העברת שליטה למכשיר האחר'); }catch(e){}
+  }catch(e){}
+}
+window._roomTakeControl = function(){
+  try{
+    if(!window._room || !window._room.code || !window._room.ref) return;
+    if(window._room.isHost) return;
+    var payload = { to: window._room.clientId, from: window._room.clientId, ts: Date.now() };
+    window._room.ref.child('handoff').set(payload);
+  }catch(e){}
+};
 function _roomUpdateBadge(){
   var dot = document.getElementById('_roomDotAvatar');
   if(dot) dot.style.display = window._room.code ? 'block' : 'none';
