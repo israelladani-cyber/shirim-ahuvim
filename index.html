@@ -736,31 +736,47 @@ async function _roomPushIfChanged(){
 
 function _roomStart(code){
   window._room.code = code;
+  window._room.everHadData = false;
   if(!window._room.clientId) window._room.clientId = 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36);
   try{ localStorage.setItem('karaoke_room_code', code); }catch(e){}
   if(window._room.timer) clearInterval(window._room.timer);
+  window._room.timer = null;
   if(window._room.ref){ try{ window._room.ref.off(); }catch(e){} }
   if(window._fbDb){
     window._room.ref = window._fbDb.ref('rooms/'+code);
-    window._room.ref.on('value', function(snap){
-      var data = snap.val();
-      if(!data || data.writer===window._room.clientId) return;
-      window._room.lastAppliedAt = data.updatedAt||Date.now();
-      window._room.lastPushed = JSON.stringify({vid:data.vid, paused:data.paused});
-      _roomApplyRemote(data);
-    });
+    if(window._room.isHost){
+      window._room.timer = setInterval(_roomPushIfChanged, 1500);
+    } else {
+      window._room.ref.on('value', function(snap){
+        var data = snap.val();
+        if(!data){
+          if(window._room.everHadData && window._room.code===code){ _roomHandleEnded(); }
+          return;
+        }
+        window._room.everHadData = true;
+        if(data.writer===window._room.clientId) return;
+        window._room.lastAppliedAt = data.updatedAt||Date.now();
+        window._room.lastPushed = JSON.stringify({vid:data.vid, paused:data.paused});
+        _roomApplyRemote(data);
+      });
+    }
   }
-  window._room.timer = setInterval(_roomPushIfChanged, 1500);
   _roomRenderPanel();
+  _roomUpdateBadge();
 }
 
 function _roomLeave(){
+  var wasHost = window._room.isHost;
+  var ref = window._room.ref;
   window._room.code = null;
   if(window._room.timer) clearInterval(window._room.timer);
   window._room.timer = null;
-  if(window._room.ref){ try{ window._room.ref.off(); }catch(e){} window._room.ref = null; }
+  if(ref){ try{ ref.off(); }catch(e){} if(wasHost){ try{ ref.remove(); }catch(e){} } }
+  window._room.ref = null;
+  window._room.isHost = null;
   try{ localStorage.removeItem('karaoke_room_code'); }catch(e){}
   _roomRenderPanel();
+  _roomUpdateBadge();
 }
 
 window._roomCreateAction = async function(){
@@ -791,9 +807,81 @@ window._roomJoinAction = function(){
   window._room.isHost = false;
   window._room.muted = true;
   _roomStart(code);
+  var jo = document.getElementById('_joinOverlay');
+  if(jo) jo.style.display='none';
 };
 
 window._roomLeaveAction = function(){ _roomLeave(); };
+
+window._joinTogglePanel = function(){
+  var ov = document.getElementById('_joinOverlay');
+  if(!ov){
+    ov = document.createElement('div');
+    ov.id = '_joinOverlay';
+    ov.className = 'adm-overlay';
+    ov.innerHTML = '<div class="adm-box" id="_joinBoxInner"></div>';
+    document.body.appendChild(ov);
+    ov.addEventListener('click', function(e){ if(e.target===ov) ov.style.display='none'; });
+  }
+  var showing = ov.style.display==='flex';
+  if(showing){ ov.style.display='none'; return; }
+  ov.style.display='flex';
+  _joinRenderPanel();
+};
+
+function _joinRenderPanel(){
+  var box = document.getElementById('_joinBoxInner');
+  if(!box) return;
+  box.innerHTML = ''
+    +'<div class="adm-title">הצטרפות לחדר</div>'
+    +'<div style="font-size:13px;color:#606060;margin-bottom:16px">איך תרצה/י להתחבר?</div>'
+    +'<div class="adm-row" style="margin-bottom:10px"><button class="adm-btn" onclick="window._joinShowScanInfo()">📷 סרוק QR</button></div>'
+    +'<div class="adm-row"><button class="adm-btn" onclick="window._joinShowCodeEntry()">🔢 הצטרף עם קוד</button></div>';
+}
+
+window._joinShowScanInfo = function(){
+  var box = document.getElementById('_joinBoxInner');
+  if(!box) return;
+  box.innerHTML = ''
+    +'<div class="adm-title">סריקת QR</div>'
+    +'<div style="font-size:14px;color:#606060;margin-bottom:20px;line-height:1.6">פתח/י את מצלמת הטלפון הרגילה (לא דרך האתר) וכווני אותה לקוד ה-QR שמוצג במסך של מי שמשתף. לחיצה על הקישור שיופיע תפתח את הדף ותחבר אותך אוטומטית.</div>'
+    +'<div class="adm-row"><button class="adm-btn sec" onclick="_joinRenderPanel()">חזרה</button></div>';
+};
+
+window._joinShowCodeEntry = function(){
+  var box = document.getElementById('_joinBoxInner');
+  if(!box) return;
+  box.innerHTML = ''
+    +'<div class="adm-title">הצטרפות עם קוד</div>'
+    +'<div style="display:flex;gap:8px;margin-bottom:8px">'
+    +'<input id="_roomJoinInput" maxlength="4" placeholder="0000" style="flex:1;font-size:20px;text-align:center;letter-spacing:4px;padding:8px;border:1px solid #ccc;border-radius:8px">'
+    +'<button class="adm-btn" onclick="window._roomJoinAction()">הצטרף</button>'
+    +'</div>'
+    +'<div class="adm-err" id="_roomJoinErr" style="display:none">קוד לא תקין - יש להזין 4 ספרות</div>'
+    +'<div class="adm-row" style="margin-top:10px"><button class="adm-btn sec" onclick="_joinRenderPanel()">חזרה</button></div>';
+};
+
+function _roomUpdateBadge(){
+  var b = document.getElementById('_roomBadge');
+  if(window._room.code){
+    if(!b){
+      b = document.createElement('div');
+      b.id = '_roomBadge';
+      b.style.cssText = 'position:fixed;bottom:16px;left:16px;z-index:9998;background:#111;color:#fff;padding:8px 14px;border-radius:20px;font-size:13px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.3)';
+      b.onclick = function(){ window._toggleRoomPanel(); };
+      document.body.appendChild(b);
+    }
+    b.textContent = '🔗 מחובר לחדר ' + window._room.code;
+    b.style.display = 'block';
+  } else if(b){
+    b.style.display = 'none';
+  }
+}
+
+function _roomHandleEnded(){
+  try{ if(typeof showToast==='function') showToast('החדר הסתיים'); }catch(e){}
+  _roomLeave();
+}
 
 function _roomRenderPanel(){
   var box = document.getElementById('_roomBoxInner');
@@ -818,14 +906,7 @@ function _roomRenderPanel(){
       +'<div class="adm-title">האזנה משותפת</div>'
       +'<div style="font-size:13px;color:#606060;margin-bottom:16px;">צור חדר חדש או הצטרף לחדר קיים כדי לשמוע ולשלוט באותו שיר משני מכשירים</div>'
       +'<div class="adm-row" style="margin-bottom:18px;"><button class="adm-btn" id="_roomCreateBtn" onclick="window._roomCreateAction()">צור חדר חדש</button></div>'
-      +'<div style="border-top:1px solid #eee;padding-top:16px;">'
-      +'<div style="font-size:13px;color:#606060;margin-bottom:8px;">או הזן קוד להצטרפות</div>'
-      +'<div style="display:flex;gap:8px;">'
-      +'<input id="_roomJoinInput" maxlength="4" placeholder="0000" style="flex:1;font-size:20px;text-align:center;letter-spacing:4px;padding:8px;border:1px solid #ccc;border-radius:8px;">'
-      +'<button class="adm-btn" onclick="window._roomJoinAction()">הצטרף</button>'
-      +'</div>'
-      +'<div class="adm-err" id="_roomJoinErr" style="display:none;">קוד לא תקין - יש להזין 4 ספרות</div>'
-      +'</div>';
+      ;
   }
 }
 
@@ -954,7 +1035,7 @@ setInterval(_checkStatus,3000);
         <span class="btn-label">פלייליסטים</span>
       </button>
       <button class="admin-lock" id="admMenuBtn" onclick="openAdminMenu(event)" title="מצב מנהל" style="display:none;">🔐</button>
-      <button class="admin-lock" id="_notifBtn" onclick="window._toggleNotifPanel(this)" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='none'" title="עדכונים" style="display:none;position:relative;background:none;border:none;cursor:pointer;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;transition:background .15s;"><svg width="24" height="24" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg><span id="_notifBadge" style="display:none;position:absolute;top:2px;right:2px;background:#FF0000;color:#fff;border-radius:50%;min-width:16px;height:16px;font-size:10px;line-height:16px;text-align:center;padding:0 2px;font-weight:700;pointer-events:none;box-shadow:0 0 0 2px #fff;"></span></button><button class="admin-lock" id="userAuthBtn" onclick="_logout()" style="display:none;font-size:11px;font-weight:600;color:#0F0F0F;background:#fff;border:1px solid #E5E5E5;border-radius:20px;padding:4px 12px;cursor:pointer;direction:rtl;white-space:nowrap;"></button>
+      <button class="admin-lock" id="_notifBtn" onclick="window._toggleNotifPanel(this)" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='none'" title="עדכונים" style="display:none;position:relative;background:none;border:none;cursor:pointer;width:40px;height:40px;border-radius:50%;align-items:center;justify-content:center;transition:background .15s;"><svg width="24" height="24" viewBox="0 0 24 24" fill="#0F0F0F"><path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2zm-2 1H8v-6c0-2.48 1.51-4.5 4-4.5s4 2.02 4 4.5v6z"/></svg><span id="_notifBadge" style="display:none;position:absolute;top:2px;right:2px;background:#FF0000;color:#fff;border-radius:50%;min-width:16px;height:16px;font-size:10px;line-height:16px;text-align:center;padding:0 2px;font-weight:700;pointer-events:none;box-shadow:0 0 0 2px #fff;"></span></button><button class="admin-lock" id="_joinEntryBtn" onclick="window._joinTogglePanel()" title="הצטרפות לחדר" style="background:none;border:none;cursor:pointer;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .15s" onmouseover="this.style.background='rgba(0,0,0,.05)'" onmouseout="this.style.background='none'"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 007.07 0l1.93-1.93a5 5 0 00-7.07-7.07L10.5 5.5"/><path d="M14 11a5 5 0 00-7.07 0L5 12.93a5 5 0 007.07 7.07L13.5 18.5"/></svg></button><button class="admin-lock" id="userAuthBtn" onclick="_logout()" style="display:none;font-size:11px;font-weight:600;color:#0F0F0F;background:#fff;border:1px solid #E5E5E5;border-radius:20px;padding:4px 12px;cursor:pointer;direction:rtl;white-space:nowrap;"></button>
     </div>
   </div>
 </div>
