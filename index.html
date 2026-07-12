@@ -712,7 +712,7 @@ function _roomSeekAndSet(state){
   if(typeof ALL==='undefined') return;
   var song = ALL.find(function(s){ return (s.v||s.mp4)===state.vid; });
   if(!song) return;
-  var _skipPause = !!(window._room.lastLocalCtrlAt && (Date.now()-window._room.lastLocalCtrlAt < 2200));
+  var _skipPause = !!(window._room.lastLocalCtrlAt && (Date.now()-window._room.lastLocalCtrlAt < 3500));
   var _elapsed = state.updatedAt ? Math.min(3, Math.max(0,(Date.now()-state.updatedAt)/1000)) : 0;
   var _ptime = state.paused ? state.time : (state.time + _elapsed);
   if(song.mp4){
@@ -1013,6 +1013,7 @@ function _roomApplyLocalPause(paused){
   try{
     var _mp4e = document.getElementById('mp4Player');
     if(currentSong && currentSong.mp4 && _mp4e){
+      window._roomSyncing=Date.now();
       if(paused && !_mp4e.paused){ _mp4e.pause(); var b1=document.getElementById('miniPlayBtn'); if(b1) b1.innerHTML=MINI_PLAY; }
       if(!paused && _mp4e.paused){ _mp4e.play().catch(function(){}); var b2=document.getElementById('miniPlayBtn'); if(b2) b2.innerHTML=MINI_PAUSE; }
       return;
@@ -1020,6 +1021,7 @@ function _roomApplyLocalPause(paused){
     if(!ytPlayer||!playerReady) return;
     var s = ytPlayer.getPlayerState();
     var isPlaying = (s===YT.PlayerState.PLAYING||s===YT.PlayerState.BUFFERING);
+    window._roomSyncing=Date.now();
     if(paused && isPlaying) ytPlayer.pauseVideo();
     if(!paused && !isPlaying) ytPlayer.playVideo();
   }catch(e){}
