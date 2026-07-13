@@ -817,7 +817,17 @@ function _roomStart(code){
         window._room.lastCtrlTs = ctrl.ts;
         _roomApplyLocalPause(ctrl.paused);
       });
+      window._room.guestsRef=window._room.ref.child('guests');
+      window._room.guestsCb=function(snap){ window._room.guestsList=snap.val()||{}; };
+      window._room.guestsRef.on('value', window._room.guestsCb);
     } else {
+      try{
+        var _kIdent=null; try{ _kIdent=JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+        var _gName=(_kIdent&&_kIdent.n)?_kIdent.n:('אורח '+window._room.clientId.slice(-4));
+        window._room.guestRef=window._room.ref.child('guests/'+window._room.clientId);
+        window._room.guestRef.onDisconnect().remove();
+        window._room.guestRef.set({n:_gName,e:(_kIdent&&_kIdent.e)||null,joinedAt:Date.now()});
+      }catch(e){}
       window._room.ref.on('value', function(snap){
         var data = snap.val();
         if(!data){
@@ -858,6 +868,8 @@ function _roomLeave(){
   if(window._room.hostRef){ try{ window._room.hostRef.onDisconnect().cancel(); if(wasHost) window._room.hostRef.remove(); }catch(e){} window._room.hostRef = null; }
   if(ref){ try{ ref.off(); }catch(e){} if(wasHost){ try{ ref.remove(); }catch(e){} } }
   if(window._room.ctrlRef){ try{ window._room.ctrlRef.off(); }catch(e){} window._room.ctrlRef = null; }
+  if(window._room.guestsRef && window._room.guestsCb){ try{ window._room.guestsRef.off('value', window._room.guestsCb); }catch(e){} window._room.guestsRef = null; window._room.guestsCb = null; }
+  if(window._room.guestRef){ try{ window._room.guestRef.onDisconnect().cancel(); window._room.guestRef.remove(); }catch(e){} window._room.guestRef = null; }
   window._room.ref = null;
   window._room.isHost = null;
   try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){}
@@ -979,6 +991,14 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         info.style.cssText = 'padding:14px 18px 10px;text-align:center;border-bottom:1px solid #eee;';
         info.innerHTML = '<div style="font-size:12px;color:#606060;margin-bottom:4px;">קוד החדר</div><div style="font-size:22px;font-weight:700;letter-spacing:3px;margin-bottom:8px;">'+window._room.code+'</div><img src="'+qrSrc+'" width="100" height="100" style="border-radius:8px;" alt="QR">';
         menu.appendChild(info);
+        var _guests=window._room.guestsList||{};
+        var _gNames=Object.keys(_guests).map(function(k){return _guests[k].n;});
+        if(_gNames.length){
+          var gInfo=document.createElement('div');
+          gInfo.style.cssText='padding:8px 18px;text-align:center;border-bottom:1px solid #eee;font-size:12px;color:#606060;';
+          gInfo.innerHTML='מחוברים: '+_gNames.map(function(n){return String(n).replace(/</g,'&lt;');}).join(', ');
+          menu.appendChild(gInfo);
+        }
       }
       addOpt(_mpIco.music,'חזור לנגן המשותף',function(){ closeMenu(); window._multiplayerResume(); });
       addOpt(_mpIco.door, window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ closeMenu(); window._multiplayerLeave(); });
