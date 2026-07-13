@@ -981,8 +981,6 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         menu.appendChild(info);
       }
       addOpt(_mpIco.music,'חזור לנגן המשותף',function(){ closeMenu(); window._multiplayerResume(); });
-      addOpt(_mpIco.swap,'החלף שליטה'+(window._room.isHost?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#34a853;margin-inline-start:8px;vertical-align:middle;" title="בשליטתך"></span>':''),function(){ closeMenu(); window._roomTakeControl(); });
-      addOpt(window._room.muted?_mpIco.volOff:_mpIco.volUp, window._room.muted?'מושתק - הקש להפעלת קול':'קול פעיל - הקש להשתקה', function(){ window._roomToggleMute(); window._multiplayerOpenMenu(btn,'connected'); });
       addOpt(_mpIco.door, window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ closeMenu(); window._multiplayerLeave(); });
     } else if(mode==='main'){
       addOpt(_mpIco.plus,'צור חדר חדש', async function(){ await window._roomCreateAction(); window._multiplayerOpenMenu(btn,'connected'); });
