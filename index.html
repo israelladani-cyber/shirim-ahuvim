@@ -718,7 +718,7 @@ function _roomSeekAndSet(state){
   if(song.mp4){
     var el = document.getElementById('mp4Player');
     if(!el) return;
-    if(Math.abs((el.currentTime||0)-_ptime)>0.8) el.currentTime = _ptime;
+    if(Math.abs((el.currentTime||0)-_ptime)>0.5) el.currentTime = _ptime;
     if(!_skipPause){
       window._roomSyncing=Date.now();
       if(state.paused && !el.paused) el.pause();
@@ -728,7 +728,7 @@ function _roomSeekAndSet(state){
     try{
       if(typeof ytPlayer==='undefined' || !ytPlayer || !ytPlayer.getCurrentTime) return;
       var cur = ytPlayer.getCurrentTime();
-      if(Math.abs(cur-_ptime)>0.8) ytPlayer.seekTo(_ptime, true);
+      if(Math.abs(cur-_ptime)>0.5) ytPlayer.seekTo(_ptime, true);
       var st = ytPlayer.getPlayerState();
       if(!_skipPause){
       window._roomSyncing=Date.now();
@@ -955,7 +955,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         menu.appendChild(info);
       }
       addOpt(_mpIco.music,'חזור לנגן המשותף',function(){ closeMenu(); window._multiplayerResume(); });
-      addOpt(_mpIco.swap,'החלף שליטה',function(){ closeMenu(); window._roomTakeControl(); });
+      addOpt(_mpIco.swap,'החלף שליטה'+(window._room.isHost?'<span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#34a853;margin-inline-start:8px;vertical-align:middle;" title="בשליטתך"></span>':''),function(){ closeMenu(); window._roomTakeControl(); });
       addOpt(window._room.muted?_mpIco.volOff:_mpIco.volUp, window._room.muted?'מושתק - הקש להפעלת קול':'קול פעיל - הקש להשתקה', function(){ window._roomToggleMute(); window._multiplayerOpenMenu(btn,'connected'); });
       addOpt(_mpIco.door, window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ closeMenu(); window._multiplayerLeave(); });
     } else if(mode==='main'){
