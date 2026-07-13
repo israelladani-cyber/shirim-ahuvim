@@ -907,6 +907,13 @@ window._multiplayerOpenMenu = function(anchorBtn, view){
     function closeMenu(){ var m=document.getElementById('_mpMenu'); if(m){ m.remove(); } if(window._mpCl){ document.removeEventListener('click', window._mpCl); window._mpCl=null; } }
     var mode = view || (window._room && window._room.code ? 'connected' : 'main');
     if(mode==='connected'){
+      var _mpBack = document.createElement('div');
+      _mpBack.innerHTML = '↩';
+      _mpBack.style.cssText = 'position:absolute;top:8px;left:8px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;border-radius:50%;cursor:pointer;font-size:16px;color:#606060;background:transparent;z-index:1;';
+      _mpBack.onmouseenter = function(){ this.style.background='#f1f3f4'; };
+      _mpBack.onmouseleave = function(){ this.style.background='transparent'; };
+      _mpBack.onclick = function(){ window._multiplayerOpenMenu(btn,'main'); };
+      menu.appendChild(_mpBack);
       if(window._room && window._room.isHost){
         var joinUrl = location.origin+location.pathname+'?join='+window._room.code;
         var qrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(joinUrl);
@@ -919,7 +926,6 @@ window._multiplayerOpenMenu = function(anchorBtn, view){
       addOpt('🔄','החלף שליטה',function(){ closeMenu(); window._roomTakeControl(); });
       addOpt(window._room.muted?'🔇':'🔊', window._room.muted?'מושתק - הקש להפעלת קול':'קול פעיל - הקש להשתקה', function(){ window._roomToggleMute(); window._multiplayerOpenMenu(btn,'connected'); });
       addOpt('🚪', window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ closeMenu(); window._multiplayerLeave(); });
-      addOpt('↩','תפריט קודם', function(){ window._multiplayerOpenMenu(btn,'main'); });
     } else if(mode==='main'){
       addOpt('➕','צור חדר חדש', async function(){ await window._roomCreateAction(); window._multiplayerOpenMenu(btn,'connected'); });
       addOpt('🔗','הצטרף לחדר', function(){ window._multiplayerOpenMenu(btn,'join'); });
