@@ -1130,6 +1130,10 @@ window._joinShowScanInfo = function(){
 };
 
 window._qrStartScan = function(){
+  if(window._qrStream && window._qrStream.getVideoTracks().some(function(t){return t.readyState==='live';})){
+    var _rv=document.getElementById('_qrVideo');
+    if(_rv){ _rv.srcObject=window._qrStream; _rv.play().catch(function(){}); window._qrScanning=true; requestAnimationFrame(window._qrScanTick); return; }
+  }
   var video = document.getElementById('_qrVideo');
   var err = document.getElementById('_qrScanErr');
   if(!video || !navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
@@ -1138,6 +1142,7 @@ window._qrStartScan = function(){
   }
   navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}}).then(function(stream){
     window._qrStream = stream;
+    if(!window._qrUnloadHooked){ window._qrUnloadHooked=true; window.addEventListener('pagehide', function(){ try{ window._qrStream && window._qrStream.getTracks().forEach(function(t){t.stop();}); }catch(e){} }); }
     video.srcObject = stream;
     video.play().catch(function(){});
     window._qrScanning = true;
@@ -1181,10 +1186,6 @@ window._qrScanTick = function(){
 
 window._qrStopScan = function(){
   window._qrScanning = false;
-  if(window._qrStream){
-    try{ window._qrStream.getTracks().forEach(function(t){ t.stop(); }); }catch(e){}
-    window._qrStream = null;
-  }
 };;;
 
 window._joinShowCodeEntry = function(){
