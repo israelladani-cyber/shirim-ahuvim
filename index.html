@@ -1253,6 +1253,7 @@ function _roomUpdateBadge(){
 }
 function _roomPromoteToHost(code){
   if(window._room.code!==code) return;
+  if(window._room.guestRef){ try{ if(window._room.guestPermCb) window._room.guestRef.child('c').off('value', window._room.guestPermCb); window._room.guestRef.onDisconnect().cancel(); window._room.guestRef.remove(); }catch(e){} window._room.guestRef=null; window._room.guestPermCb=null; window._room.hasControl=null; }
   window._room.isHost = true;
   window._room.muted = false;
   try{ _roomApplyMute(); }catch(e){}
