@@ -857,19 +857,35 @@ window._roomCreateAction = async function(){
   if(btn){ btn.disabled = false; btn.textContent = '\u05e6\u05d5\u05e8 \u05d7\u05d3\u05e8'; }
 };;
 
-window._roomJoinAction = function(){
-  var inp = document.getElementById('_roomJoinInput');
-  var code = inp ? inp.value.trim() : '';
-  if(!/^\d{4}$/.test(code)){
-    var err = document.getElementById('_roomJoinErr');
-    if(err) err.style.display='block';
-    return;
-  }
+window._roomTryJoinCode = async function(code){
+  if(!window._fbDb) return false;
+  try{
+    var snap = await window._fbDb.ref('rooms/'+code).once('value');
+    if(!snap.exists() || !snap.val()) return false;
+  }catch(e){ return false; }
   window._room.isHost = false;
   window._room.muted = true;
   _roomStart(code); window._roomJoinWatchdog();
+  return true;
+}
+
+window._roomJoinAction = async function(){
+  var inp = document.getElementById('_roomJoinInput');
+  var code = inp ? inp.value.trim() : '';
+  var err = document.getElementById('_roomJoinErr');
+  if(!/^\d{4}$/.test(code)){
+    if(err) err.style.display='block';
+    return false;
+  }
+  if(err) err.style.display='none';
+  var ok = await window._roomTryJoinCode(code);
+  if(!ok){
+    if(err) err.style.display='block';
+    return false;
+  }
   var jo = document.getElementById('_joinOverlay');
   if(jo) jo.style.display='none';
+  return true;
 };
 
 window._roomLeaveAction = function(){ _roomLeave(); };
@@ -955,12 +971,12 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         +'<input id="_roomJoinInput" maxlength="4" style="width:100%;box-sizing:border-box;min-width:0;font-size:20px;letter-spacing:4px;text-align:center;padding:8px;border:1px solid #ccc;border-radius:8px;margin-bottom:8px;">'
         +'<div id="_roomJoinErr" style="display:none;color:#c0392b;font-size:12px;margin-bottom:8px;">קוד לא תקין</div>';
       menu.appendChild(wrap);
-      addOpt(_mpIco.check,'הצטרף', function(){
+      addOpt(_mpIco.check,'הצטרף', async function(){
         var inp = document.getElementById('_roomJoinInput');
         var code = inp ? inp.value.trim() : '';
         if(!/^\d{4}$/.test(code)){ var e=document.getElementById('_roomJoinErr'); if(e) e.style.display='block'; return; }
-        window._roomJoinAction();
-        window._multiplayerOpenMenu();
+        var ok = await window._roomJoinAction();
+        if(ok){ window._multiplayerOpenMenu(); }
       });
       } else if(mode==='join-scan'){
       var swrap = document.createElement('div');
@@ -1078,12 +1094,16 @@ window._qrScanTick = function(){
       if(m){
         var code = m[1];
         window._qrStopScan();
-        window._room.isHost = false;
-        window._room.muted = true;
-        _roomStart(code); window._roomJoinWatchdog();
-        var jo = document.getElementById('_joinOverlay');
-        if(jo) jo.style.display='none';
-        if(typeof window._multiplayerOpenMenu==='function' && window._mpAnchor){ window._multiplayerOpenMenu(); }
+        window._roomTryJoinCode(code).then(function(ok){
+          if(!ok){
+            var se = document.getElementById('_qrScanErr');
+            if(se){ se.textContent = 'החדר לא נמצא'; se.style.display='block'; }
+            return;
+          }
+          var jo = document.getElementById('_joinOverlay');
+          if(jo) jo.style.display='none';
+          if(typeof window._multiplayerOpenMenu==='function' && window._mpAnchor){ window._multiplayerOpenMenu(); }
+        });
         return;
       }
     }catch(e){}
