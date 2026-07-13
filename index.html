@@ -843,8 +843,8 @@ function _roomStart(code){
           if(!window._room.hostOfflineTimer){
             window._room.hostOfflineTimer = setTimeout(function(){
               window._room.hostOfflineTimer = null;
-              if(window._room.code===code){ _roomPromoteToHost(code); }
-            }, 20000);
+              if(window._room.code===code){ _roomHandleEnded(); }
+            }, 300000);
           }
           return;
         }
