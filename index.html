@@ -960,7 +960,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         var code = inp ? inp.value.trim() : '';
         if(!/^\d{4}$/.test(code)){ var e=document.getElementById('_roomJoinErr'); if(e) e.style.display='block'; return; }
         window._roomJoinAction();
-        window._multiplayerOpenMenu(btn,'connected');
+        window._multiplayerOpenMenu();
       });
       } else if(mode==='join-scan'){
       var swrap = document.createElement('div');
@@ -1083,7 +1083,7 @@ window._qrScanTick = function(){
         _roomStart(code); window._roomJoinWatchdog();
         var jo = document.getElementById('_joinOverlay');
         if(jo) jo.style.display='none';
-        if(typeof window._multiplayerOpenMenu==='function' && window._mpAnchor){ window._multiplayerOpenMenu(window._mpAnchor,'connected'); }
+        if(typeof window._multiplayerOpenMenu==='function' && window._mpAnchor){ window._multiplayerOpenMenu(); }
         return;
       }
     }catch(e){}
