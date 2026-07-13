@@ -785,9 +785,12 @@ function _roomStart(code){
   window._room.code = code;
   window._room.everHadData = false;
   if(!window._room.clientId) window._room.clientId = 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36);
-  try{ localStorage.setItem('karaoke_room_code', code); }catch(e){}
+  try{ localStorage.setItem('karaoke_room_code', code); localStorage.setItem('karaoke_room_ishost', window._room.isHost?'1':'0'); }catch(e){}
   if(window._room.timer) clearInterval(window._room.timer);
   window._room.timer = null;
+  if(window._room.hostOfflineTimer){ clearTimeout(window._room.hostOfflineTimer); window._room.hostOfflineTimer = null; }
+  if(window._room.presenceRef && window._room.presenceCb){ try{ window._room.presenceRef.off('value', window._room.presenceCb); }catch(e){} window._room.presenceRef = null; window._room.presenceCb = null; }
+  if(window._room.hostRef){ try{ window._room.hostRef.onDisconnect().cancel(); }catch(e){} window._room.hostRef = null; }
   if(window._room.ref){ try{ window._room.ref.off(); }catch(e){} }
   if(window._room.handoffRef){ try{ window._room.handoffRef.off(); }catch(e){} }
   if(window._fbDb){
@@ -796,6 +799,15 @@ function _roomStart(code){
     window._room.handoffRef.on('value', function(snap){ try{ _roomHandleHandoff(snap.val()); }catch(e){} });
     if(window._room.isHost){
       window._room.timer = setInterval(_roomPushIfChanged, 1000);
+      window._room.hostRef = window._room.ref.child('hostOnline');
+      window._room.presenceRef = window._fbDb.ref('.info/connected');
+      window._room.presenceCb = function(snap){
+        if(snap.val()===true && window._room.hostRef){
+          window._room.hostRef.onDisconnect().set(false);
+          window._room.hostRef.set(true);
+        }
+      };
+      window._room.presenceRef.on('value', window._room.presenceCb);
       window._room.ctrlRef = window._room.ref.child('ctrl');
       window._room.ctrlRef.on('value', function(snap){
         var ctrl = snap.val();
@@ -813,6 +825,16 @@ function _roomStart(code){
         }
         window._room.everHadData = true;
         if(data.writer===window._room.clientId) return;
+        if(data.hostOnline===false){
+          if(!window._room.hostOfflineTimer){
+            window._room.hostOfflineTimer = setTimeout(function(){
+              window._room.hostOfflineTimer = null;
+              if(window._room.code===code){ _roomHandleEnded(); }
+            }, 20000);
+          }
+          return;
+        }
+        if(window._room.hostOfflineTimer){ clearTimeout(window._room.hostOfflineTimer); window._room.hostOfflineTimer = null; }
         window._room.lastAppliedAt = data.updatedAt||Date.now();
         window._room.lastPushed = JSON.stringify({vid:data.vid, paused:data.paused});
         window._room.lastState = data;
@@ -830,11 +852,14 @@ function _roomLeave(){
   window._room.code = null;
   if(window._room.timer) clearInterval(window._room.timer);
   window._room.timer = null;
+  if(window._room.hostOfflineTimer){ clearTimeout(window._room.hostOfflineTimer); window._room.hostOfflineTimer = null; }
+  if(window._room.presenceRef && window._room.presenceCb){ try{ window._room.presenceRef.off('value', window._room.presenceCb); }catch(e){} window._room.presenceRef = null; window._room.presenceCb = null; }
+  if(window._room.hostRef){ try{ window._room.hostRef.onDisconnect().cancel(); if(wasHost) window._room.hostRef.remove(); }catch(e){} window._room.hostRef = null; }
   if(ref){ try{ ref.off(); }catch(e){} if(wasHost){ try{ ref.remove(); }catch(e){} } }
   if(window._room.ctrlRef){ try{ window._room.ctrlRef.off(); }catch(e){} window._room.ctrlRef = null; }
   window._room.ref = null;
   window._room.isHost = null;
-  try{ localStorage.removeItem('karaoke_room_code'); }catch(e){}
+  try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){}
   var ov = document.getElementById('_roomOverlay');
   if(ov) ov.style.display = 'none';
   _roomUpdateBadge();
@@ -1250,7 +1275,22 @@ document.addEventListener('keydown', function(e){
       var joinCode = params.get('join');
       if(joinCode && /^\d{4}$/.test(joinCode)){ _showJoinPrompt(joinCode); return; }
       var saved = localStorage.getItem('karaoke_room_code');
-      if(saved && /^\d{4}$/.test(saved)){ window._room.isHost=false; window._room.muted=true; _roomStart(saved); }
+      if(saved && /^\d{4}$/.test(saved)){
+        var savedIsHost = localStorage.getItem('karaoke_room_ishost')==='1';
+        if(savedIsHost){
+          window._room.isHost = true;
+          window._room.muted = false;
+          _roomStart(saved);
+        } else if(typeof window._roomTryJoinCode==='function'){
+          window._room.isHost = false;
+          window._room.muted = true;
+          window._roomTryJoinCode(saved).then(function(ok){
+            if(!ok){ try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){} }
+          });
+        } else {
+          window._room.isHost=false; window._room.muted=true; _roomStart(saved);
+        }
+      }
     }catch(e){}
   }
   var _readyTries=0;
