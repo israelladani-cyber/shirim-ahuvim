@@ -825,7 +825,7 @@ function _roomStart(code){
         }
         window._room.everHadData = true;
         if(data.writer===window._room.clientId) return;
-        if(data.hostOnline===false){
+        if(data.hostOnline!==true){
           if(!window._room.hostOfflineTimer){
             window._room.hostOfflineTimer = setTimeout(function(){
               window._room.hostOfflineTimer = null;
