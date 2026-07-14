@@ -969,15 +969,24 @@ window._sendSongRequest = async function(vid){
     var payload = { vid: vid, s: song?song.s:'', a: song?song.a:'', n: _rName, ts: Date.now(), queued: false };
     await window._room.ref.child('requests/'+window._room.clientId).set(payload);
     window._room.myLastRequestedVid = vid;
+    window._songRequestMode = false;
     if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song?(': '+song.s):''));
   }catch(e){}
 };
 
-/* ── Swipe-to-request: guest swipes a song row right-to-left to request it from host ── */
+window._songRequestStart = function(){
+  window._songRequestMode = true;
+  try{ if(typeof showToast==='function') showToast('מצב בקשת שיר פעיל - החליקו שיר ימין-שמאל כדי לבקש, או בטלו מהתפריט'); }catch(e){}
+};
+window._songRequestCancel = function(){
+  window._songRequestMode = false;
+};
+
+/* ── Swipe-to-request: while in song-request mode, guest swipes a song row right-to-left to request it from host ── */
 (function(){
   var _sw = null;
   var THRESH = 70, MAXSHIFT = 96;
-  function _swEligible(){ return !!(window._room && window._room.code && window._room.isHost===false); }
+  function _swEligible(){ return !!(window._room && window._room.code && window._room.isHost===false && window._songRequestMode===true); }
   function _swMakePanel(row){
     var rect = row.getBoundingClientRect();
     var p = document.createElement('div');
@@ -1079,6 +1088,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
     menu.id = '_mpMenu';
     menu.style.cssText = 'position:fixed;background:#fff;border-radius:12px;box-shadow:0 4px 20px rgba(0,0,0,.25);min-width:230px;z-index:10001;overflow:hidden;direction:rtl;';
     var rect = btn.getBoundingClientRect();
+    if(window.innerWidth<768){ var _refBtn = document.getElementById('userAuthBtn'); if(_refBtn) rect = _refBtn.getBoundingClientRect(); }
     var top = rect.bottom+6;
     var right = window.innerWidth-rect.right;
     if(right<8) right=8;
@@ -1197,7 +1207,10 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
           menu.appendChild(rWrap);
         }
       }
-            addOpt(_mpIco.music,'חזור לנגן המשותף',function(){ closeMenu(); window._multiplayerResume(); });
+            if(!window._room.isHost){
+        addOpt('🙏', window._songRequestMode ? 'בטל בקשת שיר' : 'בקש שיר מהמארח', function(){ closeMenu(); if(window._songRequestMode){ window._songRequestCancel(); } else { window._songRequestStart(); } });
+      }
+      addOpt(_mpIco.music,'חזור לנגן המשותף',function(){ closeMenu(); window._multiplayerResume(); });
       addOpt(_mpIco.door, window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ closeMenu(); window._multiplayerLeave(); });
     } else if(mode==='main'){
       addOpt(_mpIco.plus,'צור חדר חדש', async function(){ await window._roomCreateAction(); window._multiplayerOpenMenu(btn,'connected'); });
