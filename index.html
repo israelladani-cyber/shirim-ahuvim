@@ -783,6 +783,8 @@ window._roomJoinWatchdog = function(){
 };
 
 function _roomStart(code){
+  window._room.leaving=false;
+  if(!window._roomPageHideHooked){ window._roomPageHideHooked=true; window.addEventListener('pagehide', function(){ window._room.leaving=true; }); }
   window._room.code = code;
   window._room.everHadData = false;
   if(!window._room.clientId) window._room.clientId = 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36);
@@ -861,6 +863,7 @@ function _roomStart(code){
 }
 
 function _roomLeave(){
+  window._room.leaving=true;
   var wasHost = window._room.isHost;
   var ref = window._room.ref;
   window._room.code = null;
@@ -1209,7 +1212,7 @@ window._joinShowCodeEntry = function(){
 
 window._roomSendCtrl = function(paused){
   try{
-    if(window._room && window._room.code && window._room.isHost===false && window._room.ref && window._room.hasControl===true){
+    if(window._room && window._room.code && window._room.isHost===false && window._room.ref && window._room.hasControl===true && !window._room.leaving){
       window._room.ref.child('ctrl').set({paused: !!paused, clientId: window._room.clientId, ts: Date.now()});
       window._room.lastLocalCtrlAt = Date.now();
     }
