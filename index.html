@@ -966,37 +966,69 @@ window._sendSongRequest = async function(vid){
     var song = (typeof ALL!=='undefined' && ALL) ? ALL.find(function(x){ return (x.v||x.mp4)===vid; }) : null;
     var _kIdent = null; try{ _kIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
     var _rName = (_kIdent && _kIdent.n) ? _kIdent.n : ('אורח '+window._room.clientId.slice(-4));
-    var payload = { vid: vid, s: song ? song.s : '', a: song ? song.a : '', n: _rName, ts: Date.now(), queued: false };
+    var payload = { vid: vid, s: song?song.s:'', a: song?song.a:'', n: _rName, ts: Date.now(), queued: false };
     await window._room.ref.child('requests/'+window._room.clientId).set(payload);
     window._room.myLastRequestedVid = vid;
-    window._songRequestMode = false;
-    var _b = document.getElementById('_songReqBanner');
-    if(_b) _b.remove();
     if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song?(': '+song.s):''));
   }catch(e){}
 };
-window._songRequestStart = function(){
-  window._songRequestMode = true;
-  var _existing = document.getElementById('_songReqBanner');
-  if(_existing) _existing.remove();
-  var _bn = document.createElement('div');
-  _bn.id = '_songReqBanner';
-  _bn.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:10050;background:#1a73e8;color:#fff;font-size:13px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;direction:rtl;';
-  var _span = document.createElement('span');
-  _span.textContent = 'מצב בקשה פעיל - הקש על שיר כדי לשלוח בקשה';
-  _bn.appendChild(_span);
-  var _xBtn = document.createElement('span');
-  _xBtn.textContent = '✕';
-  _xBtn.style.cssText = 'cursor:pointer;padding:0 8px;';
-  _xBtn.onclick = function(){ window._songRequestCancel(); };
-  _bn.appendChild(_xBtn);
-  document.body.appendChild(_bn);
-};
-window._songRequestCancel = function(){
-  window._songRequestMode = false;
-  var _bn2 = document.getElementById('_songReqBanner');
-  if(_bn2) _bn2.remove();
-};
+
+/* ── Swipe-to-request: guest swipes a song row right-to-left to request it from host ── */
+(function(){
+  var _sw = null;
+  var THRESH = 70, MAXSHIFT = 96;
+  function _swEligible(){ return !!(window._room && window._room.code && window._room.isHost===false); }
+  function _swMakePanel(row){
+    var rect = row.getBoundingClientRect();
+    var p = document.createElement('div');
+    p.style.cssText = 'position:fixed;top:'+rect.top+'px;left:'+rect.right+'px;height:'+rect.height+'px;width:0;background:#1a73e8;color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;z-index:9999;pointer-events:none;transform:translateX(-100%);transition:none;';
+    p.textContent = '🙏';
+    document.body.appendChild(p);
+    return p;
+  }
+  document.addEventListener('touchstart', function(e){
+    if(!_swEligible()) return;
+    var row = e.target && e.target.closest ? e.target.closest('[data-vid]') : null;
+    if(!row) return;
+    var t = e.touches[0];
+    _sw = { row: row, vid: row.getAttribute('data-vid'), startX: t.clientX, startY: t.clientY, active: null, shift: 0, panel: null };
+  }, {passive:true});
+  document.addEventListener('touchmove', function(e){
+    if(!_sw) return;
+    var t = e.touches[0];
+    var dx = _sw.startX - t.clientX, dy = Math.abs(t.clientY - _sw.startY);
+    if(_sw.active===null){
+      if(Math.abs(dx) < 8 && dy < 8) return;
+      _sw.active = (dx > 0 && dx > dy);
+      if(!_sw.active){ _sw = null; return; }
+      _sw.panel = _swMakePanel(_sw.row);
+      _sw.row.style.transition = 'none';
+      _sw.row.style.position = _sw.row.style.position || 'relative';
+      _sw.row.style.zIndex = '2';
+    }
+    if(!_sw.active) return;
+    e.preventDefault();
+    var shift = Math.max(0, Math.min(dx, MAXSHIFT));
+    _sw.shift = shift;
+    _sw.row.style.transform = 'translateX(-'+shift+'px)';
+    if(_sw.panel){ _sw.panel.style.width = shift+'px'; _sw.panel.style.opacity = String(Math.min(1, shift/THRESH)); }
+  }, {passive:false});
+  document.addEventListener('touchend', function(){
+    if(!_sw || !_sw.active){ _sw = null; return; }
+    var row = _sw.row, vid = _sw.vid, panel = _sw.panel, committed = _sw.shift >= THRESH;
+    row.style.transition = 'transform 0.2s';
+    row.style.transform = '';
+    row.style.zIndex = '';
+    if(panel){
+      panel.style.transition = 'opacity 0.2s';
+      panel.style.opacity = '0';
+      setTimeout(function(){ try{ panel.remove(); }catch(e){} }, 220);
+    }
+    if(committed && typeof window._sendSongRequest==='function') window._sendSongRequest(vid);
+    _sw = null;
+  }, {passive:true});
+})();
+
 window._roomJoinAction = async function(){
   _mpUnlockMedia();
   var inp = document.getElementById('_roomJoinInput');
@@ -1165,10 +1197,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
           menu.appendChild(rWrap);
         }
       }
-      if(!window._room.isHost){
-        addOpt(_mpIco.music,'בקש שיר מהמארח', function(){ closeMenu(); window._songRequestStart(); });
-      }
-      addOpt(_mpIco.music,'חזור לנגן המשותף',function(){ closeMenu(); window._multiplayerResume(); });
+            addOpt(_mpIco.music,'חזור לנגן המשותף',function(){ closeMenu(); window._multiplayerResume(); });
       addOpt(_mpIco.door, window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ closeMenu(); window._multiplayerLeave(); });
     } else if(mode==='main'){
       addOpt(_mpIco.plus,'צור חדר חדש', async function(){ await window._roomCreateAction(); window._multiplayerOpenMenu(btn,'connected'); });
@@ -1903,7 +1932,6 @@ function pinDndDrop(e,key,idx){
 }
 
 function playVid(vid){
-  if(window._songRequestMode && window._room && window._room.code && window._room.isHost===false){ if(typeof window._sendSongRequest==='function') window._sendSongRequest(vid); return; }
   if(_admMode && window.innerWidth<768){_confirmExitForPlay(vid);return;}
   currentPlId=null;
   _syncShuffleUI();
