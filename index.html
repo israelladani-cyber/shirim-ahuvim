@@ -882,6 +882,7 @@ function _roomLeave(){
 }
 
 window._roomCreateAction = async function(){
+  if(window._room.code){ alert(window._room.isHost ? 'כבר יש לך חדר פתוח כמארח' : 'אתה כבר מחובר לחדר כאורח - עזוב אותו קודם כדי לפתוח חדר חדש'); return; }
   var btn = document.getElementById('_roomCreateBtn');
   if(btn){ btn.disabled = true; btn.textContent = '...'; }
   try{
@@ -899,6 +900,7 @@ window._roomCreateAction = async function(){
 };;
 
 window._roomTryJoinCode = async function(code){
+  if(window._room.code){ alert(window._room.isHost ? 'כבר יש לך חדר פתוח כמארח - סגור אותו קודם' : 'אתה כבר מחובר לחדר אחר - עזוב אותו קודם'); return false; }
   if(!window._fbDb) return false;
   try{
     var snap = await window._fbDb.ref('rooms/'+code).once('value');
