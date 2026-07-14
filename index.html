@@ -830,6 +830,11 @@ function _roomStart(code){
             try{ if(typeof showToast==='function') showToast((_newList[gid].n||'אורח')+' הצטרף/ה לחדר'); }catch(e){}
           }
         });
+        _prevIds.forEach(function(gid){
+          if(_newIds.indexOf(gid)===-1){
+            try{ var _gn=(window._room.guestsList&&window._room.guestsList[gid]&&window._room.guestsList[gid].n)||'אורח'; if(typeof showToast==='function') showToast(_gn+' עזב/ה את החדר'); }catch(e){}
+          }
+        });
         window._room.guestsList=_newList;
         try{ if(document.getElementById('_mpMenu') && window._mpCurrentMode==='connected'){ window._multiplayerOpenMenu(window._mpAnchor,'connected'); } }catch(e){}
       };
@@ -866,7 +871,7 @@ function _roomStart(code){
         window._room.lastAppliedAt = data.updatedAt||Date.now();
         window._room.lastPushed = JSON.stringify({vid:data.vid, paused:data.paused});
         window._room.lastState = data;
-        _roomApplyRemote(data);
+        if(window._room.suppressAutoplayOnce){ window._room.suppressAutoplayOnce=false; } else { _roomApplyRemote(data); }
       });
     }
   }
@@ -914,16 +919,25 @@ window._roomCreateAction = async function(){
   if(btn){ btn.disabled = false; btn.textContent = '\u05e6\u05d5\u05e8 \u05d7\u05d3\u05e8'; }
 };;
 
-window._roomTryJoinCode = async function(code){
+window._roomTryJoinCode = async function(code, silent){
   if(window._room.code){ var _mpM=document.getElementById('_mpMenu'); if(_mpM){ _mpM.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; await customAlert('⚠️ לא ניתן להצטרף', window._room.isHost ? 'כבר יש לך חדר פתוח כמארח - סגור אותו קודם' : 'אתה כבר מחובר לחדר אחר - עזוב אותו קודם'); return false; }
   if(!window._fbDb) return false;
+  var _snapVal = null;
   try{
     var snap = await window._fbDb.ref('rooms/'+code).once('value');
     if(!snap.exists() || !snap.val()) return false;
+    _snapVal = snap.val();
   }catch(e){ return false; }
   window._room.isHost = false;
   window._room.muted = true;
+  if(silent){ window._room.suppressAutoplayOnce = true; }
   _roomStart(code); window._roomJoinWatchdog();
+  if(!silent && _snapVal && _snapVal.vid){
+    try{ if(typeof window.playVid==='function') window.playVid(_snapVal.vid); }catch(e){}
+    try{ _roomApplyMute(); }catch(e){}
+    try{ var _e0=document.getElementById('mp4Player'); if(_e0 && _e0.paused) _e0.play().catch(function(){}); }catch(e){}
+    try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
+  }
   return true;
 }
 
@@ -1118,7 +1132,9 @@ window._multiplayerResume = function(){
   var _curVid = (typeof currentSong!=='undefined' && currentSong) ? (currentSong.v||currentSong.mp4) : null;
   if(_curVid!==state.vid && typeof window.playVid==='function') window.playVid(state.vid);
   try{ _roomApplyMute(); }catch(e){}
-  setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} }, 60);
+  try{ var _e1=document.getElementById('mp4Player'); if(_e1 && _e1.paused) _e1.play().catch(function(){}); }catch(e){}
+  try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
+  setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} try{ var _e2=document.getElementById('mp4Player'); if(_e2 && _e2.paused) _e2.play().catch(function(){}); }catch(e){} try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){} }, 60);
   setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} }, 300);
   setTimeout(function(){ if(typeof _roomSeekAndSet==='function') _roomSeekAndSet(state); }, 500);
   var ov = document.getElementById('_joinOverlay');
@@ -1383,11 +1399,11 @@ document.addEventListener('keydown', function(e){
         } else if(typeof window._roomTryJoinCode==='function'){
           window._room.isHost = false;
           window._room.muted = true;
-          window._roomTryJoinCode(saved).then(function(ok){
+          window._roomTryJoinCode(saved, true).then(function(ok){
             if(!ok){ try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){} }
           });
         } else {
-          window._room.isHost=false; window._room.muted=true; _roomStart(saved);
+          window._room.isHost=false; window._room.muted=true; window._room.suppressAutoplayOnce=true; _roomStart(saved);
         }
       }
     }catch(e){}
