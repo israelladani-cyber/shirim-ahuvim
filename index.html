@@ -930,8 +930,9 @@ window._roomTryJoinCode = async function(code, silent){
   }catch(e){ return false; }
   window._room.isHost = false;
   window._room.muted = true;
-  if(silent){ window._room.suppressAutoplayOnce = true; }
-  _roomStart(code); window._roomJoinWatchdog();
+  window._room.suppressAutoplayOnce = true;
+  _roomStart(code);
+  if(!silent){ window._roomJoinWatchdog(); }
   if(!silent && _snapVal && _snapVal.vid){
     try{ if(typeof window.playVid==='function') window.playVid(_snapVal.vid); }catch(e){}
     try{ _roomApplyMute(); }catch(e){}
@@ -1130,7 +1131,8 @@ window._multiplayerResume = function(){
   if(!(window._room && window._room.lastState)) return;
   var state = window._room.lastState;
   var _curVid = (typeof currentSong!=='undefined' && currentSong) ? (currentSong.v||currentSong.mp4) : null;
-  if(_curVid!==state.vid && typeof window.playVid==='function') window.playVid(state.vid);
+  var _playerOpen = document.body.classList.contains('playing');
+  if((!_playerOpen || _curVid!==state.vid) && typeof window.playVid==='function') window.playVid(state.vid);
   try{ _roomApplyMute(); }catch(e){}
   try{ var _e1=document.getElementById('mp4Player'); if(_e1 && _e1.paused) _e1.play().catch(function(){}); }catch(e){}
   try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
