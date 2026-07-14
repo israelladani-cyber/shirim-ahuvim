@@ -942,7 +942,9 @@ window._roomTryJoinCode = async function(code, silent){
   return true;
 }
 
+function _mpUnlockMedia(){ try{ var _u=document.getElementById('mp4Player'); if(_u){ var _p=_u.play(); if(_p && typeof _p.catch==='function') _p.catch(function(){}); _u.pause(); } }catch(e){} }
 window._roomJoinAction = async function(){
+  _mpUnlockMedia();
   var inp = document.getElementById('_roomJoinInput');
   var code = inp ? inp.value.trim() : '';
   var err = document.getElementById('_roomJoinErr');
@@ -1207,6 +1209,7 @@ window._qrScanTick = function(){
       if(m){
         var code = m[1];
         window._qrStopScan();
+        _mpUnlockMedia();
         window._roomTryJoinCode(code).then(function(ok){
           if(!ok){
             var se = document.getElementById('_qrScanErr');
@@ -1308,7 +1311,7 @@ function _roomAutoJoinAsHost(code){
       window._room.isHost = false;
       window._room.muted = true;
       if(typeof window._roomTryJoinCode==='function'){
-        window._roomTryJoinCode(code).then(function(ok){
+        window._roomTryJoinCode(code, true).then(function(ok){
           if(!ok){ try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){} }
         });
       } else {
