@@ -839,6 +839,20 @@ function _roomStart(code){
         try{ if(document.getElementById('_mpMenu') && window._mpCurrentMode==='connected'){ window._multiplayerOpenMenu(window._mpAnchor,'connected'); } }catch(e){}
       };
       window._room.guestsRef.on('value', window._room.guestsCb);
+      window._room.requestsRef = window._room.ref.child('requests');
+      window._room.requestsCb = function(snap){
+        var _prevReqIds = Object.keys(window._room.requestsList||{});
+        var _newReqList = snap.val()||{};
+        var _newReqIds = Object.keys(_newReqList);
+        _newReqIds.forEach(function(rid){
+          if(_prevReqIds.indexOf(rid)===-1){
+            try{ if(typeof showToast==='function') showToast((_newReqList[rid].n||'אורח')+' ביקש/ה: '+(_newReqList[rid].s||'')); }catch(e){}
+          }
+        });
+        window._room.requestsList = _newReqList;
+        try{ if(document.getElementById('_mpMenu') && window._mpCurrentMode==='connected'){ window._multiplayerOpenMenu(window._mpAnchor,'connected'); } }catch(e){}
+      };
+      window._room.requestsRef.on('value', window._room.requestsCb);
     } else {
       try{
         var _kIdent=null; try{ _kIdent=JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
@@ -872,6 +886,7 @@ function _roomStart(code){
         window._room.lastPushed = JSON.stringify({vid:data.vid, paused:data.paused});
         window._room.lastState = data;
         if(window._room.suppressAutoplayOnce){ window._room.suppressAutoplayOnce=false; } else { _roomApplyRemote(data); }
+        if(window._room.myLastRequestedVid && data.vid===window._room.myLastRequestedVid){ try{ if(typeof showToast==='function') showToast('השיר שביקשת מתנגן עכשיו'); }catch(e){} window._room.myLastRequestedVid=null; }
       });
     }
   }
@@ -893,6 +908,8 @@ function _roomLeave(){
   if(window._room.ctrlRef){ try{ window._room.ctrlRef.off(); }catch(e){} window._room.ctrlRef = null; }
   if(window._room.guestsRef && window._room.guestsCb){ try{ window._room.guestsRef.off('value', window._room.guestsCb); }catch(e){} window._room.guestsRef = null; window._room.guestsCb = null; }
   if(window._room.guestRef){ try{ if(window._room.guestPermCb) window._room.guestRef.child('c').off('value', window._room.guestPermCb); window._room.guestRef.onDisconnect().cancel(); window._room.guestRef.remove(); }catch(e){} window._room.guestRef = null; window._room.guestPermCb = null; }
+  if(window._room.requestsRef && window._room.requestsCb){ try{ window._room.requestsRef.off('value', window._room.requestsCb); }catch(e){} window._room.requestsRef=null; window._room.requestsCb=null; }
+  if(ref && window._room.clientId){ try{ ref.child('requests/'+window._room.clientId).remove(); }catch(e){} }
   window._room.ref = null;
   window._room.isHost = null;
   try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){}
@@ -943,6 +960,43 @@ window._roomTryJoinCode = async function(code, silent){
 }
 
 function _mpUnlockMedia(){ try{ var _u=document.getElementById('mp4Player'); if(_u){ var _p=_u.play(); if(_p && typeof _p.catch==='function') _p.catch(function(){}); _u.pause(); } }catch(e){} }
+window._sendSongRequest = async function(vid){
+  try{
+    if(!(window._room && window._room.code && window._room.ref)) return;
+    var song = (typeof ALL!=='undefined' && ALL) ? ALL.find(function(x){ return (x.v||x.mp4)===vid; }) : null;
+    var _kIdent = null; try{ _kIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+    var _rName = (_kIdent && _kIdent.n) ? _kIdent.n : ('אורח '+window._room.clientId.slice(-4));
+    var payload = { vid: vid, s: song ? song.s : '', a: song ? song.a : '', n: _rName, ts: Date.now(), queued: false };
+    await window._room.ref.child('requests/'+window._room.clientId).set(payload);
+    window._room.myLastRequestedVid = vid;
+    window._songRequestMode = false;
+    var _b = document.getElementById('_songReqBanner');
+    if(_b) _b.remove();
+    if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song?(': '+song.s):''));
+  }catch(e){}
+};
+window._songRequestStart = function(){
+  window._songRequestMode = true;
+  var _existing = document.getElementById('_songReqBanner');
+  if(_existing) _existing.remove();
+  var _bn = document.createElement('div');
+  _bn.id = '_songReqBanner';
+  _bn.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:10050;background:#1a73e8;color:#fff;font-size:13px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;direction:rtl;';
+  var _span = document.createElement('span');
+  _span.textContent = 'מצב בקשה פעיל - הקש על שיר כדי לשלוח בקשה';
+  _bn.appendChild(_span);
+  var _xBtn = document.createElement('span');
+  _xBtn.textContent = '✕';
+  _xBtn.style.cssText = 'cursor:pointer;padding:0 8px;';
+  _xBtn.onclick = function(){ window._songRequestCancel(); };
+  _bn.appendChild(_xBtn);
+  document.body.appendChild(_bn);
+};
+window._songRequestCancel = function(){
+  window._songRequestMode = false;
+  var _bn2 = document.getElementById('_songReqBanner');
+  if(_bn2) _bn2.remove();
+};
 window._roomJoinAction = async function(){
   _mpUnlockMedia();
   var inp = document.getElementById('_roomJoinInput');
@@ -1061,6 +1115,58 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
           });
           menu.appendChild(gWrap);
         }
+        var _reqIds = Object.keys(window._room.requestsList||{});
+        if(_reqIds.length){
+          var rWrap = document.createElement('div');
+          rWrap.style.cssText = 'padding:10px 18px;border-bottom:1px solid #eee;';
+          var rTitle = document.createElement('div');
+          rTitle.style.cssText = 'font-size:12px;color:#606060;margin-bottom:8px;';
+          rTitle.textContent = 'בקשות שירים ('+_reqIds.length+')';
+          rWrap.appendChild(rTitle);
+          _reqIds.forEach(function(rid){
+            var reqData = window._room.requestsList[rid];
+            var rRow = document.createElement('div');
+            rRow.style.cssText = 'margin-bottom:10px;';
+            var rInfo = document.createElement('div');
+            rInfo.style.cssText = 'font-size:13px;margin-bottom:2px;';
+            rInfo.textContent = (reqData.s||'')+' - '+(reqData.a||'');
+            var rBy = document.createElement('div');
+            rBy.style.cssText = 'font-size:11px;color:#909090;margin-bottom:6px;';
+            rBy.textContent = 'מבוקש על ידי '+(reqData.n||'אורח')+(reqData.queued?' (בתור)':'');
+            var rBtns = document.createElement('div');
+            rBtns.style.cssText = 'display:flex;gap:6px;';
+            var playBtn = document.createElement('button');
+            playBtn.className = 'adm-btn';
+            playBtn.style.cssText = 'flex:1;font-size:12px;padding:6px 8px;';
+            playBtn.textContent = 'נגן עכשיו';
+            playBtn.onclick = function(){
+              if(typeof window.playVid==='function') window.playVid(reqData.vid);
+              try{ window._room.ref.child('requests/'+rid).remove(); }catch(e){}
+            };
+            var queueBtn = document.createElement('button');
+            queueBtn.className = 'adm-btn sec';
+            queueBtn.style.cssText = 'flex:1;font-size:12px;padding:6px 8px;';
+            queueBtn.textContent = reqData.queued?'בתור':'הכנס לתור';
+            queueBtn.disabled = !!reqData.queued;
+            queueBtn.onclick = function(){
+              try{ window._room.ref.child('requests/'+rid+'/queued').set(true); }catch(e){}
+            };
+            var rejBtn = document.createElement('button');
+            rejBtn.className = 'adm-btn sec';
+            rejBtn.style.cssText = 'flex:0 0 auto;font-size:12px;padding:6px 10px;';
+            rejBtn.textContent = '✕';
+            rejBtn.onclick = function(){
+              try{ window._room.ref.child('requests/'+rid).remove(); }catch(e){}
+            };
+            rBtns.appendChild(playBtn); rBtns.appendChild(queueBtn); rBtns.appendChild(rejBtn);
+            rRow.appendChild(rInfo); rRow.appendChild(rBy); rRow.appendChild(rBtns);
+            rWrap.appendChild(rRow);
+          });
+          menu.appendChild(rWrap);
+        }
+      }
+      if(!window._room.isHost){
+        addOpt(_mpIco.music,'בקש שיר מהמארח', function(){ closeMenu(); window._songRequestStart(); });
       }
       addOpt(_mpIco.music,'חזור לנגן המשותף',function(){ closeMenu(); window._multiplayerResume(); });
       addOpt(_mpIco.door, window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ closeMenu(); window._multiplayerLeave(); });
@@ -1797,7 +1903,8 @@ function pinDndDrop(e,key,idx){
 }
 
 function playVid(vid){
-  if(_admMode&&window.innerWidth<768){_confirmExitForPlay(vid);return;}
+  if(window._songRequestMode && window._room && window._room.code && window._room.isHost===false){ if(typeof window._sendSongRequest==='function') window._sendSongRequest(vid); return; }
+  if(_admMode && window.innerWidth<768){_confirmExitForPlay(vid);return;}
   currentPlId=null;
   _syncShuffleUI();
   _syncRepeatUI();
