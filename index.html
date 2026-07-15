@@ -1060,7 +1060,11 @@ window._roomAdvanceFromQueue = function(){
     var list = window._room.requestsList;
     var ids = Object.keys(list).filter(function(k){ return list[k] && list[k].queued; });
     if(!ids.length) return false;
-    ids.sort(function(a,b){ return (list[a].queuedAt||0)-(list[b].queuedAt||0); });
+    ids.sort(function(a,b){
+      var oa=(list[a].order!==undefined?list[a].order:(list[a].ts||0));
+      var ob=(list[b].order!==undefined?list[b].order:(list[b].ts||0));
+      return oa-ob;
+    });
     var rid = ids[0];
     var r = list[rid];
     window._room.ref.child('requests/'+rid).remove();
@@ -1962,6 +1966,30 @@ function _recentAdd(song){
   _recentSave(list);
   render(document.getElementById('q')?document.getElementById('q').value:'');
 }
+var _reqDndIdx=null;
+function _reqDndStart(e,idx){_reqDndIdx=idx;e.dataTransfer.effectAllowed='move';e.stopPropagation();}
+function _reqDndOver(e,idx){if(_reqDndIdx===null||_reqDndIdx===idx)return;e.preventDefault();e.stopPropagation();document.querySelectorAll('.req-row').forEach(function(el){el.classList.remove('dnd-over');});e.currentTarget.classList.add('dnd-over');}
+function _reqDndLeave(e){e.currentTarget.classList.remove('dnd-over');}
+function _reqDndDrop(e,idx){
+  e.preventDefault();e.stopPropagation();
+  document.querySelectorAll('.req-row').forEach(function(el){el.classList.remove('dnd-over');});
+  if(_reqDndIdx===null||_reqDndIdx===idx){_reqDndIdx=null;return;}
+  try{
+    var list=window._room.requestsList||{};
+    var ids=Object.keys(list).sort(function(a,b){
+      var oa=(list[a].order!==undefined?list[a].order:(list[a].ts||0));
+      var ob=(list[b].order!==undefined?list[b].order:(list[b].ts||0));
+      return oa-ob;
+    });
+    var moved=ids.splice(_reqDndIdx,1)[0];
+    ids.splice(idx,0,moved);
+    var updates={};
+    ids.forEach(function(rid,i){ updates['requests/'+rid+'/order']=i; });
+    window._room.ref.update(updates);
+  }catch(e){}
+  _reqDndIdx=null;
+  render(document.getElementById('q')?document.getElementById('q').value:'');
+}
 function renderRequestsSection(){
   if(!(window._room && window._room.code)) return '';
   var DRAG_ICON='<svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>';
@@ -1972,22 +2000,19 @@ function renderRequestsSection(){
     var list=window._room.requestsList||{};
     var ids=Object.keys(list);
     if(!ids.length) return '';
-    var queuedIds=ids.filter(function(k){return list[k]&&list[k].queued;}).sort(function(a,b){return (list[a].queuedAt||0)-(list[b].queuedAt||0);});
     ids.sort(function(a,b){
-      var qa=(list[a]&&list[a].queued)?(list[a].queuedAt||0):Infinity;
-      var qb=(list[b]&&list[b].queued)?(list[b].queuedAt||0):Infinity;
-      if(qa!==qb) return qa-qb;
-      return (list[a].ts||0)-(list[b].ts||0);
+      var oa=(list[a].order!==undefined?list[a].order:(list[a].ts||0));
+      var ob=(list[b].order!==undefined?list[b].order:(list[b].ts||0));
+      return oa-ob;
     });
     count=ids.length;
-    ids.forEach(function(rid){
+    ids.forEach(function(rid,i){
       var r=list[rid];
       var vid=r.vid||'';
-      var posLabel=r.queued?(' · בתור #'+(queuedIds.indexOf(rid)+1)):'';
-      rows+='<tr data-vid="'+esc(vid)+'"><td style="cursor:default"><div>'+esc(r.s||'')+'</div><div class="song-artist-sub">'+esc(r.a||'')+' · '+esc(r.n||'אורח')+posLabel+'</div></td><td class="td-actions"><div class="song-actions">'
-        +'<button class="drag-handle-song" style="visibility:hidden" title="">'+DRAG_ICON+'</button>'
+      rows+='<tr class="req-row" data-vid="'+esc(vid)+'" draggable="true" ondragstart="_reqDndStart(event,'+i+')" ondragover="_reqDndOver(event,'+i+')" ondrop="_reqDndDrop(event,'+i+')" ondragleave="_reqDndLeave(event)"><td style="cursor:default"><div>'+esc(r.s||'')+'</div><div class="song-artist-sub">'+esc(r.a||'')+' · '+esc(r.n||'אורח')+'</div></td><td class="td-actions"><div class="song-actions">'
+        +'<button class="drag-handle-song" style="display:flex" draggable="true" ondragstart="_reqDndStart(event,'+i+')" ondragend="event.stopPropagation()" onclick="event.stopPropagation()" title="גרור לשינוי סדר">'+DRAG_ICON+'</button>'
         +'<button class="btn-play" onclick="event.stopPropagation();window._roomRequestPlayNow(\''+rid+'\')" title="נגן עכשיו"><svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg></button>'
-        +'<button class="adm-btn sec" style="font-size:11px;padding:4px 10px;white-space:nowrap;" '+(r.queued?'disabled':'')+' onclick="event.stopPropagation();window._roomRequestQueue(\''+rid+'\')">'+(r.queued?'בתור':'הכנס לתור')+'</button>'
+        +'<button class="adm-btn sec" style="flex:0 0 auto;font-size:11px;padding:4px 10px;white-space:nowrap;" '+(r.queued?'disabled':'')+' onclick="event.stopPropagation();window._roomRequestQueue(\''+rid+'\')">'+(r.queued?'בתור':'הכנס לתור')+'</button>'
         +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._roomRequestReject(\''+rid+'\')" title="דחה">✕</button>'
         +'</div></td></tr>';
     });
