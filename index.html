@@ -951,11 +951,15 @@ window._roomTryJoinCode = async function(code, silent){
   window._room.suppressAutoplayOnce = true;
   _roomStart(code);
   if(!silent){ window._roomJoinWatchdog(); }
-  if(!silent && _snapVal && _snapVal.vid){
-    try{ if(typeof window.playVid==='function') window.playVid(_snapVal.vid); }catch(e){}
-    try{ _roomApplyMute(); }catch(e){}
-    try{ var _e0=document.getElementById('mp4Player'); if(_e0 && _e0.paused) _e0.play().catch(function(){}); }catch(e){}
-    try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
+  if(!silent){
+    if(_snapVal && _snapVal.vid){
+      try{ if(typeof window.playVid==='function') window.playVid(_snapVal.vid); }catch(e){}
+      try{ _roomApplyMute(); }catch(e){}
+      try{ var _e0=document.getElementById('mp4Player'); if(_e0 && _e0.paused) _e0.play().catch(function(){}); }catch(e){}
+      try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
+    } else {
+      try{ if(typeof showToast==='function') showToast('התחברת לחדר - המארח לא מנגן שיר כרגע'); }catch(e){}
+    }
   }
   return true;
 }
@@ -1281,6 +1285,10 @@ window._joinRenderConnectedPanel = function(){
 window._multiplayerResume = function(){
   if(!(window._room && window._room.lastState)) return;
   var state = window._room.lastState;
+  if(!state.vid){
+    try{ if(typeof showToast==='function') showToast('המארח לא מנגן שיר כרגע'); }catch(e){}
+    return;
+  }
   var _curVid = (typeof currentSong!=='undefined' && currentSong) ? (currentSong.v||currentSong.mp4) : null;
   var _playerOpen = document.body.classList.contains('playing');
   if((!_playerOpen || _curVid!==state.vid) && typeof window.playVid==='function') window.playVid(state.vid);
