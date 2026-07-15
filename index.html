@@ -762,9 +762,10 @@ async function _roomPushIfChanged(){
   if(!window._room.code || !window._room.ref) return;
   var local = _roomLocalState();
   if(!local) return;
-  var key = JSON.stringify({vid:local.vid, paused:local.paused});
+  var _playerOpen = document.body.classList.contains('playing');
+  var key = JSON.stringify({vid:(_playerOpen?local.vid:null), paused:(_playerOpen?local.paused:true)});
   window._room.lastPushed = key;
-  var payload = { vid: local.vid||null, paused: !!local.paused, time: local.time||0, s: local.s||null, a: local.a||null, writer: window._room.clientId, updatedAt: Date.now() };
+  var payload = { vid: _playerOpen ? (local.vid||null) : null, paused: _playerOpen ? !!local.paused : true, time: _playerOpen ? (local.time||0) : 0, s: _playerOpen ? (local.s||null) : null, a: _playerOpen ? (local.a||null) : null, writer: window._room.clientId, updatedAt: Date.now() };
   window._room.lastState = payload;
   try{ window._room.ref.update(payload); }catch(e){}
 }
