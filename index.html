@@ -872,6 +872,7 @@ function _roomStart(code){
         window._room.guestRef.set({n:_gName,e:(_kIdent&&_kIdent.e)||null,joinedAt:Date.now(),c:false});
         window._room.hasControl=false;
         window._room.hostPlayerStoppedNotified=false;
+        window._room.hasSeenVid=false;
         window._room.guestPermCb=function(snap){ window._room.hasControl=(snap.val()===true); };
         window._room.guestRef.child('c').on('value', window._room.guestPermCb);
       }catch(e){}
@@ -899,9 +900,14 @@ function _roomStart(code){
         if(!data.vid){
           if(!window._room.hostPlayerStoppedNotified){
             window._room.hostPlayerStoppedNotified = true;
-            try{ if(typeof showToast==='function') showToast('המארח עצר את הנגן שלו - השיר שלך ימשיך להתנגן'); }catch(e){}
+            try{
+              if(typeof showToast==='function'){
+                showToast(window._room.hasSeenVid ? 'המארח עצר את הנגן שלו - השיר שלך ימשיך להתנגן' : 'התחברת בהצלחה. המתן לניגון שיר');
+              }
+            }catch(e){}
           }
         } else {
+          window._room.hasSeenVid = true;
           window._room.hostPlayerStoppedNotified = false;
         }
         if(window._room.suppressAutoplayOnce){ window._room.suppressAutoplayOnce=false; } else { _roomApplyRemote(data); }
@@ -976,9 +982,9 @@ window._roomTryJoinCode = async function(code, silent){
       try{ _roomApplyMute(); }catch(e){}
       try{ var _e0=document.getElementById('mp4Player'); if(_e0 && _e0.paused) _e0.play().catch(function(){}); }catch(e){}
       try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
-    } else {
-      try{ if(typeof showToast==='function') showToast('התחברת בהצלחה. המתן לניגון שיר'); }catch(e){}
     }
+    /* no-song toast is now shown centrally by the room listener in _roomStart,
+       covering both this manual-code join path and the QR/link auto-join path */
   }
   return true;
 }
@@ -1276,9 +1282,6 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
     document.body.appendChild(backdrop);
     document.body.appendChild(menu);
     if(mode==='join-scan' && typeof window._qrStartScan==='function'){ window._qrStartScan(); }
-    function _cl(e){ if(!menu.contains(e.target) && e.target!==btn){ closeMenu(); if(typeof window._qrStopScan==='function') window._qrStopScan(); } }
-    window._mpCl = _cl;
-    setTimeout(function(){ document.addEventListener('click',_cl); },0);
   }catch(e){}
 };
 window._joinTogglePanel = function(){
