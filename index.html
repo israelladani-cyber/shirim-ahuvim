@@ -928,7 +928,8 @@ window._roomCreateAction = async function(){
     var code = String(Math.floor(1000+Math.random()*9000));
     if(!window._room.clientId) window._room.clientId = 'c'+Math.random().toString(36).slice(2)+Date.now().toString(36);
     var local = _roomLocalState() || {vid:null,paused:true,time:0};
-    var payload = { vid: local.vid||null, paused: !!local.paused, time: local.time||0, s: local.s||null, a: local.a||null, writer: window._room.clientId, updatedAt: Date.now() };
+    var _playerOpen = document.body.classList.contains('playing');
+    var payload = { vid: (_playerOpen && local.vid) ? local.vid : null, paused: _playerOpen ? !!local.paused : true, time: _playerOpen ? (local.time||0) : 0, s: _playerOpen ? (local.s||null) : null, a: _playerOpen ? (local.a||null) : null, writer: window._room.clientId, updatedAt: Date.now() };
     await window._fbDb.ref('rooms/'+code).set(payload);
     window._room.isHost = true;
     window._room.muted = false;
@@ -1286,7 +1287,7 @@ window._multiplayerResume = function(){
   if(!(window._room && window._room.lastState)) return;
   var state = window._room.lastState;
   if(!state.vid){
-    try{ if(typeof showToast==='function') showToast('המארח לא מנגן שיר כרגע'); }catch(e){}
+    try{ if(typeof showToast==='function') showToast(window._room.isHost ? 'יש להפעיל שיר תחילה' : 'המארח לא מנגן שיר כרגע'); }catch(e){}
     return;
   }
   var _curVid = (typeof currentSong!=='undefined' && currentSong) ? (currentSong.v||currentSong.mp4) : null;
