@@ -585,7 +585,7 @@ window._closeFloatingPopups = function(except){
   if(except!=='mp'){ try{ var _mp=document.getElementById('_mpMenu'); if(_mp) _mp.remove(); var _bd=document.getElementById('_mpBackdrop'); if(_bd) _bd.remove(); if(window._mpCl){ document.removeEventListener('click', window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; }catch(e){} }
 };
 var dd=null;
-function _ub(nm,em,pic){function _d(){
+function _ub(nm,em,pic){if(em&&window._acctSyncedEmail!==em){window._acctLoad(em);}function _d(){
 var b=document.getElementById('userAuthBtn');if(!b)return;
 if(!nm){b.style.display='none';var _nb0=document.getElementById('_notifBtn');if(_nb0)_nb0.style.display='none';return;}
 b.style.display='block';b.style.padding='0';b.style.background='none';b.style.border='none';b.style.cursor='pointer';
@@ -670,6 +670,31 @@ try{
     projectId: "karaoke-sync-fe63b"
   });
   window._fbDb = firebase.database();
+window._acctSyncedEmail=null;
+window._acctLoadingFor=null;
+window._acctKey=function(email){return (email||'').toLowerCase().trim().replace(/[.#$\[\]]/g,',');};
+window._acctLoad=async function(email){
+  if(window._acctLoadingFor===email)return;
+  window._acctLoadingFor=email;
+  try{
+    var key=window._acctKey(email);
+    var snap=await window._fbDb.ref('users/'+key+'/data').once('value');
+    var d=snap.val()||{};
+    localStorage.setItem('kfav',JSON.stringify(d.fav||[]));
+    localStorage.setItem('krecent',JSON.stringify(d.recent||[]));
+    localStorage.setItem('karaoke_playlists',JSON.stringify(d.pl||[]));
+    window._acctSyncedEmail=email;
+    if(typeof render==='function'){var _qEl=document.getElementById('q');render(_qEl?_qEl.value:'');}
+  }catch(e){}
+};
+window._acctPush=function(field,list){
+  try{
+    if(!window._acctSyncedEmail)return;
+    var key=window._acctKey(window._acctSyncedEmail);
+    window._fbDb.ref('users/'+key+'/data/'+field).set(list);
+  }catch(e){}
+};
+
 }catch(e){}
 
 /* ==== Shared listening room (client) ==== */
@@ -1952,7 +1977,7 @@ function _syncMiniBtns(){
   }
 }
 function _favLoad(){try{return JSON.parse(localStorage.getItem('kfav')||'[]');}catch(e){return [];}}
-function _favSave(list){try{localStorage.setItem('kfav',JSON.stringify(list));}catch(e){}}
+function _favSave(list){try{localStorage.setItem('kfav',JSON.stringify(list));}catch(e){}window._acctPush('fav',list);}
 function isFavorite(vid){return _favLoad().some(function(s){return (s.v||s.mp4)===vid;});}
 function toggleFavorite(vid){
   var song=ALL.find(function(s){return (s.v||s.mp4)===vid;});
@@ -1964,7 +1989,7 @@ function toggleFavorite(vid){
   render(document.getElementById('q')?document.getElementById('q').value:'');
 }
 function _recentLoad(){try{return JSON.parse(localStorage.getItem('krecent')||'[]');}catch(e){return [];}}
-function _recentSave(list){try{localStorage.setItem('krecent',JSON.stringify(list));}catch(e){}}
+function _recentSave(list){try{localStorage.setItem('krecent',JSON.stringify(list));}catch(e){}window._acctPush('recent',list);}
 function _recentAdd(song){
   if(!song)return;
   var vid=song.v||song.mp4;
@@ -3849,7 +3874,7 @@ function switchQueueTab(id,el){
 // ── NAMED PLAYLISTS ──
 const PL_KEY='karaoke_playlists';
 function loadPlaylists(){try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}}
-function savePlaylists(pls){try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}}
+function savePlaylists(pls){try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}window._acctPush('pl',pls);}
 function removeSongFromPl(plId,vid){var pls=loadPlaylists();var pl=pls.find(function(p){return p.id===plId;});if(!pl)return;pl.songs=pl.songs.filter(function(s){return getSongKey(s)!==vid;});savePlaylists(pls);if(document.getElementById('plPanel').classList.contains('open'))renderPlPanel();render(document.getElementById('q').value||'');}
 
 // ── PLAYLIST SIDE PANEL ──
