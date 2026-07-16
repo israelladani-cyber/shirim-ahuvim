@@ -694,6 +694,44 @@ window._acctPush=function(field,list){
     window._fbDb.ref('users/'+key+'/data/'+field).set(list);
   }catch(e){}
 };
+window._seMyEvents=async function(){
+  try{
+    var id=JSON.parse(localStorage.getItem('_kIdent')||'null');
+    if(!id||!id.e)return [];
+    var key=window._acctKey(id.e);
+    var snap=await window._fbDb.ref('userEvents/'+key+'/owned').once('value');
+    var owned=snap.val()||{};
+    var ids=Object.keys(owned);
+    var events=await Promise.all(ids.map(async function(eid){
+      var s=await window._fbDb.ref('savedEvents/'+eid+'/name').once('value');
+      return {id:eid,name:s.val()||'(ללא שם)'};
+    }));
+    return events;
+  }catch(e){return [];}
+};
+window._seCreate=async function(name){
+  try{
+    var id=JSON.parse(localStorage.getItem('_kIdent')||'null');
+    if(!id||!id.e)return null;
+    var key=window._acctKey(id.e);
+    var ref=window._fbDb.ref('savedEvents').push();
+    var eid=ref.key;
+    await ref.set({name:name,ownerKey:key,ownerName:id.n||id.e,createdAt:Date.now(),songs:[],playlists:[]});
+    await window._fbDb.ref('userEvents/'+key+'/owned/'+eid).set(true);
+    return eid;
+  }catch(e){return null;}
+};
+window._seDelete=async function(eid){
+  try{
+    var id=JSON.parse(localStorage.getItem('_kIdent')||'null');
+    if(!id||!id.e)return false;
+    var key=window._acctKey(id.e);
+    await window._fbDb.ref('savedEvents/'+eid).remove();
+    await window._fbDb.ref('userEvents/'+key+'/owned/'+eid).remove();
+    return true;
+  }catch(e){return false;}
+};
+
 
 }catch(e){}
 
@@ -1291,6 +1329,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
       addOpt(_mpIco.door, window._room.isHost?'סגור מולטי-פלייר':'עזוב מולטי-פלייר', function(){ closeMenu(); window._multiplayerLeave(); });
     } else if(mode==='main'){
       addOpt(_mpIco.plus,'צור חדר חדש', async function(){ await window._roomCreateAction(); window._multiplayerOpenMenu(btn,'connected'); });
+      addOpt(_mpIco.music,'אירועים שמורים',function(){ window._multiplayerOpenMenu(btn,'events'); });
       addOpt(_mpIco.link,'הצטרף לחדר', async function(){ if(window._room.code){ var _mpM=document.getElementById('_mpMenu'); if(_mpM){ _mpM.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; await customAlert('⚠️ לא ניתן להצטרף', window._room.isHost ? 'כבר יש לך חדר פתוח כמארח - סגור אותו קודם' : 'אתה כבר מחובר לחדר אחר - עזוב אותו קודם'); return; } window._multiplayerOpenMenu(btn,'join'); });
     } else if(mode==='join'){
       addOpt(_mpIco.code,'הזן קוד', function(){ window._multiplayerOpenMenu(btn,'join-code'); });
@@ -1319,6 +1358,50 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         +'<div id="_qrScanErr" style="display:none;color:#c0392b;font-size:12px;margin-top:8px;">לא ניתן לגשת למצלמה</div>';
       menu.appendChild(swrap);
       
+    } else if(mode==='events'){
+      addOpt(_mpIco.plus,'אירוע חדש',function(){
+        window.customPrompt('אירוע חדש','תן שם לאירוע:',function(name){
+          if(!name)return;
+          window._seCreate(name).then(function(){ window._multiplayerOpenMenu(btn,'events'); });
+        });
+      });
+      var _seWrap=document.createElement('div');
+      _seWrap.id='_seListWrap';
+      _seWrap.style.cssText='padding:8px 16px;font-size:13px;color:#606060;';
+      _seWrap.textContent='טוען...';
+      menu.appendChild(_seWrap);
+      window._seMyEvents().then(function(events){
+        var wrap=document.getElementById('_seListWrap');
+        if(!wrap)return;
+        wrap.innerHTML='';
+        wrap.style.padding='0';
+        if(events.length===0){
+          var _empty=document.createElement('div');
+          _empty.style.cssText='padding:8px 16px;font-size:13px;color:#909090;';
+          _empty.textContent='אין לך אירועים שמורים עדיין';
+          wrap.appendChild(_empty);
+          return;
+        }
+        events.forEach(function(ev){
+          var row=document.createElement('div');
+          row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 16px;';
+          var nameEl=document.createElement('span');
+          nameEl.textContent=ev.name;
+          nameEl.style.cssText='font-size:14px;color:#0F0F0F;';
+          var delBtn=document.createElement('button');
+          delBtn.textContent='\uD83D\uDDD1';
+          delBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:15px;';
+          delBtn.onclick=function(){
+            window.customConfirm('מחיקת אירוע','למחוק את "'+ev.name+'"? לא ניתן לשחזר.','מחק').then(function(ok){
+              if(!ok)return;
+              window._seDelete(ev.id).then(function(){ window._multiplayerOpenMenu(btn,'events'); });
+            });
+          };
+          row.appendChild(nameEl);
+          row.appendChild(delBtn);
+          wrap.appendChild(row);
+        });
+      });
     }
     var backdrop = document.createElement('div');
     backdrop.id = '_mpBackdrop';
