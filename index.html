@@ -699,15 +699,24 @@ window._seMyEvents=async function(){
     var id=JSON.parse(localStorage.getItem('_kIdent')||'null');
     if(!id||!id.e)return [];
     var key=window._acctKey(id.e);
-    var snap=await window._fbDb.ref('userEvents/'+key+'/owned').once('value');
-    var owned=snap.val()||{};
-    var ids=Object.keys(owned);
+    var snap=await window._fbDb.ref('userEvents/'+key+'/events').once('value');
+    var idx=snap.val()||{};
+    var ids=Object.keys(idx);
     var events=await Promise.all(ids.map(async function(eid){
       var s=await window._fbDb.ref('savedEvents/'+eid+'/name').once('value');
-      return {id:eid,name:s.val()||'(ללא שם)'};
+      var codeS=await window._fbDb.ref('savedEvents/'+eid+'/code').once('value');
+      return {id:eid,name:s.val()||'(ללא שם)',role:idx[eid],code:codeS.val()||''};
     }));
     return events;
   }catch(e){return [];}
+};
+window._seGenCode=async function(){
+  for(var i=0;i<10;i++){
+    var code=String(Math.floor(1000+Math.random()*9000));
+    var chk=await window._fbDb.ref('eventCodes/'+code).once('value');
+    if(!chk.val())return code;
+  }
+  return String(Date.now()).slice(-4);
 };
 window._seCreate=async function(name){
   try{
@@ -716,18 +725,52 @@ window._seCreate=async function(name){
     var key=window._acctKey(id.e);
     var ref=window._fbDb.ref('savedEvents').push();
     var eid=ref.key;
-    await ref.set({name:name,ownerKey:key,ownerName:id.n||id.e,createdAt:Date.now(),songs:[],playlists:[]});
-    await window._fbDb.ref('userEvents/'+key+'/owned/'+eid).set(true);
+    var code=await window._seGenCode();
+    await ref.set({name:name,ownerKey:key,ownerName:id.n||id.e,createdAt:Date.now(),code:code,songs:[],playlists:[]});
+    await window._fbDb.ref('eventCodes/'+code).set(eid);
+    await window._fbDb.ref('userEvents/'+key+'/events/'+eid).set('owner');
+    await window._fbDb.ref('savedEvents/'+eid+'/members/'+key).set({name:id.n||id.e,joinedAt:Date.now()});
     return eid;
   }catch(e){return null;}
+};
+window._seJoinByCode=async function(code){
+  try{
+    var id=JSON.parse(localStorage.getItem('_kIdent')||'null');
+    if(!id||!id.e)return {ok:false,reason:'notlogged'};
+    var key=window._acctKey(id.e);
+    var snap=await window._fbDb.ref('eventCodes/'+code).once('value');
+    var eid=snap.val();
+    if(!eid)return {ok:false,reason:'notfound'};
+    var existing=await window._fbDb.ref('userEvents/'+key+'/events/'+eid).once('value');
+    if(existing.val())return {ok:true,eid:eid,already:true};
+    await window._fbDb.ref('userEvents/'+key+'/events/'+eid).set('member');
+    await window._fbDb.ref('savedEvents/'+eid+'/members/'+key).set({name:id.n||id.e,joinedAt:Date.now()});
+    return {ok:true,eid:eid,already:false};
+  }catch(e){return {ok:false,reason:'error'};}
+};
+window._seLeave=async function(eid){
+  try{
+    var id=JSON.parse(localStorage.getItem('_kIdent')||'null');
+    if(!id||!id.e)return false;
+    var key=window._acctKey(id.e);
+    await window._fbDb.ref('userEvents/'+key+'/events/'+eid).remove();
+    await window._fbDb.ref('savedEvents/'+eid+'/members/'+key).remove();
+    return true;
+  }catch(e){return false;}
 };
 window._seDelete=async function(eid){
   try{
     var id=JSON.parse(localStorage.getItem('_kIdent')||'null');
     if(!id||!id.e)return false;
     var key=window._acctKey(id.e);
+    var ev=await window._fbDb.ref('savedEvents/'+eid).once('value');
+    var data=ev.val()||{};
+    if(data.code){ await window._fbDb.ref('eventCodes/'+data.code).remove(); }
+    var members=data.members||{};
+    await Promise.all(Object.keys(members).map(function(mkey){
+      return window._fbDb.ref('userEvents/'+mkey+'/events/'+eid).remove();
+    }));
     await window._fbDb.ref('savedEvents/'+eid).remove();
-    await window._fbDb.ref('userEvents/'+key+'/owned/'+eid).remove();
     return true;
   }catch(e){return false;}
 };
@@ -1365,6 +1408,15 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
           window._seCreate(name).then(function(){ window._multiplayerOpenMenu(btn,'events'); });
         });
       });
+      addOpt(_mpIco.link,'הצטרף עם קוד',function(){
+        window.customPrompt('הצטרף לאירוע','הזן קוד אירוע:',function(code){
+          if(!code)return;
+          window._seJoinByCode(code.trim()).then(function(res){
+            if(res.ok){ window._multiplayerOpenMenu(btn,'events'); }
+            else{ window.customAlert('שגיאה','קוד האירוע לא נמצא','הבנתי'); }
+          });
+        });
+      });
       var _seWrap=document.createElement('div');
       _seWrap.id='_seListWrap';
       _seWrap.style.cssText='padding:8px 16px;font-size:13px;color:#606060;';
@@ -1386,22 +1438,31 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
           var row=document.createElement('div');
           row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 16px;';
           var nameEl=document.createElement('span');
-          nameEl.textContent=ev.name;
+          nameEl.textContent=ev.name+(ev.role==='owner'?' \u00b7 '+ev.code:'');
           nameEl.style.cssText='font-size:14px;color:#0F0F0F;';
-          var delBtn=document.createElement('button');
-          delBtn.textContent='\uD83D\uDDD1';
-          delBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:15px;';
-          delBtn.onclick=function(){
-            window.customConfirm('מחיקת אירוע','למחוק את "'+ev.name+'"? לא ניתן לשחזר.','מחק').then(function(ok){
-              if(!ok)return;
-              window._seDelete(ev.id).then(function(){ window._multiplayerOpenMenu(btn,'events'); });
-            });
+          var actBtn=document.createElement('button');
+          actBtn.textContent=ev.role==='owner'?'\uD83D\uDDD1':'\u274C';
+          actBtn.title=ev.role==='owner'?'מחיקת אירוע':'עזיבת אירוע';
+          actBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:15px;';
+          actBtn.onclick=function(){
+            if(ev.role==='owner'){
+              window.customConfirm('מחיקת אירוע','למחוק את "'+ev.name+'"? לא ניתן לשחזר.','מחק').then(function(ok){
+                if(!ok)return;
+                window._seDelete(ev.id).then(function(){ window._multiplayerOpenMenu(btn,'events'); });
+              });
+            }else{
+              window.customConfirm('עזיבת אירוע','לעזוב את "'+ev.name+'"?','עזוב').then(function(ok){
+                if(!ok)return;
+                window._seLeave(ev.id).then(function(){ window._multiplayerOpenMenu(btn,'events'); });
+              });
+            }
           };
           row.appendChild(nameEl);
-          row.appendChild(delBtn);
+          row.appendChild(actBtn);
           wrap.appendChild(row);
         });
       });
+    
     }
     var backdrop = document.createElement('div');
     backdrop.id = '_mpBackdrop';
