@@ -880,12 +880,18 @@ function _roomStart(code){
         window._room.hasSeenVid=false;
         window._room.guestPermCb=function(snap){ window._room.hasControl=(snap.val()===true); };
         window._room.guestRef.child('c').on('value', window._room.guestPermCb);
-        window._room.myRequestRef = window._room.ref.child('requests/'+window._room.clientId);
-        window._room.myRequestCb = function(snap){
-          window._room.myRequest = snap.val() || null;
+        window._room.myRequests = {};
+        window._room.requestsRef = window._room.ref.child('requests');
+        window._room.requestsCb = function(snap){
+          var _all = snap.val() || {};
+          var _mine = {};
+          Object.keys(_all).forEach(function(rid){
+            if(_all[rid] && _all[rid].clientId === window._room.clientId){ _mine[rid] = _all[rid]; }
+          });
+          window._room.myRequests = _mine;
           try{ if(typeof render==='function'){ var _q1=document.getElementById('q'); render(_q1?_q1.value:''); } }catch(e){}
         };
-        window._room.myRequestRef.on('value', window._room.myRequestCb);
+        window._room.requestsRef.on('value', window._room.requestsCb);
       }catch(e){}
       window._room.ref.on('value', function(snap){
         var data = snap.val();
@@ -944,10 +950,9 @@ function _roomLeave(){
   if(window._room.ctrlRef){ try{ window._room.ctrlRef.off(); }catch(e){} window._room.ctrlRef = null; }
   if(window._room.guestsRef && window._room.guestsCb){ try{ window._room.guestsRef.off('value', window._room.guestsCb); }catch(e){} window._room.guestsRef = null; window._room.guestsCb = null; }
   if(window._room.guestRef){ try{ if(window._room.guestPermCb) window._room.guestRef.child('c').off('value', window._room.guestPermCb); window._room.guestRef.onDisconnect().cancel(); window._room.guestRef.remove(); }catch(e){} window._room.guestRef = null; window._room.guestPermCb = null; }
-  if(window._room.myRequestRef && window._room.myRequestCb){ try{ window._room.myRequestRef.off('value', window._room.myRequestCb); }catch(e){} window._room.myRequestRef = null; window._room.myRequestCb = null; }
-  window._room.myRequest = null;
+  if(ref && window._room.myRequests){ try{ Object.keys(window._room.myRequests).forEach(function(rid){ ref.child('requests/'+rid).remove(); }); }catch(e){} }
+  window._room.myRequests = null;
   if(window._room.requestsRef && window._room.requestsCb){ try{ window._room.requestsRef.off('value', window._room.requestsCb); }catch(e){} window._room.requestsRef=null; window._room.requestsCb=null; }
-  if(ref && window._room.clientId){ try{ ref.child('requests/'+window._room.clientId).remove(); }catch(e){} }
   window._room.ref = null;
   window._room.isHost = null;
   try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){}
@@ -1013,8 +1018,8 @@ window._sendSongRequest = async function(vid){
     var song = (typeof ALL!=='undefined' && ALL) ? ALL.find(function(x){ return (x.v||x.mp4)===vid; }) : null;
     var _kIdent = null; try{ _kIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
     var _rName = (_kIdent && _kIdent.n) ? _kIdent.n : ('אורח '+window._room.clientId.slice(-4));
-    var payload = { vid: vid, s: song?song.s:'', a: song?song.a:'', n: _rName, ts: Date.now(), queued: false };
-    await window._room.ref.child('requests/'+window._room.clientId).set(payload);
+    var payload = { vid: vid, s: song?song.s:'', a: song?song.a:'', n: _rName, ts: Date.now(), queued: false, clientId: window._room.clientId };
+    await window._room.ref.child('requests').push().set(payload);
     window._room.myLastRequestedVid = vid;
     window._songRequestMode = false;
     if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song?(': '+song.s):''));
@@ -1044,10 +1049,10 @@ window._roomRequestQueue = function(rid){
 window._roomRequestReject = function(rid){
   try{ window._room.ref.child('requests/'+rid).remove(); }catch(e){}
 };
-window._roomRequestCancelMine = function(){
+window._roomRequestCancelMine = function(rid){
   try{
-    if(!(window._room && window._room.ref && window._room.clientId)) return;
-    window._room.ref.child('requests/'+window._room.clientId).remove();
+    if(!(window._room && window._room.ref && rid)) return;
+    window._room.ref.child('requests/'+rid).remove();
     if(typeof showToast==='function') showToast('הבקשה בוטלה');
   }catch(e){}
 };
@@ -1495,8 +1500,8 @@ function _roomUpdateBadge(){
 function _roomPromoteToHost(code){
   if(window._room.code!==code) return;
   if(window._room.guestRef){ try{ if(window._room.guestPermCb) window._room.guestRef.child('c').off('value', window._room.guestPermCb); window._room.guestRef.onDisconnect().cancel(); window._room.guestRef.remove(); }catch(e){} window._room.guestRef=null; window._room.guestPermCb=null; window._room.hasControl=null; }
-  if(window._room.myRequestRef && window._room.myRequestCb){ try{ window._room.myRequestRef.off('value', window._room.myRequestCb); }catch(e){} window._room.myRequestRef=null; window._room.myRequestCb=null; }
-  window._room.myRequest = null;
+  if(window._room.requestsRef && window._room.requestsCb){ try{ window._room.requestsRef.off('value', window._room.requestsCb); }catch(e){} window._room.requestsRef=null; window._room.requestsCb=null; }
+  window._room.myRequests = null;
   window._room.isHost = true;
   window._room.muted = false;
   try{ _roomApplyMute(); }catch(e){}
@@ -2017,12 +2022,17 @@ function renderRequestsSection(){
         +'</div></td></tr>';
     });
   } else {
-    var mr=window._room.myRequest;
-    if(!mr) return '';
-    count=1;
-    rows+='<tr data-vid="'+esc(mr.vid||'')+'"><td style="cursor:default"><div>'+esc(mr.s||'')+'</div><div class="song-artist-sub">'+(mr.queued?'בתור אצל המארח':'ממתין לאישור המארח')+'</div></td><td class="td-actions"><div class="song-actions">'
-      +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._roomRequestCancelMine()" title="בטל בקשה">✕</button>'
-      +'</div></td></tr>';
+    var mrList=window._room.myRequests||{};
+    var mrIds=Object.keys(mrList);
+    if(!mrIds.length) return '';
+    mrIds.sort(function(a,b){ return (mrList[a].ts||0)-(mrList[b].ts||0); });
+    count=mrIds.length;
+    mrIds.forEach(function(rid){
+      var mr=mrList[rid];
+      rows+='<tr data-vid="'+esc(mr.vid||'')+'"><td style="cursor:default"><div>'+esc(mr.s||'')+'</div><div class="song-artist-sub">'+(mr.queued?'בתור אצל המארח':'ממתין לאישור המארח')+'</div></td><td class="td-actions"><div class="song-actions">'
+        +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._roomRequestCancelMine(\''+rid+'\')" title="בטל בקשה">✕</button>'
+        +'</div></td></tr>';
+    });
   }
   return '<div class="artist-block" data-open="true" data-vid="__requests__"><div class="artist-header" onclick="toggleArtist(this)"><div class="artist-avatar" style="background:#F2F2F2;display:flex;align-items:center;justify-content:center;font-size:20px;">🙏</div><span class="artist-name-text">בקשות שירים</span>'+chevron+'</div><div class="songs-wrap"><table class="songs-table"><tbody>'+rows+'</tbody></table></div></div>';
 }
