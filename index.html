@@ -1435,7 +1435,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
     function closeMenu(){ var m=document.getElementById('_mpMenu'); if(m){ m.remove(); } var _bd=document.getElementById('_mpBackdrop'); if(_bd){ _bd.remove(); } if(window._mpCl){ document.removeEventListener('click', window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; }
     var mode = view || (window._room && window._room.code ? 'connected' : 'main');
     window._mpCurrentMode = mode;
-    if(mode!=='connected'){
+    if(mode!=='connected' && mode!=='events-invite'){
       var _mpBackTarget;
       if(mode==='join-code' || mode==='join-scan') _mpBackTarget='join';
       else if(mode==='events-join-code' || mode==='events-join-scan') _mpBackTarget='events-join';
