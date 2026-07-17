@@ -786,13 +786,102 @@ window._seInvite=function(ev){
     window.prompt('העתק קישור:',url);
   }
 }
+window._seLiveLocalState=function(){
+  try{
+    if(typeof currentSong==='undefined' || !currentSong) return null;
+    var vid = currentSong.v || currentSong.mp4;
+    if(!vid) return null;
+    var paused=true, time=0;
+    if(currentSong.mp4){
+      var el=document.getElementById('mp4Player');
+      paused = el ? el.paused : true;
+      time = el ? el.currentTime : 0;
+    } else {
+      try{
+        paused = (typeof ytPlayer!=='undefined' && ytPlayer && ytPlayer.getPlayerState) ? (ytPlayer.getPlayerState()!==1) : true;
+        time = (typeof ytPlayer!=='undefined' && ytPlayer && ytPlayer.getCurrentTime) ? ytPlayer.getCurrentTime() : 0;
+      }catch(e){}
+    }
+    return {vid:vid, paused:paused, time:time};
+  }catch(e){ return null; }
+};
+window._seLiveStart=function(ev){
+  window._seLiveStop();
+  var eid=ev.id;
+  window._seLive={eid:eid, mode:'host', lastPushed:null};
+  try{
+    var hostRef=window._fbDb.ref('savedEvents/'+eid+'/live/hostOnline');
+    hostRef.onDisconnect().remove();
+    hostRef.set(true);
+    window._seLive.hostRef=hostRef;
+  }catch(e){}
+  window._seLive.pushInterval=setInterval(function(){
+    try{
+      if(!window._seLive || window._seLive.eid!==eid) return;
+      var local=window._seLiveLocalState();
+      if(!local) return;
+      var key=JSON.stringify({vid:local.vid,paused:local.paused});
+      if(key===window._seLive.lastPushed) return;
+      window._seLive.lastPushed=key;
+      window._fbDb.ref('savedEvents/'+eid+'/live/song').update({vid:local.vid,paused:local.paused,time:local.time,ts:Date.now()});
+    }catch(e){}
+  },1000);
+};
+window._seLiveJoin=function(ev){
+  window._seLiveStop();
+  var eid=ev.id;
+  window._seLive={eid:eid, mode:'guest'};
+  try{
+    var songRef=window._fbDb.ref('savedEvents/'+eid+'/live/song');
+    var cb=songRef.on('value', function(snap){
+      window._seLiveApplyRemote(snap.val());
+    });
+    window._seLive.songRef=songRef;
+    window._seLive.songCb=cb;
+  }catch(e){}
+};
+window._seLiveApplyRemote=function(state){
+  if(!state || !state.vid) return;
+  try{
+    var local=window._seLiveLocalState();
+    var songChanged = !local || local.vid!==state.vid;
+    if(songChanged && typeof playVid==='function'){ playVid(state.vid); }
+    setTimeout(function(){
+      try{
+        if(currentSong && currentSong.mp4){
+          var el=document.getElementById('mp4Player');
+          if(el){
+            if(songChanged && state.time) el.currentTime=state.time;
+            if(state.paused){ el.pause(); } else { el.play().catch(function(){}); }
+          }
+        } else if(typeof ytPlayer!=='undefined' && ytPlayer){
+          if(songChanged && state.time && ytPlayer.seekTo) ytPlayer.seekTo(state.time, true);
+          if(state.paused){ if(ytPlayer.pauseVideo) ytPlayer.pauseVideo(); }
+          else { if(ytPlayer.playVideo) ytPlayer.playVideo(); }
+        }
+      }catch(e){}
+    }, 600);
+  }catch(e){}
+};
+window._seLiveStop=function(){
+  try{
+    if(window._seLive){
+      if(window._seLive.pushInterval) clearInterval(window._seLive.pushInterval);
+      if(window._seLive.hostRef){ try{ window._seLive.hostRef.onDisconnect().cancel(); }catch(e){} try{ window._seLive.hostRef.remove(); }catch(e){} }
+      if(window._seLive.songRef && window._seLive.songCb){ window._seLive.songRef.off('value', window._seLive.songCb); }
+    }
+  }catch(e){}
+  window._seLive=null;
+};
 window._seEnterEvent=function(ev){
   window._activeEvent={id:ev.id,name:ev.name,code:ev.code,isOwner:ev.role==='owner'};
   try{ localStorage.setItem('_activeSavedEvent', JSON.stringify(window._activeEvent)); }catch(e){}
   window._multiplayerOpenMenu();
   window._seRenderActiveBar();
+  if(ev.role==='owner'){ window._seLiveStart(window._activeEvent); } else { window._seLiveJoin(window._activeEvent); }
 };
 window._seExitEvent=function(){
+  window._seLiveStop();
   window._activeEvent=null;
   try{ localStorage.removeItem('_activeSavedEvent'); }catch(e){}
   window._seRenderActiveBar();
@@ -891,7 +980,7 @@ window._seRenderActiveEventsSection=function(events){
 };
 try{
   var _rawActiveEvent=localStorage.getItem('_activeSavedEvent');
-  if(_rawActiveEvent){ window._activeEvent=JSON.parse(_rawActiveEvent); window._seRenderActiveBar(); }
+  if(_rawActiveEvent){ window._activeEvent=JSON.parse(_rawActiveEvent); window._seRenderActiveBar(); if(window._activeEvent.isOwner){ window._seLiveStart(window._activeEvent); } else { window._seLiveJoin(window._activeEvent); } }
 }catch(e){}
 ;
 ;
