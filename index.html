@@ -1626,9 +1626,11 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
             }
           };
           row.appendChild(nameEl);
-          var enterBtn=document.createElement('button');enterBtn.textContent='כניסה';enterBtn.title='כניסה לאירוע';enterBtn.style.cssText='background:none;border:1px solid #ccc;color:#0F0F0F;border-radius:16px;padding:4px 14px;cursor:pointer;font-size:13px;font-weight:500;';enterBtn.onclick=function(){window._seEnterEvent(ev);};row.appendChild(enterBtn);
+          var btnWrap=document.createElement('div');btnWrap.style.cssText='display:flex;align-items:center;gap:8px;';
+          var enterBtn=document.createElement('button');enterBtn.textContent='כניסה';enterBtn.title='כניסה לאירוע';enterBtn.style.cssText='background:none;border:1px solid #ccc;color:#0F0F0F;border-radius:16px;padding:4px 14px;cursor:pointer;font-size:13px;font-weight:500;';enterBtn.onclick=function(){window._seEnterEvent(ev);};btnWrap.appendChild(enterBtn);
           
-          row.appendChild(actBtn);
+          btnWrap.appendChild(actBtn);
+          row.appendChild(btnWrap);
           wrap.appendChild(row);
         });
       });
