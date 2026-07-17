@@ -774,7 +774,19 @@ window._seDelete=async function(eid){
     await window._fbDb.ref('savedEvents/'+eid).remove();
     return true;
   }catch(e){return false;}
+}
+window._seInvite=function(ev){
+  var url=location.origin+location.pathname+'?se='+ev.code;
+  var text=ev.name+' - הצטרפו אליי לערב קריוקי!';
+  if(navigator.share){
+    navigator.share({title:ev.name,text:text,url:url}).catch(function(){});
+  }else if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text+' '+url).then(function(){ showToast('הקישור הועתק'); }).catch(function(){});
+  }else{
+    window.prompt('העתק קישור:',url);
+  }
 };
+;
 
 
 }catch(e){}
@@ -1458,6 +1470,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
             }
           };
           row.appendChild(nameEl);
+          if(ev.role==='owner'){var invBtn=document.createElement('button');invBtn.textContent='\uD83D\uDD17';invBtn.title='הזמן חברים';invBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:15px;';invBtn.onclick=function(){window._seInvite(ev);};row.appendChild(invBtn);}
           row.appendChild(actBtn);
           wrap.appendChild(row);
         });
@@ -1768,11 +1781,32 @@ document.addEventListener('keydown', function(e){
 });
 
 (function(){
-  function _showJoinPrompt(code){var b=document.createElement('div');b.id='_joinPrompt';b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.3);';b.innerHTML='<span>הצטרפת לחדר '+code+' - הקש כדי להתחיל האזנה משותפת</span><button style="background:#e33;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;white-space:nowrap;">הצטרף</button>';b.querySelector('button').onclick=function(){b.remove();window._room.isHost=false;window._room.muted=true;_roomStart(code); window._roomJoinWatchdog();};document.body.appendChild(b);}function tryAutoJoin(){
+  function _showJoinPrompt(code){var b=document.createElement('div');b.id='_joinPrompt';b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.3);';b.innerHTML='<span>הצטרפת לחדר '+code+' - הקש כדי להתחיל האזנה משותפת</span><button style="background:#e33;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;white-space:nowrap;">הצטרף</button>';b.querySelector('button').onclick=function(){b.remove();window._room.isHost=false;window._room.muted=true;_roomStart(code); window._roomJoinWatchdog();};document.body.appendChild(b);}
+function _showEventJoinPrompt(code){
+  localStorage.setItem('_pendingSE', code);
+  var id=null; try{ id=JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+  if(!id||!id.e) return;
+  var b=document.createElement('div');
+  b.id='_sePrompt';
+  b.style.cssText='position:fixed;top:0;left:0;right:0;z-index:99999;background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;font-size:14px;box-shadow:0 2px 8px rgba(0,0,0,.3);';
+  b.innerHTML='<span>הוזמנת לאירוע קריוקי! הקש כדי להצטרף</span><button style="background:#34a853;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:14px;font-weight:700;white-space:nowrap;">הצטרף</button>';
+  b.querySelector('button').onclick=function(){
+    b.remove();
+    localStorage.removeItem('_pendingSE');
+    window._seJoinByCode(code).then(function(r){
+      if(r && r.ok){ showToast('הצטרפת לאירוע!'); }
+      else { showToast('קוד לא תקין'); }
+    });
+  };
+  document.body.appendChild(b);
+}
+function tryAutoJoin(){
     try{
       var params = new URLSearchParams(location.search);
       var joinCode = params.get('join');
       if(joinCode && /^\d{4}$/.test(joinCode)){ _showJoinPrompt(joinCode); return; }
+      var seCode = params.get('se');
+      if(seCode && /^\d{4}$/.test(seCode)){ _showEventJoinPrompt(seCode); return; }
       var saved = localStorage.getItem('karaoke_room_code');
       if(saved && /^\d{4}$/.test(saved)){
         var savedIsHost = localStorage.getItem('karaoke_room_ishost')==='1';
@@ -1805,7 +1839,7 @@ async function _fu(){try{var r=await fetch(WORKER_BASE+'/status');if(!r.ok)retur
 window._mediaKey=function(u){try{var p=new URL(u);return decodeURIComponent(p.pathname.replace(/^\//,''));}catch(e){return u;}};window._mediaUrl=function(mp4){var tok=localStorage.getItem('_medTok')||'';return WORKER_BASE+'/media?key='+encodeURIComponent(_mediaKey(mp4))+'&tok='+encodeURIComponent(tok);};window._fetchMediaToken=async function(cred){try{var r=await fetch(WORKER_BASE+'/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({credential:cred})});if(!r.ok)return;var d=await r.json();if(d.token){localStorage.setItem('_medTok',d.token);}}catch(e){}};window._medTokValid=function(){var t=localStorage.getItem('_medTok');if(!t)return false;var i=t.lastIndexOf('.');if(i<0)return false;try{var pb=t.slice(0,i).replace(/-/g,'+').replace(/_/g,'/');var pad=pb.length%4===0?'':'='.repeat(4-(pb.length%4));var payload=JSON.parse(atob(pb+pad));return !!(payload.x&&payload.x>Date.now());}catch(e){return false;}};
 window._registerUser=async function(email,name){try{var r=await fetch(WORKER_BASE+'/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:email,name:name})});return r.ok;}catch(e){return false;}};
 window._adminAction=async function(pin,action,targetEmail,targetName){try{var r=await fetch(WORKER_BASE+'/admin',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({tok:pin,action:action,targetEmail:targetEmail,targetName:targetName})});var d=await r.json();return{ok:(r.ok&&d.ok),status:r.status,error:d.error};}catch(e){return{ok:false,error:String(e)};}};
-handleGoogleAuth=async function(rp){var errEl=document.getElementById('gAuthErr'),ldEl=document.getElementById('gAuthLoading');if(errEl)errEl.style.display='none';if(ldEl)ldEl.style.display='block';try{var p=rp.credential.split('.');var pl=JSON.parse(decodeURIComponent(escape(atob(p[1].replace(/-/g,'+').replace(/_/g,'/')))));var em=pl.email.toLowerCase().trim();var nm=pl.name||pl.given_name||em;var pic=pl.picture||'';localStorage.setItem('_kIdent',JSON.stringify({e:em,n:nm,i:pic}));var us=await _fu();if(us===null){if(ldEl)ldEl.style.display='none';return;}if(us.frozen&&(us.frozen.includes(em)||us.frozen.some(function(x){return(x.e||x)===em;}))){if(ldEl)ldEl.style.display='none';_showOv('החשבון שלך הוקפא. פנה למנהל.');return;}if(us.approved.includes(em)){localStorage.setItem('_kauth',JSON.stringify({e:em,n:nm,t:Date.now(),i:pic}));_hideOv();_ub(nm,em,pic);_fetchMediaToken(rp.credential);}else if(us.pending.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('בקשתך ממתינה לאישור מנהל האתר');}else if(us.rejected.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('גישה לאתר זה נדחתה');}else{
+handleGoogleAuth=async function(rp){var errEl=document.getElementById('gAuthErr'),ldEl=document.getElementById('gAuthLoading');if(errEl)errEl.style.display='none';if(ldEl)ldEl.style.display='block';try{var p=rp.credential.split('.');var pl=JSON.parse(decodeURIComponent(escape(atob(p[1].replace(/-/g,'+').replace(/_/g,'/')))));var em=pl.email.toLowerCase().trim();var nm=pl.name||pl.given_name||em;var pic=pl.picture||'';localStorage.setItem('_kIdent',JSON.stringify({e:em,n:nm,i:pic}));var us=await _fu();if(us===null){if(ldEl)ldEl.style.display='none';return;}if(us.frozen&&(us.frozen.includes(em)||us.frozen.some(function(x){return(x.e||x)===em;}))){if(ldEl)ldEl.style.display='none';_showOv('החשבון שלך הוקפא. פנה למנהל.');return;}if(us.approved.includes(em)){localStorage.setItem('_kauth',JSON.stringify({e:em,n:nm,t:Date.now(),i:pic}));_hideOv();_ub(nm,em,pic);_fetchMediaToken(rp.credential);var _pse=localStorage.getItem('_pendingSE');if(_pse){localStorage.removeItem('_pendingSE');window._seJoinByCode(_pse).then(function(r){if(r&&r.ok)showToast('הצטרפת לאירוע!');});}}else if(us.pending.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('בקשתך ממתינה לאישור מנהל האתר');}else if(us.rejected.includes(em)){if(ldEl)ldEl.style.display='none';_showOv('גישה לאתר זה נדחתה');}else{
 await window._registerUser(em,nm);
 if(ldEl)ldEl.style.display='none';
 _showOv('בקשת הגישה שלך נשלחה לאישור מנהל האתר');
