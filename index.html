@@ -1547,6 +1547,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         iinfo.style.cssText = 'padding:14px 18px 10px;text-align:center;border-bottom:1px solid #eee;';
         iinfo.innerHTML = '<div style="font-size:13px;color:#606060;margin-bottom:4px;">'+iev.name+'</div><div style="font-size:22px;font-weight:700;letter-spacing:3px;margin-bottom:8px;">'+iev.code+'</div><img src="'+iqrSrc+'" width="100" height="100" style="border-radius:8px;" alt="QR">';
         menu.appendChild(iinfo);
+        var iCloseBtn=document.createElement('button');iCloseBtn.textContent='✕';iCloseBtn.title='סגור';iCloseBtn.style.cssText='position:absolute;top:8px;left:8px;background:none;border:none;cursor:pointer;font-size:16px;color:#606060;line-height:1;padding:4px;';iCloseBtn.onclick=function(){ window._multiplayerOpenMenu(); };menu.appendChild(iCloseBtn);
         addOpt(_mpIco.link,'שתף קישור',function(){ window._seInvite(iev); });
       }
     } else if(mode==='events-join'){
