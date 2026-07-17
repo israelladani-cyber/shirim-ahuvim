@@ -1332,6 +1332,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
       if(mode==='join-code' || mode==='join-scan') _mpBackTarget='join';
       else if(mode==='events-join-code' || mode==='events-join-scan') _mpBackTarget='events-join';
       else if(mode==='events-join') _mpBackTarget='events';
+      else if(mode==='events-invite') _mpBackTarget='events';
       else if(mode==='main' || mode==='events') _mpBackTarget='__username__';
       else _mpBackTarget='main';
       var _mpBack = document.createElement('div');
@@ -1428,6 +1429,18 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         +'<div id="_qrScanErr" style="display:none;color:#c0392b;font-size:12px;margin-top:8px;">לא ניתן לגשת למצלמה</div>';
       menu.appendChild(swrap);
       
+    } else if(mode==='events-invite'){
+      var iev = window._mpInviteEvent;
+      if(!iev){ window._multiplayerOpenMenu(btn,'events'); }
+      else {
+        var inviteUrl = location.origin+location.pathname+'?se='+iev.code;
+        var iqrSrc = 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data='+encodeURIComponent(inviteUrl);
+        var iinfo = document.createElement('div');
+        iinfo.style.cssText = 'padding:14px 18px 10px;text-align:center;border-bottom:1px solid #eee;';
+        iinfo.innerHTML = '<div style="font-size:13px;color:#606060;margin-bottom:4px;">'+iev.name+'</div><div style="font-size:22px;font-weight:700;letter-spacing:3px;margin-bottom:8px;">'+iev.code+'</div><img src="'+iqrSrc+'" width="100" height="100" style="border-radius:8px;" alt="QR">';
+        menu.appendChild(iinfo);
+        addOpt(_mpIco.link,'שתף קישור',function(){ window._seInvite(iev); });
+      }
     } else if(mode==='events-join'){
       addOpt(_mpIco.code,'הזן קוד', function(){ window._multiplayerOpenMenu(btn,'events-join-code'); });
       addOpt(_mpIco.camera,'סרוק QR', function(){ window._multiplayerOpenMenu(btn,'events-join-scan'); });
@@ -1502,7 +1515,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
             }
           };
           row.appendChild(nameEl);
-          if(ev.role==='owner'){var invBtn=document.createElement('button');invBtn.textContent='\uD83D\uDD17';invBtn.title='הזמן חברים';invBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:15px;';invBtn.onclick=function(){window._seInvite(ev);};row.appendChild(invBtn);}
+          if(ev.role==='owner'){var invBtn=document.createElement('button');invBtn.textContent='\uD83D\uDD17';invBtn.title='הזמן חברים';invBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:15px;';invBtn.onclick=function(){window._mpInviteEvent=ev;window._multiplayerOpenMenu(btn,'events-invite');};row.appendChild(invBtn);}
           row.appendChild(actBtn);
           wrap.appendChild(row);
         });
