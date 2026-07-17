@@ -845,7 +845,7 @@ window._seRenderActiveEventsSection=function(events){
       var row=document.createElement('div');
       row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:6px 0;';
       var nameEl=document.createElement('span');
-      nameEl.textContent=ev.name+(ev.role==='owner'?' · '+ev.code:'');
+      nameEl.textContent=ev.name;
       nameEl.style.cssText='font-size:14px;color:#0F0F0F;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;';
       var btns=document.createElement('div');
       btns.style.cssText='display:flex;align-items:center;gap:10px;';
