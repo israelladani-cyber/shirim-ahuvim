@@ -815,6 +815,12 @@ window._seLiveStart=function(ev){
     hostRef.set(true);
     window._seLive.hostRef=hostRef;
   }catch(e){}
+  try{
+    var reqRef=window._fbDb.ref('savedEvents/'+eid+'/live/requests');
+    var reqCb=reqRef.on('value', function(snap){ window._seLive.requestsList = snap.val() || {}; });
+    window._seLive.requestsRef=reqRef;
+    window._seLive.requestsCb=reqCb;
+  }catch(e){}
   window._seLive.pushInterval=setInterval(function(){
     try{
       if(!window._seLive || window._seLive.eid!==eid) return;
@@ -863,12 +869,39 @@ window._seLiveApplyRemote=function(state){
     }, 600);
   }catch(e){}
 };
+window._seLiveRequestSubmit=function(ev, song){
+  try{
+    if(!ev || !ev.id || !song) return;
+    var vid = song.v || song.mp4;
+    if(!vid) return;
+    var _kIdent=null; try{ _kIdent=JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+    var _rName=(_kIdent && _kIdent.n)?_kIdent.n:'אורח';
+    var payload={vid:vid, s:song.s||'', a:song.a||'', n:_rName, ts:Date.now()};
+    window._fbDb.ref('savedEvents/'+ev.id+'/live/requests').push().set(payload);
+    if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song.s?(': '+song.s):''));
+  }catch(e){}
+};
+window._seLiveRequestPlayNow=function(eid, rid){
+  try{
+    var r = window._seLive && window._seLive.requestsList && window._seLive.requestsList[rid];
+    if(!r) return;
+    if(typeof playVid==='function') playVid(r.vid);
+    window._fbDb.ref('savedEvents/'+eid+'/live/requests/'+rid).remove();
+  }catch(e){}
+};
+window._seLiveRequestDismiss=function(eid, rid){
+  try{
+    window._fbDb.ref('savedEvents/'+eid+'/live/requests/'+rid).remove();
+    if(typeof showToast==='function') showToast('הבקשה בוטלה');
+  }catch(e){}
+};
 window._seLiveStop=function(){
   try{
     if(window._seLive){
       if(window._seLive.pushInterval) clearInterval(window._seLive.pushInterval);
       if(window._seLive.hostRef){ try{ window._seLive.hostRef.onDisconnect().cancel(); }catch(e){} try{ window._seLive.hostRef.remove(); }catch(e){} }
       if(window._seLive.songRef && window._seLive.songCb){ window._seLive.songRef.off('value', window._seLive.songCb); }
+      if(window._seLive.requestsRef && window._seLive.requestsCb){ window._seLive.requestsRef.off('value', window._seLive.requestsCb); }
     }
   }catch(e){}
   window._seLive=null;
@@ -914,6 +947,20 @@ window._seRenderActiveBar=function(){
   bar.appendChild(left);
   bar.appendChild(linkBtn);
   bar.appendChild(qrBtn);
+  var reqBtn=document.createElement('button');
+  reqBtn.textContent='🎤';
+  reqBtn.title='בקש שיר';
+  reqBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:16px;';
+  reqBtn.onclick=function(){ window._mpRequestEvent=ev; window._multiplayerOpenMenu(reqBtn,'events-request'); };
+  bar.appendChild(reqBtn);
+  if(ev.isOwner){
+    var queueBtn=document.createElement('button');
+    queueBtn.textContent='📋';
+    queueBtn.title='בקשות שירים';
+    queueBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:16px;';
+    queueBtn.onclick=function(){ window._mpRequestEvent=ev; window._multiplayerOpenMenu(queueBtn,'events-requests-manage'); };
+    bar.appendChild(queueBtn);
+  }
   bar.appendChild(exitBtn);
   var _topHeader=document.querySelector('.top');
   if(_topHeader && _topHeader.parentNode){ _topHeader.parentNode.insertBefore(bar, _topHeader.nextSibling); } else { document.body.insertBefore(bar, document.body.firstChild); }
@@ -1530,6 +1577,8 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
       else if(mode==='events-join-code' || mode==='events-join-scan') _mpBackTarget='events-join';
       else if(mode==='events-join') _mpBackTarget='events';
       else if(mode==='events-invite') _mpBackTarget='events';
+    else if(mode==='events-request') _mpBackTarget='events';
+    else if(mode==='events-requests-manage') _mpBackTarget='events';
       else if(mode==='main' || mode==='events') _mpBackTarget='__username__';
       else _mpBackTarget='main';
       var _mpBack = document.createElement('div');
@@ -1639,7 +1688,60 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         var iCloseBtn=document.createElement('button');iCloseBtn.textContent='✕';iCloseBtn.title='סגור';iCloseBtn.style.cssText='position:absolute;top:8px;left:8px;background:none;border:none;cursor:pointer;font-size:16px;color:#606060;line-height:1;padding:4px;';iCloseBtn.onclick=function(){ window._multiplayerOpenMenu(); };menu.appendChild(iCloseBtn);
         addOpt(_mpIco.link,'שתף קישור',function(){ window._seInvite(iev); });
       }
-    } else if(mode==='events-join'){
+    } else if(mode==='events-request'){
+      var rIev = window._mpRequestEvent;
+      if(!rIev){ window._multiplayerOpenMenu(btn,'events'); }
+      else {
+        var rWrap=document.createElement('div'); rWrap.style.cssText='padding:12px 16px;';
+        var rInput=document.createElement('input'); rInput.type='text'; rInput.placeholder='חפש שיר...'; rInput.style.cssText='width:100%;box-sizing:border-box;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:14px;';
+        rWrap.appendChild(rInput);
+        var rResults=document.createElement('div'); rResults.style.cssText='margin-top:8px;max-height:220px;overflow-y:auto;';
+        rWrap.appendChild(rResults);
+        menu.appendChild(rWrap);
+        rInput.oninput=function(){
+          var q=rInput.value.trim();
+          rResults.innerHTML='';
+          if(q.length<2 || typeof ALL==='undefined' || !ALL) return;
+          var matches=ALL.filter(function(x){ return (x.s&&x.s.indexOf(q)!==-1)||(x.a&&x.a.indexOf(q)!==-1); }).slice(0,8);
+          matches.forEach(function(song){
+            var row=document.createElement('div');
+            row.textContent=(song.s||'')+' - '+(song.a||'');
+            row.style.cssText='padding:8px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:13px;';
+            row.onclick=function(){
+              window._seLiveRequestSubmit(rIev, song);
+              window._multiplayerOpenMenu();
+            };
+            rResults.appendChild(row);
+          });
+        };
+        setTimeout(function(){ try{ rInput.focus(); }catch(e){} },50);
+      }
+    } else if(mode==='events-requests-manage'){
+      var mIev = window._mpRequestEvent;
+      if(!mIev){ window._multiplayerOpenMenu(btn,'events'); }
+      else {
+        var mList = (window._seLive && window._seLive.eid===mIev.id && window._seLive.requestsList) ? window._seLive.requestsList : {};
+        var mIds = Object.keys(mList);
+        if(mIds.length===0){
+          var mEmpty=document.createElement('div'); mEmpty.textContent='אין בקשות ממתינות'; mEmpty.style.cssText='padding:20px;text-align:center;color:#999;font-size:13px;';
+          menu.appendChild(mEmpty);
+        } else {
+          mIds.forEach(function(rid){
+            var r=mList[rid];
+            var mRow=document.createElement('div'); mRow.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid #f0f0f0;';
+            var mName=document.createElement('span'); mName.textContent=(r.s||'')+' ('+(r.n||'')+')'; mName.style.cssText='font-size:13px;color:#0F0F0F;';
+            var mBtns=document.createElement('div'); mBtns.style.cssText='display:flex;gap:6px;';
+            var mPlay=document.createElement('button'); mPlay.textContent='▶'; mPlay.style.cssText='background:none;border:none;cursor:pointer;font-size:14px;';
+            mPlay.onclick=(function(rid2){ return function(){ window._seLiveRequestPlayNow(mIev.id, rid2); window._multiplayerOpenMenu(btn,'events-requests-manage'); }; })(rid);
+            var mDismiss=document.createElement('button'); mDismiss.textContent='✕'; mDismiss.style.cssText='background:none;border:none;cursor:pointer;font-size:14px;color:#FF0000;';
+            mDismiss.onclick=(function(rid2){ return function(){ window._seLiveRequestDismiss(mIev.id, rid2); window._multiplayerOpenMenu(btn,'events-requests-manage'); }; })(rid);
+            mBtns.appendChild(mPlay); mBtns.appendChild(mDismiss);
+            mRow.appendChild(mName); mRow.appendChild(mBtns);
+            menu.appendChild(mRow);
+          });
+        }
+      }
+} else if(mode==='events-join'){
       addOpt(_mpIco.code,'הזן קוד', function(){ window._multiplayerOpenMenu(btn,'events-join-code'); });
       addOpt(_mpIco.camera,'סרוק QR', function(){ window._multiplayerOpenMenu(btn,'events-join-scan'); });
     } else if(mode==='events-join-code'){
