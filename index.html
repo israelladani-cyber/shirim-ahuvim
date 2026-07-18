@@ -1071,7 +1071,7 @@ window._seRenderActiveBar=function(){
   bar.appendChild(qrBtn);
   var reqBtn=document.createElement('button');
   reqBtn.textContent='🎤';
-  reqBtn.title='בקש שיר';
+  reqBtn.title='הבקשה שלי';
   reqBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:16px;';
   reqBtn.onclick=function(){ window._mpRequestEvent=ev; window._multiplayerOpenMenu(reqBtn,'events-request'); };
   bar.appendChild(reqBtn);
@@ -1834,36 +1834,16 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
           if(rMineIds.length){ rMine = {id: rMineIds[0], r: window._seLive.requestsList[rMineIds[0]]}; }
         }
         if(rMine){
-          var rMineBox=document.createElement('div'); rMineBox.style.cssText='padding:10px 16px;background:#f0fdf4;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;';
+          var rMineBox=document.createElement('div'); rMineBox.style.cssText='padding:16px;background:#f0fdf4;display:flex;align-items:center;justify-content:space-between;';
           var rMineText=document.createElement('span'); rMineText.textContent='הבקשה שלך ממתינה: '+(rMine.r.s||''); rMineText.style.cssText='font-size:13px;color:#0F9D58;';
           var rMineCancel=document.createElement('button'); rMineCancel.textContent='ביטול'; rMineCancel.style.cssText='background:none;border:1px solid #ccc;border-radius:14px;padding:4px 10px;font-size:12px;cursor:pointer;color:#a32d2d;';
           rMineCancel.onclick=(function(rid3){ return function(){ window._seLiveRequestCancelMine(rIev.id, rid3); window._multiplayerOpenMenu(btn,'events-request'); }; })(rMine.id);
           rMineBox.appendChild(rMineText); rMineBox.appendChild(rMineCancel);
           menu.appendChild(rMineBox);
+        } else {
+          var rHint=document.createElement('div'); rHint.textContent='החליקו שיר ימין-שמאל בטבלת השירים כדי לבקש אותו מהמארח'; rHint.style.cssText='padding:24px 16px;text-align:center;color:#606060;font-size:13px;';
+          menu.appendChild(rHint);
         }
-        var rWrap=document.createElement('div'); rWrap.style.cssText='padding:12px 16px;';
-        var rInput=document.createElement('input'); rInput.type='text'; rInput.placeholder='חפש שיר...'; rInput.style.cssText='width:100%;box-sizing:border-box;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:14px;';
-        rWrap.appendChild(rInput);
-        var rResults=document.createElement('div'); rResults.style.cssText='margin-top:8px;max-height:220px;overflow-y:auto;';
-        rWrap.appendChild(rResults);
-        menu.appendChild(rWrap);
-        rInput.oninput=function(){
-          var q=rInput.value.trim();
-          rResults.innerHTML='';
-          if(q.length<2 || typeof ALL==='undefined' || !ALL) return;
-          var matches=ALL.filter(function(x){ return (x.s&&x.s.indexOf(q)!==-1)||(x.a&&x.a.indexOf(q)!==-1); }).slice(0,8);
-          matches.forEach(function(song){
-            var row=document.createElement('div');
-            row.textContent=(song.s||'')+' - '+(song.a||'');
-            row.style.cssText='padding:8px;cursor:pointer;border-bottom:1px solid #f0f0f0;font-size:13px;';
-            row.onclick=function(){
-              window._seLiveRequestSubmit(rIev, song);
-              window._multiplayerOpenMenu();
-            };
-            rResults.appendChild(row);
-          });
-        };
-        setTimeout(function(){ try{ rInput.focus(); }catch(e){} },50);
       }
     } else if(mode==='events-requests-manage'){
       var mIev = window._mpRequestEvent;
