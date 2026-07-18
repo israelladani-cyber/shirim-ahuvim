@@ -902,6 +902,12 @@ window._seLiveJoin=function(ev){
     window._seLive.songCb=cb;
   }catch(e){}
   try{
+    var reqRefG=window._fbDb.ref('savedEvents/'+eid+'/live/requests');
+    var reqCbG=reqRefG.on('value', function(snap){ window._seLive.requestsList = snap.val() || {}; });
+    window._seLive.requestsRef=reqRefG;
+    window._seLive.requestsCb=reqCbG;
+  }catch(e){}
+  try{
     var _seGid = window._seLiveClientId();
     var _seIdent=null; try{ _seIdent=JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e2){}
     var _seGName=(_seIdent&&_seIdent.n)?_seIdent.n:('אורח '+_seGid.slice(-4));
@@ -961,7 +967,7 @@ window._seLiveRequestSubmit=function(ev, song){
     if(!vid) return;
     var _kIdent=null; try{ _kIdent=JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
     var _rName=(_kIdent && _kIdent.n)?_kIdent.n:'אורח';
-    var payload={vid:vid, s:song.s||'', a:song.a||'', n:_rName, ts:Date.now(), queued:false};
+    var payload={vid:vid, s:song.s||'', a:song.a||'', n:_rName, ts:Date.now(), queued:false, clientId:window._seLiveClientId()};
     window._fbDb.ref('savedEvents/'+ev.id+'/live/requests').push().set(payload);
     if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song.s?(': '+song.s):''));
   }catch(e){}
@@ -998,6 +1004,12 @@ window._seLiveAdvanceFromQueue=function(){
     if(typeof window.playVid==='function') window.playVid(r.vid);
     return true;
   }catch(e){ return false; }
+};
+window._seLiveRequestCancelMine=function(eid, rid){
+  try{
+    window._fbDb.ref('savedEvents/'+eid+'/live/requests/'+rid).remove();
+    if(typeof showToast==='function') showToast('הבקשה בוטלה');
+  }catch(e){}
 };
 window._seLiveStop=function(){
   try{
@@ -1495,15 +1507,21 @@ window._roomTryJoinCode = async function(code, silent){
 function _mpUnlockMedia(){ try{ var _u=document.getElementById('mp4Player'); if(_u){ var _p=_u.play(); if(_p && typeof _p.catch==='function') _p.catch(function(){}); _u.pause(); } }catch(e){} }
 window._sendSongRequest = async function(vid){
   try{
-    if(!(window._room && window._room.code && window._room.ref)) return;
-    var song = (typeof ALL!=='undefined' && ALL) ? ALL.find(function(x){ return (x.v||x.mp4)===vid; }) : null;
-    var _kIdent = null; try{ _kIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
-    var _rName = (_kIdent && _kIdent.n) ? _kIdent.n : ('אורח '+window._room.clientId.slice(-4));
-    var payload = { vid: vid, s: song?song.s:'', a: song?song.a:'', n: _rName, ts: Date.now(), queued: false, clientId: window._room.clientId };
-    await window._room.ref.child('requests').push().set(payload);
-    window._room.myLastRequestedVid = vid;
-    window._songRequestMode = false;
-    if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song?(': '+song.s):''));
+    if(window._room && window._room.code && window._room.ref){
+      var song = (typeof ALL!=='undefined' && ALL) ? ALL.find(function(x){ return (x.v||x.mp4)===vid; }) : null;
+      var _kIdent = null; try{ _kIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+      var _rName = (_kIdent && _kIdent.n) ? _kIdent.n : ('אורח '+window._room.clientId.slice(-4));
+      var payload = { vid: vid, s: song?song.s:'', a: song?song.a:'', n: _rName, ts: Date.now(), queued: false, clientId: window._room.clientId };
+      await window._room.ref.child('requests').push().set(payload);
+      window._room.myLastRequestedVid = vid;
+      window._songRequestMode = false;
+      if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song?(': '+song.s):''));
+    } else if(window._seLive && window._seLive.mode==='guest' && window._seLive.eid){
+      var song2 = (typeof ALL!=='undefined' && ALL) ? ALL.find(function(x){ return (x.v||x.mp4)===vid; }) : null;
+      if(song2 && typeof window._seLiveRequestSubmit==='function'){
+        window._seLiveRequestSubmit({id:window._seLive.eid}, song2);
+      }
+    }
   }catch(e){}
 };
 
@@ -1563,7 +1581,7 @@ window._roomAdvanceFromQueue = function(){
 (function(){
   var _sw = null;
   var THRESH = 70, MAXSHIFT = 96;
-  function _swEligible(){ return !!(window._room && window._room.code && window._room.isHost===false); }
+  function _swEligible(){ return !!(window._room && window._room.code && window._room.isHost===false) || !!(window._seLive && window._seLive.mode==='guest'); }
   function _swMakePanel(row){
     var rect = row.getBoundingClientRect();
     var p = document.createElement('div');
@@ -1809,6 +1827,20 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
       var rIev = window._mpRequestEvent;
       if(!rIev){ window._multiplayerOpenMenu(btn,'events'); }
       else {
+        var rMine = null;
+        if(window._seLive && window._seLive.eid===rIev.id && window._seLive.requestsList){
+          var rMyCid = window._seLiveClientId();
+          var rMineIds = Object.keys(window._seLive.requestsList).filter(function(k){ return window._seLive.requestsList[k].clientId===rMyCid; });
+          if(rMineIds.length){ rMine = {id: rMineIds[0], r: window._seLive.requestsList[rMineIds[0]]}; }
+        }
+        if(rMine){
+          var rMineBox=document.createElement('div'); rMineBox.style.cssText='padding:10px 16px;background:#f0fdf4;border-bottom:1px solid #eee;display:flex;align-items:center;justify-content:space-between;';
+          var rMineText=document.createElement('span'); rMineText.textContent='הבקשה שלך ממתינה: '+(rMine.r.s||''); rMineText.style.cssText='font-size:13px;color:#0F9D58;';
+          var rMineCancel=document.createElement('button'); rMineCancel.textContent='ביטול'; rMineCancel.style.cssText='background:none;border:1px solid #ccc;border-radius:14px;padding:4px 10px;font-size:12px;cursor:pointer;color:#a32d2d;';
+          rMineCancel.onclick=(function(rid3){ return function(){ window._seLiveRequestCancelMine(rIev.id, rid3); window._multiplayerOpenMenu(btn,'events-request'); }; })(rMine.id);
+          rMineBox.appendChild(rMineText); rMineBox.appendChild(rMineCancel);
+          menu.appendChild(rMineBox);
+        }
         var rWrap=document.createElement('div'); rWrap.style.cssText='padding:12px 16px;';
         var rInput=document.createElement('input'); rInput.type='text'; rInput.placeholder='חפש שיר...'; rInput.style.cssText='width:100%;box-sizing:border-box;padding:8px;border:1px solid #ddd;border-radius:8px;font-size:14px;';
         rWrap.appendChild(rInput);
