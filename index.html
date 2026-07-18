@@ -1854,7 +1854,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
             mQueue.onclick=(function(rid2){ return function(){ window._seLiveRequestQueue(mIev.id, rid2); window._multiplayerOpenMenu(btn,'events-requests-manage'); }; })(rid);
             var mDismiss=document.createElement('button'); mDismiss.textContent='✕'; mDismiss.style.cssText='background:none;border:none;cursor:pointer;font-size:14px;color:#FF0000;';
             mDismiss.onclick=(function(rid2){ return function(){ window._seLiveRequestDismiss(mIev.id, rid2); window._multiplayerOpenMenu(btn,'events-requests-manage'); }; })(rid);
-            mBtns.appendChild(mPlay); mBtns.appendChild(mDismiss);
+            mBtns.appendChild(mPlay); mBtns.appendChild(mQueue); mBtns.appendChild(mDismiss);
             mRow.appendChild(mName); mRow.appendChild(mBtns);
             menu.appendChild(mRow);
           });
