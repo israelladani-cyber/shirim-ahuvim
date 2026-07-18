@@ -805,6 +805,19 @@ window._seLiveLocalState=function(){
     return {vid:vid, paused:paused, time:time};
   }catch(e){ return null; }
 };
+window._seLiveClientId=function(){
+  try{
+    var id=localStorage.getItem('_seLiveClientId');
+    if(!id){ id='se_'+Math.random().toString(36).slice(2)+Date.now().toString(36); localStorage.setItem('_seLiveClientId', id); }
+    return id;
+  }catch(e){ return 'se_tmp'+Date.now(); }
+};
+window._seLiveSendCtrl=function(action){
+  try{
+    if(!window._seLive || window._seLive.mode!=='guest' || !window._seLive.hasControl || !window._seLive.eid) return;
+    window._fbDb.ref('savedEvents/'+window._seLive.eid+'/live/ctrl').set({action:action, ts:Date.now()});
+  }catch(e){}
+};
 window._seLiveStart=function(ev){
   window._seLiveStop();
   var eid=ev.id;
@@ -820,6 +833,41 @@ window._seLiveStart=function(ev){
     var reqCb=reqRef.on('value', function(snap){ window._seLive.requestsList = snap.val() || {}; });
     window._seLive.requestsRef=reqRef;
     window._seLive.requestsCb=reqCb;
+  }catch(e){}
+  try{
+    var guestsRef=window._fbDb.ref('savedEvents/'+eid+'/live/guests');
+    var guestsCb=guestsRef.on('value', function(snap){
+      var newList = snap.val() || {};
+      var oldIds = window._seLive.guestsList ? Object.keys(window._seLive.guestsList) : [];
+      var newIds = Object.keys(newList);
+      newIds.forEach(function(gid){
+        if(oldIds.indexOf(gid)===-1 && typeof showToast==='function'){
+          showToast((newList[gid].n||'אורח')+' הצטרף/ה לאירוע');
+        }
+      });
+      window._seLive.guestsList = newList;
+    });
+    window._seLive.guestsRef=guestsRef;
+    window._seLive.guestsCb=guestsCb;
+  }catch(e){}
+  try{
+    var ctrlRef=window._fbDb.ref('savedEvents/'+eid+'/live/ctrl');
+    var ctrlCb=ctrlRef.on('value', function(snap){
+      var c=snap.val();
+      if(!c || !c.ts || c.ts===window._seLive.lastCtrlTs) return;
+      window._seLive.lastCtrlTs=c.ts;
+      try{
+        var mp4El=document.getElementById('mp4Player');
+        if(mp4El && currentSong && currentSong.mp4){
+          if(c.action==='pause'){ mp4El.pause(); } else { mp4El.play().catch(function(){}); }
+        } else if(typeof ytPlayer!=='undefined' && ytPlayer){
+          if(c.action==='pause'){ if(ytPlayer.pauseVideo) ytPlayer.pauseVideo(); }
+          else { if(ytPlayer.playVideo) ytPlayer.playVideo(); }
+        }
+      }catch(e){}
+    });
+    window._seLive.ctrlRef=ctrlRef;
+    window._seLive.ctrlCb=ctrlCb;
   }catch(e){}
   window._seLive.pushInterval=setInterval(function(){
     try{
@@ -844,6 +892,34 @@ window._seLiveJoin=function(ev){
     });
     window._seLive.songRef=songRef;
     window._seLive.songCb=cb;
+  }catch(e){}
+  try{
+    var _seGid = window._seLiveClientId();
+    var _seIdent=null; try{ _seIdent=JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e2){}
+    var _seGName=(_seIdent&&_seIdent.n)?_seIdent.n:('אורח '+_seGid.slice(-4));
+    var guestRef=window._fbDb.ref('savedEvents/'+eid+'/live/guests/'+_seGid);
+    guestRef.onDisconnect().remove();
+    guestRef.set({n:_seGName, joinedAt:Date.now(), c:false});
+    window._seLive.guestRef=guestRef;
+    var permCb=guestRef.child('c').on('value', function(snap){ window._seLive.hasControl = snap.val()===true; });
+    window._seLive.permRef=guestRef.child('c');
+    window._seLive.permCb=permCb;
+  }catch(e){}
+  try{
+    var hostWatchRef=window._fbDb.ref('savedEvents/'+eid+'/live/hostOnline');
+    var hostWatchCb=hostWatchRef.on('value', function(snap){
+      var isOnline = snap.val()===true;
+      if(isOnline){
+        if(window._seLive.hostOfflineTimer){ clearTimeout(window._seLive.hostOfflineTimer); window._seLive.hostOfflineTimer=null; }
+      } else if(!window._seLive.hostOfflineTimer){
+        window._seLive.hostOfflineTimer=setTimeout(function(){
+          window._seLive.hostOfflineTimer=null;
+          if(typeof showToast==='function') showToast('האירוע הסתיים (המארח אינו זמין)');
+        }, 300000);
+      }
+    });
+    window._seLive.hostWatchRef=hostWatchRef;
+    window._seLive.hostWatchCb=hostWatchCb;
   }catch(e){}
 };
 window._seLiveApplyRemote=function(state){
@@ -902,6 +978,12 @@ window._seLiveStop=function(){
       if(window._seLive.hostRef){ try{ window._seLive.hostRef.onDisconnect().cancel(); }catch(e){} try{ window._seLive.hostRef.remove(); }catch(e){} }
       if(window._seLive.songRef && window._seLive.songCb){ window._seLive.songRef.off('value', window._seLive.songCb); }
       if(window._seLive.requestsRef && window._seLive.requestsCb){ window._seLive.requestsRef.off('value', window._seLive.requestsCb); }
+      if(window._seLive.guestsRef && window._seLive.guestsCb){ window._seLive.guestsRef.off('value', window._seLive.guestsCb); }
+      if(window._seLive.ctrlRef && window._seLive.ctrlCb){ window._seLive.ctrlRef.off('value', window._seLive.ctrlCb); }
+      if(window._seLive.hostWatchRef && window._seLive.hostWatchCb){ window._seLive.hostWatchRef.off('value', window._seLive.hostWatchCb); }
+      if(window._seLive.hostOfflineTimer){ clearTimeout(window._seLive.hostOfflineTimer); }
+      if(window._seLive.permRef && window._seLive.permCb){ window._seLive.permRef.off('value', window._seLive.permCb); }
+      if(window._seLive.guestRef){ try{ window._seLive.guestRef.onDisconnect().cancel(); }catch(e){} try{ window._seLive.guestRef.remove(); }catch(e){} }
     }
   }catch(e){}
   window._seLive=null;
@@ -960,6 +1042,32 @@ window._seRenderActiveBar=function(){
     queueBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:16px;';
     queueBtn.onclick=function(){ window._mpRequestEvent=ev; window._multiplayerOpenMenu(queueBtn,'events-requests-manage'); };
     bar.appendChild(queueBtn);
+    var rosterBtn=document.createElement('button');
+    rosterBtn.textContent='👥';
+    rosterBtn.title='משתתפים';
+    rosterBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:16px;';
+    rosterBtn.onclick=function(){ window._mpRequestEvent=ev; window._multiplayerOpenMenu(rosterBtn,'events-roster'); };
+    bar.appendChild(rosterBtn);
+  }
+  var ctrlBtn=document.createElement('button');
+  ctrlBtn.textContent='⏯';
+  ctrlBtn.title='שלוט בנגן';
+  ctrlBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:16px;display:none;';
+  ctrlBtn.onclick=function(){
+    try{
+      var paused=true;
+      var mp4El=document.getElementById('mp4Player');
+      if(mp4El && currentSong && currentSong.mp4){ paused = mp4El.paused; }
+      else if(typeof ytPlayer!=='undefined' && ytPlayer && ytPlayer.getPlayerState){ paused = ytPlayer.getPlayerState()!==1; }
+      window._seLiveSendCtrl(paused?'resume':'pause');
+    }catch(e){}
+  };
+  bar.appendChild(ctrlBtn);
+  if(!ev.isOwner){
+    var _ctrlPoll=setInterval(function(){
+      if(!window._seLive || window._seLive.mode!=='guest' || !document.body.contains(ctrlBtn)){ clearInterval(_ctrlPoll); return; }
+      ctrlBtn.style.display = window._seLive.hasControl ? 'inline-block' : 'none';
+    }, 2000);
   }
   bar.appendChild(exitBtn);
   var _topHeader=document.querySelector('.top');
@@ -1579,6 +1687,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
       else if(mode==='events-invite') _mpBackTarget='events';
     else if(mode==='events-request') _mpBackTarget='events';
     else if(mode==='events-requests-manage') _mpBackTarget='events';
+      else if(mode==='events-roster') _mpBackTarget='events';
       else if(mode==='main' || mode==='events') _mpBackTarget='__username__';
       else _mpBackTarget='main';
       var _mpBack = document.createElement('div');
@@ -1741,7 +1850,43 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
           });
         }
       }
-} else if(mode==='events-join'){
+} else if(mode==='events-roster'){
+      var rIev = window._mpRequestEvent;
+      if(!rIev){ window._multiplayerOpenMenu(btn,'events'); }
+      else {
+        var rStatus=document.createElement('div');
+        rStatus.textContent = rIev.isOwner ? 'מארח (אתה): מחובר' : 'משתתפים באירוע';
+        rStatus.style.cssText='padding:10px 16px;font-size:13px;color:#0F0F0F;border-bottom:1px solid #eee;';
+        menu.appendChild(rStatus);
+        var rList = (window._seLive && window._seLive.eid===rIev.id && window._seLive.guestsList) ? window._seLive.guestsList : {};
+        var rIds = Object.keys(rList);
+        if(rIds.length===0){
+          var rEmpty=document.createElement('div');
+          rEmpty.textContent='אין משתתפים מחוברים';
+          rEmpty.style.cssText='padding:20px;text-align:center;color:#999;font-size:13px;';
+          menu.appendChild(rEmpty);
+        } else {
+          rIds.forEach(function(rid){
+            var rg=rList[rid];
+            var rRow=document.createElement('div');
+            rRow.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 16px;border-bottom:1px solid #f0f0f0;';
+            var rName=document.createElement('span');
+            rName.textContent=rg.n||'אורח';
+            rName.style.cssText='font-size:13px;color:#0F0F0F;';
+            rRow.appendChild(rName);
+            if(rIev.isOwner){
+              var rToggle=document.createElement('button');
+              var rHasCtrl=!!rg.c;
+              rToggle.textContent=rHasCtrl?'שלט: פעיל':'צופה בלבד';
+              rToggle.style.cssText='background:none;border:1px solid #ccc;border-radius:14px;padding:4px 10px;font-size:12px;cursor:pointer;color:'+(rHasCtrl?'#0F9D58':'#606060')+';';
+              rToggle.onclick=(function(rid2,cur){ return function(){ window._fbDb.ref('savedEvents/'+rIev.id+'/live/guests/'+rid2+'/c').set(!cur); window._multiplayerOpenMenu(btn,'events-roster'); }; })(rid, rHasCtrl);
+              rRow.appendChild(rToggle);
+            }
+            menu.appendChild(rRow);
+          });
+        }
+      }
+    } else if(mode==='events-join'){
       addOpt(_mpIco.code,'הזן קוד', function(){ window._multiplayerOpenMenu(btn,'events-join-code'); });
       addOpt(_mpIco.camera,'סרוק QR', function(){ window._multiplayerOpenMenu(btn,'events-join-scan'); });
     } else if(mode==='events-join-code'){
