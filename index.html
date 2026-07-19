@@ -816,6 +816,7 @@ window._seLiveSendCtrl=function(action){
   try{
     if(!window._seLive || window._seLive.mode!=='guest' || !window._seLive.hasControl || !window._seLive.eid) return;
     window._fbDb.ref('savedEvents/'+window._seLive.eid+'/live/ctrl').set({action:action, ts:Date.now()});
+    window._seLive.lastLocalCtrlAt = Date.now();
   }catch(e){}
 };
 window._seLiveSyncing = 0;
@@ -941,6 +942,37 @@ window._seLiveJoin=function(ev){
     window._seLive.hostWatchCb=hostWatchCb;
   }catch(e){}
  if(window._seLive){ window._seLive.muted=true; try{ window._seLiveApplyMute(); }catch(e){} try{ if(typeof window._seRenderActiveBar==='function') window._seRenderActiveBar(); }catch(e){} }};
+window._seLiveSeekAndSet=function(state){
+  try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
+  if(typeof ALL==='undefined') return;
+  var song = ALL.find(function(s){ return (s.v||s.mp4)===state.vid; });
+  if(!song) return;
+  var _skipPause = !!(window._seLive && window._seLive.lastLocalCtrlAt && (Date.now()-window._seLive.lastLocalCtrlAt < 3500));
+  var _elapsed = state.ts ? Math.min(3, Math.max(0,(Date.now()-state.ts)/1000)) : 0;
+  var _ptime = state.paused ? state.time : (state.time + _elapsed);
+  if(song.mp4){
+    var el = document.getElementById('mp4Player');
+    if(!el) return;
+    if(Math.abs((el.currentTime||0)-_ptime)>0.5) el.currentTime = _ptime;
+    if(!_skipPause){
+      window._seLiveSyncing=Date.now();
+      if(state.paused && !el.paused) el.pause();
+      if(!state.paused && el.paused){ el.play().catch(function(){}); }
+    }
+  } else {
+    try{
+      if(typeof ytPlayer==='undefined' || !ytPlayer || !ytPlayer.getCurrentTime) return;
+      var cur = ytPlayer.getCurrentTime();
+      if(Math.abs(cur-_ptime)>0.5) ytPlayer.seekTo(_ptime, true);
+      var st = ytPlayer.getPlayerState();
+      if(!_skipPause){
+        window._seLiveSyncing=Date.now();
+        if(state.paused && st===1) ytPlayer.pauseVideo();
+        if(!state.paused && st!==1) ytPlayer.playVideo();
+      }
+    }catch(e){}
+  }
+};
 window._seLiveApplyRemote=function(state){ try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
   window._seLive.lastState = state;
   if(!state || !state.vid) return;
@@ -951,23 +983,10 @@ window._seLiveApplyRemote=function(state){ try{ if(typeof window._seLiveApplyMut
       var _seLiveRetryPlay=function(){ try{ var _e=document.getElementById('mp4Player'); if(_e && _e.paused) _e.play().catch(function(){}); }catch(e){} try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){} };
       setTimeout(function(){ try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){} _seLiveRetryPlay(); }, 60);
       setTimeout(function(){ try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){} _seLiveRetryPlay(); }, 300);
+      setTimeout(function(){ window._seLiveSeekAndSet(state); }, 500);
+    } else {
+      window._seLiveSeekAndSet(state);
     }
-    setTimeout(function(){
-      try{
-        window._seLiveSyncing=Date.now();
-        if(currentSong && currentSong.mp4){
-          var el=document.getElementById('mp4Player');
-          if(el){
-            if(songChanged && state.time) el.currentTime=state.time;
-            if(state.paused){ el.pause(); } else { el.play().catch(function(){}); }
-          }
-        } else if(typeof ytPlayer!=='undefined' && ytPlayer){
-          if(songChanged && state.time && ytPlayer.seekTo) ytPlayer.seekTo(state.time, true);
-          if(state.paused){ if(ytPlayer.pauseVideo) ytPlayer.pauseVideo(); }
-          else { if(ytPlayer.playVideo) ytPlayer.playVideo(); }
-        }
-      }catch(e){}
-    }, 600);
   }catch(e){}
 };
 window._seLiveResume = function(){
