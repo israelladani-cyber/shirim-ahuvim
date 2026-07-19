@@ -948,7 +948,11 @@ window._seLiveApplyRemote=function(state){ try{ if(typeof window._seLiveApplyMut
   try{
     var local=window._seLiveLocalState();
     var songChanged = !local || local.vid!==state.vid;
-    if(songChanged && typeof playVid==='function'){ playVid(state.vid); }
+    if(songChanged && typeof playVid==='function'){ playVid(state.vid); try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
+      var _seLiveRetryPlay=function(){ try{ var _e=document.getElementById('mp4Player'); if(_e && _e.paused) _e.play().catch(function(){}); }catch(e){} try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){} };
+      setTimeout(function(){ try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){} _seLiveRetryPlay(); }, 60);
+      setTimeout(function(){ try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){} _seLiveRetryPlay(); }, 300);
+    }
     setTimeout(function(){
       try{
         window._seLiveSyncing=Date.now();
