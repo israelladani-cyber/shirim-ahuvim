@@ -2665,7 +2665,7 @@ let currentSong=null, currentSongList=[], currentSongIdx=0, shuffleOn=false, plS
 function onYouTubeIframeAPIReady(){
   ytPlayer=new YT.Player('yt-player',{
     width:'100%',height:'100%',
-    playerVars:{autoplay:1,rel:0,modestbranding:1},
+    playerVars:{autoplay:1,rel:0,modestbranding:1,hl:'he'},
     events:{
       onReady:()=>{playerReady=true;const ifr=document.querySelector('#yt-player iframe');if(ifr){const a=ifr.getAttribute('allow')||'';if(!a.includes('autoplay'))ifr.setAttribute('allow',a+';autoplay;picture-in-picture');}},
       onStateChange:(e)=>{
