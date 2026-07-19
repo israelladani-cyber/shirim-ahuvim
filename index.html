@@ -1087,7 +1087,7 @@ window._seSyncReqToggleUI = function(){
 window._seRenderActiveBar=function(){
   var old=document.getElementById('_seActiveBar');
   if(old) old.remove();
-  if(!window._activeEvent){ return; }
+  if(!window._activeEvent){ try{ if(typeof setTopH==='function') setTopH(); }catch(e){} return; }
   var ev=window._activeEvent;
   var bar=document.createElement('div');
   bar.id='_seActiveBar';
@@ -1171,6 +1171,7 @@ window._seRenderActiveBar=function(){
   bar.appendChild(exitBtn);
   var _topHeader=document.querySelector('.top');
   if(_topHeader && _topHeader.parentNode){ _topHeader.parentNode.insertBefore(bar, _topHeader.nextSibling); } else { document.body.insertBefore(bar, document.body.firstChild); }
+  try{ if(typeof setTopH==='function') setTopH(); }catch(e){}
 };
 window._seRenderActiveEventsSection=function(events){
   var old=document.getElementById('_seActiveEventsSection');
@@ -2735,7 +2736,7 @@ function toggleAddSong(vid){
 
 // ── PLAYER ──
 function setRealVH(){var vh=(window.visualViewport?window.visualViewport.height:window.innerHeight);document.documentElement.style.setProperty('--real-vh',vh+'px');var vt=(window.visualViewport?window.visualViewport.offsetTop:0);document.documentElement.style.setProperty('--vv-top',vt+'px');}
-function setTopH(){document.documentElement.style.setProperty('--top-h',document.querySelector('.top').offsetHeight+'px');}
+function setTopH(){var _h=document.querySelector('.top').offsetHeight;var _b=document.getElementById('_seActiveBar');if(_b)_h+=_b.offsetHeight;document.documentElement.style.setProperty('--top-h',_h+'px');}
 function setAdmH(){var el=document.getElementById('admToolbar');var h=(el&&getComputedStyle(el).display!=='none')?el.offsetHeight:0;document.documentElement.style.setProperty('--adm-h',h+'px');}
 window.addEventListener('resize',()=>{setTopH();setRealVH();setAdmH();if(window.innerWidth>=768&&!(('ontouchstart' in window)||navigator.maxTouchPoints>0)){document.getElementById('playerPanel').classList.remove('open');document.body.style.overflow='';}});
 if(window.visualViewport){window.visualViewport.addEventListener('resize',()=>{setRealVH();setAdmH();});window.visualViewport.addEventListener('scroll',setRealVH);}
