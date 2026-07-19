@@ -1118,6 +1118,8 @@ window._seRenderActiveBar=function(){
     _reqLabel.style.cssText='font-size:13px;margin-inline-start:4px;color:#606060;';
     reqBtn.appendChild(_reqLabel);
   }
+  reqBtn.title = window._seSongRequestMode ? 'בטל בקשת שיר' : 'בקש שיר מהמארח';
+  if(_reqLabel) _reqLabel.textContent = reqBtn.title;
   reqBtn.onclick=function(){
     window._seSongRequestMode = !window._seSongRequestMode;
     try{
