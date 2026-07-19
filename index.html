@@ -826,6 +826,18 @@ document.addEventListener('DOMContentLoaded', function(){
     _mp4se.addEventListener('play', function(){ if(Date.now()-(window._seLiveSyncing||0)>300 && document.visibilityState==='visible' && typeof window._seLiveSendCtrl==='function') window._seLiveSendCtrl('resume'); });
   }
 });
+
+window._seLiveApplyMute=function(){
+  var m = !!(window._seLive && window._seLive.muted);
+  try{ var el=document.getElementById('mp4Player'); if(el) el.muted=m; }catch(e){}
+  try{ if(typeof ytPlayer!=='undefined' && ytPlayer && ytPlayer.mute){ if(m) ytPlayer.mute(); else ytPlayer.unMute(); } }catch(e){}
+};
+window._seLiveToggleMute=function(){
+  if(!window._seLive) return;
+  window._seLive.muted = !window._seLive.muted;
+  try{ window._seLiveApplyMute(); }catch(e){}
+  try{ if(typeof window._seRenderActiveBar==='function') window._seRenderActiveBar(); }catch(e){}
+};
 window._seLiveStart=function(ev){
   window._seLiveStop();
   var eid=ev.id;
@@ -888,7 +900,7 @@ window._seLiveStart=function(ev){
       window._fbDb.ref('savedEvents/'+eid+'/live/song').update({vid:local.vid,paused:local.paused,time:local.time,ts:Date.now()});
     }catch(e){}
   },1000);
-};
+ if(window._seLive){ window._seLive.muted=false; try{ window._seLiveApplyMute(); }catch(e){} try{ if(typeof window._seRenderActiveBar==='function') window._seRenderActiveBar(); }catch(e){} }};
 window._seLiveJoin=function(ev){
   window._seLiveStop();
   var eid=ev.id;
@@ -935,8 +947,8 @@ window._seLiveJoin=function(ev){
     window._seLive.hostWatchRef=hostWatchRef;
     window._seLive.hostWatchCb=hostWatchCb;
   }catch(e){}
-};
-window._seLiveApplyRemote=function(state){
+ if(window._seLive){ window._seLive.muted=true; try{ window._seLiveApplyMute(); }catch(e){} try{ if(typeof window._seRenderActiveBar==='function') window._seRenderActiveBar(); }catch(e){} }};
+window._seLiveApplyRemote=function(state){ try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
   window._seLive.lastState = state;
   if(!state || !state.vid) return;
   try{
@@ -1131,7 +1143,21 @@ window._seRenderActiveBar=function(){
   }
   bar.appendChild(reqBtn);
   if(typeof window._seSyncReqToggleUI==='function') window._seSyncReqToggleUI();
-  if(ev.isOwner){
+  
+    var muteBtn=document.createElement('button');
+    muteBtn.textContent = (window._seLive&&window._seLive.muted)?'🔇':'🔊';
+    muteBtn.title = (window._seLive&&window._seLive.muted)?'מושתק - הקש להפעלת קול':'קול פעיל - הקש להשתקה';
+    muteBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:16px;display:flex;align-items:center;';
+    if(window.innerWidth>=768){
+      var _muteLabel=document.createElement('span');
+      _muteLabel.className='_seMuteLabel';
+      _muteLabel.style.cssText='font-size:13px;margin-inline-start:4px;color:#606060;';
+      _muteLabel.textContent=muteBtn.title;
+      muteBtn.appendChild(_muteLabel);
+    }
+    muteBtn.onclick=function(){ if(typeof window._seLiveToggleMute==='function') window._seLiveToggleMute(); };
+    bar.appendChild(muteBtn);
+    if(ev.isOwner){
     var queueBtn=document.createElement('button');
     queueBtn.textContent='📋';
     queueBtn.title='בקשות שירים';
