@@ -1254,7 +1254,12 @@ window._seRenderActiveEventsSection=function(events){
 };
 try{
   var _rawActiveEvent=localStorage.getItem('_activeSavedEvent');
-  if(_rawActiveEvent){ window._activeEvent=JSON.parse(_rawActiveEvent); window._seRenderActiveBar(); if(window._activeEvent.isOwner){ window._seLiveStart(window._activeEvent); } else { window._seLiveJoin(window._activeEvent); } }
+  if(_rawActiveEvent){
+    window._activeEvent=JSON.parse(_rawActiveEvent);
+    var _seRestoreBarFn=function(){ try{ window._seRenderActiveBar(); }catch(e){} };
+    if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _seRestoreBarFn); } else { _seRestoreBarFn(); }
+    if(window._activeEvent.isOwner){ window._seLiveStart(window._activeEvent); } else { window._seLiveJoin(window._activeEvent); }
+  }
 }catch(e){}
 ;
 ;
