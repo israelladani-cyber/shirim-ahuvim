@@ -889,7 +889,6 @@ window._seLiveStart=function(ev){
       var local=window._seLiveLocalState();
       if(!local) return;
       var key=JSON.stringify({vid:local.vid,paused:local.paused});
-      if(key===window._seLive.lastPushed) return;
       window._seLive.lastPushed=key;
       window._fbDb.ref('savedEvents/'+eid+'/live/song').update({vid:local.vid,paused:local.paused,time:local.time,ts:Date.now()});
     }catch(e){}
