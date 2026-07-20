@@ -999,12 +999,19 @@ window._seLiveResume = function(){
   var _curVid = (typeof currentSong!=='undefined' && currentSong) ? (currentSong.v||currentSong.mp4) : null;
   var _playerOpen = document.body.classList.contains('playing');
   if((!_playerOpen || _curVid!==state.vid) && typeof window.playVid==='function') window.playVid(state.vid);
+  try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
   try{ var _e1=document.getElementById('mp4Player'); if(_e1 && _e1.paused) _e1.play().catch(function(){}); }catch(e){}
   try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
   setTimeout(function(){
+    try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
     try{ var _e2=document.getElementById('mp4Player'); if(_e2 && _e2.paused) _e2.play().catch(function(){}); }catch(e){}
     try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
   }, 60);
+  setTimeout(function(){
+    try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
+    try{ var _e3=document.getElementById('mp4Player'); if(_e3 && _e3.paused) _e3.play().catch(function(){}); }catch(e){}
+    try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
+  }, 300);
   setTimeout(function(){
     if(typeof window._seLiveApplyRemote==='function') window._seLiveApplyRemote(state);
   }, 500);
