@@ -1030,7 +1030,6 @@ window._seLiveRequestSubmit=function(ev, song){
     var payload={vid:vid, s:song.s||'', a:song.a||'', n:_rName, ts:Date.now(), queued:false, clientId:window._seLiveClientId()};
     window._fbDb.ref('savedEvents/'+ev.id+'/live/requests').push().set(payload);
     if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song.s?(': '+song.s):''));
-    window._seSongRequestMode=false;
     if(typeof window._seSyncReqToggleUI==='function') window._seSyncReqToggleUI();
   }catch(e){}
 };
@@ -1616,7 +1615,7 @@ window._sendSongRequest = async function(vid){
       var payload = { vid: vid, s: song?song.s:'', a: song?song.a:'', n: _rName, ts: Date.now(), queued: false, clientId: window._room.clientId };
       await window._room.ref.child('requests').push().set(payload);
       window._room.myLastRequestedVid = vid;
-      window._songRequestMode = false;
+
       if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song?(': '+song.s):''));
     } else if(window._seLive && window._seLive.mode==='guest' && window._seLive.eid){
       var song2 = (typeof ALL!=='undefined' && ALL) ? ALL.find(function(x){ return (x.v||x.mp4)===vid; }) : null;
@@ -1734,7 +1733,7 @@ window._roomAdvanceFromQueue = function(){
     _sw = null;
   }, {passive:true});
 })();
-window._updateReqBtns=function(){var show=!!(window._room&&window._room.code&&window._room.isHost===false);document.querySelectorAll('.btn-req').forEach(function(b){b.style.display=show?'flex':'none';});};setInterval(window._updateReqBtns,600);
+window._updateReqBtns=function(){var show=_swEligible();document.querySelectorAll('.btn-req').forEach(function(b){b.style.display=show?'flex':'none';});};setInterval(window._updateReqBtns,600);
 
 window._roomJoinAction = async function(){
   _mpUnlockMedia();
