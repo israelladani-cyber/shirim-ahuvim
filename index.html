@@ -889,9 +889,10 @@ window._seLiveStart=function(ev){
       if(!window._seLive || window._seLive.eid!==eid) return;
       var local=window._seLiveLocalState();
       if(!local) return;
-      var key=JSON.stringify({vid:local.vid,paused:local.paused});
+      var _seLivePlayerOpen = document.body.classList.contains('playing');
+      var key=JSON.stringify({vid:(_seLivePlayerOpen?local.vid:null),paused:(_seLivePlayerOpen?local.paused:true)});
       window._seLive.lastPushed=key;
-      window._seLive.lastState={vid:local.vid,paused:local.paused,time:local.time,ts:Date.now()};
+      window._seLive.lastState={vid:_seLivePlayerOpen?local.vid:null,paused:_seLivePlayerOpen?local.paused:true,time:_seLivePlayerOpen?local.time:0,ts:Date.now()};
     window._fbDb.ref('savedEvents/'+eid+'/live/song').update(window._seLive.lastState);
     }catch(e){}
   },1000);
@@ -1733,7 +1734,7 @@ window._roomAdvanceFromQueue = function(){
     _sw = null;
   }, {passive:true});
 })();
-window._updateReqBtns=function(){var show=_swEligible();document.querySelectorAll('.btn-req').forEach(function(b){b.style.display=show?'flex':'none';});};setInterval(window._updateReqBtns,600);
+window._updateReqBtns=function(){var show=!!((window._room&&window._room.code&&window._room.isHost===false&&window._songRequestMode===true)||(window._seLive&&window._seLive.mode==='guest'&&window._seSongRequestMode===true));document.querySelectorAll('.btn-req').forEach(function(b){b.style.display=show?'flex':'none';});};setInterval(window._updateReqBtns,600);
 
 window._roomJoinAction = async function(){
   _mpUnlockMedia();
