@@ -846,7 +846,18 @@ window._seLiveStart=function(ev){
   }catch(e){}
   try{
     var reqRef=window._fbDb.ref('savedEvents/'+eid+'/live/requests');
-    var reqCb=reqRef.on('value', function(snap){ window._seLive.requestsList = snap.val() || {}; });
+    var reqCb=reqRef.on('value', function(snap){
+      var _sePrevReqIds = Object.keys(window._seLive.requestsList||{});
+      var _seNewReqList = snap.val() || {};
+      var _seNewReqIds = Object.keys(_seNewReqList);
+      _seNewReqIds.forEach(function(rid){
+        if(_sePrevReqIds.indexOf(rid)===-1){
+          try{ if(typeof showToast==='function') showToast((_seNewReqList[rid].n||'אורח')+' ביקש/ה: '+(_seNewReqList[rid].s||'')); }catch(e){}
+        }
+      });
+      window._seLive.requestsList = _seNewReqList;
+      try{ if(typeof render==='function'){ var _seQ0=document.getElementById('q'); render(_seQ0?_seQ0.value:''); } }catch(e){}
+    });
     window._seLive.requestsRef=reqRef;
     window._seLive.requestsCb=reqCb;
   }catch(e){}
@@ -913,7 +924,10 @@ window._seLiveJoin=function(ev){
   }catch(e){}
   try{
     var reqRefG=window._fbDb.ref('savedEvents/'+eid+'/live/requests');
-    var reqCbG=reqRefG.on('value', function(snap){ window._seLive.requestsList = snap.val() || {}; });
+    var reqCbG=reqRefG.on('value', function(snap){
+      window._seLive.requestsList = snap.val() || {};
+      try{ if(typeof render==='function'){ var _seQ1=document.getElementById('q'); render(_seQ1?_seQ1.value:''); } }catch(e){}
+    });
     window._seLive.requestsRef=reqRefG;
     window._seLive.requestsCb=reqCbG;
   }catch(e){}
