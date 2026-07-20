@@ -837,6 +837,7 @@ window._seLiveStart=function(ev){
   window._seLiveStop();
   var eid=ev.id;
   window._seLive={eid:eid, mode:'host', lastPushed:null};
+  try{ if(typeof window._seAttachRecentListener==='function') window._seAttachRecentListener(eid); }catch(e){}
   try{
     var hostRef=window._fbDb.ref('savedEvents/'+eid+'/live/hostOnline');
     hostRef.onDisconnect().remove();
@@ -901,6 +902,7 @@ window._seLiveJoin=function(ev){
   window._seLiveStop();
   var eid=ev.id;
   window._seLive={eid:eid, mode:'guest'};
+  try{ if(typeof window._seAttachRecentListener==='function') window._seAttachRecentListener(eid); }catch(e){}
   try{
     var songRef=window._fbDb.ref('savedEvents/'+eid+'/live/song');
     var cb=songRef.on('value', function(snap){
@@ -1082,6 +1084,7 @@ window._seLiveStop=function(){
       if(window._seLive.requestsRef && window._seLive.requestsCb){ window._seLive.requestsRef.off('value', window._seLive.requestsCb); }
       if(window._seLive.guestsRef && window._seLive.guestsCb){ window._seLive.guestsRef.off('value', window._seLive.guestsCb); }
       if(window._seLive.ctrlRef && window._seLive.ctrlCb){ window._seLive.ctrlRef.off('value', window._seLive.ctrlCb); }
+    if(window._seLive.recentRef && window._seLive.recentCb){ try{ window._seLive.recentRef.off('value', window._seLive.recentCb); }catch(e){} }
       if(window._seLive.hostWatchRef && window._seLive.hostWatchCb){ window._seLive.hostWatchRef.off('value', window._seLive.hostWatchCb); }
       if(window._seLive.hostOfflineTimer){ clearTimeout(window._seLive.hostOfflineTimer); }
       if(window._seLive.permRef && window._seLive.permCb){ window._seLive.permRef.off('value', window._seLive.permCb); }
@@ -1408,6 +1411,7 @@ function _roomStart(code){
   if(window._room.handoffRef){ try{ window._room.handoffRef.off(); }catch(e){} }
   if(window._fbDb){
     window._room.ref = window._fbDb.ref('rooms/'+code);
+  try{ if(typeof window._roomAttachRecentListener==='function') window._roomAttachRecentListener(); }catch(e){}
     window._room.handoffRef = window._room.ref.child('handoff');
     window._room.handoffRef.on('value', function(snap){ try{ _roomHandleHandoff(snap.val()); }catch(e){} });
     if(window._room.isHost){
@@ -1548,6 +1552,7 @@ function _roomLeave(){
   if(ref && window._room.myRequests){ try{ Object.keys(window._room.myRequests).forEach(function(rid){ ref.child('requests/'+rid).remove(); }); }catch(e){} }
   window._room.myRequests = null;
   if(window._room.requestsRef && window._room.requestsCb){ try{ window._room.requestsRef.off('value', window._room.requestsCb); }catch(e){} window._room.requestsRef=null; window._room.requestsCb=null; }
+  if(window._room.recentRef && window._room.recentCb){ try{ window._room.recentRef.off('value', window._room.recentCb); }catch(e){} window._room.recentRef=null; window._room.recentCb=null; }
   window._room.ref = null;
   window._room.isHost = null;
   try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){}
@@ -2852,6 +2857,86 @@ function _reqDndDrop(e,idx){
   _reqDndIdx=null;
   render(document.getElementById('q')?document.getElementById('q').value:'');
 }
+function renderLiveRecentSection(){
+  var isRoom = !!(window._room && window._room.code);
+  var isSe = !!(window._seLive && window._seLive.eid);
+  if(!isRoom && !isSe) return '';
+  var list = isRoom ? (window._room.recentList||{}) : (window._seLive.recentList||{});
+  var ids = Object.keys(list);
+  if(!ids.length) return '';
+  ids.sort(function(a,b){ return (list[b].ts||0)-(list[a].ts||0); });
+  var rows='';
+  ids.forEach(function(rid){
+    var r=list[rid];
+    var vid=r.vid||'';
+    rows+='<tr data-vid="'+esc(vid)+'" style="cursor:pointer" onclick="playVid(\''+vid+'\')"><td><div>'+esc(r.s||'')+'</div><div class="song-artist-sub">'+esc(r.a||'')+'</div></td></tr>';
+  });
+  var label = isRoom ? 'נוגן לאחרונה בחדר' : 'נוגן לאחרונה באירוע';
+  var chevron='<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+  return '<div class="artist-block" data-open="true" data-vid="__liverecent__"><div class="artist-header" onclick="toggleArtist(this)"><div class="artist-avatar" style="background:#F2F2F2;display:flex;align-items:center;justify-content:center;font-size:18px;">🕐</div><span class="artist-name-text">'+label+'</span>'+chevron+'</div><div class="songs-wrap"><table class="songs-table"><tbody>'+rows+'</tbody></table></div></div>';
+}
+window._roomAttachRecentListener=function(){
+  try{
+    if(!window._room || !window._room.ref) return;
+    if(window._room.recentRef && window._room.recentCb){ try{ window._room.recentRef.off('value', window._room.recentCb); }catch(e){} }
+    var recentRef = window._room.ref.child('recent');
+    var recentCb = function(snap){
+      window._room.recentList = snap.val()||{};
+      try{ if(typeof render==='function'){ var _q=document.getElementById('q'); render(_q?_q.value:''); } }catch(e){}
+    };
+    recentRef.on('value', recentCb);
+    window._room.recentRef = recentRef;
+    window._room.recentCb = recentCb;
+  }catch(e){}
+};
+window._roomPushRecent=function(vid,s,a){
+  try{
+    if(!(window._room && window._room.code && window._room.ref && window._room.isHost)) return;
+    var recRef = window._room.ref.child('recent');
+    recRef.push().set({vid:vid, s:s||'', a:a||'', ts:Date.now()});
+    recRef.once('value').then(function(snap){
+      var val = snap.val()||{};
+      var ids = Object.keys(val).sort(function(x,y){ return (val[x].ts||0)-(val[y].ts||0); });
+      if(ids.length>30){
+        var updates={};
+        ids.slice(0, ids.length-30).forEach(function(id){ updates[id]=null; });
+        recRef.update(updates);
+      }
+    }).catch(function(){});
+  }catch(e){}
+};
+window._seAttachRecentListener=function(eid){
+  try{
+    if(!window._seLive || window._seLive.eid!==eid) return;
+    if(window._seLive.recentRef && window._seLive.recentCb){ try{ window._seLive.recentRef.off('value', window._seLive.recentCb); }catch(e){} }
+    var recentRef = window._fbDb.ref('savedEvents/'+eid+'/recent');
+    var recentCb = function(snap){
+      if(!window._seLive || window._seLive.eid!==eid) return;
+      window._seLive.recentList = snap.val()||{};
+      try{ if(typeof render==='function'){ var _q=document.getElementById('q'); render(_q?_q.value:''); } }catch(e){}
+    };
+    recentRef.on('value', recentCb);
+    window._seLive.recentRef = recentRef;
+    window._seLive.recentCb = recentCb;
+  }catch(e){}
+};
+window._seLivePushRecent=function(vid,s,a){
+  try{
+    if(!(window._seLive && window._seLive.mode==='host' && window._seLive.eid)) return;
+    var eid=window._seLive.eid;
+    var recRef = window._fbDb.ref('savedEvents/'+eid+'/recent');
+    recRef.push().set({vid:vid, s:s||'', a:a||'', ts:Date.now()});
+    recRef.once('value').then(function(snap){
+      var val = snap.val()||{};
+      var ids = Object.keys(val).sort(function(x,y){ return (val[x].ts||0)-(val[y].ts||0); });
+      if(ids.length>30){
+        var updates={};
+        ids.slice(0, ids.length-30).forEach(function(id){ updates[id]=null; });
+        recRef.update(updates);
+      }
+    }).catch(function(){});
+  }catch(e){}
+};
 function renderRequestsSection(){
   var isRoom = !!(window._room && window._room.code);
   var isSeHost = !!(window._seLive && window._seLive.mode==='host' && window._seLive.eid);
@@ -2973,6 +3058,10 @@ function playVid(vid){
   const songList=ALL.filter(s=>s.a===song.a);
   const idx=songList.findIndex(s=>(s.v||s.mp4)===vid);
   openModal(song,songList,idx);
+  try{
+    if(window._room && window._room.isHost && typeof window._roomPushRecent==='function') window._roomPushRecent(vid, song.s, song.a);
+    else if(window._seLive && window._seLive.mode==='host' && typeof window._seLivePushRecent==='function') window._seLivePushRecent(vid, song.s, song.a);
+  }catch(e){}
   setTimeout(()=>{
     if(window._autoOpenArtist&&window._autoOpenArtist!==song.a){
       const prevEl=document.querySelector('.artist-avatar[data-artist="'+CSS.escape(window._autoOpenArtist)+'"]');
@@ -3767,7 +3856,7 @@ function render(term,forceQOpen){
   });
   let h='';
   var DRAG_ICON='<svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>';
-  var _pinnedHtml=q?'':((typeof renderRequestsSection==='function'?renderRequestsSection():'')+renderPinnedSection('__recent__','נוגן לאחרונה','🕐',_recentLoad(),'krecent')+renderPinnedSection('__fav__','מועדפים',LIKE_HEADER,_favLoad(),'kfav'));
+  var _pinnedHtml=q?'':((typeof renderRequestsSection==='function'?renderRequestsSection():'')+(typeof renderLiveRecentSection==='function'?renderLiveRecentSection():'')+renderPinnedSection('__recent__','נוגן לאחרונה','🕐',_recentLoad(),'krecent')+renderPinnedSection('__fav__','מועדפים',LIKE_HEADER,_favLoad(),'kfav'));
   if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
   var _plsForBtns=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
   for(const a of ord){
