@@ -891,7 +891,8 @@ window._seLiveStart=function(ev){
       if(!local) return;
       var key=JSON.stringify({vid:local.vid,paused:local.paused});
       window._seLive.lastPushed=key;
-      window._fbDb.ref('savedEvents/'+eid+'/live/song').update({vid:local.vid,paused:local.paused,time:local.time,ts:Date.now()});
+      window._seLive.lastState={vid:local.vid,paused:local.paused,time:local.time,ts:Date.now()};
+    window._fbDb.ref('savedEvents/'+eid+'/live/song').update(window._seLive.lastState);
     }catch(e){}
   },1000);
  if(window._seLive){ window._seLive.muted=false; try{ window._seLiveApplyMute(); }catch(e){} try{ if(typeof window._seRenderActiveBar==='function') window._seRenderActiveBar(); }catch(e){} }};
@@ -1169,7 +1170,7 @@ window._seRenderActiveBar=function(){
     rosterBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:16px;';
     rosterBtn.onclick=function(){ window._mpRequestEvent=ev; window._multiplayerOpenMenu(rosterBtn,'events-roster'); };
     bar.appendChild(rosterBtn);
-  } else {
+  }
     var returnBtn=document.createElement('button');
     returnBtn.innerHTML="<svg width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" style=\"fill:#606060\"><path d=\"M12,3v10.55c-0.59-0.34-1.27-0.55-2-0.55c-2.21,0-4,1.79-4,4s1.79,4,4,4s4-1.79,4-4V7h4V3H12z\"/></svg>";
     returnBtn.title='חזור לנגן המשותף';
@@ -1182,7 +1183,7 @@ window._seRenderActiveBar=function(){
     }
     returnBtn.onclick=function(){ window._seLiveResume(); };
     bar.appendChild(returnBtn);
-  }
+  
   if(!ev.isOwner && window.innerWidth<768){ exitBtn.innerHTML='🚪'; }
   bar.appendChild(exitBtn);
   var _topHeader=document.querySelector('.top');
