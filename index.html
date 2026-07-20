@@ -3856,7 +3856,7 @@ function render(term,forceQOpen){
   });
   let h='';
   var DRAG_ICON='<svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>';
-  var _pinnedHtml=q?'':((typeof renderRequestsSection==='function'?renderRequestsSection():'')+(typeof renderLiveRecentSection==='function'?renderLiveRecentSection():'')+renderPinnedSection('__recent__','נוגן לאחרונה','🕐',_recentLoad(),'krecent')+renderPinnedSection('__fav__','מועדפים',LIKE_HEADER,_favLoad(),'kfav'));
+  var _pinnedHtml=q?'':((typeof renderRequestsSection==='function'?renderRequestsSection():'')+(((window._room&&window._room.code)||(window._seLive&&window._seLive.eid))?(typeof renderLiveRecentSection==='function'?renderLiveRecentSection():''):renderPinnedSection('__recent__','נוגן לאחרונה','🕐',_recentLoad(),'krecent'))+renderPinnedSection('__fav__','מועדפים',LIKE_HEADER,_favLoad(),'kfav'));
   if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
   var _plsForBtns=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
   for(const a of ord){
