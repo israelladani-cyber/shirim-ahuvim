@@ -838,6 +838,8 @@ window._seLiveStart=function(ev){
   var eid=ev.id;
   window._seLive={eid:eid, mode:'host', lastPushed:null};
   try{ var _seAttachRecentFn=function(){ try{ if(typeof window._seAttachRecentListener==='function') window._seAttachRecentListener(eid); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _seAttachRecentFn); } else { _seAttachRecentFn(); } }catch(e){}
+  try{ var _seAttachFavFn=function(){ try{ if(typeof window._seAttachFavListener==='function') window._seAttachFavListener(eid); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _seAttachFavFn); } else { _seAttachFavFn(); } }catch(e){}
+  try{ var _seAttachPlFn=function(){ try{ if(typeof window._seAttachPlaylistsListener==='function') window._seAttachPlaylistsListener(eid); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _seAttachPlFn); } else { _seAttachPlFn(); } }catch(e){}
   try{
     var hostRef=window._fbDb.ref('savedEvents/'+eid+'/live/hostOnline');
     hostRef.onDisconnect().remove();
@@ -914,6 +916,8 @@ window._seLiveJoin=function(ev){
   var eid=ev.id;
   window._seLive={eid:eid, mode:'guest'};
   try{ var _seAttachRecentFn=function(){ try{ if(typeof window._seAttachRecentListener==='function') window._seAttachRecentListener(eid); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _seAttachRecentFn); } else { _seAttachRecentFn(); } }catch(e){}
+  try{ var _seAttachFavFn=function(){ try{ if(typeof window._seAttachFavListener==='function') window._seAttachFavListener(eid); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _seAttachFavFn); } else { _seAttachFavFn(); } }catch(e){}
+  try{ var _seAttachPlFn=function(){ try{ if(typeof window._seAttachPlaylistsListener==='function') window._seAttachPlaylistsListener(eid); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _seAttachPlFn); } else { _seAttachPlFn(); } }catch(e){}
   try{
     var songRef=window._fbDb.ref('savedEvents/'+eid+'/live/song');
     var cb=songRef.on('value', function(snap){
@@ -1101,6 +1105,8 @@ window._seLiveStop=function(){
       if(window._seLive.guestsRef && window._seLive.guestsCb){ window._seLive.guestsRef.off('value', window._seLive.guestsCb); }
       if(window._seLive.ctrlRef && window._seLive.ctrlCb){ window._seLive.ctrlRef.off('value', window._seLive.ctrlCb); }
     if(window._seLive.recentRef && window._seLive.recentCb){ try{ window._seLive.recentRef.off('value', window._seLive.recentCb); }catch(e){} }
+    if(window._seLive.favRef && window._seLive.favCb){ try{ window._seLive.favRef.off('value', window._seLive.favCb); }catch(e){} }
+    if(window._seLive.plRef && window._seLive.plCb){ try{ window._seLive.plRef.off('value', window._seLive.plCb); }catch(e){} }
       if(window._seLive.hostWatchRef && window._seLive.hostWatchCb){ window._seLive.hostWatchRef.off('value', window._seLive.hostWatchCb); }
       if(window._seLive.hostOfflineTimer){ clearTimeout(window._seLive.hostOfflineTimer); }
       if(window._seLive.permRef && window._seLive.permCb){ window._seLive.permRef.off('value', window._seLive.permCb); }
@@ -1428,6 +1434,8 @@ function _roomStart(code){
   if(window._fbDb){
     window._room.ref = window._fbDb.ref('rooms/'+code);
   try{ var _roomAttachRecentFn=function(){ try{ if(typeof window._roomAttachRecentListener==='function') window._roomAttachRecentListener(); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _roomAttachRecentFn); } else { _roomAttachRecentFn(); } }catch(e){}
+  try{ var _roomAttachFavFn=function(){ try{ if(typeof window._roomAttachFavListener==='function') window._roomAttachFavListener(); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _roomAttachFavFn); } else { _roomAttachFavFn(); } }catch(e){}
+  try{ var _roomAttachPlFn=function(){ try{ if(typeof window._roomAttachPlaylistsListener==='function') window._roomAttachPlaylistsListener(); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _roomAttachPlFn); } else { _roomAttachPlFn(); } }catch(e){}
     window._room.handoffRef = window._room.ref.child('handoff');
     window._room.handoffRef.on('value', function(snap){ try{ _roomHandleHandoff(snap.val()); }catch(e){} });
     if(window._room.isHost){
@@ -1569,6 +1577,8 @@ function _roomLeave(){
   window._room.myRequests = null;
   if(window._room.requestsRef && window._room.requestsCb){ try{ window._room.requestsRef.off('value', window._room.requestsCb); }catch(e){} window._room.requestsRef=null; window._room.requestsCb=null; }
   if(window._room.recentRef && window._room.recentCb){ try{ window._room.recentRef.off('value', window._room.recentCb); }catch(e){} window._room.recentRef=null; window._room.recentCb=null; }
+  if(window._room.favRef && window._room.favCb){ try{ window._room.favRef.off('value', window._room.favCb); }catch(e){} window._room.favRef=null; window._room.favCb=null; }
+  if(window._room.plRef && window._room.plCb){ try{ window._room.plRef.off('value', window._room.plCb); }catch(e){} window._room.plRef=null; window._room.plCb=null; }
   window._room.ref = null;
   window._room.isHost = null;
   try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){}
@@ -2764,7 +2774,7 @@ function updateQueueBar(){
   if(document.getElementById('queuePanel')?.classList.contains('open'))openQueuePanel();
 }
 function refreshAddBtns(){
-  var _pr=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
+  var _pr=loadPlaylists();
   document.querySelectorAll('.btn-add[data-vid]').forEach(function(b){
     var vid=b.dataset.vid;
     var inPl=_pr.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===vid;});});
@@ -2809,7 +2819,7 @@ function _syncMiniBtns(){
   if(fb){fb.classList.toggle('active',isFavorite(vid));fb.innerHTML=isFavorite(vid)?FAV_ON:FAV_OFF;fb.title=isFavorite(vid)?'הסר ממועדפים':'הוסף למועדפים';}
   var ab=document.getElementById('miniAddBtn');
   if(ab){
-    var pls=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return [];}})();
+    var pls=loadPlaylists();
     var inQ=pls.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===vid;});});
     ab.innerHTML=inQ?'<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
     ab.title=inQ?'הסר מהפלייליסט':'הוסף לפלייליסט';
@@ -2817,10 +2827,22 @@ function _syncMiniBtns(){
 }
 function _favLoad(){try{return JSON.parse(localStorage.getItem('kfav')||'[]');}catch(e){return [];}}
 function _favSave(list){try{localStorage.setItem('kfav',JSON.stringify(list));}catch(e){}window._acctPush('fav',list);}
-function isFavorite(vid){return _favLoad().some(function(s){return (s.v||s.mp4)===vid;});}
+function isFavorite(vid){
+  if(window._room && window._room.code) return !!(window._room.favList && window._room.favList[vid]);
+  if(window._seLive && window._seLive.eid) return !!(window._seLive.favList && window._seLive.favList[vid]);
+  return _favLoad().some(function(s){return (s.v||s.mp4)===vid;});
+}
 function toggleFavorite(vid){
   var song=ALL.find(function(s){return (s.v||s.mp4)===vid;});
   if(!song)return;
+  if(window._room && window._room.code){
+    if(window._room.isHost && typeof window._roomToggleFav==='function') window._roomToggleFav(vid, song.s, song.a);
+    return;
+  }
+  if(window._seLive && window._seLive.eid){
+    if(window._seLive.mode==='host' && typeof window._seLiveToggleFav==='function') window._seLiveToggleFav(vid, song.s, song.a);
+    return;
+  }
   var list=_favLoad();
   var idx=list.findIndex(function(s){return (s.v||s.mp4)===vid;});
   if(idx>=0){list.splice(idx,1);}else{list.unshift(song);}
@@ -2969,6 +2991,100 @@ window._seLivePushRecent=function(vid,s,a){
     }).catch(function(){});
   }catch(e){}
 };
+window._roomAttachFavListener=function(){
+  try{
+    if(!window._room || !window._room.ref) return;
+    if(window._room.favRef && window._room.favCb){ try{ window._room.favRef.off('value', window._room.favCb); }catch(e){} }
+    var favRef = window._room.ref.child('favorites');
+    var favCb = function(snap){
+      window._room.favList = snap.val()||{};
+      try{ if(typeof render==='function'){ var _q=document.getElementById('q'); render(_q?_q.value:''); } }catch(e){}
+    };
+    favRef.on('value', favCb);
+    window._room.favRef = favRef;
+    window._room.favCb = favCb;
+  }catch(e){}
+};
+window._roomToggleFav=function(vid,s,a){
+  try{
+    if(!(window._room && window._room.code && window._room.ref && window._room.isHost)) return;
+    var favRef = window._room.ref.child('favorites').child(vid);
+    var isFav = !!(window._room.favList && window._room.favList[vid]);
+    if(isFav) favRef.remove(); else favRef.set({s:s||'', a:a||'', ts:Date.now()});
+  }catch(e){}
+};
+window._seAttachFavListener=function(eid){
+  try{
+    if(!window._seLive || window._seLive.eid!==eid) return;
+    if(window._seLive.favRef && window._seLive.favCb){ try{ window._seLive.favRef.off('value', window._seLive.favCb); }catch(e){} }
+    var favRef = window._fbDb.ref('savedEvents/'+eid+'/favorites');
+    var favCb = function(snap){
+      if(!window._seLive || window._seLive.eid!==eid) return;
+      window._seLive.favList = snap.val()||{};
+      try{ if(typeof render==='function'){ var _q=document.getElementById('q'); render(_q?_q.value:''); } }catch(e){}
+    };
+    favRef.on('value', favCb);
+    window._seLive.favRef = favRef;
+    window._seLive.favCb = favCb;
+  }catch(e){}
+};
+window._seLiveToggleFav=function(vid,s,a){
+  try{
+    if(!(window._seLive && window._seLive.mode==='host' && window._seLive.eid)) return;
+    var eid=window._seLive.eid;
+    var favRef = window._fbDb.ref('savedEvents/'+eid+'/favorites/'+vid);
+    var isFav = !!(window._seLive.favList && window._seLive.favList[vid]);
+    if(isFav) favRef.remove(); else favRef.set({s:s||'', a:a||'', ts:Date.now()});
+  }catch(e){}
+};
+function renderLiveFavSection(){
+  var isRoom = !!(window._room && window._room.code);
+  var isSe = !!(window._seLive && window._seLive.eid);
+  if(!isRoom && !isSe) return '';
+  var list = isRoom ? (window._room.favList||{}) : (window._seLive.favList||{});
+  var ids = Object.keys(list);
+  if(!ids.length) return '';
+  ids.sort(function(a,b){ return (list[b].ts||0)-(list[a].ts||0); });
+  var rows='';
+  ids.forEach(function(vid){
+    var r=list[vid];
+    rows+='<tr data-vid="'+esc(vid)+'"><td onclick="playVid(\''+vid+'\')" style="cursor:pointer"><div>'+esc(r.s||'')+'</div><div class="song-artist-sub">'+esc(r.a||'')+'</div></td><td class="td-actions"><div class="song-actions"><button class="btn-fav active" onclick="event.stopPropagation();toggleFavorite(\''+vid+'\')" title="הסר ממועדפים">'+FAV_ON+'</button></div></td></tr>';
+  });
+  var label = isRoom ? 'מועדפים בחדר' : 'מועדפים באירוע';
+  var chevron='<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
+  return '<div class="artist-block" data-open="true" data-vid="__livefav__"><div class="artist-header" onclick="toggleArtist(this)"><div class="artist-avatar" style="background:#F2F2F2;display:flex;align-items:center;justify-content:center;font-size:20px;">'+LIKE_HEADER+'</div><span class="artist-name-text">'+label+'</span>'+chevron+'</div><div class="songs-wrap"><table class="songs-table"><tbody>'+rows+'</tbody></table></div></div>';
+}
+window._roomAttachPlaylistsListener=function(){
+  try{
+    if(!window._room || !window._room.ref) return;
+    if(window._room.plRef && window._room.plCb){ try{ window._room.plRef.off('value', window._room.plCb); }catch(e){} }
+    var plRef = window._room.ref.child('playlists');
+    var plCb = function(snap){
+      window._room.plList = snap.val()||[];
+      try{ if(typeof render==='function'){ var _q=document.getElementById('q'); render(_q?_q.value:''); } }catch(e){}
+      try{ var _plp=document.getElementById('plPanel'); if(_plp && _plp.classList.contains('open') && typeof renderPlPanel==='function') renderPlPanel(); }catch(e){}
+    };
+    plRef.on('value', plCb);
+    window._room.plRef = plRef;
+    window._room.plCb = plCb;
+  }catch(e){}
+};
+window._seAttachPlaylistsListener=function(eid){
+  try{
+    if(!window._seLive || window._seLive.eid!==eid) return;
+    if(window._seLive.plRef && window._seLive.plCb){ try{ window._seLive.plRef.off('value', window._seLive.plCb); }catch(e){} }
+    var plRef = window._fbDb.ref('savedEvents/'+eid+'/playlists');
+    var plCb = function(snap){
+      if(!window._seLive || window._seLive.eid!==eid) return;
+      window._seLive.plList = snap.val()||[];
+      try{ if(typeof render==='function'){ var _q=document.getElementById('q'); render(_q?_q.value:''); } }catch(e){}
+      try{ var _plp2=document.getElementById('plPanel'); if(_plp2 && _plp2.classList.contains('open') && typeof renderPlPanel==='function') renderPlPanel(); }catch(e){}
+    };
+    plRef.on('value', plCb);
+    window._seLive.plRef = plRef;
+    window._seLive.plCb = plCb;
+  }catch(e){}
+};
 function renderRequestsSection(){
   var isRoom = !!(window._room && window._room.code);
   var isSeHost = !!(window._seLive && window._seLive.mode==='host' && window._seLive.eid);
@@ -3021,7 +3137,7 @@ function renderRequestsSection(){
     });
     count=ids.length;
     var eid=window._seLive.eid;
-    var _pls=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return [];}})();
+    var _pls=loadPlaylists();
     ids.forEach(function(rid,i){
       var r=list[rid];
       var vid=r.vid||'';
@@ -3055,7 +3171,7 @@ function renderPinnedSection(id,label,icon,songs,storeKey){
   if(!songs||!songs.length)return '';
   var _playFn=(id==='__fav__'?'playVidFromFav':(id==='__recent__'?'playVidFromRecent':'playVid'));
   var rows='';
-  var _pls=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return [];}})();
+  var _pls=loadPlaylists();
   var DRAG_ICON='<svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>';
   songs.forEach(function(r,i){
     var vid=r.v||r.mp4;
@@ -3452,7 +3568,7 @@ function updateModalAddBtn(){
   if(!currentSong)return;
   const btn=document.getElementById('modalAddBtn');
   var _vid2=currentSong.v||currentSong.mp4;
-  var _pls3=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return [];}})();
+  var _pls3=loadPlaylists();
   var inPl=_pls3.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===_vid2;});});
   btn.className='btn-add'+(inPl?' in-playlist':'');
   btn.innerHTML=inPl?'<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
@@ -3588,7 +3704,7 @@ function showFloatPlayer(){
   if(_favBtn){_favBtn.classList.toggle('active',isFavorite(_fvid));_favBtn.innerHTML=isFavorite(_fvid)?FAV_ON:FAV_OFF;_favBtn.title=isFavorite(_fvid)?'הסר ממועדפים':'הוסף למועדפים';}
   var _addBtn=document.getElementById('floatAddBtn');
   if(_addBtn){
-    var _pls2=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return [];}})();
+    var _pls2=loadPlaylists();
     var _inQ2=_pls2.some(function(pl){return pl.songs&&pl.songs.some(function(s){return (s.v||s.mp4)===_fvid;});});
     _addBtn.innerHTML=_inQ2?'<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
     _addBtn.title=_inQ2?'הסר מהפלייליסט':'הוסף לפלייליסט';
@@ -3891,9 +4007,9 @@ function render(term,forceQOpen){
   });
   let h='';
   var DRAG_ICON='<svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>';
-  var _pinnedHtml=q?'':((typeof renderRequestsSection==='function'?renderRequestsSection():'')+(((window._room&&window._room.code)||(window._seLive&&window._seLive.eid))?(typeof renderLiveRecentSection==='function'?renderLiveRecentSection():''):renderPinnedSection('__recent__','נוגן לאחרונה','🕐',_recentLoad(),'krecent'))+renderPinnedSection('__fav__','מועדפים',LIKE_HEADER,_favLoad(),'kfav'));
+  var _pinnedHtml=q?'':((typeof renderRequestsSection==='function'?renderRequestsSection():'')+(((window._room&&window._room.code)||(window._seLive&&window._seLive.eid))?(typeof renderLiveRecentSection==='function'?renderLiveRecentSection():''):renderPinnedSection('__recent__','נוגן לאחרונה','🕐',_recentLoad(),'krecent'))+(((window._room&&window._room.code)||(window._seLive&&window._seLive.eid))?(typeof renderLiveFavSection==='function'?renderLiveFavSection():''):renderPinnedSection('__fav__','מועדפים',LIKE_HEADER,_favLoad(),'kfav')));
   if(!ord.length){h='<div style="text-align:center;color:#535353;padding:60px 20px">לא נמצאו תוצאות</div>';}
-  var _plsForBtns=(function(){try{return JSON.parse(localStorage.getItem('karaoke_playlists')||'[]');}catch(e){return[];}})();
+  var _plsForBtns=loadPlaylists();
   for(const a of ord){
     const vid=g[a][0].v;
     h+=`<div class="artist-block" data-open="${q?'true':'false'}" data-vid="${vid}"
@@ -4865,8 +4981,16 @@ function switchQueueTab(id,el){
 
 // ── NAMED PLAYLISTS ──
 const PL_KEY='karaoke_playlists';
-function loadPlaylists(){try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}}
-function savePlaylists(pls){try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}window._acctPush('pl',pls);}
+function loadPlaylists(){
+  if(window._room && window._room.code) return window._room.plList||[];
+  if(window._seLive && window._seLive.eid) return window._seLive.plList||[];
+  try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}
+}
+function savePlaylists(pls){
+  if(window._room && window._room.code){ if(window._room.isHost && window._room.ref){ try{ window._room.ref.child('playlists').set(pls); }catch(e){} } return; }
+  if(window._seLive && window._seLive.eid){ if(window._seLive.mode==='host'){ try{ window._fbDb.ref('savedEvents/'+window._seLive.eid+'/playlists').set(pls); }catch(e){} } return; }
+  try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}window._acctPush('pl',pls);
+}
 function removeSongFromPl(plId,vid){var pls=loadPlaylists();var pl=pls.find(function(p){return p.id===plId;});if(!pl)return;pl.songs=pl.songs.filter(function(s){return getSongKey(s)!==vid;});savePlaylists(pls);if(document.getElementById('plPanel').classList.contains('open'))renderPlPanel();render(document.getElementById('q').value||'');}
 
 // ── PLAYLIST SIDE PANEL ──
