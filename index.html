@@ -2821,28 +2821,46 @@ function _reqDndDrop(e,idx){
   document.querySelectorAll('.req-row').forEach(function(el){el.classList.remove('dnd-over');});
   if(_reqDndIdx===null||_reqDndIdx===idx){_reqDndIdx=null;return;}
   try{
-    var list=window._room.requestsList||{};
-    var ids=Object.keys(list).sort(function(a,b){
-      var oa=(list[a].order!==undefined?list[a].order:(list[a].ts||0));
-      var ob=(list[b].order!==undefined?list[b].order:(list[b].ts||0));
-      return oa-ob;
-    });
-    var moved=ids.splice(_reqDndIdx,1)[0];
-    ids.splice(idx,0,moved);
-    var updates={};
-    ids.forEach(function(rid,i){ updates['requests/'+rid+'/order']=i; });
-    window._room.ref.update(updates);
+    if(window._room && window._room.code){
+      var list=window._room.requestsList||{};
+      var ids=Object.keys(list).sort(function(a,b){
+        var oa=(list[a].order!==undefined?list[a].order:(list[a].ts||0));
+        var ob=(list[b].order!==undefined?list[b].order:(list[b].ts||0));
+        return oa-ob;
+      });
+      var moved=ids.splice(_reqDndIdx,1)[0];
+      ids.splice(idx,0,moved);
+      var updates={};
+      ids.forEach(function(rid,i){ updates['requests/'+rid+'/order']=i; });
+      window._room.ref.update(updates);
+    } else if(window._seLive && window._seLive.mode==='host' && window._seLive.eid){
+      var eid=window._seLive.eid;
+      var list2=window._seLive.requestsList||{};
+      var ids2=Object.keys(list2).sort(function(a,b){
+        var oa2=(list2[a].order!==undefined?list2[a].order:(list2[a].ts||0));
+        var ob2=(list2[b].order!==undefined?list2[b].order:(list2[b].ts||0));
+        return oa2-ob2;
+      });
+      var moved2=ids2.splice(_reqDndIdx,1)[0];
+      ids2.splice(idx,0,moved2);
+      var updates2={};
+      ids2.forEach(function(rid,i){ updates2['savedEvents/'+eid+'/live/requests/'+rid+'/order']=i; });
+      window._fbDb.ref().update(updates2);
+    }
   }catch(e){}
   _reqDndIdx=null;
   render(document.getElementById('q')?document.getElementById('q').value:'');
 }
 function renderRequestsSection(){
-  if(!(window._room && window._room.code)) return '';
+  var isRoom = !!(window._room && window._room.code);
+  var isSeHost = !!(window._seLive && window._seLive.mode==='host' && window._seLive.eid);
+  var isSeGuest = !!(window._seLive && window._seLive.mode==='guest' && window._seLive.eid);
+  if(!isRoom && !isSeHost && !isSeGuest) return '';
   var DRAG_ICON='<svg width="14" height="12" viewBox="0 0 14 12" fill="currentColor"><rect y="0" width="14" height="2" rx="1"/><rect y="5" width="14" height="2" rx="1"/><rect y="10" width="14" height="2" rx="1"/></svg>';
   var chevron='<span class="chevron"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 6l4 4 4-4" stroke="#B3B3B3" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>';
   var rows='';
   var count=0;
-  if(window._room.isHost){
+  if(isRoom && window._room.isHost){
     var list=window._room.requestsList||{};
     var ids=Object.keys(list);
     if(!ids.length) return '';
@@ -2862,7 +2880,7 @@ function renderRequestsSection(){
         +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._roomRequestReject(\''+rid+'\')" title="דחה">✕</button>'
         +'</div></td></tr>';
     });
-  } else {
+  } else if(isRoom){
     var mrList=window._room.myRequests||{};
     var mrIds=Object.keys(mrList);
     if(!mrIds.length) return '';
@@ -2872,6 +2890,41 @@ function renderRequestsSection(){
       var mr=mrList[rid];
       rows+='<tr data-vid="'+esc(mr.vid||'')+'"><td style="cursor:default"><div>'+esc(mr.s||'')+'</div><div class="song-artist-sub">'+(mr.queued?'בתור אצל המארח':'ממתין לאישור המארח')+'</div></td><td class="td-actions"><div class="song-actions">'
         +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._roomRequestCancelMine(\''+rid+'\')" title="בטל בקשה">✕</button>'
+        +'</div></td></tr>';
+    });
+  } else if(isSeHost){
+    var list=window._seLive.requestsList||{};
+    var ids=Object.keys(list);
+    if(!ids.length) return '';
+    ids.sort(function(a,b){
+      var oa=(list[a].order!==undefined?list[a].order:(list[a].ts||0));
+      var ob=(list[b].order!==undefined?list[b].order:(list[b].ts||0));
+      return oa-ob;
+    });
+    count=ids.length;
+    var eid=window._seLive.eid;
+    ids.forEach(function(rid,i){
+      var r=list[rid];
+      var vid=r.vid||'';
+      rows+='<tr class="req-row" data-vid="'+esc(vid)+'" draggable="true" ondragstart="_reqDndStart(event,'+i+')" ondragover="_reqDndOver(event,'+i+')" ondrop="_reqDndDrop(event,'+i+')" ondragleave="_reqDndLeave(event)"><td style="cursor:default"><div>'+esc(r.s||'')+'</div><div class="song-artist-sub">'+esc(r.a||'')+' · '+esc(r.n||'אורח')+'</div></td><td class="td-actions"><div class="song-actions">'
+        +'<button class="drag-handle-song" style="display:flex" draggable="true" ondragstart="_reqDndStart(event,'+i+')" ondragend="event.stopPropagation()" onclick="event.stopPropagation()" title="גרור לשינוי סדר">'+DRAG_ICON+'</button>'
+        +'<button class="btn-play" onclick="event.stopPropagation();window._seLiveRequestPlayNow(\''+eid+'\',\''+rid+'\')" title="נגן עכשיו"><svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg></button>'
+        +'<button class="adm-btn sec" style="flex:0 0 auto;font-size:11px;padding:4px 10px;white-space:nowrap;" '+(r.queued?'disabled':'')+' onclick="event.stopPropagation();window._seLiveRequestQueue(\''+eid+'\',\''+rid+'\')">'+(r.queued?'הוכנס לתור':'בתור')+'</button>'
+        +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._seLiveRequestDismiss(\''+eid+'\',\''+rid+'\')" title="דחה">×</button>'
+        +'</div></td></tr>';
+    });
+  } else if(isSeGuest){
+    var eid=window._seLive.eid;
+    var allList=window._seLive.requestsList||{};
+    var myId=(typeof window._seLiveClientId==='function')?window._seLiveClientId():null;
+    var mrIds=Object.keys(allList).filter(function(rid){ return allList[rid] && allList[rid].clientId===myId; });
+    if(!mrIds.length) return '';
+    mrIds.sort(function(a,b){ return (allList[a].ts||0)-(allList[b].ts||0); });
+    count=mrIds.length;
+    mrIds.forEach(function(rid){
+      var mr=allList[rid];
+      rows+='<tr data-vid="'+esc(mr.vid||'')+'"><td style="cursor:default"><div>'+esc(mr.s||'')+'</div><div class="song-artist-sub">'+(mr.queued?'אושר על ידי המארח, ממתין בתור':'ממתין לאישור המארח')+'</div></td><td class="td-actions"><div class="song-actions">'
+        +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._seLiveRequestCancelMine(\''+eid+'\',\''+rid+'\')" title="בטל בקשה">×</button>'
         +'</div></td></tr>';
     });
   }
