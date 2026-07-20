@@ -837,7 +837,7 @@ window._seLiveStart=function(ev){
   window._seLiveStop();
   var eid=ev.id;
   window._seLive={eid:eid, mode:'host', lastPushed:null};
-  try{ if(typeof window._seAttachRecentListener==='function') window._seAttachRecentListener(eid); }catch(e){}
+  try{ var _seAttachRecentFn=function(){ try{ if(typeof window._seAttachRecentListener==='function') window._seAttachRecentListener(eid); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _seAttachRecentFn); } else { _seAttachRecentFn(); } }catch(e){}
   try{
     var hostRef=window._fbDb.ref('savedEvents/'+eid+'/live/hostOnline');
     hostRef.onDisconnect().remove();
@@ -902,7 +902,7 @@ window._seLiveJoin=function(ev){
   window._seLiveStop();
   var eid=ev.id;
   window._seLive={eid:eid, mode:'guest'};
-  try{ if(typeof window._seAttachRecentListener==='function') window._seAttachRecentListener(eid); }catch(e){}
+  try{ var _seAttachRecentFn=function(){ try{ if(typeof window._seAttachRecentListener==='function') window._seAttachRecentListener(eid); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _seAttachRecentFn); } else { _seAttachRecentFn(); } }catch(e){}
   try{
     var songRef=window._fbDb.ref('savedEvents/'+eid+'/live/song');
     var cb=songRef.on('value', function(snap){
@@ -1411,7 +1411,7 @@ function _roomStart(code){
   if(window._room.handoffRef){ try{ window._room.handoffRef.off(); }catch(e){} }
   if(window._fbDb){
     window._room.ref = window._fbDb.ref('rooms/'+code);
-  try{ if(typeof window._roomAttachRecentListener==='function') window._roomAttachRecentListener(); }catch(e){}
+  try{ var _roomAttachRecentFn=function(){ try{ if(typeof window._roomAttachRecentListener==='function') window._roomAttachRecentListener(); }catch(e){} }; if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', _roomAttachRecentFn); } else { _roomAttachRecentFn(); } }catch(e){}
     window._room.handoffRef = window._room.ref.child('handoff');
     window._room.handoffRef.on('value', function(snap){ try{ _roomHandleHandoff(snap.val()); }catch(e){} });
     if(window._room.isHost){
