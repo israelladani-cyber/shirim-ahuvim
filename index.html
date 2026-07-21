@@ -1081,6 +1081,10 @@ window._seLiveRequestSubmit=function(ev, song){
     if(!vid) return;
     var _kIdent=null; try{ _kIdent=JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
     var _rName=(_kIdent && _kIdent.n)?_kIdent.n:'אורח';
+    try{
+      var _seNowVid = (window._seLive && window._seLive.lastState && window._seLive.lastState.vid) || null;
+      if(_seNowVid && _seNowVid===vid){ if(typeof showToast==='function') showToast('השיר הזה כבר מתנגן עכשיו'); return; }
+    }catch(e){}
     var _myCid=window._seLiveClientId();
     var _dupE=false;
     try{ var _el=(window._seLive&&window._seLive.requestsList)||{}; _dupE=Object.keys(_el).some(function(k){ return _el[k] && _el[k].vid===vid && _el[k].clientId===_myCid; }); }catch(e){}
@@ -1162,9 +1166,31 @@ window._seLiveOwnerCloseNotify=function(){
     window._fbDb.ref('savedEvents/'+window._seLive.eid+'/live/closedNotice').set(Date.now());
   }catch(e){}
 };
+/* Pause playback wherever it is and collapse the player to the bottom mini bar,
+   keeping the exact current position. Used when the host leaves a saved event. */
+window._sePauseAndMinimize=function(){
+  var _pause=function(){
+    try{ var _m=document.getElementById('mp4Player'); if(_m && !_m.paused) _m.pause(); }catch(e){}
+    try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.pauseVideo==='function') ytPlayer.pauseVideo(); }catch(e){}
+    try{ var _b=document.getElementById('miniPlayBtn'); if(_b && typeof MINI_PLAY!=='undefined') _b.innerHTML=MINI_PLAY; }catch(e){}
+  };
+  try{
+    if(document.body.classList.contains('playing')){
+      if(typeof minimizeToMiniBar==='function') minimizeToMiniBar();
+    }
+  }catch(e){}
+  _pause();
+  /* YouTube can still be buffering/auto-resuming right after a state change - re-assert. */
+  setTimeout(_pause,150);
+  setTimeout(_pause,500);
+};
 function _seLiveHandleEnded(){
-  try{ if(typeof showToast==='function') showToast('האירוע הסתיים'); }catch(e){}
-  try{ if(typeof window._seExitEvent==='function') window._seExitEvent(); }catch(e){}
+  /* The host left, but guests deliberately stay in the event and decide for themselves
+     whether to remain or leave - so no _seExitEvent() here. */
+  var _hadPlayer=false;
+  try{ _hadPlayer=document.body.classList.contains('playing')||document.body.classList.contains('has-song'); }catch(e){}
+  try{ if(_hadPlayer && typeof window._sePauseAndMinimize==='function') window._sePauseAndMinimize(); }catch(e){}
+  try{ if(typeof showToast==='function') showToast(_hadPlayer?'המארח יצא מהאירוע - השיר הושהה':'המארח יצא מהאירוע'); }catch(e){}
 }
 window._seLiveStop=function(){
   try{
@@ -1187,14 +1213,91 @@ window._seLiveStop=function(){
   }catch(e){}
   window._seLive=null;
 };
+/* ── Saved-event state memory: remember how the event looked when you left it ── */
+window._seStateKey=function(eid){ return '_seState_'+eid; };
+/* Some artist blocks render with a literal data-vid="undefined", so data-vid alone is not
+   unique - fall back to the visible section name to keep every folder distinct. */
+window._seFolderKey=function(el,i){
+  try{
+    var v=el.getAttribute('data-vid');
+    if(v && v!=='undefined') return v;
+    var n=el.querySelector('.artist-name-text');
+    return 'n:'+((n&&n.textContent.trim())||('idx'+i));
+  }catch(e){ return 'idx'+i; }
+};
+window._seCaptureState=function(eid){
+  try{
+    if(!eid) return;
+    var folders={};
+    document.querySelectorAll('.artist-block[data-vid]').forEach(function(el,i){
+      var k=window._seFolderKey(el,i);
+      if(k) folders[k]=(el.dataset.open==='true');
+    });
+    var playerOpen=document.body.classList.contains('playing')||document.body.classList.contains('has-song');
+    var pl=null;
+    if(playerOpen && typeof currentSong!=='undefined' && currentSong){
+      var vid=currentSong.v||currentSong.mp4;
+      var t=0;
+      try{
+        if(currentSong.mp4){ var _m=document.getElementById('mp4Player'); t=_m?(_m.currentTime||0):0; }
+        else if(typeof ytPlayer!=='undefined' && ytPlayer && ytPlayer.getCurrentTime) t=ytPlayer.getCurrentTime()||0;
+      }catch(e){}
+      if(vid) pl={vid:vid, time:t};
+    }
+    localStorage.setItem(window._seStateKey(eid), JSON.stringify({folders:folders, player:pl, ts:Date.now()}));
+  }catch(e){}
+};
+window._seRestoreState=function(eid){
+  try{
+    if(!eid) return;
+    var raw=localStorage.getItem(window._seStateKey(eid));
+    if(!raw) return;
+    var st=JSON.parse(raw);
+    if(!st) return;
+    var applyFolders=function(){
+      try{
+        if(!st.folders) return;
+        document.querySelectorAll('.artist-block[data-vid]').forEach(function(el,i){
+          var k=window._seFolderKey(el,i);
+          if(k && st.folders[k]!==undefined) el.dataset.open=st.folders[k]?'true':'false';
+        });
+        if(typeof updateToggleBtn==='function') updateToggleBtn();
+      }catch(e){}
+    };
+    /* the list re-renders a few times right after entering an event - re-apply so the
+       restored folder state is not wiped by a later render() */
+    setTimeout(applyFolders,120);
+    setTimeout(applyFolders,600);
+    setTimeout(applyFolders,1400);
+    if(st.player && st.player.vid && typeof ALL!=='undefined' && ALL){
+      var song=ALL.find(function(s){ return (s.v||s.mp4)===st.player.vid; });
+      if(song){
+        setTimeout(function(){
+          try{
+            if(typeof openModal==='function') openModal(song,[song],0,st.player.time||0);
+            setTimeout(function(){
+              try{ if(typeof window._sePauseAndMinimize==='function') window._sePauseAndMinimize(); }catch(e){}
+              applyFolders();
+            },450);
+          }catch(e){}
+        },300);
+      }
+    }
+  }catch(e){}
+};
 window._seEnterEvent=function(ev){
   window._activeEvent={id:ev.id,name:ev.name,code:ev.code,isOwner:ev.role==='owner'};
   try{ localStorage.setItem('_activeSavedEvent', JSON.stringify(window._activeEvent)); }catch(e){}
   window._multiplayerOpenMenu();
   window._seRenderActiveBar();
   if(ev.role==='owner'){ window._seLiveStart(window._activeEvent); } else { window._seLiveJoin(window._activeEvent); }
+  try{ if(typeof window._seRestoreState==='function') window._seRestoreState(ev.id); }catch(e){}
 };
 window._seExitEvent=function(){
+  try{
+    var _exEid=(window._activeEvent&&window._activeEvent.id)||(window._seLive&&window._seLive.eid)||null;
+    if(_exEid && typeof window._seCaptureState==='function') window._seCaptureState(_exEid);
+  }catch(e){}
   window._seLiveStop();
   window._activeEvent=null;
   try{ localStorage.removeItem('_activeSavedEvent'); }catch(e){}
@@ -1734,6 +1837,10 @@ window._sendSongRequest = async function(vid){
       var song = (typeof ALL!=='undefined' && ALL) ? ALL.find(function(x){ return (x.v||x.mp4)===vid; }) : null;
       var _kIdent = null; try{ _kIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
       var _rName = (_kIdent && _kIdent.n) ? _kIdent.n : ('אורח '+window._room.clientId.slice(-4));
+      try{
+        var _nowVid = (window._room.lastState && window._room.lastState.vid) || null;
+        if(_nowVid && _nowVid===vid){ if(typeof showToast==='function') showToast('השיר הזה כבר מתנגן עכשיו'); return; }
+      }catch(e){}
       var _dupR=false;
       try{ var _rl=window._room.requestsList||{}; _dupR=Object.keys(_rl).some(function(k){ return _rl[k] && _rl[k].vid===vid && _rl[k].clientId===window._room.clientId; }); }catch(e){}
       if(!_dupR && window._room.myLastRequestedVid===vid) _dupR=true;
@@ -2545,7 +2652,16 @@ function _roomAutoJoinAsHost(code){
 
 function _roomHandleEnded(){
   try{ if(typeof showToast==='function') showToast('החדר הסתיים'); }catch(e){}
+  /* Host left -> close the song on every guest as well, then drop back to that user's
+     own personal lists (favorites/playlists/recent) by re-rendering after _roomLeave
+     has cleared window._room.code. */
+  try{
+    if(document.body.classList.contains('playing')||document.body.classList.contains('has-song')){
+      if(typeof closePanelOrAll==='function') closePanelOrAll();
+    }
+  }catch(e){}
   _roomLeave();
+  try{ if(typeof render==='function'){ var _qe=document.getElementById('q'); render(_qe?_qe.value:''); } }catch(e){}
 }
 
 function _roomRenderPanel(){
