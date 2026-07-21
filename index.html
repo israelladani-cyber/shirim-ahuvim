@@ -903,7 +903,7 @@ window._seLiveStart=function(ev){
       if(!window._seLive || window._seLive.eid!==eid) return;
       var local=window._seLiveLocalState();
       if(!local) return;
-      var _seLivePlayerOpen = document.body.classList.contains('playing');
+      var _seLivePlayerOpen = document.body.classList.contains('playing') || document.body.classList.contains('has-song');
       var key=JSON.stringify({vid:(_seLivePlayerOpen?local.vid:null),paused:(_seLivePlayerOpen?local.paused:true)});
       window._seLive.lastPushed=key;
       window._seLive.lastState={vid:_seLivePlayerOpen?local.vid:null,paused:_seLivePlayerOpen?local.paused:true,time:_seLivePlayerOpen?local.time:0,ts:Date.now()};
@@ -1033,6 +1033,7 @@ window._seLiveResume = function(){
   var _curVid = (typeof currentSong!=='undefined' && currentSong) ? (currentSong.v||currentSong.mp4) : null;
   var _playerOpen = document.body.classList.contains('playing');
   if((!_playerOpen || _curVid!==state.vid) && typeof window.playVid==='function') window.playVid(state.vid);
+  else if(!_playerOpen && document.body.classList.contains('has-song')){ try{ if(typeof resumeOrOpen==='function') resumeOrOpen(); }catch(e){} }
   try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
   try{ var _e1=document.getElementById('mp4Player'); if(_e1 && _e1.paused) _e1.play().catch(function(){}); }catch(e){}
   try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
@@ -1060,8 +1061,14 @@ window._seLiveRequestSubmit=function(ev, song){
     if(!vid) return;
     var _kIdent=null; try{ _kIdent=JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
     var _rName=(_kIdent && _kIdent.n)?_kIdent.n:'אורח';
-    var payload={vid:vid, s:song.s||'', a:song.a||'', n:_rName, ts:Date.now(), queued:false, clientId:window._seLiveClientId()};
+    var _myCid=window._seLiveClientId();
+    var _dupE=false;
+    try{ var _el=(window._seLive&&window._seLive.requestsList)||{}; _dupE=Object.keys(_el).some(function(k){ return _el[k] && _el[k].vid===vid && _el[k].clientId===_myCid; }); }catch(e){}
+    if(!_dupE && window._seLive && window._seLive.myLastRequestedVid===vid) _dupE=true;
+    if(_dupE){ if(typeof showToast==='function') showToast('כבר ביקשת את השיר הזה'+(song.s?(': '+song.s):'')); return; }
+    var payload={vid:vid, s:song.s||'', a:song.a||'', n:_rName, ts:Date.now(), queued:false, clientId:_myCid};
     window._fbDb.ref('savedEvents/'+ev.id+'/live/requests').push().set(payload);
+    try{ if(window._seLive) window._seLive.myLastRequestedVid=vid; }catch(e){}
     if(typeof showToast==='function') showToast('הבקשה נשלחה למארח'+(song.s?(': '+song.s):''));
     if(typeof window._seSyncReqToggleUI==='function') window._seSyncReqToggleUI();
   }catch(e){}
@@ -1070,8 +1077,14 @@ window._seLiveRequestPlayNow=function(eid, rid){
   try{
     var r = window._seLive && window._seLive.requestsList && window._seLive.requestsList[rid];
     if(!r) return;
+    window._reqPlayFromList = true;
     if(typeof playVid==='function') playVid(r.vid);
-    window._fbDb.ref('savedEvents/'+eid+'/live/requests/'+rid).remove();
+    window._reqPlayFromList = false;
+    var _l=(window._seLive&&window._seLive.requestsList)||{};
+    var _u={};
+    Object.keys(_l).forEach(function(k){ if(_l[k] && _l[k].playing && k!==rid) _u['savedEvents/'+eid+'/live/requests/'+k+'/playing']=null; });
+    _u['savedEvents/'+eid+'/live/requests/'+rid+'/playing']=true;
+    window._fbDb.ref().update(_u);
   }catch(e){}
 };
 window._seLiveRequestDismiss=function(eid, rid){
@@ -1084,7 +1097,15 @@ window._seLiveRequestQueue=function(eid, rid){
   try{
     var r = window._seLive.requestsList && window._seLive.requestsList[rid];
     var next = !(r && r.queued);
-    window._fbDb.ref('savedEvents/'+eid+'/live/requests/'+rid).update(next?{queued:true, queuedAt:Date.now()}:{queued:false});
+    if(next){
+      var _l=window._seLive.requestsList||{};
+      var _mx=-Infinity;
+      Object.keys(_l).forEach(function(k){ if(_l[k] && _l[k].queued && typeof _l[k].order==='number' && _l[k].order>_mx) _mx=_l[k].order; });
+      var _ord=(_mx===-Infinity)?0:(_mx+1);
+      window._fbDb.ref('savedEvents/'+eid+'/live/requests/'+rid).update({queued:true, queuedAt:Date.now(), order:_ord});
+    } else {
+      window._fbDb.ref('savedEvents/'+eid+'/live/requests/'+rid).update({queued:false});
+    }
   }catch(e){}
 };
 window._seLiveAdvanceFromQueue=function(){
@@ -1096,8 +1117,16 @@ window._seLiveAdvanceFromQueue=function(){
     ids.sort(function(a,b){ return (list[a].queuedAt||list[a].ts||0)-(list[b].queuedAt||list[b].ts||0); });
     var rid = ids[0];
     var r = list[rid];
-    window._fbDb.ref('savedEvents/'+window._seLive.eid+'/live/requests/'+rid).remove();
+    var _eid = window._seLive.eid;
+    window._reqPlayFromList = true;
     if(typeof window.playVid==='function') window.playVid(r.vid);
+    window._reqPlayFromList = false;
+    try{
+      var _u={};
+      Object.keys(list).forEach(function(k){ if(list[k] && list[k].playing && k!==rid) _u['savedEvents/'+_eid+'/live/requests/'+k+'/playing']=null; });
+      _u['savedEvents/'+_eid+'/live/requests/'+rid+'/playing']=true;
+      window._fbDb.ref().update(_u);
+    }catch(e){}
     return true;
   }catch(e){ return false; }
 };
@@ -1202,8 +1231,8 @@ window._seRenderActiveBar=function(){
   reqBtn.onclick=function(){
     window._seSongRequestMode = !window._seSongRequestMode;
     try{
-      if(window._seSongRequestMode){ if(typeof showToast==='function') showToast('מצב בקשת שיר פעיל - החליקו שיר ימין-שמאל כדי לבקש'); }
-      else { if(typeof showToast==='function') showToast('בקשת שיר בוטלה'); }
+      if(window._seSongRequestMode){ if(typeof showToast==='function') showToast(typeof window._reqModeToastText==='function'?window._reqModeToastText():'מצב בקשת שיר פעיל'); }
+      else { if(typeof showToast==='function') showToast('מצב בקשת שיר בוטל'); }
     }catch(e){}
     if(typeof window._seSyncReqToggleUI==='function') window._seSyncReqToggleUI();
   };
@@ -1366,6 +1395,8 @@ function _roomSeekAndSet(state){
   var song = ALL.find(function(s){ return (s.v||s.mp4)===state.vid; });
   if(!song) return;
   var _skipPause = !!(window._room.lastLocalCtrlAt && (Date.now()-window._room.lastLocalCtrlAt < 3500));
+  if(!_skipPause && window._room.pendingCtrlPaused!==undefined && window._room.pendingCtrlPaused!==!!state.paused && window._room.pendingCtrlAt && (Date.now()-window._room.pendingCtrlAt < 8000)) _skipPause = true;
+  else if(window._room.pendingCtrlPaused!==undefined && window._room.pendingCtrlPaused===!!state.paused){ window._room.pendingCtrlPaused=undefined; window._room.pendingCtrlAt=null; }
   var _elapsed = state.updatedAt ? Math.min(3, Math.max(0,(Date.now()-state.updatedAt)/1000)) : 0;
   var _ptime = state.paused ? state.time : (state.time + _elapsed);
   if(song.mp4){
@@ -1413,7 +1444,7 @@ async function _roomPushIfChanged(){
   if(!window._room.code || !window._room.ref) return;
   var local = _roomLocalState();
   if(!local) return;
-  var _playerOpen = document.body.classList.contains('playing');
+  var _playerOpen = document.body.classList.contains('playing') || document.body.classList.contains('has-song');
   var key = JSON.stringify({vid:(_playerOpen?local.vid:null), paused:(_playerOpen?local.paused:true)});
   window._room.lastPushed = key;
   var payload = { vid: _playerOpen ? (local.vid||null) : null, paused: _playerOpen ? !!local.paused : true, time: _playerOpen ? (local.time||0) : 0, s: _playerOpen ? (local.s||null) : null, a: _playerOpen ? (local.a||null) : null, writer: window._room.clientId, updatedAt: Date.now() };
@@ -1535,6 +1566,7 @@ function _roomStart(code){
             if(_all[rid] && _all[rid].clientId === window._room.clientId){ _mine[rid] = _all[rid]; }
           });
           window._room.myRequests = _mine;
+          window._room.requestsList = _all;
           try{ if(typeof render==='function'){ var _q1=document.getElementById('q'); render(_q1?_q1.value:''); } }catch(e){}
         };
         window._room.requestsRef.on('value', window._room.requestsCb);
@@ -1667,6 +1699,10 @@ window._sendSongRequest = async function(vid){
       var song = (typeof ALL!=='undefined' && ALL) ? ALL.find(function(x){ return (x.v||x.mp4)===vid; }) : null;
       var _kIdent = null; try{ _kIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
       var _rName = (_kIdent && _kIdent.n) ? _kIdent.n : ('אורח '+window._room.clientId.slice(-4));
+      var _dupR=false;
+      try{ var _rl=window._room.requestsList||{}; _dupR=Object.keys(_rl).some(function(k){ return _rl[k] && _rl[k].vid===vid && _rl[k].clientId===window._room.clientId; }); }catch(e){}
+      if(!_dupR && window._room.myLastRequestedVid===vid) _dupR=true;
+      if(_dupR){ if(typeof showToast==='function') showToast('כבר ביקשת את השיר הזה'+(song?(': '+song.s):'')); return; }
       var payload = { vid: vid, s: song?song.s:'', a: song?song.a:'', n: _rName, ts: Date.now(), queued: false, clientId: window._room.clientId };
       await window._room.ref.child('requests').push().set(payload);
       window._room.myLastRequestedVid = vid;
@@ -1681,28 +1717,66 @@ window._sendSongRequest = async function(vid){
   }catch(e){}
 };
 
+window._reqModeToastText = function(){
+  var _touch = false;
+  try{ _touch = ('ontouchstart' in window) || (navigator.maxTouchPoints>0); }catch(e){}
+  return _touch
+    ? 'מצב בקשת שיר פעיל - החליקו שיר ימין-שמאל, או לחצו על סמל הבקשה שליד השיר'
+    : 'מצב בקשת שיר פעיל - לחצו על סמל הבקשה שליד השיר שתרצו לבקש';
+};
 window._songRequestStart = function(){
   window._songRequestMode = true;
-  try{ if(typeof showToast==='function') showToast('מצב בקשת שיר פעיל - החליקו שיר ימין-שמאל כדי לבקש, או בטלו מהתפריט'); }catch(e){}
+  try{ if(typeof showToast==='function') showToast(window._reqModeToastText()); }catch(e){}
 };
 window._songRequestCancel = function(){
   window._songRequestMode = false;
+  try{ if(typeof showToast==='function') showToast('מצב בקשת שיר בוטל'); }catch(e){}
 };
 
 /* ── Song request queue management (host actions + guest cancel) ── */
+window._reqClearStalePlaying = function(newVid){
+  try{
+    if(window._room && window._room.code && window._room.ref && window._room.isHost){
+      var _l=window._room.requestsList||{};
+      var _u={};
+      Object.keys(_l).forEach(function(k){ if(_l[k] && _l[k].playing && _l[k].vid!==newVid) _u['requests/'+k]=null; });
+      if(Object.keys(_u).length) window._room.ref.update(_u);
+    } else if(window._seLive && window._seLive.mode==='host' && window._seLive.eid){
+      var _eid=window._seLive.eid;
+      var _l2=window._seLive.requestsList||{};
+      var _u2={};
+      Object.keys(_l2).forEach(function(k){ if(_l2[k] && _l2[k].playing && _l2[k].vid!==newVid) _u2['savedEvents/'+_eid+'/live/requests/'+k]=null; });
+      if(Object.keys(_u2).length) window._fbDb.ref().update(_u2);
+    }
+  }catch(e){}
+};
 window._roomRequestPlayNow = function(rid){
   try{
     var r = window._room.requestsList && window._room.requestsList[rid];
     if(!r) return;
+    window._reqPlayFromList = true;
     if(typeof window.playVid==='function') window.playVid(r.vid);
-    window._room.ref.child('requests/'+rid).remove();
+    window._reqPlayFromList = false;
+    var _l=window._room.requestsList||{};
+    var _u={};
+    Object.keys(_l).forEach(function(k){ if(_l[k] && _l[k].playing && k!==rid) _u['requests/'+k+'/playing']=null; });
+    _u['requests/'+rid+'/playing']=true;
+    window._room.ref.update(_u);
   }catch(e){}
 };
 window._roomRequestQueue = function(rid){
   try{
     var r = window._room.requestsList && window._room.requestsList[rid];
     var next = !(r && r.queued);
-    window._room.ref.child('requests/'+rid).update(next?{queued:true, queuedAt:Date.now()}:{queued:false});
+    if(next){
+      var _l=window._room.requestsList||{};
+      var _mx=-Infinity;
+      Object.keys(_l).forEach(function(k){ if(_l[k] && _l[k].queued && typeof _l[k].order==='number' && _l[k].order>_mx) _mx=_l[k].order; });
+      var _ord=(_mx===-Infinity)?0:(_mx+1);
+      window._room.ref.child('requests/'+rid).update({queued:true, queuedAt:Date.now(), order:_ord});
+    } else {
+      window._room.ref.child('requests/'+rid).update({queued:false});
+    }
   }catch(e){}
 };
 window._roomRequestReject = function(rid){
@@ -1731,8 +1805,15 @@ window._roomAdvanceFromQueue = function(){
     });
     var rid = ids[0];
     var r = list[rid];
-    window._room.ref.child('requests/'+rid).remove();
+    window._reqPlayFromList = true;
     if(typeof window.playVid==='function') window.playVid(r.vid);
+    window._reqPlayFromList = false;
+    try{
+      var _u={};
+      Object.keys(list).forEach(function(k){ if(list[k] && list[k].playing && k!==rid) _u['requests/'+k+'/playing']=null; });
+      _u['requests/'+rid+'/playing']=true;
+      window._room.ref.update(_u);
+    }catch(e){}
     return true;
   }catch(e){ return false; }
 };
@@ -2202,6 +2283,7 @@ window._multiplayerResume = function(){
   var _curVid = (typeof currentSong!=='undefined' && currentSong) ? (currentSong.v||currentSong.mp4) : null;
   var _playerOpen = document.body.classList.contains('playing');
   if((!_playerOpen || _curVid!==state.vid) && typeof window.playVid==='function') window.playVid(state.vid);
+  else if(!_playerOpen && document.body.classList.contains('has-song')){ try{ if(typeof resumeOrOpen==='function') resumeOrOpen(); }catch(e){} }
   try{ _roomApplyMute(); }catch(e){}
   try{ var _e1=document.getElementById('mp4Player'); if(_e1 && _e1.paused) _e1.play().catch(function(){}); }catch(e){}
   try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
@@ -2330,6 +2412,8 @@ window._roomSendCtrl = function(paused){
     if(window._room && window._room.code && window._room.isHost===false && window._room.ref && window._room.hasControl===true && !window._room.leaving){
       window._room.ref.child('ctrl').set({paused: !!paused, clientId: window._room.clientId, ts: Date.now()});
       window._room.lastLocalCtrlAt = Date.now();
+      window._room.pendingCtrlPaused = !!paused;
+      window._room.pendingCtrlAt = Date.now();
     }
   }catch(e){}
 }
@@ -3149,15 +3233,23 @@ function renderRequestsSection(){
         +'</div></td></tr>';
     });
   } else if(isRoom){
-    var mrList=window._room.myRequests||{};
-    var mrIds=Object.keys(mrList);
-    if(!mrIds.length) return '';
-    mrIds.sort(function(a,b){ return (mrList[a].ts||0)-(mrList[b].ts||0); });
-    count=mrIds.length;
-    mrIds.forEach(function(rid){
-      var mr=mrList[rid];
-      rows+='<tr data-vid="'+esc(mr.vid||'')+'"><td style="cursor:default"><div>'+esc(mr.s||'')+'</div><div class="song-artist-sub">'+(mr.queued?'בתור אצל המארח':'ממתין לאישור המארח')+'</div></td><td class="td-actions"><div class="song-actions">'
-        +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._roomRequestCancelMine(\''+rid+'\')" title="בטל בקשה">✕</button>'
+    var gList=window._room.requestsList||{};
+    var gIds=Object.keys(gList);
+    if(!gIds.length) return '';
+    gIds.sort(function(a,b){
+      var oa=(gList[a].order!==undefined?gList[a].order:(gList[a].ts||0));
+      var ob=(gList[b].order!==undefined?gList[b].order:(gList[b].ts||0));
+      return oa-ob;
+    });
+    count=gIds.length;
+    var myCid=window._room.clientId;
+    gIds.forEach(function(rid){
+      var mr=gList[rid];
+      var isMine=(mr.clientId===myCid);
+      var sub=mr.playing?'מתנגן עכשיו':(mr.queued?'':'ממתין לאישור');
+      var who=esc(mr.a||'')+(mr.n?(' · '+esc(mr.n)):'');
+      rows+='<tr data-vid="'+esc(mr.vid||'')+'"><td style="cursor:default"><div>'+esc(mr.s||'')+'</div><div class="song-artist-sub">'+who+(sub?(' · '+sub):'')+'</div></td><td class="td-actions"><div class="song-actions">'
+        +(isMine?('<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._roomRequestCancelMine(\''+rid+'\')" title="בטל בקשה">✕</button>'):'')
         +'</div></td></tr>';
     });
   } else if(isSeHost){
@@ -3188,14 +3280,21 @@ function renderRequestsSection(){
     var eid=window._seLive.eid;
     var allList=window._seLive.requestsList||{};
     var myId=(typeof window._seLiveClientId==='function')?window._seLiveClientId():null;
-    var mrIds=Object.keys(allList).filter(function(rid){ return allList[rid] && allList[rid].clientId===myId; });
+    var mrIds=Object.keys(allList);
     if(!mrIds.length) return '';
-    mrIds.sort(function(a,b){ return (allList[a].ts||0)-(allList[b].ts||0); });
+    mrIds.sort(function(a,b){
+      var oa=(allList[a].order!==undefined?allList[a].order:(allList[a].ts||0));
+      var ob=(allList[b].order!==undefined?allList[b].order:(allList[b].ts||0));
+      return oa-ob;
+    });
     count=mrIds.length;
     mrIds.forEach(function(rid){
       var mr=allList[rid];
-      rows+='<tr data-vid="'+esc(mr.vid||'')+'"><td style="cursor:default"><div>'+esc(mr.s||'')+'</div><div class="song-artist-sub">'+(mr.queued?'אושר על ידי המארח, ממתין בתור':'ממתין לאישור המארח')+'</div></td><td class="td-actions"><div class="song-actions">'
-        +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._seLiveRequestCancelMine(\''+eid+'\',\''+rid+'\')" title="בטל בקשה">×</button>'
+      var isMine=(mr.clientId===myId);
+      var sub=mr.playing?'מתנגן עכשיו':(mr.queued?'':'ממתין לאישור');
+      var who=esc(mr.a||'')+(mr.n?(' · '+esc(mr.n)):'');
+      rows+='<tr data-vid="'+esc(mr.vid||'')+'"><td style="cursor:default"><div>'+esc(mr.s||'')+'</div><div class="song-artist-sub">'+who+(sub?(' · '+sub):'')+'</div></td><td class="td-actions"><div class="song-actions">'
+        +(isMine?('<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._seLiveRequestCancelMine(\''+eid+'\',\''+rid+'\')" title="בטל בקשה">×</button>'):'')
         +'</div></td></tr>';
     });
   }
@@ -3233,7 +3332,7 @@ function pinDndDrop(e,key,idx){
 
 function playVid(vid){
   if(_admMode && window.innerWidth<768){_confirmExitForPlay(vid);return;}
-  currentPlId=null;
+  currentPlId=window._reqPlayFromList?'__requests__':null;
   _syncShuffleUI();
   _syncRepeatUI();
   (function(){var lp=document.querySelector('.list-panel');if(!lp){window._listScrollPos=0;window._listAnchorVid=null;return;}window._listScrollPos=lp.scrollTop;var pT=lp.getBoundingClientRect().top;var cands=lp.querySelectorAll('.artist-block[data-vid],tr[data-vid]');var av=null,at=null,ao=0;for(var ri=0;ri<cands.length;ri++){var rc=cands[ri].getBoundingClientRect();if(rc.bottom>pT){av=cands[ri].getAttribute('data-vid');at=cands[ri].tagName;ao=rc.top-pT;break;}}window._listAnchorVid=av;window._listAnchorTag=at;window._listAnchorOffset=ao;})();
@@ -3244,8 +3343,7 @@ function playVid(vid){
   const idx=songList.findIndex(s=>(s.v||s.mp4)===vid);
   openModal(song,songList,idx);
   try{
-    if(window._room && window._room.isHost && typeof window._roomPushRecent==='function') window._roomPushRecent(vid, song.s, song.a);
-    else if(window._seLive && window._seLive.mode==='host' && typeof window._seLivePushRecent==='function') window._seLivePushRecent(vid, song.s, song.a);
+    /* recent-played push moved into openModal() - it is the single real chokepoint every play path funnels through */
   }catch(e){}
   setTimeout(()=>{
     if(window._autoOpenArtist&&window._autoOpenArtist!==song.a){
@@ -3307,6 +3405,11 @@ function openModal(song,songList,idx,startSeconds){
   }
   hideFloatPlayer();
   currentSong=song;currentSongList=songList;currentSongIdx=idx;_shuffleHist=[]; _recentAdd(song);_syncNowPlayingHighlight();
+  try{ var _omVid=song.v||song.mp4;
+    if(window._room && window._room.isHost && typeof window._roomPushRecent==='function') window._roomPushRecent(_omVid, song.s, song.a);
+    else if(window._seLive && window._seLive.mode==='host' && typeof window._seLivePushRecent==='function') window._seLivePushRecent(_omVid, song.s, song.a);
+    if(typeof window._reqClearStalePlaying==='function') window._reqClearStalePlaying(_omVid);
+  }catch(e){}
   document.getElementById('panelSong').textContent=song.s;
   document.getElementById('panelArtist').textContent=song.a;
   document.getElementById('miniSong').textContent=song.s;
@@ -3979,6 +4082,8 @@ function _syncNowPlayingHighlight(){
     sel='.artist-block[data-vid="__fav__"] tr[data-vid="'+CSS.escape(vid)+'"]';
   }else if(currentPlId==='__recent__'){
     sel='.artist-block[data-vid="__recent__"] tr[data-vid="'+CSS.escape(vid)+'"]';
+  }else if(currentPlId==='__requests__'){
+    sel='.artist-block[data-vid="__requests__"] tr[data-vid="'+CSS.escape(vid)+'"]';
   }else if(currentPlId){
     sel='.pl-item[data-pl-id="'+CSS.escape(currentPlId)+'"] .pl-song-row[data-vid="'+CSS.escape(vid)+'"]';
   }else{
