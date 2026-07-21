@@ -1183,7 +1183,7 @@ window._seRenderActiveBar=function(){
   var exitBtn=document.createElement('button');
   exitBtn.innerHTML='<span style="display:flex;align-items:center;gap:4px;font-size:13px;color:#606060;">\uD83D\uDEAA יציאה</span>';
   exitBtn.style.cssText='background:none;border:none;cursor:pointer;border-right:1px solid #eee;padding-right:10px;';
-  exitBtn.onclick=function(){ window._seExitEvent(); };
+  exitBtn.onclick=function(){ if(typeof window._seLiveOwnerCloseNotify==='function') window._seLiveOwnerCloseNotify(); window._seExitEvent(); };
   bar.appendChild(left);
   if(ev.isOwner){ bar.appendChild(linkBtn); bar.appendChild(qrBtn); }
   if(!ev.isOwner){
