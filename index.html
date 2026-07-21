@@ -1009,7 +1009,15 @@ window._seLiveSeekAndSet=function(state){
 };
 window._seLiveApplyRemote=function(state){ try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
   window._seLive.lastState = state;
-  if(!state || !state.vid) return;
+  if(!state || !state.vid){
+    try{
+      if(window._seLive && window._seLive.mode==='guest' && (document.body.classList.contains('playing')||document.body.classList.contains('has-song'))){
+        if(typeof closePanelOrAll==='function') closePanelOrAll();
+        if(typeof showToast==='function') showToast('המארח סגר את השיר');
+      }
+    }catch(e){}
+    return;
+  }
   try{
     var local=window._seLiveLocalState();
     var songChanged = !local || local.vid!==state.vid;
@@ -1032,9 +1040,17 @@ window._seLiveResume = function(){
   }
   var _curVid = (typeof currentSong!=='undefined' && currentSong) ? (currentSong.v||currentSong.mp4) : null;
   var _playerOpen = document.body.classList.contains('playing');
-  if((!_playerOpen || _curVid!==state.vid) && typeof window.playVid==='function') window.playVid(state.vid);
-  else if(!_playerOpen && document.body.classList.contains('has-song')){ try{ if(typeof resumeOrOpen==='function') resumeOrOpen(); }catch(e){} }
+  var _minimized = !_playerOpen && document.body.classList.contains('has-song');
+  var _sameSong = (_curVid===state.vid);
+  /* Same song already loaded and merely minimized -> restore the panel in place, keeping the
+     current playback position and paused state. Reloading via playVid() would restart it. */
+  var _restoredInPlace = false;
+  if(_sameSong && _minimized){
+    try{ if(typeof resumeOrOpen==='function'){ resumeOrOpen(); _restoredInPlace = true; } }catch(e){}
+  }
+  if(!_restoredInPlace && (!_playerOpen || !_sameSong) && typeof window.playVid==='function') window.playVid(state.vid);
   try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
+  if(!(_restoredInPlace && state.paused)){
   try{ var _e1=document.getElementById('mp4Player'); if(_e1 && _e1.paused) _e1.play().catch(function(){}); }catch(e){}
   try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
   setTimeout(function(){
@@ -1042,12 +1058,13 @@ window._seLiveResume = function(){
     try{ var _e2=document.getElementById('mp4Player'); if(_e2 && _e2.paused) _e2.play().catch(function(){}); }catch(e){}
     try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
   }, 60);
+  }
   setTimeout(function(){
     try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
     try{ var _e3=document.getElementById('mp4Player'); if(_e3 && _e3.paused) _e3.play().catch(function(){}); }catch(e){}
     try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
   }, 300);
-  setTimeout(function(){
+  if(!_restoredInPlace) setTimeout(function(){
     if(typeof window._seLiveApplyRemote==='function') window._seLiveApplyRemote(state);
   }, 500);
   var ov = document.getElementById('_joinOverlay');
@@ -1425,7 +1442,16 @@ function _roomSeekAndSet(state){
 }
 
 function _roomApplyRemote(state){
-  if(!state || !state.vid) return;
+  if(!state || !state.vid){
+    /* Host closed the song entirely -> mirror the close on the guest, once, with a notice. */
+    try{
+      if(window._room && window._room.isHost===false && (document.body.classList.contains('playing')||document.body.classList.contains('has-song'))){
+        if(typeof closePanelOrAll==='function') closePanelOrAll();
+        if(typeof showToast==='function') showToast('המארח סגר את השיר');
+      }
+    }catch(e){}
+    return;
+  }
   try{ _roomApplyMute(); }catch(e){}
   var local = _roomLocalState();
   if(!local || local.vid !== state.vid){
@@ -2284,14 +2310,24 @@ window._multiplayerResume = function(){
   }
   var _curVid = (typeof currentSong!=='undefined' && currentSong) ? (currentSong.v||currentSong.mp4) : null;
   var _playerOpen = document.body.classList.contains('playing');
-  if((!_playerOpen || _curVid!==state.vid) && typeof window.playVid==='function') window.playVid(state.vid);
-  else if(!_playerOpen && document.body.classList.contains('has-song')){ try{ if(typeof resumeOrOpen==='function') resumeOrOpen(); }catch(e){} }
+  var _minimized = !_playerOpen && document.body.classList.contains('has-song');
+  var _sameSong = (_curVid===state.vid);
+  /* Same song already loaded and merely minimized -> restore the panel in place, keeping the
+     current playback position and paused state. Reloading via playVid() would restart it. */
+  var _restoredInPlace = false;
+  if(_sameSong && _minimized){
+    try{ if(typeof resumeOrOpen==='function'){ resumeOrOpen(); _restoredInPlace = true; } }catch(e){}
+  }
+  if(!_restoredInPlace && (!_playerOpen || !_sameSong) && typeof window.playVid==='function') window.playVid(state.vid);
   try{ _roomApplyMute(); }catch(e){}
-  try{ var _e1=document.getElementById('mp4Player'); if(_e1 && _e1.paused) _e1.play().catch(function(){}); }catch(e){}
-  try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
-  setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} try{ var _e2=document.getElementById('mp4Player'); if(_e2 && _e2.paused) _e2.play().catch(function(){}); }catch(e){} try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){} }, 60);
+  /* Don't force playback when restoring in place - respect whatever state the song was in. */
+  if(!(_restoredInPlace && state.paused)){
+    try{ var _e1=document.getElementById('mp4Player'); if(_e1 && _e1.paused) _e1.play().catch(function(){}); }catch(e){}
+    try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){}
+    setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} try{ var _e2=document.getElementById('mp4Player'); if(_e2 && _e2.paused) _e2.play().catch(function(){}); }catch(e){} try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){} }, 60);
+  }
   setTimeout(function(){ try{ _roomApplyMute(); }catch(e){} }, 300);
-  setTimeout(function(){ if(typeof _roomSeekAndSet==='function') _roomSeekAndSet(state); }, 500);
+  if(!_restoredInPlace) setTimeout(function(){ if(typeof _roomSeekAndSet==='function') _roomSeekAndSet(state); }, 500);
   var ov = document.getElementById('_joinOverlay');
   if(ov) ov.style.display='none';
 };
