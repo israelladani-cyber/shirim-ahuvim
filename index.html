@@ -1718,9 +1718,11 @@ window._sendSongRequest = async function(vid){
 };
 
 window._reqModeToastText = function(){
-  var _touch = false;
-  try{ _touch = ('ontouchstart' in window) || (navigator.maxTouchPoints>0); }catch(e){}
-  return _touch
+  /* (pointer:coarse) = touch is the PRIMARY input. maxTouchPoints/ontouchstart are wrong here:
+     touch-capable laptops report maxTouchPoints>0 while still being mouse-driven. */
+  var _touchFirst = false;
+  try{ _touchFirst = window.matchMedia && window.matchMedia('(pointer: coarse)').matches; }catch(e){}
+  return _touchFirst
     ? 'מצב בקשת שיר פעיל - החליקו שיר ימין-שמאל, או לחצו על סמל הבקשה שליד השיר'
     : 'מצב בקשת שיר פעיל - לחצו על סמל הבקשה שליד השיר שתרצו לבקש';
 };
