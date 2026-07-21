@@ -2827,6 +2827,17 @@ function _syncMiniBtns(){
 }
 function _favLoad(){try{return JSON.parse(localStorage.getItem('kfav')||'[]');}catch(e){return [];}}
 function _favSave(list){try{localStorage.setItem('kfav',JSON.stringify(list));}catch(e){}window._acctPush('fav',list);}
+const PL_KEY='karaoke_playlists';
+function loadPlaylists(){
+  if(window._room && window._room.code) return window._room.plList||[];
+  if(window._seLive && window._seLive.eid) return window._seLive.plList||[];
+  try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}
+}
+function savePlaylists(pls){
+  if(window._room && window._room.code){ if(window._room.isHost && window._room.ref){ try{ window._room.ref.child('playlists').set(pls); }catch(e){} } return; }
+  if(window._seLive && window._seLive.eid){ if(window._seLive.mode==='host'){ try{ window._fbDb.ref('savedEvents/'+window._seLive.eid+'/playlists').set(pls); }catch(e){} } return; }
+  try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}window._acctPush('pl',pls);
+}
 function isFavorite(vid){
   if(window._room && window._room.code) return !!(window._room.favList && window._room.favList[vid]);
   if(window._seLive && window._seLive.eid) return !!(window._seLive.favList && window._seLive.favList[vid]);
@@ -4980,17 +4991,6 @@ function switchQueueTab(id,el){
 }
 
 // ── NAMED PLAYLISTS ──
-const PL_KEY='karaoke_playlists';
-function loadPlaylists(){
-  if(window._room && window._room.code) return window._room.plList||[];
-  if(window._seLive && window._seLive.eid) return window._seLive.plList||[];
-  try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}
-}
-function savePlaylists(pls){
-  if(window._room && window._room.code){ if(window._room.isHost && window._room.ref){ try{ window._room.ref.child('playlists').set(pls); }catch(e){} } return; }
-  if(window._seLive && window._seLive.eid){ if(window._seLive.mode==='host'){ try{ window._fbDb.ref('savedEvents/'+window._seLive.eid+'/playlists').set(pls); }catch(e){} } return; }
-  try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}window._acctPush('pl',pls);
-}
 function removeSongFromPl(plId,vid){var pls=loadPlaylists();var pl=pls.find(function(p){return p.id===plId;});if(!pl)return;pl.songs=pl.songs.filter(function(s){return getSongKey(s)!==vid;});savePlaylists(pls);if(document.getElementById('plPanel').classList.contains('open'))renderPlPanel();render(document.getElementById('q').value||'');}
 
 // ── PLAYLIST SIDE PANEL ──
