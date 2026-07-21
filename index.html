@@ -1011,6 +1011,7 @@ window._seLiveApplyRemote=function(state){ try{ if(typeof window._seLiveApplyMut
   window._seLive.lastState = state;
   if(!state || !state.vid){
     try{
+      if(window._seLive){ window._seLive.awaitingFreshSong = true; }
       if(window._seLive && window._seLive.mode==='guest' && (document.body.classList.contains('playing')||document.body.classList.contains('has-song'))){
         if(typeof closePanelOrAll==='function') closePanelOrAll();
         if(typeof showToast==='function') showToast('המארח סגר את השיר');
@@ -1018,9 +1019,11 @@ window._seLiveApplyRemote=function(state){ try{ if(typeof window._seLiveApplyMut
     }catch(e){}
     return;
   }
+  var _seFresh = !!(window._seLive && window._seLive.awaitingFreshSong);
+  if(window._seLive) window._seLive.awaitingFreshSong = false;
   try{
     var local=window._seLiveLocalState();
-    var songChanged = !local || local.vid!==state.vid;
+    var songChanged = !local || local.vid!==state.vid || _seFresh;
     if(songChanged && typeof playVid==='function'){ playVid(state.vid); try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){}
       var _seLiveRetryPlay=function(){ try{ var _e=document.getElementById('mp4Player'); if(_e && _e.paused) _e.play().catch(function(){}); }catch(e){} try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){} };
       setTimeout(function(){ try{ if(typeof window._seLiveApplyMute==='function') window._seLiveApplyMute(); }catch(e){} _seLiveRetryPlay(); }, 60);
@@ -1443,8 +1446,12 @@ function _roomSeekAndSet(state){
 
 function _roomApplyRemote(state){
   if(!state || !state.vid){
-    /* Host closed the song entirely -> mirror the close on the guest, once, with a notice. */
+    /* Host closed the song entirely -> mirror the close on the guest, once, with a notice.
+       Flag it so the NEXT song re-opens the player from scratch: closePanelOrAll() leaves
+       currentSong stale, so without this a replay of the same vid would look "unchanged"
+       and only seek a player that is no longer on screen. */
     try{
+      if(window._room){ window._room.awaitingFreshSong = true; }
       if(window._room && window._room.isHost===false && (document.body.classList.contains('playing')||document.body.classList.contains('has-song'))){
         if(typeof closePanelOrAll==='function') closePanelOrAll();
         if(typeof showToast==='function') showToast('המארח סגר את השיר');
@@ -1452,9 +1459,11 @@ function _roomApplyRemote(state){
     }catch(e){}
     return;
   }
+  var _roomFresh = !!(window._room && window._room.awaitingFreshSong);
+  if(window._room) window._room.awaitingFreshSong = false;
   try{ _roomApplyMute(); }catch(e){}
   var local = _roomLocalState();
-  if(!local || local.vid !== state.vid){
+  if(!local || local.vid !== state.vid || _roomFresh){
     if(typeof window.playVid==='function') window.playVid(state.vid);
     try{ _roomApplyMute(); }catch(e){}
     var _roomRetryPlay=function(){ try{ var _e=document.getElementById('mp4Player'); if(_e && _e.paused) _e.play().catch(function(){}); }catch(e){} try{ if(typeof ytPlayer!=='undefined' && ytPlayer && typeof ytPlayer.getPlayerState==='function' && ytPlayer.getPlayerState()!==1 && typeof ytPlayer.playVideo==='function') ytPlayer.playVideo(); }catch(e){} };
