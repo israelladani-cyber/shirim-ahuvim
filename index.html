@@ -1249,6 +1249,44 @@ window._seCaptureState=function(eid){
     localStorage.setItem(window._seStateKey(eid), JSON.stringify({folders:folders, player:pl, ts:Date.now()}));
   }catch(e){}
 };
+window._seRestoreMinimizedPlayer=function(song, sec){
+  /* Restore a song straight into the minimized bottom bar, paused at the saved position,
+     WITHOUT opening the full player for a moment first. Uses cueVideoById (loads, no autoplay)
+     instead of openModal()+loadVideoById()(autoplay)+minimize, so there is no visual flash. */
+  try{
+    if(!song) return;
+    if(typeof hideFloatPlayer==='function') hideFloatPlayer();
+    currentSong=song; currentSongList=[song]; currentSongIdx=0; _shuffleHist=[];
+    try{
+      document.getElementById('panelSong').textContent=song.s;
+      document.getElementById('panelArtist').textContent=song.a;
+      document.getElementById('miniSong').textContent=song.s;
+      document.getElementById('miniArtist').textContent=song.a;
+      if(song.mp4){document.getElementById('miniThumb').style.backgroundImage='none';}
+      else{document.getElementById('miniThumb').style.backgroundImage="url('https://i.ytimg.com/vi/"+song.v+"/mqdefault.jpg')";}
+    }catch(e){}
+    /* mini bar visible (has-song) but panel stays closed (no playing) */
+    document.body.classList.add('has-song');
+    document.body.classList.remove('playing');
+    var sc=sec||0;
+    if(song.mp4){
+      var _m=document.getElementById('mp4Player');
+      try{ document.getElementById('yt-player').style.display='none'; }catch(e){}
+      if(_m){ _m.style.display='block'; try{ _m.src=_mediaUrl(song.mp4); }catch(e){} try{ _m.currentTime=sc; }catch(e){} _m.pause(); }
+    }else{
+      try{ var _m2=document.getElementById('mp4Player'); if(_m2){ _m2.style.display='none'; _m2.pause(); _m2.src=''; } }catch(e){}
+      try{ document.getElementById('yt-player').style.display=''; }catch(e){}
+      var _cue=function(){ try{ ytPlayer.cueVideoById({videoId:song.v, startSeconds:sc}); }catch(e){} };
+      if(typeof ytPlayer!=='undefined' && ytPlayer && playerReady){ _cue(); }
+      else { var _t=0; var _iv=setInterval(function(){ _t++; if(typeof ytPlayer!=='undefined' && ytPlayer && playerReady){ clearInterval(_iv); _cue(); } else if(_t>=20){ clearInterval(_iv); } },500); }
+    }
+    try{ document.getElementById('miniPlayBtn').innerHTML=MINI_PLAY; }catch(e){}
+    try{ _syncMiniBtns(); }catch(e){}
+    try{ saveSession(song); }catch(e){}
+    try{ setupMediaSession(song); }catch(e){}
+    try{ requestAnimationFrame(setTopH); }catch(e){}
+  }catch(e){}
+};
 window._seRestoreState=function(eid){
   try{
     if(!eid) return;
@@ -1275,13 +1313,8 @@ window._seRestoreState=function(eid){
       var song=ALL.find(function(s){ return (s.v||s.mp4)===st.player.vid; });
       if(song){
         setTimeout(function(){
-          try{
-            if(typeof openModal==='function') openModal(song,[song],0,st.player.time||0);
-            setTimeout(function(){
-              try{ if(typeof window._sePauseAndMinimize==='function') window._sePauseAndMinimize(); }catch(e){}
-              applyFolders();
-            },450);
-          }catch(e){}
+          try{ if(typeof window._seRestoreMinimizedPlayer==='function') window._seRestoreMinimizedPlayer(song, st.player.time||0); }catch(e){}
+          applyFolders();
         },300);
       }
     }
@@ -3114,9 +3147,20 @@ function _syncMiniBtns(){
 function _favLoad(){try{return JSON.parse(localStorage.getItem('kfav')||'[]');}catch(e){return [];}}
 function _favSave(list){try{localStorage.setItem('kfav',JSON.stringify(list));}catch(e){}window._acctPush('fav',list);}
 const PL_KEY='karaoke_playlists';
+function _plNormalize(raw){
+  /* Firebase RTDB drops empty arrays and may return an object keyed by index instead of an
+     array, so a freshly-created (song-less) shared playlist comes back with songs===undefined.
+     Normalize every shared playlist to a real array with a guaranteed songs:[] so downstream
+     reads (isInPlaylist/toggleSongInPlaylist/renderPlPopup...) behave exactly like local mode. */
+  var arr = Array.isArray(raw) ? raw.slice() : (raw ? Object.keys(raw).map(function(k){return raw[k];}) : []);
+  return arr.filter(function(p){return p;}).map(function(p){
+    var songs = Array.isArray(p.songs) ? p.songs : (p.songs ? Object.keys(p.songs).map(function(k){return p.songs[k];}) : []);
+    return Object.assign({}, p, {songs: songs});
+  });
+}
 function loadPlaylists(){
-  if(window._room && window._room.code) return window._room.plList||[];
-  if(window._seLive && window._seLive.eid) return window._seLive.plList||[];
+  if(window._room && window._room.code) return _plNormalize(window._room.plList);
+  if(window._seLive && window._seLive.eid) return _plNormalize(window._seLive.plList);
   try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}
 }
 function savePlaylists(pls){
