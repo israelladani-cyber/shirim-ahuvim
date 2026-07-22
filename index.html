@@ -2358,10 +2358,10 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         }
         events.forEach(function(ev){
           var row=document.createElement('div');
-          row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 16px;';
+          row.style.cssText='display:flex;align-items:center;padding:8px 16px;';
           var nameEl=document.createElement('span');
           nameEl.textContent=ev.name;
-          nameEl.style.cssText='font-size:14px;color:#0F0F0F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+          nameEl.style.cssText='font-size:14px;color:#0F0F0F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;margin-inline-end:16px;';
           var delBtn=document.createElement('button');
           delBtn.textContent=ev.role==='owner'?'מחיקה':'עזיבה';
           delBtn.title=ev.role==='owner'?'מחיקת אירוע':'עזיבת אירוע';
@@ -2382,7 +2382,7 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
             }
           };
           row.appendChild(nameEl);
-          var btnWrap=document.createElement('div');btnWrap.style.cssText='display:flex;align-items:center;gap:5px;flex-shrink:0;';
+          var btnWrap=document.createElement('div');btnWrap.style.cssText='display:flex;align-items:center;gap:6px;flex-shrink:0;';
           var enterBtn=document.createElement('button');enterBtn.textContent='כניסה';enterBtn.title='כניסה לאירוע';enterBtn.style.cssText='background:none;border:1px solid #ccc;color:#0F0F0F;border-radius:16px;padding:4px 10px;cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;';enterBtn.onclick=function(){window._seEnterEvent(ev);};btnWrap.appendChild(enterBtn);
           var exitBtn2=document.createElement('button');exitBtn2.textContent='יציאה';exitBtn2.title='יציאה מהאירוע (בלי למחוק/לעזוב)';exitBtn2.style.cssText='background:none;border:1px solid #ccc;color:#0F0F0F;border-radius:16px;padding:4px 10px;cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;';exitBtn2.onclick=function(){
             if(typeof window._seLiveOwnerCloseNotify==='function') window._seLiveOwnerCloseNotify();
