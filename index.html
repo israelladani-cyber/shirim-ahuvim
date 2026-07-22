@@ -3164,8 +3164,13 @@ function loadPlaylists(){
   try{return JSON.parse(localStorage.getItem(PL_KEY)||'[]');}catch(e){return[];}
 }
 function savePlaylists(pls){
-  if(window._room && window._room.code){ if(window._room.isHost && window._room.ref){ try{ window._room.ref.child('playlists').set(pls); }catch(e){} } return; }
-  if(window._seLive && window._seLive.eid){ if(window._seLive.mode==='host'){ try{ window._fbDb.ref('savedEvents/'+window._seLive.eid+'/playlists').set(pls); }catch(e){} } return; }
+  /* Firebase .set() THROWS synchronously on any undefined value (e.g. a YouTube song's
+     absent mp4 field), which the try/catch below would swallow silently - leaving the song
+     un-persisted even though the caller already showed a success toast. Round-trip through
+     JSON to strip every undefined at any depth before writing to RTDB. */
+  var _clean=pls; try{ _clean=JSON.parse(JSON.stringify(pls)); }catch(e){}
+  if(window._room && window._room.code){ if(window._room.isHost && window._room.ref){ try{ window._room.ref.child('playlists').set(_clean); }catch(e){} } return; }
+  if(window._seLive && window._seLive.eid){ if(window._seLive.mode==='host'){ try{ window._fbDb.ref('savedEvents/'+window._seLive.eid+'/playlists').set(_clean); }catch(e){} } return; }
   try{localStorage.setItem(PL_KEY,JSON.stringify(pls));}catch(e){}window._acctPush('pl',pls);
 }
 function isFavorite(vid){
@@ -5585,7 +5590,7 @@ function toggleSongInPlaylist(plId,song){
   if(!pl)return;
   const idx=pl.songs.findIndex(s=>getSongKey(s)===k);
   if(idx>=0)pl.songs.splice(idx,1);
-  else pl.songs.push({v:song.v,s:song.s,a:song.a,mp4:song.mp4||undefined});
+  else{var _ns={s:song.s,a:song.a};if(song.v)_ns.v=song.v;if(song.mp4)_ns.mp4=song.mp4;pl.songs.push(_ns);}
   savePlaylists(pls);
   refreshAddBtns();
   if(document.getElementById('plPanel').classList.contains('open'))renderPlPanel();
