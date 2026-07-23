@@ -2251,6 +2251,59 @@ window._roomPromoteToEvent = async function(){
   }
 };
 
+window._roomPromoteToEventByCode = async function(code){
+  if(!code || !window._fbDb) return;
+  var _rpIdent = null; try{ _rpIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+  if(!_rpIdent || !_rpIdent.e){ await customAlert('צריך להתחבר', 'כדי לשמור את החדר כאירוע קבוע יש להתחבר עם Google קודם'); return; }
+  var _rpName = await new Promise(function(resolve){ customPrompt('שם לאירוע', 'תן שם לאירוע הקבוע שנשמר', function(v){ resolve(v); }, ''); });
+  if(!_rpName || !_rpName.trim()) return;
+  _rpName = _rpName.trim();
+  var _rpEid = null, _rpEvCode = null;
+  try{
+    var _rpKey = window._acctKey(_rpIdent.e);
+    _rpEid = window._fbDb.ref('savedEvents').push().key;
+    _rpEvCode = (typeof window._seGenCode === 'function') ? await window._seGenCode() : String(Math.floor(1000+Math.random()*9000));
+    await window._fbDb.ref('savedEvents/'+_rpEid).set({
+      name: _rpName, ownerKey: _rpKey, ownerName: _rpIdent.n||_rpIdent.e,
+      createdAt: Date.now(), code: _rpEvCode, songs: [], playlists: []
+    });
+    await window._fbDb.ref('eventCodes/'+_rpEvCode).set(_rpEid);
+    await window._fbDb.ref('userEvents/'+_rpKey+'/events/'+_rpEid).set('owner');
+    await window._fbDb.ref('savedEvents/'+_rpEid+'/members/'+_rpKey).set({name:_rpIdent.n||_rpIdent.e, joinedAt:Date.now()});
+    try{ var _rpPl = await window._fbDb.ref('rooms/'+code+'/playlists').once('value'); if(_rpPl.exists()){ await window._fbDb.ref('savedEvents/'+_rpEid+'/playlists').set(_rpPl.val()); } }catch(e){}
+    try{ var _rpFav = await window._fbDb.ref('rooms/'+code+'/favorites').once('value'); if(_rpFav.exists()){ await window._fbDb.ref('savedEvents/'+_rpEid+'/favorites').set(_rpFav.val()); } }catch(e){}
+    try{ var _rpRec = await window._fbDb.ref('rooms/'+code+'/recent').once('value'); if(_rpRec.exists()){ await window._fbDb.ref('savedEvents/'+_rpEid+'/recent').set(_rpRec.val()); } }catch(e){}
+    await window._fbDb.ref('rooms/'+code+'/promoted').set({eid:_rpEid, code:_rpEvCode});
+    try{ await window._fbDb.ref('userRooms/'+_rpKey+'/rooms/'+code).remove(); }catch(e){}
+  }catch(e){ await customAlert('שגיאה', 'לא ניתן היה לשמור את האירוע, נסה שוב'); return; }
+  if(window._room.code===code){ _roomLeave(true); }
+  if(typeof window._seEnterEvent === 'function'){
+    window._seEnterEvent({id:_rpEid, name:_rpName, code:_rpEvCode, role:'owner'});
+  }
+};
+
+window._roomLeaveActionForCode = async function(code){
+  if(window._room.code===code){
+    await window._roomLeaveAction();
+    return;
+  }
+  var _saveAsEvent2 = await window._roomExitLeaveDialog();
+  if(_saveAsEvent2){
+    if(typeof window._roomPromoteToEventByCode==='function'){ await window._roomPromoteToEventByCode(code); }
+    return;
+  }
+  try{ if(window._fbDb){ await window._fbDb.ref('rooms/'+code+'/exitNotice').set(Date.now()); } }catch(e){}
+};
+
+window._roomDeleteActionForCode = async function(code){
+  var ok = await customConfirm('מחיקת חדר זמני', 'פעולה זו תמחק את החדר לצמיתות ותוציא את כל האורחים המחוברים כרגע. לא ניתן לשחזר.', 'מחק חדר');
+  if(!ok) return;
+  var _rdIdent = null; try{ _rdIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+  if(window._room.code===code){ _roomLeave(true); }
+  try{ if(window._fbDb){ await window._fbDb.ref('rooms/'+code).remove(); } }catch(e){}
+  try{ if(_rdIdent && _rdIdent.e && window._fbDb){ await window._fbDb.ref('userRooms/'+window._acctKey(_rdIdent.e)+'/rooms/'+code).remove(); } }catch(e){}
+};
+
 window._multiplayerOpenMenu = function(anchorBtn, view){
   try{
     if(typeof window._closeFloatingPopups==='function') window._closeFloatingPopups('mp');
@@ -2412,28 +2465,57 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
         }
         rooms.forEach(function(code){
           var row=document.createElement('div');
-          row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 16px;';
-          var nameEl=document.createElement('div');
+          row.style.cssText='display:flex;align-items:center;padding:8px 16px;';
+          var nameEl=document.createElement('span');
           nameEl.textContent='חדר '+code;
-          nameEl.style.cssText='font-size:14px;color:#0F0F0F;';
+          nameEl.style.cssText='font-size:14px;color:#0F0F0F;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px;margin-inline-end:16px;';
           row.appendChild(nameEl);
+          var btnWrap=document.createElement('div');
+          btnWrap.style.cssText='display:flex;align-items:center;gap:6px;flex-shrink:0;';
           var enterBtn=document.createElement('button');
           enterBtn.textContent='כניסה';
           enterBtn.title='כניסה לחדר';
-          enterBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:14px;';
+          enterBtn.style.cssText='background:none;border:1px solid #ccc;color:#0F0F0F;border-radius:16px;padding:4px 10px;cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;';
           enterBtn.onclick=async function(){
+            if(window._room.code===code){
+              var _mpM0=document.getElementById('_mpMenu'); if(_mpM0){ _mpM0.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null;
+              window._multiplayerOpenMenu(btn,'connected');
+              return;
+            }
             if(window._activeEvent && window._activeEvent.id){
               var _rmProceed=await customConfirm('⚠️ לא ניתן להיכנס במקביל לשני חדרים', 'האירוע הנוכחי יישמר אוטומטית', 'הצטרף לחדר הזמני');
               if(!_rmProceed) return;
               if(typeof window._seExitEvent==='function'){ window._seExitEvent(); }
+            } else if(window._room.code){
+              var _rmProceed2=await customConfirm('⚠️ לא ניתן להיכנס במקביל לשני חדרים', 'החדר הנוכחי יישמר אוטומטית ל-24 שעות', 'הצטרף לחדר הזמני');
+              if(!_rmProceed2) return;
+              _roomLeave();
             }
             var _mpM=document.getElementById('_mpMenu'); if(_mpM){ _mpM.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null;
-            if(typeof window._roomAutoJoinAsHost==='function'){ window._roomAutoJoinAsHost(code); }
+            if(typeof _roomAutoJoinAsHost==='function'){ _roomAutoJoinAsHost(code); }
           };
-          row.appendChild(enterBtn);
+          btnWrap.appendChild(enterBtn);
+          var exitBtn2=document.createElement('button');
+          exitBtn2.textContent='יציאה';
+          exitBtn2.title='יציאה מהחדר (בלי למחוק)';
+          exitBtn2.style.cssText='background:none;border:1px solid #ccc;color:#0F0F0F;border-radius:16px;padding:4px 10px;cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;';
+          exitBtn2.onclick=async function(){
+            if(typeof window._roomLeaveActionForCode==='function'){ await window._roomLeaveActionForCode(code); }
+            window._multiplayerOpenMenu(btn,'my-rooms');
+          };
+          btnWrap.appendChild(exitBtn2);
+          var delBtn=document.createElement('button');
+          delBtn.textContent='מחיקה';
+          delBtn.title='מחיקת חדר';
+          delBtn.style.cssText='background:none;border:1px solid #FF0000;color:#FF0000;border-radius:16px;padding:4px 10px;cursor:pointer;font-size:12px;font-weight:500;white-space:nowrap;';
+          delBtn.onclick=async function(){
+            if(typeof window._roomDeleteActionForCode==='function'){ await window._roomDeleteActionForCode(code); }
+            window._multiplayerOpenMenu(btn,'my-rooms');
+          };
+          btnWrap.appendChild(delBtn);
+          row.appendChild(btnWrap);
           wrap.appendChild(row);
-        });
-      })();
+        });})();
     } else if(mode==='join'){
       addOpt(_mpIco.code,'הזן קוד', function(){ window._multiplayerOpenMenu(btn,'join-code'); });
       addOpt(_mpIco.camera,'סרוק QR', function(){ window._multiplayerOpenMenu(btn,'join-scan'); });
