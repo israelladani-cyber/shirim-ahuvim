@@ -847,6 +847,15 @@ window._seLiveStart=function(ev){
     window._seLive.hostRef=hostRef;
   }catch(e){}
   try{
+    window._fbDb.ref('savedEvents/'+eid+'/everWentLive').once('value').then(function(snap){
+      if(snap.val()===true){
+        window._fbDb.ref('savedEvents/'+eid+'/live/reopenNotice').set(Date.now());
+      } else {
+        window._fbDb.ref('savedEvents/'+eid+'/everWentLive').set(true);
+      }
+    });
+  }catch(e){}
+  try{
     var reqRef=window._fbDb.ref('savedEvents/'+eid+'/live/requests');
     var reqCb=reqRef.on('value', function(snap){
       var _sePrevReqIds = Object.keys(window._seLive.requestsList||{});
@@ -974,6 +983,18 @@ window._seLiveJoin=function(ev){
     });
     window._seLive.closedNoticeRef=closedNoticeRef;
     window._seLive.closedNoticeCb=closedNoticeCb;
+  }catch(e){}
+  try{
+    var reopenNoticeRef=window._fbDb.ref('savedEvents/'+eid+'/live/reopenNotice');
+    var reopenNoticeCb=reopenNoticeRef.on('value', function(snap){
+      var v=snap.val();
+      if(v && window._seLive && window._seLive.eid===eid && window._seLive.mode==='guest' && v!==window._seLive.lastReopenNotice){
+        window._seLive.lastReopenNotice=v;
+        try{ if(typeof showToast==='function') showToast('המארח חזר לאירוע'); }catch(e){}
+      }
+    });
+    window._seLive.reopenNoticeRef=reopenNoticeRef;
+    window._seLive.reopenNoticeCb=reopenNoticeCb;
   }catch(e){}
  if(window._seLive){ window._seLive.muted=true; try{ window._seLiveApplyMute(); }catch(e){} try{ if(typeof window._seRenderActiveBar==='function') window._seRenderActiveBar(); }catch(e){} }};
 window._seLiveSeekAndSet=function(state){
@@ -1208,6 +1229,7 @@ window._seLiveStop=function(){
     if(window._seLive.plRef && window._seLive.plCb){ try{ window._seLive.plRef.off('value', window._seLive.plCb); }catch(e){} }
       if(window._seLive.hostWatchRef && window._seLive.hostWatchCb){ window._seLive.hostWatchRef.off('value', window._seLive.hostWatchCb); }
       if(window._seLive.closedNoticeRef && window._seLive.closedNoticeCb){ try{ window._seLive.closedNoticeRef.off('value', window._seLive.closedNoticeCb); }catch(e){} }
+      if(window._seLive.reopenNoticeRef && window._seLive.reopenNoticeCb){ try{ window._seLive.reopenNoticeRef.off('value', window._seLive.reopenNoticeCb); }catch(e){} }
       if(window._seLive.hostOfflineTimer){ clearTimeout(window._seLive.hostOfflineTimer); }
       if(window._seLive.permRef && window._seLive.permCb){ window._seLive.permRef.off('value', window._seLive.permCb); }
       if(window._seLive.guestRef){ try{ window._seLive.guestRef.onDisconnect().cancel(); }catch(e){} try{ window._seLive.guestRef.remove(); }catch(e){} }
@@ -1805,6 +1827,12 @@ function _roomStart(code){
             try{ _rlnHadPlayer = document.body.classList.contains('playing')||document.body.classList.contains('has-song'); }catch(e){}
             try{ if(_rlnHadPlayer && typeof window._sePauseAndMinimize==='function') window._sePauseAndMinimize(); }catch(e){}
             try{ if(typeof showToast==='function') showToast(_rlnHadPlayer?'המארח יצא מהחדר - השיר הושהה':'המארח יצא מהחדר'); }catch(e){}
+          }
+        }
+        if(data.rejoinNotice && data.rejoinNotice !== window._room.lastRejoinNotice){
+          window._room.lastRejoinNotice = data.rejoinNotice;
+          if(window._room.code===code && !window._room.isHost){
+            try{ if(typeof showToast==='function') showToast('המארח חזר לחדר'); }catch(e){}
           }
         }
         if(data.writer===window._room.clientId) return;
@@ -2996,11 +3024,13 @@ function _roomAutoJoinAsHost(code){
       window._room.isHost = true;
       window._room.muted = false;
       _roomStart(code);
+      try{ if(window._fbDb){ window._fbDb.ref('rooms/'+code+'/rejoinNotice').set(Date.now()); } }catch(e){}
     }
   }).catch(function(){
     window._room.isHost = true;
     window._room.muted = false;
     _roomStart(code);
+    try{ if(window._fbDb){ window._fbDb.ref('rooms/'+code+'/rejoinNotice').set(Date.now()); } }catch(e){}
   });
 }
 
