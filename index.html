@@ -2379,6 +2379,61 @@ back: '<svg width="18" height="18" viewBox="0 0 24 24" style="fill:#606060"><pat
     } else if(mode==='main'){
       addOpt(_mpIco.plus,'צור חדר חדש', async function(){ await window._roomCreateAction(); if(window._room.code){ window._multiplayerOpenMenu(btn,'connected'); } });
       addOpt(_mpJoinLink,'הצטרף לחדר', async function(){ if(window._room.code){ var _mpM=document.getElementById('_mpMenu'); if(_mpM){ _mpM.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; await customAlert('⚠️ לא ניתן להצטרף', window._room.isHost ? 'כבר יש לך חדר פתוח כמארח - סגור אותו קודם' : 'אתה כבר מחובר לחדר אחר - עזוב אותו קודם'); return; } window._multiplayerOpenMenu(btn,'join'); });
+      addOpt(_mpIco.code,'החדרים הזמניים שלי', function(){ window._multiplayerOpenMenu(btn,'my-rooms'); });
+    } else if(mode==='my-rooms'){
+      var _rmHeader=document.createElement('div'); _rmHeader.textContent='החדרים הזמניים שלי'; _rmHeader.style.cssText='font-size:13px;font-weight:700;color:#606060;padding:10px 16px 0;'; menu.appendChild(_rmHeader);
+      var _rmWrap=document.createElement('div');
+      _rmWrap.id='_rmListWrap';
+      _rmWrap.style.cssText='padding:8px 16px;font-size:13px;color:#606060;';
+      _rmWrap.textContent='טוען...';
+      menu.appendChild(_rmWrap);
+      (async function(){
+        var rooms=[];
+        try{
+          var _rmIdent=JSON.parse(localStorage.getItem('_kIdent')||'null');
+          if(_rmIdent && _rmIdent.e && window._fbDb){
+            var _rmKey=window._acctKey(_rmIdent.e);
+            var _rmSnap=await window._fbDb.ref('userRooms/'+_rmKey+'/rooms').once('value');
+            var _rmVal=_rmSnap.val()||{};
+            var _rmNow=Date.now();
+            rooms=Object.keys(_rmVal).filter(function(c){ return _rmVal[c].createdAt && (_rmNow - _rmVal[c].createdAt) < 86400000; });
+          }
+        }catch(e){}
+        var wrap=document.getElementById('_rmListWrap');
+        if(!wrap) return;
+        wrap.innerHTML='';
+        wrap.style.padding='0';
+        if(rooms.length===0){
+          var _rmEmpty=document.createElement('div');
+          _rmEmpty.style.cssText='padding:8px 16px;color:#999;';
+          _rmEmpty.textContent='אין לך חדרים זמניים פתוחים כרגע';
+          wrap.appendChild(_rmEmpty);
+          return;
+        }
+        rooms.forEach(function(code){
+          var row=document.createElement('div');
+          row.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:8px 16px;';
+          var nameEl=document.createElement('div');
+          nameEl.textContent='חדר '+code;
+          nameEl.style.cssText='font-size:14px;color:#0F0F0F;';
+          row.appendChild(nameEl);
+          var enterBtn=document.createElement('button');
+          enterBtn.textContent='כניסה';
+          enterBtn.title='כניסה לחדר';
+          enterBtn.style.cssText='background:none;border:none;cursor:pointer;font-size:14px;';
+          enterBtn.onclick=async function(){
+            if(window._activeEvent && window._activeEvent.id){
+              var _rmProceed=await customConfirm('⚠️ לא ניתן להיכנס במקביל לשני חדרים', 'האירוע הנוכחי יישמר אוטומטית', 'הצטרף לחדר הזמני');
+              if(!_rmProceed) return;
+              if(typeof window._seExitEvent==='function'){ window._seExitEvent(); }
+            }
+            var _mpM=document.getElementById('_mpMenu'); if(_mpM){ _mpM.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null;
+            if(typeof window._roomAutoJoinAsHost==='function'){ window._roomAutoJoinAsHost(code); }
+          };
+          row.appendChild(enterBtn);
+          wrap.appendChild(row);
+        });
+      })();
     } else if(mode==='join'){
       addOpt(_mpIco.code,'הזן קוד', function(){ window._multiplayerOpenMenu(btn,'join-code'); });
       addOpt(_mpIco.camera,'סרוק QR', function(){ window._multiplayerOpenMenu(btn,'join-scan'); });
