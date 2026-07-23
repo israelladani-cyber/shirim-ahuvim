@@ -3530,7 +3530,7 @@ function renderRequestsSection(){
         +'<button class="btn-play" onclick="event.stopPropagation();window._seLiveRequestPlayNow(\''+eid+'\',\''+rid+'\')" title="נגן עכשיו"><svg viewBox="0 0 12 14" fill="#000"><polygon points="0,0 12,7 0,14"/></svg></button>'
         +'<button class="adm-btn sec" style="flex:0 0 auto;font-size:11px;padding:4px 10px;white-space:nowrap;" onclick="event.stopPropagation();window._seLiveRequestQueue(\''+eid+'\',\''+rid+'\')">'+(r.queued?'הוצא מהתור':'הכנס לתור')+'</button>'
         +'<button class="btn-add'+(inQ?' in-playlist':'')+'" data-vid="'+vid+'" title="'+(inQ?'הסר מהפלייליסט':'הוסף לפלייליסט')+'" onclick="event.stopPropagation();showPlaylistPopupForSong(event,\''+vid+'\')">'+(inQ?'<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>')+'</button>'
-        +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._seLiveRequestDismiss(\''+eid+'\',\''+rid+'\')" title="דחה">×</button>'
+        +'<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._seLiveRequestDismiss(\''+eid+'\',\''+rid+'\')" title="דחה">✕</button>'
         +'</div></td></tr>';
     });
   } else if(isSeGuest){
@@ -3555,7 +3555,7 @@ function renderRequestsSection(){
       var who=esc(mr.a||'')+(mr.n?(' · '+esc(mr.n)):'');
       rows+='<tr data-vid="'+esc(vid)+'"><td style="cursor:default"><div>'+esc(mr.s||'')+'</div><div class="song-artist-sub">'+who+(sub?(' · '+sub):'')+'</div></td><td class="td-actions"><div class="song-actions">'
         +'<button class="btn-add'+(inQ?' in-playlist':'')+'" data-vid="'+vid+'" title="'+(inQ?'הסר מהפלייליסט':'הוסף לפלייליסט')+'" onclick="event.stopPropagation();showPlaylistPopupForSong(event,\''+vid+'\')">'+(inQ?'<svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>':'<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>')+'</button>'
-        +(isMine?('<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._seLiveRequestCancelMine(\''+eid+'\',\''+rid+'\')" title="בטל בקשה">×</button>'):'')
+        +(isMine?('<button style="flex:0 0 auto;width:26px;height:26px;border-radius:50%;border:1px solid #E5E5E5;background:#fff;color:#c0392b;font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;" onclick="event.stopPropagation();window._seLiveRequestCancelMine(\''+eid+'\',\''+rid+'\')" title="בטל בקשה">✕</button>'):'')
         +'</div></td></tr>';
     });
   }
