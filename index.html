@@ -2135,6 +2135,17 @@ window._roomLeaveAction = async function(){
   _roomLeave();
 };
 
+window._roomDeleteAction = async function(){
+  if(!window._room.isHost || !window._room.code) return;
+  var ok = await customConfirm('מחיקת חדר זמני', 'פעולה זו תמחק את החדר לצמיתות ותוציא את כל האורחים המחוברים כרגע. לא ניתן לשחזר.', 'מחק חדר');
+  if(!ok) return;
+  var _rdCode = window._room.code;
+  var _rdIdent = null; try{ _rdIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+  _roomLeave();
+  try{ if(window._fbDb){ await window._fbDb.ref('rooms/'+_rdCode).remove(); } }catch(e){}
+  try{ if(_rdIdent && _rdIdent.e && window._fbDb){ await window._fbDb.ref('userRooms/'+window._acctKey(_rdIdent.e)+'/rooms/'+_rdCode).remove(); } }catch(e){}
+};
+
 window._multiplayerOpenMenu = function(anchorBtn, view){
   try{
     if(typeof window._closeFloatingPopups==='function') window._closeFloatingPopups('mp');
@@ -2780,7 +2791,8 @@ function _roomRenderPanel(){
       +'</div>'
       +'<div style="font-size:12px;color:#606060;text-align:center;margin-bottom:16px;">סרוק את הקוד או הזן אותו במכשיר השני כדי להצטרף לאותו שיר</div>'
       +'<div class="adm-row"><button class="adm-btn sec" onclick="window._roomToggleMute()">'+(window._room.muted?'מושתק - הקש להפעלת קול':'קול פעיל - הקש להשתקה')+'</button></div>'
-      +'<div class="adm-row"><button class="adm-btn sec" onclick="window._roomLeaveAction()">עזוב חדר</button></div>';
+      +'<div class="adm-row"><button class="adm-btn sec" onclick="window._roomLeaveAction()">עזוב חדר</button></div>'
+      +(window._room.isHost ? '<div class="adm-row"><button class="adm-btn sec" style="color:#e00" onclick="window._roomDeleteAction()">מחק חדר</button></div>' : '');
   } else {
     box.innerHTML = ''
       +'<div class="adm-title">האזנה משותפת</div>'
