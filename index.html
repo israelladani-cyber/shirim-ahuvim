@@ -1650,6 +1650,7 @@ function _roomStart(code){
   if(!window._roomPageHideHooked){ window._roomPageHideHooked=true; window.addEventListener('pagehide', function(){ window._room.leaving=true; }); }
   window._room.code = code;
   window._room.everHadData = false;
+  window._room.promotedHandled = false;
   if(!window._room.clientId){
     var _savedCid=null; try{ _savedCid=localStorage.getItem('karaoke_client_id'); }catch(e){}
     window._room.clientId = _savedCid || ('c'+Math.random().toString(36).slice(2)+Date.now().toString(36));
@@ -1756,6 +1757,31 @@ function _roomStart(code){
           return;
         }
         window._room.everHadData = true;
+        if(data.promoted && data.promoted.eid){
+          if(!window._room.promotedHandled){
+            window._room.promotedHandled = true;
+            var _rpoEid = data.promoted.eid, _rpoCode = data.promoted.code, _rpoWasHost = window._room.isHost;
+            (async function(){
+              try{
+                var _rpoIdent = null; try{ _rpoIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+                if(_rpoIdent && _rpoIdent.e && window._fbDb){
+                  var _rpoKey = window._acctKey(_rpoIdent.e);
+                  var _rpoExisting = await window._fbDb.ref('userEvents/'+_rpoKey+'/events/'+_rpoEid).once('value');
+                  if(!_rpoExisting.val()){
+                    await window._fbDb.ref('userEvents/'+_rpoKey+'/events/'+_rpoEid).set('member');
+                    await window._fbDb.ref('savedEvents/'+_rpoEid+'/members/'+_rpoKey).set({name:_rpoIdent.n||_rpoIdent.e, joinedAt:Date.now()});
+                  }
+                }
+              }catch(e){}
+              try{ if(typeof showToast==='function') showToast('המארח שמר את הערב כאירוע קבוע'); }catch(e){}
+              _roomLeave();
+              if(typeof window._seEnterEvent==='function'){
+                window._seEnterEvent({id:_rpoEid, name:null, code:_rpoCode, role: _rpoWasHost ? 'owner' : 'member'});
+              }
+            })();
+          }
+          return;
+        }
         if(data.writer===window._room.clientId) return;
         if(data.hostOnline!==true){
           if(!window._room.hostOfflineTimer){
@@ -2144,6 +2170,38 @@ window._roomDeleteAction = async function(){
   _roomLeave();
   try{ if(window._fbDb){ await window._fbDb.ref('rooms/'+_rdCode).remove(); } }catch(e){}
   try{ if(_rdIdent && _rdIdent.e && window._fbDb){ await window._fbDb.ref('userRooms/'+window._acctKey(_rdIdent.e)+'/rooms/'+_rdCode).remove(); } }catch(e){}
+};
+
+window._roomPromoteToEvent = async function(){
+  if(!window._room.isHost || !window._room.code || !window._fbDb) return;
+  var _rpIdent = null; try{ _rpIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+  if(!_rpIdent || !_rpIdent.e){ await customAlert('צריך להתחבר', 'כדי לשמור את החדר כאירוע קבוע יש להתחבר עם Google קודם'); return; }
+  var _rpCode = window._room.code;
+  var _rpName = await new Promise(function(resolve){ customPrompt('שם לאירוע', 'תן שם לאירוע הקבוע שנשמר', function(v){ resolve(v); }, ''); });
+  if(!_rpName || !_rpName.trim()) return;
+  _rpName = _rpName.trim();
+  var _rpEid = null, _rpEvCode = null;
+  try{
+    var _rpKey = window._acctKey(_rpIdent.e);
+    _rpEid = window._fbDb.ref('savedEvents').push().key;
+    _rpEvCode = (typeof window._seGenCode === 'function') ? await window._seGenCode() : String(Math.floor(1000+Math.random()*9000));
+    await window._fbDb.ref('savedEvents/'+_rpEid).set({
+      name: _rpName, ownerKey: _rpKey, ownerName: _rpIdent.n||_rpIdent.e,
+      createdAt: Date.now(), code: _rpEvCode, songs: [], playlists: []
+    });
+    await window._fbDb.ref('eventCodes/'+_rpEvCode).set(_rpEid);
+    await window._fbDb.ref('userEvents/'+_rpKey+'/events/'+_rpEid).set('owner');
+    await window._fbDb.ref('savedEvents/'+_rpEid+'/members/'+_rpKey).set({name:_rpIdent.n||_rpIdent.e, joinedAt:Date.now()});
+    try{ var _rpPl = await window._fbDb.ref('rooms/'+_rpCode+'/playlists').once('value'); if(_rpPl.exists()){ await window._fbDb.ref('savedEvents/'+_rpEid+'/playlists').set(_rpPl.val()); } }catch(e){}
+    try{ var _rpFav = await window._fbDb.ref('rooms/'+_rpCode+'/favorites').once('value'); if(_rpFav.exists()){ await window._fbDb.ref('savedEvents/'+_rpEid+'/favorites').set(_rpFav.val()); } }catch(e){}
+    try{ var _rpRec = await window._fbDb.ref('rooms/'+_rpCode+'/recent').once('value'); if(_rpRec.exists()){ await window._fbDb.ref('savedEvents/'+_rpEid+'/recent').set(_rpRec.val()); } }catch(e){}
+    await window._fbDb.ref('rooms/'+_rpCode+'/promoted').set({eid:_rpEid, code:_rpEvCode});
+    try{ await window._fbDb.ref('userRooms/'+_rpKey+'/rooms/'+_rpCode).remove(); }catch(e){}
+  }catch(e){ await customAlert('שגיאה', 'לא ניתן היה לשמור את האירוע, נסה שוב'); return; }
+  _roomLeave();
+  if(typeof window._seEnterEvent === 'function'){
+    window._seEnterEvent({id:_rpEid, name:_rpName, code:_rpEvCode, role:'owner'});
+  }
 };
 
 window._multiplayerOpenMenu = function(anchorBtn, view){
