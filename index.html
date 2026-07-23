@@ -1761,12 +1761,16 @@ function _roomStart(code){
           if(!window._room.hostOfflineTimer){
             window._room.hostOfflineTimer = setTimeout(function(){
               window._room.hostOfflineTimer = null;
-              if(window._room.code===code){ _roomHandleEnded(); }
+              if(window._room.code===code && !window._room.hostOfflineNotified){
+                window._room.hostOfflineNotified = true;
+                try{ if(typeof showToast==='function') showToast('המארח לא מחובר כרגע - החדר עדיין פעיל'); }catch(e){}
+              }
             }, 300000);
           }
           return;
         }
         if(window._room.hostOfflineTimer){ clearTimeout(window._room.hostOfflineTimer); window._room.hostOfflineTimer = null; }
+        window._room.hostOfflineNotified = false;
         window._room.lastAppliedAt = data.updatedAt||Date.now();
         window._room.lastPushed = JSON.stringify({vid:data.vid, paused:data.paused});
         window._room.lastState = data;
