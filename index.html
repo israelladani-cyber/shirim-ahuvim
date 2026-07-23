@@ -1827,11 +1827,33 @@ function _roomLeave(){
 window._roomCreateAction = async function(){
   if(window._activeEvent && window._activeEvent.id){ var _mpMe=document.getElementById('_mpMenu'); if(_mpMe){ _mpMe.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; await customAlert('⚠️ לא ניתן ליצור חדר', 'אתה נמצא כרגע באירוע שמור פעיל - צא ממנו קודם כדי לפתוח חדר זמני'); return; }
   if(window._room.code){ var _mpM=document.getElementById('_mpMenu'); if(_mpM){ _mpM.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; await customAlert('⚠️ לא ניתן ליצור חדר', window._room.isHost ? 'כבר יש לך חדר פתוח כמארח - סגור אותו קודם' : 'אתה כבר מחובר לחדר כאורח - עזוב אותו קודם כדי לפתוח חדר חדש'); return; }
+  var _rcIdent = null; try{ _rcIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
+  if(_rcIdent && _rcIdent.e && window._fbDb){
+    try{
+      var _rcKey = window._acctKey(_rcIdent.e);
+      var _rcSnap = await window._fbDb.ref('userRooms/'+_rcKey+'/rooms').once('value');
+      var _rcVal = _rcSnap.val() || {};
+      var _rcNow = Date.now();
+      var _rcActiveCodes = Object.keys(_rcVal).filter(function(c){ return !_rcVal[c].createdAt || (_rcNow - _rcVal[c].createdAt) < 86400000; });
+      if(_rcActiveCodes.length >= 3){
+        await customAlert('⚠️ הגעת למקסימום', 'אפשר עד 3 חדרים זמניים פתוחים במקביל - סגור או מחק אחד כדי לפתוח חדש');
+        return;
+      }
+    }catch(e){}
+  }
   var btn = document.getElementById('_roomCreateBtn');
   if(btn){ btn.disabled = true; btn.textContent = '...'; }
   try{
     if(!window._fbDb) throw new Error('no-db');
-    var code = String(Math.floor(1000+Math.random()*9000));
+    var code = null;
+    for(var _rcI=0; _rcI<10; _rcI++){
+      var _rcTry = String(Math.floor(1000+Math.random()*9000));
+      try{
+        var _rcChk = await window._fbDb.ref('rooms/'+_rcTry).once('value');
+        if(!_rcChk.exists()){ code = _rcTry; break; }
+      }catch(e){ code = _rcTry; break; }
+    }
+    if(!code) code = String(Math.floor(1000+Math.random()*9000));
     if(!window._room.clientId){
     var _savedCid=null; try{ _savedCid=localStorage.getItem('karaoke_client_id'); }catch(e){}
     window._room.clientId = _savedCid || ('c'+Math.random().toString(36).slice(2)+Date.now().toString(36));
@@ -1841,6 +1863,7 @@ window._roomCreateAction = async function(){
     var _playerOpen = document.body.classList.contains('playing');
     var payload = { vid: (_playerOpen && local.vid) ? local.vid : null, paused: _playerOpen ? !!local.paused : true, time: _playerOpen ? (local.time||0) : 0, s: _playerOpen ? (local.s||null) : null, a: _playerOpen ? (local.a||null) : null, writer: window._room.clientId, updatedAt: Date.now() };
     await window._fbDb.ref('rooms/'+code).set(payload);
+    try{ if(_rcIdent && _rcIdent.e){ await window._fbDb.ref('userRooms/'+window._acctKey(_rcIdent.e)+'/rooms/'+code).set({createdAt: payload.updatedAt, role:'owner'}); } }catch(e){}
     window._room.isHost = true;
     window._room.muted = false;
     _roomStart(code);
