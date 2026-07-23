@@ -1321,8 +1321,10 @@ window._seRestoreState=function(eid){
   }catch(e){}
 };
 window._seEnterEvent=function(ev){
+  if(window._room && window._room.code){ customAlert('⚠️ לא ניתן להיכנס לאירוע', 'אתה נמצא כרגע בחדר זמני פעיל - צא ממנו קודם כדי להיכנס לאירוע שמור'); return; }
   window._activeEvent={id:ev.id,name:ev.name,code:ev.code,isOwner:ev.role==='owner'};
   try{ localStorage.setItem('_activeSavedEvent', JSON.stringify(window._activeEvent)); }catch(e){}
+  try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){}
   window._multiplayerOpenMenu();
   window._seRenderActiveBar();
   if(ev.role==='owner'){ window._seLiveStart(window._activeEvent); } else { window._seLiveJoin(window._activeEvent); }
@@ -1653,7 +1655,7 @@ function _roomStart(code){
     window._room.clientId = _savedCid || ('c'+Math.random().toString(36).slice(2)+Date.now().toString(36));
     try{ localStorage.setItem('karaoke_client_id', window._room.clientId); }catch(e){}
   }
-  try{ localStorage.setItem('karaoke_room_code', code); localStorage.setItem('karaoke_room_ishost', window._room.isHost?'1':'0'); }catch(e){}
+  try{ localStorage.setItem('karaoke_room_code', code); localStorage.setItem('karaoke_room_ishost', window._room.isHost?'1':'0'); localStorage.removeItem('_activeSavedEvent'); }catch(e){}
   if(window._room.timer) clearInterval(window._room.timer);
   window._room.timer = null;
   if(window._room.hostOfflineTimer){ clearTimeout(window._room.hostOfflineTimer); window._room.hostOfflineTimer = null; }
@@ -1823,6 +1825,7 @@ function _roomLeave(){
 }
 
 window._roomCreateAction = async function(){
+  if(window._activeEvent && window._activeEvent.id){ var _mpMe=document.getElementById('_mpMenu'); if(_mpMe){ _mpMe.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; await customAlert('⚠️ לא ניתן ליצור חדר', 'אתה נמצא כרגע באירוע שמור פעיל - צא ממנו קודם כדי לפתוח חדר זמני'); return; }
   if(window._room.code){ var _mpM=document.getElementById('_mpMenu'); if(_mpM){ _mpM.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; await customAlert('⚠️ לא ניתן ליצור חדר', window._room.isHost ? 'כבר יש לך חדר פתוח כמארח - סגור אותו קודם' : 'אתה כבר מחובר לחדר כאורח - עזוב אותו קודם כדי לפתוח חדר חדש'); return; }
   var btn = document.getElementById('_roomCreateBtn');
   if(btn){ btn.disabled = true; btn.textContent = '...'; }
@@ -1846,6 +1849,7 @@ window._roomCreateAction = async function(){
 };;
 
 window._roomTryJoinCode = async function(code, silent){
+  if(window._activeEvent && window._activeEvent.id){ var _mpMe2=document.getElementById('_mpMenu'); if(_mpMe2){ _mpMe2.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; await customAlert('⚠️ לא ניתן להצטרף', 'אתה נמצא כרגע באירוע שמור פעיל - צא ממנו קודם כדי להצטרף לחדר זמני'); return false; }
   if(window._room.code){ var _mpM=document.getElementById('_mpMenu'); if(_mpM){ _mpM.remove(); } if(window._mpCl){ document.removeEventListener('click',window._mpCl); window._mpCl=null; } window._mpCurrentMode=null; await customAlert('⚠️ לא ניתן להצטרף', window._room.isHost ? 'כבר יש לך חדר פתוח כמארח - סגור אותו קודם' : 'אתה כבר מחובר לחדר אחר - עזוב אותו קודם'); return false; }
   if(!window._fbDb) return false;
   var _snapVal = null;
@@ -2797,6 +2801,7 @@ function tryAutoJoin(){
       var seCode = params.get('se');
       if(seCode && /^\d{4}$/.test(seCode)){ _showEventJoinPrompt(seCode); return; }
       var saved = localStorage.getItem('karaoke_room_code');
+      try{ if(localStorage.getItem('_activeSavedEvent')){ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); saved = null; } }catch(e){}
       if(saved && /^\d{4}$/.test(saved)){
         var savedIsHost = localStorage.getItem('karaoke_room_ishost')==='1';
         if(savedIsHost){
