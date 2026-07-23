@@ -1320,8 +1320,12 @@ window._seRestoreState=function(eid){
     }
   }catch(e){}
 };
-window._seEnterEvent=function(ev){
-  if(window._room && window._room.code){ customAlert('⚠️ לא ניתן להיכנס לאירוע', 'אתה נמצא כרגע בחדר זמני פעיל - צא ממנו קודם כדי להיכנס לאירוע שמור'); return; }
+window._seEnterEvent=async function(ev){
+  if(window._room && window._room.code){
+    var _seEnterOk = await customConfirm('⚠️ לא ניתן להיכנס במקביל לשני חדרים', 'החדר הנוכחי יישמר אוטומטית ל-24 שעות', ev.role==='owner' ? 'צור אירוע' : 'הצטרף לאירוע');
+    if(!_seEnterOk) return;
+    _roomLeave();
+  }
   window._activeEvent={id:ev.id,name:ev.name,code:ev.code,isOwner:ev.role==='owner'};
   try{ localStorage.setItem('_activeSavedEvent', JSON.stringify(window._activeEvent)); }catch(e){}
   try{ localStorage.removeItem('karaoke_room_code'); localStorage.removeItem('karaoke_room_ishost'); }catch(e){}
@@ -1651,6 +1655,13 @@ function _roomStart(code){
   window._room.code = code;
   window._room.everHadData = false;
   window._room.promotedHandled = false;
+  if(window._room.expiryTimer){ clearInterval(window._room.expiryTimer); window._room.expiryTimer = null; }
+  window._room.expiryTimer = setInterval(function(){
+    if(window._room.createdAt && (Date.now() - window._room.createdAt) >= 86400000){
+      if(window._room.expiryTimer){ clearInterval(window._room.expiryTimer); window._room.expiryTimer = null; }
+      if(typeof _roomHandleEnded === 'function') _roomHandleEnded();
+    }
+  }, 60000);
   if(!window._room.clientId){
     var _savedCid=null; try{ _savedCid=localStorage.getItem('karaoke_client_id'); }catch(e){}
     window._room.clientId = _savedCid || ('c'+Math.random().toString(36).slice(2)+Date.now().toString(36));
@@ -1782,6 +1793,11 @@ function _roomStart(code){
           }
           return;
         }
+        if(data.createdAt){ window._room.createdAt = data.createdAt; }
+        if(data.createdAt && (Date.now() - data.createdAt) >= 86400000){
+          _roomHandleEnded();
+          return;
+        }
         if(data.writer===window._room.clientId) return;
         if(data.hostOnline!==true){
           if(!window._room.hostOfflineTimer){
@@ -1829,6 +1845,7 @@ function _roomLeave(){
   window._room.code = null;
   if(window._room.timer) clearInterval(window._room.timer);
   window._room.timer = null;
+  if(window._room.expiryTimer){ clearInterval(window._room.expiryTimer); window._room.expiryTimer = null; }
   if(window._room.hostOfflineTimer){ clearTimeout(window._room.hostOfflineTimer); window._room.hostOfflineTimer = null; }
   if(window._room.presenceRef && window._room.presenceCb){ try{ window._room.presenceRef.off('value', window._room.presenceCb); }catch(e){} window._room.presenceRef = null; window._room.presenceCb = null; }
   if(window._room.hostRef){ try{ window._room.hostRef.onDisconnect().cancel(); if(wasHost) window._room.hostRef.remove(); }catch(e){} window._room.hostRef = null; }
@@ -1900,8 +1917,9 @@ window._roomCreateAction = async function(){
   }
     var local = _roomLocalState() || {vid:null,paused:true,time:0};
     var _playerOpen = document.body.classList.contains('playing');
-    var payload = { vid: (_playerOpen && local.vid) ? local.vid : null, paused: _playerOpen ? !!local.paused : true, time: _playerOpen ? (local.time||0) : 0, s: _playerOpen ? (local.s||null) : null, a: _playerOpen ? (local.a||null) : null, writer: window._room.clientId, updatedAt: Date.now() };
+    var payload = { vid: (_playerOpen && local.vid) ? local.vid : null, paused: _playerOpen ? !!local.paused : true, time: _playerOpen ? (local.time||0) : 0, s: _playerOpen ? (local.s||null) : null, a: _playerOpen ? (local.a||null) : null, writer: window._room.clientId, updatedAt: Date.now(), createdAt: Date.now() };
     await window._fbDb.ref('rooms/'+code).set(payload);
+    window._room.createdAt = payload.createdAt;
     try{ if(_rcIdent && _rcIdent.e){ await window._fbDb.ref('userRooms/'+window._acctKey(_rcIdent.e)+'/rooms/'+code).set({createdAt: payload.updatedAt, role:'owner'}); } }catch(e){}
     window._room.isHost = true;
     window._room.muted = false;
@@ -1924,10 +1942,15 @@ window._roomTryJoinCode = async function(code, silent){
     var snap = await window._fbDb.ref('rooms/'+code).once('value');
     if(!snap.exists() || !snap.val()) return false;
     _snapVal = snap.val();
+    if(_snapVal.createdAt && (Date.now() - _snapVal.createdAt) >= 86400000){
+      try{ await window._fbDb.ref('rooms/'+code).remove(); }catch(e){}
+      return false;
+    }
   }catch(e){ return false; }
   window._room.isHost = false;
   window._room.muted = true;
   window._room.suppressAutoplayOnce = true;
+  window._room.createdAt = _snapVal.createdAt || Date.now();
   _roomStart(code);
   if(!silent){ window._roomJoinWatchdog(); }
   if(!silent){
