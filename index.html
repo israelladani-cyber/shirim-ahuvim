@@ -1322,7 +1322,7 @@ window._seRestoreState=function(eid){
 };
 window._seEnterEvent=async function(ev){
   if(window._room && window._room.code){
-    var _seEnterOk = await customConfirm('⚠️ לא ניתן להיכנס במקביל לשני חדרים', 'החדר הנוכחי יישמר אוטומטית ל-24 שעות', ev.role==='owner' ? 'צור אירוע' : 'הצטרף לאירוע');
+    var _seEnterOk = await customConfirm('⚠️ לא ניתן להיכנס במקביל לשני חדרים', 'החדר הנוכחי יישמר אוטומטית ל-24 שעות', ev.role==='owner' ? 'כנס לאירוע' : 'הצטרף לאירוע');
     if(!_seEnterOk) return;
     _roomLeave();
   }
@@ -1798,6 +1798,15 @@ function _roomStart(code){
           _roomHandleEnded();
           return;
         }
+        if(data.exitNotice && data.exitNotice !== window._room.lastExitNotice){
+          window._room.lastExitNotice = data.exitNotice;
+          if(window._room.code===code){
+            var _rlnHadPlayer = false;
+            try{ _rlnHadPlayer = document.body.classList.contains('playing')||document.body.classList.contains('has-song'); }catch(e){}
+            try{ if(_rlnHadPlayer && typeof window._sePauseAndMinimize==='function') window._sePauseAndMinimize(); }catch(e){}
+            try{ if(typeof showToast==='function') showToast(_rlnHadPlayer?'המארח יצא מהחדר - השיר הושהה':'המארח יצא מהחדר'); }catch(e){}
+          }
+        }
         if(data.writer===window._room.clientId) return;
         if(data.hostOnline!==true){
           if(!window._room.hostOfflineTimer){
@@ -1838,11 +1847,12 @@ function _roomStart(code){
   _roomUpdateBadge();
 }
 
-function _roomLeave(){
+function _roomLeave(silent){
   window._room.leaving=true;
   var wasHost = window._room.isHost;
   var ref = window._room.ref;
   window._room.code = null;
+  if(wasHost && !silent && ref){ try{ ref.child('exitNotice').set(Date.now()); }catch(e){} }
   if(window._room.timer) clearInterval(window._room.timer);
   window._room.timer = null;
   if(window._room.expiryTimer){ clearInterval(window._room.expiryTimer); window._room.expiryTimer = null; }
@@ -2204,7 +2214,7 @@ window._roomDeleteAction = async function(){
   if(!ok) return;
   var _rdCode = window._room.code;
   var _rdIdent = null; try{ _rdIdent = JSON.parse(localStorage.getItem('_kIdent')||'null'); }catch(e){}
-  _roomLeave();
+  _roomLeave(true);
   try{ if(window._fbDb){ await window._fbDb.ref('rooms/'+_rdCode).remove(); } }catch(e){}
   try{ if(_rdIdent && _rdIdent.e && window._fbDb){ await window._fbDb.ref('userRooms/'+window._acctKey(_rdIdent.e)+'/rooms/'+_rdCode).remove(); } }catch(e){}
 };
@@ -2235,7 +2245,7 @@ window._roomPromoteToEvent = async function(){
     await window._fbDb.ref('rooms/'+_rpCode+'/promoted').set({eid:_rpEid, code:_rpEvCode});
     try{ await window._fbDb.ref('userRooms/'+_rpKey+'/rooms/'+_rpCode).remove(); }catch(e){}
   }catch(e){ await customAlert('שגיאה', 'לא ניתן היה לשמור את האירוע, נסה שוב'); return; }
-  _roomLeave();
+  _roomLeave(true);
   if(typeof window._seEnterEvent === 'function'){
     window._seEnterEvent({id:_rpEid, name:_rpName, code:_rpEvCode, role:'owner'});
   }
@@ -2865,7 +2875,7 @@ function _roomHandleEnded(){
       if(typeof closePanelOrAll==='function') closePanelOrAll();
     }
   }catch(e){}
-  _roomLeave();
+  _roomLeave(true);
   try{ if(typeof render==='function'){ var _qe=document.getElementById('q'); render(_qe?_qe.value:''); } }catch(e){}
 }
 
