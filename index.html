@@ -1802,7 +1802,7 @@ function _roomLeave(){
   if(window._room.hostOfflineTimer){ clearTimeout(window._room.hostOfflineTimer); window._room.hostOfflineTimer = null; }
   if(window._room.presenceRef && window._room.presenceCb){ try{ window._room.presenceRef.off('value', window._room.presenceCb); }catch(e){} window._room.presenceRef = null; window._room.presenceCb = null; }
   if(window._room.hostRef){ try{ window._room.hostRef.onDisconnect().cancel(); if(wasHost) window._room.hostRef.remove(); }catch(e){} window._room.hostRef = null; }
-  if(ref){ try{ ref.off(); }catch(e){} if(wasHost){ try{ ref.remove(); }catch(e){} } }
+  if(ref){ try{ ref.off(); }catch(e){} }
   if(window._room.ctrlRef){ try{ window._room.ctrlRef.off(); }catch(e){} window._room.ctrlRef = null; }
   if(window._room.guestsRef && window._room.guestsCb){ try{ window._room.guestsRef.off('value', window._room.guestsCb); }catch(e){} window._room.guestsRef = null; window._room.guestsCb = null; }
   if(window._room.guestRef){ try{ if(window._room.guestPermCb) window._room.guestRef.child('c').off('value', window._room.guestPermCb); window._room.guestRef.onDisconnect().cancel(); window._room.guestRef.remove(); }catch(e){} window._room.guestRef = null; window._room.guestPermCb = null; }
@@ -2110,7 +2110,26 @@ window._roomJoinAction = async function(){
   return true;
 };
 
-window._roomLeaveAction = function(){ _roomLeave(); };
+window._roomExitLeaveDialog = async function(){
+  var p = customConfirm('יציאה מהחדר הזמני', 'אפשר עוד להיכנס ולצאת מהחדר הזמני הזה ב-24 השעות הקרובות. לאחר מכן הוא יימחק אוטומטית, אלא אם תשמור אותו כאירוע קבוע.', 'שמור כאירוע');
+  var _sec = null;
+  try{ _sec = document.querySelector('#customDialogOv .adm-btn.sec'); if(_sec){ _sec.textContent = 'יציאה'; } }catch(e){}
+  var r = await p;
+  try{ if(_sec){ _sec.textContent = 'ביטול'; } }catch(e){}
+  return r;
+};
+
+window._roomLeaveAction = async function(){
+  if(window._room.isHost){
+    var _saveAsEvent = await window._roomExitLeaveDialog();
+    if(_saveAsEvent){
+      if(typeof window._roomPromoteToEvent === 'function'){ await window._roomPromoteToEvent(); }
+      else { _roomLeave(); }
+      return;
+    }
+  }
+  _roomLeave();
+};
 
 window._multiplayerOpenMenu = function(anchorBtn, view){
   try{
