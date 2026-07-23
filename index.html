@@ -1865,6 +1865,8 @@ window._roomCreateAction = async function(){
       var _rcVal = _rcSnap.val() || {};
       var _rcNow = Date.now();
       var _rcActiveCodes = Object.keys(_rcVal).filter(function(c){ return !_rcVal[c].createdAt || (_rcNow - _rcVal[c].createdAt) < 86400000; });
+      var _rcExpiredCodes = Object.keys(_rcVal).filter(function(c){ return _rcVal[c].createdAt && (_rcNow - _rcVal[c].createdAt) >= 86400000; });
+      _rcExpiredCodes.forEach(function(c){ try{ window._fbDb.ref('rooms/'+c).remove(); }catch(e){} try{ window._fbDb.ref('userRooms/'+_rcKey+'/rooms/'+c).remove(); }catch(e){} });
       if(_rcActiveCodes.length >= 3){
         await customAlert('⚠️ הגעת למקסימום', 'אפשר עד 3 חדרים זמניים פתוחים במקביל - סגור או מחק אחד כדי לפתוח חדש');
         return;
@@ -1880,7 +1882,9 @@ window._roomCreateAction = async function(){
       var _rcTry = String(Math.floor(1000+Math.random()*9000));
       try{
         var _rcChk = await window._fbDb.ref('rooms/'+_rcTry).once('value');
-        if(!_rcChk.exists()){ code = _rcTry; break; }
+        var _rcChkVal = _rcChk.val();
+        var _rcChkExpired = _rcChkVal && _rcChkVal.createdAt && (Date.now() - _rcChkVal.createdAt) >= 86400000;
+        if(!_rcChk.exists() || _rcChkExpired){ code = _rcTry; break; }
       }catch(e){ code = _rcTry; break; }
     }
     if(!code) code = String(Math.floor(1000+Math.random()*9000));
