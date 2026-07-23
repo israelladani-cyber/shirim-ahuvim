@@ -1213,6 +1213,7 @@ function _seLiveHandleEnded(){
   var _hadPlayer=false;
   try{ _hadPlayer=document.body.classList.contains('playing')||document.body.classList.contains('has-song'); }catch(e){}
   try{ if(_hadPlayer && typeof window._sePauseAndMinimize==='function') window._sePauseAndMinimize(); }catch(e){}
+  try{ if(_hadPlayer && window._seLive){ window._seLive.awaitingFreshSong = true; } }catch(e){}
   try{ if(typeof showToast==='function') showToast(_hadPlayer?'המארח יצא מהאירוע - השיר הושהה':'המארח יצא מהאירוע'); }catch(e){}
 }
 window._seLiveStop=function(){
@@ -1826,6 +1827,7 @@ function _roomStart(code){
             var _rlnHadPlayer = false;
             try{ _rlnHadPlayer = document.body.classList.contains('playing')||document.body.classList.contains('has-song'); }catch(e){}
             try{ if(_rlnHadPlayer && typeof window._sePauseAndMinimize==='function') window._sePauseAndMinimize(); }catch(e){}
+            try{ if(_rlnHadPlayer && window._room){ window._room.awaitingFreshSong = true; } }catch(e){}
             try{ if(typeof showToast==='function') showToast(_rlnHadPlayer?'המארח יצא מהחדר - השיר הושהה':'המארח יצא מהחדר'); }catch(e){}
           }
         }
