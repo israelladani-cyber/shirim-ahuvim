@@ -1841,6 +1841,12 @@ function _roomStart(code){
           window._room.lastRejoinNotice = data.rejoinNotice;
           if(window._room.code===code && !window._room.isHost){
             try{ if(typeof showToast==='function') showToast('המארח חזר לחדר'); }catch(e){}
+            /* Firebase only fires 'value' for actual data changes - if the host's vid/paused
+               are unchanged from before they left, this rejoin write is the ONLY guest-side
+               signal that the host is back. Force a real re-sync now (hostOnline should be
+               reliably true by this point), so the still-set awaitingFreshSong flag drives a
+               proper reopen instead of leaving the guest stuck minimized forever. */
+            try{ if(data.hostOnline===true && typeof _roomApplyRemote==='function') _roomApplyRemote(data); }catch(e){}
           }
         }
         if(data.writer===window._room.clientId) return;
