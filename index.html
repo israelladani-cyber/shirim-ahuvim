@@ -1829,6 +1829,12 @@ function _roomStart(code){
             try{ if(_rlnHadPlayer && typeof window._sePauseAndMinimize==='function') window._sePauseAndMinimize(); }catch(e){}
             try{ if(_rlnHadPlayer && window._room){ window._room.awaitingFreshSong = true; } }catch(e){}
             try{ if(typeof showToast==='function') showToast(_rlnHadPlayer?'המארח יצא מהחדר - השיר הושהה':'המארח יצא מהחדר'); }catch(e){}
+            /* Skip applying this same stale snapshot (host's last-known vid/paused before leaving)
+               to the player right now - otherwise _roomApplyRemote below would immediately
+               re-open/undo the minimize we just did, in the same tick, before hostOnline=false
+               has even landed. The awaitingFreshSong flag above ensures a proper reopen once
+               the host is genuinely back with fresh state. */
+            return;
           }
         }
         if(data.rejoinNotice && data.rejoinNotice !== window._room.lastRejoinNotice){
