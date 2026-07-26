@@ -633,6 +633,7 @@ b.onclick=function(ev){
   }
 
   function _openThemeMenu(){
+   setTimeout(function(){
     _dd=document.createElement('div');
     _dd.id='_authDd';
     _dd.style.cssText='position:fixed;background:var(--bg);border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,.2);width:280px;z-index:99999;overflow:hidden;direction:rtl;font-family:Roboto,Arial,sans-serif;';
@@ -645,7 +646,7 @@ b.onclick=function(ev){
     backRow.innerHTML='<span style="width:24px;height:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;"><svg height="24" viewBox="0 0 24 24" width="24" style="fill:var(--text-secondary);transform:scaleX(-1)"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20z"/></svg></span><span>מראה</span>';
     backRow.onmouseenter=function(){this.style.background='var(--bg-hover)';};
     backRow.onmouseleave=function(){this.style.background='';};
-    backRow.onclick=function(){ _dd.remove(); _dd=null; b.click(); };
+    backRow.onclick=function(){ setTimeout(function(){ _dd.remove(); _dd=null; b.click(); },0); };
     _dd.appendChild(backRow);
     function _optRow(label,mode){
       var r=document.createElement('div');
@@ -655,10 +656,12 @@ b.onclick=function(ev){
       r.onmouseenter=function(){this.style.background='var(--bg-hover)';};
       r.onmouseleave=function(){this.style.background='';};
       r.onclick=function(){
-        localStorage.setItem('_theme',mode);
-        document.documentElement.setAttribute('data-theme',mode);
-        _dd.remove();_dd=null;
-        b.click();
+        setTimeout(function(){
+          localStorage.setItem('_theme',mode);
+          document.documentElement.setAttribute('data-theme',mode);
+          _dd.remove();_dd=null;
+          b.click();
+        },0);
       };
       return r;
     }
@@ -670,6 +673,7 @@ b.onclick=function(ev){
         if(_dd&&!b.contains(e.target)&&!_dd.contains(e.target)){_dd.remove();_dd=null;document.removeEventListener('click',_cl);}
       });
     },0);
+  },0);
   }
 
   /* ── Admin section ── */
