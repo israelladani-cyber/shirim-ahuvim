@@ -285,6 +285,7 @@ body.theater .panel-theater-btn{color:#FF0000;}
 @media (pointer:coarse) and (min-width:768px){
 body.playing:not(.float-playing) .player-panel{position:fixed!important;inset:0!important;z-index:300!important;flex-direction:column!important;background:var(--bg);border:none;}
 body.playing:not(.float-playing) .list-panel{display:none!important;}
+.panel-float-btn,.panel-theater-btn{display:none!important;}
 }
 
 /* ── FLOAT PLAYER (PiP) ── */
@@ -3474,8 +3475,10 @@ if(!pv)return;
 var r=pv.getBoundingClientRect();
 if(r.width<=0||r.height<=0)return;
 var yt=document.getElementById('yt-player'),mp4=document.getElementById('mp4Player');
-if(yt){yt.style.setProperty('width',r.width+'px','important');yt.style.setProperty('height',r.height+'px','important');}
-if(mp4){mp4.style.setProperty('width',r.width+'px','important');mp4.style.setProperty('height',r.height+'px','important');}
+var rw=Math.round(r.width),rh=Math.round(r.height);
+if(window.ytPlayer&&typeof window.ytPlayer.setSize==='function'){try{window.ytPlayer.setSize(rw,rh);}catch(e){}}
+if(yt){yt.style.setProperty('width',rw+'px','important');yt.style.setProperty('height',rh+'px','important');}
+if(mp4){mp4.style.setProperty('width',rw+'px','important');mp4.style.setProperty('height',rh+'px','important');}
 }catch(e){}
 }
 function _fixPlayerSizeBurst(){
