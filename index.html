@@ -3465,6 +3465,26 @@ let queue=[], ytPlayer=null, playerReady=false, _pipWin=null;
 // currentSong: what's open in modal right now
 let currentSong=null, currentSongList=[], currentSongIdx=0, shuffleOn=false, plShuffleIds=new Set(), currentPlId=null, _shuffleHist=[], repeatMode=0, plRepeatModes=new Map();
 
+
+function _fixPlayerSizeOnRotate(){
+try{
+if(!document.body.classList.contains('playing'))return;
+var pv=document.getElementById('panel-video-slot');
+if(!pv)return;
+var r=pv.getBoundingClientRect();
+if(r.width<=0||r.height<=0)return;
+var yt=document.getElementById('yt-player'),mp4=document.getElementById('mp4Player');
+if(yt){yt.style.width=r.width+'px';yt.style.height=r.height+'px';}
+if(mp4){mp4.style.width=r.width+'px';mp4.style.height=r.height+'px';}
+}catch(e){}
+}
+window.addEventListener('orientationchange',function(){
+setTimeout(_fixPlayerSizeOnRotate,50);
+setTimeout(_fixPlayerSizeOnRotate,300);
+setTimeout(_fixPlayerSizeOnRotate,600);
+setTimeout(_fixPlayerSizeOnRotate,1000);
+});
+window.addEventListener('resize',function(){_fixPlayerSizeOnRotate();});
 function onYouTubeIframeAPIReady(){
   ytPlayer=new YT.Player('yt-player',{
     width:'100%',height:'100%',
