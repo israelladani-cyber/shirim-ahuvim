@@ -281,6 +281,12 @@ body.theater .panel-theater-btn{color:#FF0000;}
   body.admin .adm-toolbar #atbStat{display:none!important;}
 #userAuthBtn img{width:40px!important;height:40px!important;}#userAuthBtn>div{width:40px!important;height:40px!important;font-size:17px!important;}}
 
+/* MOBILE LANDSCAPE FIX: touch devices rotated to landscape can exceed the 767px breakpoint and wrongly receive the desktop side-by-side layout. Force the full-screen mobile player whenever it's a touch (coarse-pointer) device, regardless of width, unless in float/PIP mode. */
+@media (pointer:coarse) and (min-width:768px){
+body.playing:not(.float-playing) .player-panel{position:fixed!important;inset:0!important;z-index:300!important;flex-direction:column!important;background:var(--bg);border:none;}
+body.playing:not(.float-playing) .list-panel{display:none!important;}
+}
+
 /* ── FLOAT PLAYER (PiP) ── */
 /* flex column: video on top, drag-bar below — no overlay blocking the iframe */
 .float-player{position:fixed;left:0;top:0;width:340px;border-radius:14px;overflow:hidden;box-shadow:0 10px 36px rgba(0,0,0,.18);z-index:9999;display:none;background:var(--bg);touch-action:none;user-select:none;}
