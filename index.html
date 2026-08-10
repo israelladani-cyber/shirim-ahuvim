@@ -194,7 +194,7 @@ body.playing .content{max-width:none;margin:0;}
 body.theater .panel-theater-btn{color:#FF0000;}
 @media(min-width:768px){.panel-float-btn,.panel-theater-btn{display:flex;}}
 .panel-video{position:relative;flex:1;min-height:0;background:#000;}
-.panel-video iframe{position:absolute;inset:0;width:100%;height:100%;}.panel-video video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;}
+.panel-video iframe{position:absolute;inset:0;width:100%;height:100%;}
 .panel-footer{display:none;}.panel-nav-group{display:flex;align-items:center;gap:6px;flex-shrink:0;}
 .modal-nav-btn{background:var(--bg-hover);border:none;color:var(--text);border-radius:18px;height:36px;padding:0 16px;font-size:14px;font-weight:600;cursor:pointer;font-family:Arial,sans-serif;transition:background .15s,color .15s;display:flex;align-items:center;gap:5px;}
 .modal-nav-btn:hover{background:rgba(0,0,0,.07);}
@@ -280,13 +280,6 @@ body.theater .panel-theater-btn{color:#FF0000;}
   body.admin .adm-toolbar .atb-btn{flex:1!important;min-width:0!important;height:32px!important;box-sizing:border-box!important;justify-content:center!important;padding:2px 6px!important;font-size:14px!important;}
   body.admin .adm-toolbar #atbStat{display:none!important;}
 #userAuthBtn img{width:40px!important;height:40px!important;}#userAuthBtn>div{width:40px!important;height:40px!important;font-size:17px!important;}}
-
-/* MOBILE LANDSCAPE FIX: touch devices rotated to landscape can exceed the 767px breakpoint and wrongly receive the desktop side-by-side layout. Force the full-screen mobile player whenever it's a touch (coarse-pointer) device, regardless of width, unless in float/PIP mode. */
-@media (pointer:coarse) and (min-width:768px){
-body.playing:not(.float-playing) .player-panel{position:fixed!important;inset:0!important;z-index:300!important;flex-direction:column!important;background:var(--bg);border:none;}
-body.playing:not(.float-playing) .list-panel{display:none!important;}
-.panel-float-btn,.panel-theater-btn{display:none!important;}
-}
 
 /* ── FLOAT PLAYER (PiP) ── */
 /* flex column: video on top, drag-bar below — no overlay blocking the iframe */
@@ -3466,44 +3459,8 @@ let queue=[], ytPlayer=null, playerReady=false, _pipWin=null;
 // currentSong: what's open in modal right now
 let currentSong=null, currentSongList=[], currentSongIdx=0, shuffleOn=false, plShuffleIds=new Set(), currentPlId=null, _shuffleHist=[], repeatMode=0, plRepeatModes=new Map();
 
-
-function _fixPlayerSizeOnRotate(){
-try{
-if(!document.body.classList.contains('playing'))return;
-var pv=document.getElementById('panel-video-slot');
-if(!pv)return;
-var r=pv.getBoundingClientRect();
-if(r.width<=0||r.height<=0)return;
-var yt=document.getElementById('yt-player'),mp4=document.getElementById('mp4Player');
-var rw=Math.round(r.width),rh=Math.round(r.height);
-if(window.ytPlayer&&typeof window.ytPlayer.setSize==='function'){try{window.ytPlayer.setSize(rw,rh);}catch(e){}}
-if(yt){yt.style.setProperty('width',rw+'px','important');yt.style.setProperty('height',rh+'px','important');}
-if(mp4){mp4.style.setProperty('width',rw+'px','important');mp4.style.setProperty('height',rh+'px','important');}
-}catch(e){}
-}
-function _fixPlayerSizeBurst(){
-var n=0;
-var iv=setInterval(function(){
-_fixPlayerSizeOnRotate();
-n++;
-if(n>12)clearInterval(iv);
-},150);
-}
-window.addEventListener('orientationchange',_fixPlayerSizeBurst);
-window.addEventListener('resize',_fixPlayerSizeBurst);
-if(window.screen&&window.screen.orientation&&window.screen.orientation.addEventListener){
-window.screen.orientation.addEventListener('change',_fixPlayerSizeBurst);
-}
-if(window.visualViewport){
-window.visualViewport.addEventListener('resize',_fixPlayerSizeBurst);
-}
-try{
-new MutationObserver(function(){
-if(document.body.classList.contains('playing'))_fixPlayerSizeBurst();
-}).observe(document.body,{attributes:true,attributeFilter:['class']});
-}catch(e){}
 function onYouTubeIframeAPIReady(){
-  ytPlayer=window.ytPlayer=new YT.Player('yt-player',{
+  ytPlayer=new YT.Player('yt-player',{
     width:'100%',height:'100%',
     playerVars:{autoplay:1,rel:0,modestbranding:1,hl:'he'},
     events:{
