@@ -3503,7 +3503,7 @@ if(document.body.classList.contains('playing'))_fixPlayerSizeBurst();
 }).observe(document.body,{attributes:true,attributeFilter:['class']});
 }catch(e){}
 function onYouTubeIframeAPIReady(){
-  ytPlayer=new YT.Player('yt-player',{
+  ytPlayer=window.ytPlayer=new YT.Player('yt-player',{
     width:'100%',height:'100%',
     playerVars:{autoplay:1,rel:0,modestbranding:1,hl:'he'},
     events:{
