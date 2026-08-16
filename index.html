@@ -5472,14 +5472,14 @@ if(isInQueue(vid))removeFromQueue(vid);
 render(document.getElementById("q").value||"");
 _keepArtistOpen();
 _markDirty();
-adminSyncGitHub();
 showUndoToast("שיר נמחק", function(){
 ALL.splice(Math.min(idx,ALL.length),0,removed);
 render(document.getElementById("q").value||"");
 _keepArtistOpen();
 _markDirty();
+}, function(){
 adminSyncGitHub();
-}, function(){});
+});
 });
 }
 function adminAddSong(_forcedArtist){
