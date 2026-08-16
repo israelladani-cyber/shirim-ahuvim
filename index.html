@@ -5468,19 +5468,19 @@ function adminDeleteSong(vid){
     const idx = ALL.findIndex(s=>(s.v||s.mp4)===vid);
     if(idx<0)return;
     const removed = ALL.splice(idx,1)[0];
-    if(isInQueue(vid))removeFromQueue(vid);
-    render(document.getElementById("q").value||"");
-    _keepArtistOpen();
-    _markDirty();
-    showUndoToast("שיר נמחק", function(){
-      ALL.splice(Math.min(idx,ALL.length),0,removed);
-      render(document.getElementById("q").value||"");
-      _keepArtistOpen();
-      _markDirty();
-    }, function(){
-      adminSyncGitHub();
-    });
-  });
+if(isInQueue(vid))removeFromQueue(vid);
+render(document.getElementById("q").value||"");
+_keepArtistOpen();
+_markDirty();
+adminSyncGitHub();
+showUndoToast("שיר נמחק", function(){
+ALL.splice(Math.min(idx,ALL.length),0,removed);
+render(document.getElementById("q").value||"");
+_keepArtistOpen();
+_markDirty();
+adminSyncGitHub();
+}, function(){});
+});
 }
 function adminAddSong(_forcedArtist){
   let artist = (_forcedArtist!==undefined) ? _forcedArtist : document.getElementById("atbArtist").value.trim();
