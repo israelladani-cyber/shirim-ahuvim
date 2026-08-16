@@ -3610,7 +3610,7 @@ function _syncMiniBtns(){
     ab.title=inQ?'הסר מהפלייליסט':'הוסף לפלייליסט';
   }
 }
-function _favLoad(){try{return JSON.parse(localStorage.getItem('kfav')||'[]');}catch(e){return [];}}
+function _favLoad(){try{var l=JSON.parse(localStorage.getItem('kfav')||'[]');var f=l.filter(function(s){return ALL.some(function(x){return (x.v||x.mp4)===(s.v||s.mp4);});});if(f.length!==l.length)_favSave(f);return f;}catch(e){return [];}}
 function _favSave(list){try{localStorage.setItem('kfav',JSON.stringify(list));}catch(e){}window._acctPush('fav',list);}
 const PL_KEY='karaoke_playlists';
 function _plNormalize(raw){
@@ -3661,7 +3661,7 @@ function toggleFavorite(vid){
   _favSave(list);
   render(document.getElementById('q')?document.getElementById('q').value:'');
 }
-function _recentLoad(){try{return JSON.parse(localStorage.getItem('krecent')||'[]');}catch(e){return [];}}
+function _recentLoad(){try{var l=JSON.parse(localStorage.getItem('krecent')||'[]');var f=l.filter(function(s){return ALL.some(function(x){return (x.v||x.mp4)===(s.v||s.mp4);});});if(f.length!==l.length)_recentSave(f);return f;}catch(e){return [];}}
 function _recentSave(list){try{localStorage.setItem('krecent',JSON.stringify(list));}catch(e){}window._acctPush('recent',list);}
 function _recentAdd(song){
   if(!song)return;
@@ -3716,7 +3716,7 @@ function renderLiveRecentSection(){
   var isSe = !!(window._seLive && window._seLive.eid);
   if(!isRoom && !isSe) return '';
   var list = isRoom ? (window._room.recentList||{}) : (window._seLive.recentList||{});
-  var ids = Object.keys(list);
+  var ids = Object.keys(list).filter(function(vid){return ALL.some(function(x){return (x.v||x.mp4)===vid;});});
   if(!ids.length) return '';
   ids.sort(function(a,b){ return (list[b].ts||0)-(list[a].ts||0); });
   var rows='';
@@ -3866,7 +3866,7 @@ function renderLiveFavSection(){
   var isSe = !!(window._seLive && window._seLive.eid);
   if(!isRoom && !isSe) return '';
   var list = isRoom ? (window._room.favList||{}) : (window._seLive.favList||{});
-  var ids = Object.keys(list);
+  var ids = Object.keys(list).filter(function(vid){return ALL.some(function(x){return (x.v||x.mp4)===vid;});});
   if(!ids.length) return '';
   ids.sort(function(a,b){ return (list[b].ts||0)-(list[a].ts||0); });
   var rows='';
